@@ -26,3 +26,7 @@ dependencies:
 - name: slo
   version: "1.0.0"
   repository: "file://../slo"
+
+- name: exhibitor
+  version: "1.0.0"
+  repository: "file://../exhibitor"

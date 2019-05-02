@@ -20,5 +20,8 @@ dependencies:
 - name: slo
   repository: file://../slo
   version: 1.0.0
-digest: sha256:b42297cd8927862060289e8d0b061ccc13ec56095f0ea6170f228de87a2222ef
-generated: 2019-05-01T11:32:00.512268-04:00
+- name: exhibitor
+  repository: file://../exhibitor
+  version: 1.0.0
+digest: sha256:74ef5b5cfe0bfe93f43b42e3058df3a59f71bc2d9de4dbe8d5af9aabbf8724ee
+generated: 2019-05-03T13:04:58.127654-04:00

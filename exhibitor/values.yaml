@@ -1,0 +1,40 @@
+# Grey Matter Exhibitor settings
+# These are the AWS settings that Exhibitor requires
+#  - bucket: The name of the bucket where Exhibitor will write it's shared config, if configured
+aws:
+  access_key:
+  secret_key:
+  region: us-east-1
+  bucket: 
+
+# These are the settings for Exhibitor
+exhibitor:
+  # Which Docker image do you want to use for Exhibitor
+  image: docker.io/deciphernow/exhibitor:1.6.0-3.4.13
+  # The number of Exhibitor instances that should be running
+  replicas: 1
+  # The ImagePullPolicy for the Exhibitor image
+  imagePullPolicy: Always
+  #private_image: false
+  # The resources for Exhibitor. This chunk is set complete into place
+  resources: 
+   limits:
+     cpu: 2
+     memory: 4Gi
+   requests:
+     cpu: 1
+     memory: 2Gi
+  # The command to give the Exhibitor container
+  command: ["/exhibitor-wrapper"]
+  # Additional arguments to provide to exhibitor for startup.  By default, these configs leverage S3 to share configs.  Other options could be to use
+  # an NFS mount or another Zookeeper ensenble 
+  args: ["-c", "s3", "--s3region", "$(AWS_REGION)", "--s3credentials", "/etc/exhibitor/credentials", "--s3config", "$(AWS_BUCKET):$(EXHIBITOR_FOLDER)/greymatter", "--hostname", "$(POD_IP_ADDRESS)"]
+
+  # Any extra env vars that are needed.  By default, the S3 config above requires the below extra env vars
+  extraEnvVars:
+    - name: AWS_BUCKET
+      value: "{{ $.Values.aws.bucket }}"
+    - name: AWS_REGION
+      value: "{{ $.Values.aws.region }}"
+    - name: EXHIBITOR_FOLDER
+      value: "sub-exhibitor"

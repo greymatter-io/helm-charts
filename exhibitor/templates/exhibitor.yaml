@@ -1,0 +1,74 @@
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: exhibitor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: exhibitor
+spec:
+  podManagementPolicy: "Parallel"
+  selector:
+    matchLabels:
+      app: exhibitor
+  serviceName: exhibitor
+  replicas: {{ .Values.exhibitor.replica_count | default 1 }}
+  template:
+    metadata:
+      labels:
+        app: exhibitor
+    spec:
+      containers:
+      - name: exhibitor
+        image: {{ .Values.exhibitor.image | quote }}
+        {{- if .Values.exhibitor.command }}
+        command:
+{{- toYaml .Values.exhibitor.command | nindent 11 }}
+        {{- end }}
+        {{- if .Values.exhibitor.args }}
+        args:
+{{- toYaml .Values.exhibitor.args | nindent 11 }}
+
+        {{- end }}
+        env:
+        - name: PORT0
+          value: "8080"
+        - name: PORT1
+          value: "2181"
+        - name: PORT2
+          value: "2888"
+        - name: PORT3
+          value: "3888"
+        - name: POD_IP_ADDRESS
+          valueFrom:
+            fieldRef:
+              fieldPath: "status.podIP"
+        {{- range $vars := .Values.exhibitor.extraEnvVars  }}
+        - name: {{ $vars.name }}
+          value: {{ tpl $vars.value $ }}
+        {{- end }}
+        imagePullPolicy: {{ .Values.exhibitor.imagePullPolicy }}
+        {{- if .Values.exhibitor.resources }}
+        resources:
+{{ toYaml .Values.exhibitor.resources | indent 10 }}
+        {{- end }}
+        ports:
+        - name: exhibitor
+          containerPort: 8080
+        - name: client
+          containerPort: 2181
+        - name: server
+          containerPort: 2888
+        - name: election
+          containerPort: 3888
+        volumeMounts:
+          - name: exhibitor
+            mountPath: /etc/exhibitor
+            readOnly: true
+      {{- if .Values.exhibitor.private_image }}
+      imagePullSecrets:
+      - name: docker.production.deciphernow.com
+      {{- end }}
+      volumes:
+        - name: exhibitor
+          secret:
+            secretName: exhibitor
