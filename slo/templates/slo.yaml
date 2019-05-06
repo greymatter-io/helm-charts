@@ -97,17 +97,12 @@ spec:
         volumeMounts:
         - name: sidecar
           mountPath: /etc/proxy/tls/sidecar
-        - name: edge
-          mountPath: /etc/proxy/tls/edge
       imagePullSecrets:
         - name: docker.production.deciphernow.com
       volumes:
         - name: sidecar
           secret:
             secretName: sidecar
-        - name: edge
-          secret:
-            secretName: edge
         {{- if .Values.postgres.ssl.enabled }}
         - name: certs
           secret:

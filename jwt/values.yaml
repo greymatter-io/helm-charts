@@ -11,7 +11,6 @@ jwt:
   users_mount_point: /gm-jwt-security/etc
   certs_mount_point: /gm-jwt-security/certs
   imagePullPolicy: Always
-  api_key: c2tpcGphY2stc2x1bmstc3VzcGVjdC1pc3JhZWwtc2NyYXA=
 
   envvars:
     - type: value
@@ -20,11 +19,11 @@ jwt:
     - type: secret
       name: PRIVATE_KEY
       secret: jwt-security
-      key: jwt_private_key
+      key: jwt.key
     - type: secret
       name: JWT_API_KEY	
       secret: jwt-security
-      key: jwt_api_key
+      key: jwt.api_key
     - type: value
       name: ENABLE_TLS
       value: true
@@ -41,7 +40,7 @@ jwt:
       secret: jwt-certs
       key: jwt.key.pem
 
-  certificates:
+  secrets:
   - name: jwt-certs
     jwt.cert.pem: |-
       -----BEGIN CERTIFICATE-----
@@ -76,6 +75,7 @@ jwt:
       -----BEGIN PUBLIC KEY-----
       ...
       -----END PUBLIC KEY-----
+    jwt.api_key: c2tpcGphY2stc2x1bmstc3VzcGVjdC1pc3JhZWwtc2NyYXA=
   
   # A JSON list of users that will be permited access to JWT
   users: |-
@@ -120,24 +120,24 @@ sidecar:
   # sidecar secret, but if individual testing is being done, the sidecar secret will
   # need to be created.  
   create_sidecar_secret: false
-  certificates:
-    # name: sidecar
-    # ca: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # cert: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # key: |-
-    #   -----BEGIN RSA PRIVATE KEY-----
-    #   ...
-    #   -----END RSA PRIVATE KEY-----
+  secrets:
+    name: sidecar
+    ca: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    cert: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    key: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      ...
+      -----END RSA PRIVATE KEY-----
 
 xds:
   port: 18000
   cluster: greymatter
 
 exhibitor:
-  replicas: 3
+  replicas: 1

@@ -19,19 +19,19 @@ sidecar:
   # need to be created.  
   create_sidecar_secret: false
   certificates:
-    # name: sidecar
-    # ca: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # cert: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # key: |-
-    #   -----BEGIN RSA PRIVATE KEY-----
-    #   ...
-    #   -----END RSA PRIVATE KEY-----
+    name: sidecar
+    ca: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    cert: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    key: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      ...
+      -----END RSA PRIVATE KEY-----
 xds:
   version: 0.2.6
   port: 18000
@@ -50,4 +50,4 @@ slo:
   version: 0.4.0
 
 exhibitor:
-  replicas: 3
+  replicas: 1

@@ -16,19 +16,19 @@ edge:
   # These are the certs that the edge will use for ingress traffic into the mesh  
   create_edge_secret: false
   certificates:
-    # name: edge
-    # ca: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # cert: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # key: |-
-    #   -----BEGIN RSA PRIVATE KEY-----
-    #   ...
-    #   -----END RSA PRIVATE KEY-----
+    name: edge
+    ca: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    cert: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    key: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      ...
+      -----END RSA PRIVATE KEY-----
 
 sidecar:
   version: 0.7.1
@@ -44,23 +44,23 @@ sidecar:
   # need to be created.  
   create_sidecar_secret: false
   certificates:
-    # name: sidecar
-    # ca: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # cert: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # key: |-
-    #   -----BEGIN RSA PRIVATE KEY-----
-    #   ...
-    #   -----END RSA PRIVATE KEY-----
+    name: sidecar
+    ca: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    cert: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    key: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      ...
+      -----END RSA PRIVATE KEY-----
 
 xds:
   cluster: greymatter
   port: 18000
 
 exhibitor:
-  replicas: 3
+  replicas: 1

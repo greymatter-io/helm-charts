@@ -1,14 +1,15 @@
 # Grey Matter Exhibitor settings
-# These are the AWS settings that Exhibitor requires
-#  - bucket: The name of the bucket where Exhibitor will write it's shared config, if configured
-aws:
-  access_key:
-  secret_key:
-  region: us-east-1
-  bucket: 
-
+#
 # These are the settings for Exhibitor
 exhibitor:
+ #These are the AWS settings that Exhibitor requires
+ #  - bucket: The name of the bucket where Exhibitor will write it's shared config, if configured
+  aws:
+    access_key:
+    secret_key:
+    region:
+    bucket: 
+
   # Which Docker image do you want to use for Exhibitor
   image: docker.io/deciphernow/exhibitor:1.6.0-3.4.13
   # The number of Exhibitor instances that should be running
@@ -33,8 +34,8 @@ exhibitor:
   # Any extra env vars that are needed.  By default, the S3 config above requires the below extra env vars
   extraEnvVars:
     - name: AWS_BUCKET
-      value: "{{ $.Values.aws.bucket }}"
+      value: "{{ $.Values.exhibitor.aws.bucket }}"
     - name: AWS_REGION
-      value: "{{ $.Values.aws.region }}"
+      value: "{{ $.Values.exhibitor.aws.region }}"
     - name: EXHIBITOR_FOLDER
       value: "sub-exhibitor"

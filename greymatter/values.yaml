@@ -1,3 +1,4 @@
+
 sidecar:
   # Set this to true if you are attempting to deploy Catalog by itself.  
   # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the 

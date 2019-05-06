@@ -126,8 +126,6 @@ spec:
         volumeMounts:
         - mountPath: /etc/proxy/tls/sidecar
           name: sidecar
-        - name: edge
-          mountPath: /etc/proxy/tls/edge
       imagePullSecrets:
       - name: docker.production.deciphernow.com
       volumes:
@@ -140,6 +138,3 @@ spec:
       - name: jwt-security
         secret:
           secretName: jwt-security
-      - name: edge
-        secret:
-          secretName: edge

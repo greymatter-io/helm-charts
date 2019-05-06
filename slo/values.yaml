@@ -97,4 +97,4 @@ postgres:
       key: database
 
 exhibitor:
-  replicas: 3
+  replicas: 1

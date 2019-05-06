@@ -104,10 +104,8 @@ spec:
           name: metrics
           protocol: TCP
         volumeMounts:
-        - mountPath: /etc/proxy/tls/sidecar
-          name: sidecar
-        - name: edge
-          mountPath: /etc/proxy/tls/edge
+        - name: sidecar
+          mountPath: /etc/proxy/tls/sidecar
       imagePullSecrets:
         - name: docker.production.deciphernow.com
       volumes:
@@ -120,6 +118,3 @@ spec:
         - name: jwt-users
           configMap:
             name: jwt-users
-        - name: edge
-          secret:
-            secretName: edge

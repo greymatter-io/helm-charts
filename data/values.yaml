@@ -1,3 +1,5 @@
+# Grey Matter Data settings
+
 data:
   version: 0.2.3
   client_jwt_endpoint_address: localhost
@@ -7,7 +9,15 @@ data:
   certs_mount_point: /certs
   imagePullPolicy: Always
   use_tls: true
-  master_key: ac8923[lkn43589vi23kl4rfgv0w
+  master_key: ac8923[lkn43589vi23kl4rfgv0ws
+
+ # These are the AWS settings that Data requires if configured to use S3
+ #  - bucket: The name of the bucket where Data will write it's shared config, if configured
+  aws:
+    access_key: 
+    secret_key: 
+    region: 
+    bucket: 
 
   envvars:
     - type: value
@@ -41,11 +51,11 @@ data:
     - type: secret
       name: jwt_pub
       secret: jwt-security
-      key: jwt_pub_key
+      key: jwt.pub
     - type: secret 
       name: jwt_api_key
       secret: jwt-security
-      key: jwt_api_key
+      key: jwt.api_key
     - type: value
       name: less_chatty_info
       value: 'false'
@@ -149,26 +159,26 @@ mongo:
     name: mongo-ssl-certs
     mount_path: /secret/cert
     certificates:
-  #  - name: mongo-ssl-certs
-  #    ca: |-
-  #      -----BEGIN CERTIFICATE-----
-  #      ...
-  #      -----END CERTIFICATE-----
-  #    cert: |-
-  #      -----BEGIN CERTIFICATE-----
-  #      ...
-  #      -----END CERTIFICATE-----
-  #    key: |-
-  #      -----BEGIN RSA PRIVATE KEY-----
-  #      ...
-  #      -----END RSA PRIVATE KEY-----
-  #    cert_key: |-
-  #      -----BEGIN CERTIFICATE-----
-  #      ...
-  #      -----END CERTIFICATE-----
-  #      -----BEGIN RSA PRIVATE KEY-----
-  #      ...
-  #      -----END RSA PRIVATE KEY-----
+      - name: mongo-ssl-certs
+        ca: |-
+          -----BEGIN CERTIFICATE-----
+          ...
+          -----END CERTIFICATE-----
+        cert: |-
+          -----BEGIN CERTIFICATE-----
+          ...
+          -----END CERTIFICATE-----
+        key: |-
+          -----BEGIN RSA PRIVATE KEY-----
+          ...
+          -----END RSA PRIVATE KEY-----
+        cert_key: |-
+          -----BEGIN CERTIFICATE-----
+          ...
+          -----END CERTIFICATE-----
+          -----BEGIN RSA PRIVATE KEY-----
+          ...
+          -----END RSA PRIVATE KEY-----
 
 
 sidecar:
@@ -185,22 +195,22 @@ sidecar:
   # need to be created.  
   create_sidecar_secret: false
   certificates:
-    # name: sidecar
-    # ca: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # cert: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # key: |-
-    #   -----BEGIN RSA PRIVATE KEY-----
-    #   ...
-    #   -----END RSA PRIVATE KEY-----
+    name: sidecar
+    ca: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    cert: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    key: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      ...
+      -----END RSA PRIVATE KEY-----
 xds:
   port: 18000
   cluster: greymatter
 
 exhibitor:
-  replicas: 3
+  replicas: 1

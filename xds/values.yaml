@@ -6,7 +6,7 @@ xds:
   #host: 'xds.greymatter.svc.cluster.local'
   port: 18000
   use_zk: 'true'
-  debug: 'true'
+  debug: 'false'
   zk_base_path: '/services'
 
 sidecar:
@@ -39,4 +39,4 @@ sidecar:
 
 
 exhibitor:
-  replicas: 3
+  replicas: 1

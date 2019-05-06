@@ -184,7 +184,7 @@ sidecar:
   # sidecar secret, but if individual testing is being done, the sidecar secret will
   # need to be created.  
   create_sidecar_secret: false
-  certificates:
+  secrets:
     # name: sidecar
     # ca: |-
     #   -----BEGIN CERTIFICATE-----
@@ -204,4 +204,4 @@ xds:
   cluster: greymatter
 
 exhibitor:
-  replicas: 3
+  replicas: 1
