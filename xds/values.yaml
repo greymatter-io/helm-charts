@@ -6,7 +6,7 @@ xds:
   #host: 'xds.greymatter.svc.cluster.local'
   port: 18000
   use_zk: 'true'
-  debug: 'false'
+  logging_level: info
   zk_base_path: '/services'
 
 sidecar:

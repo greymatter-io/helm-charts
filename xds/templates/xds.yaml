@@ -31,8 +31,8 @@ spec:
         env:
         - name: ALS_SERVER
           value: "18003"
-        - name: DEBUG
-          value: {{ .Values.xds.debug | quote }}
+        - name: LOGGING_LEVEL
+          value: {{ .Values.xds.logging_level | quote }}
         - name: GATEWAY_PORT
           value: "18001"
         - name: NODE_ID
