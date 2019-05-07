@@ -43,7 +43,7 @@ spec:
             fieldRef:
               fieldPath: "status.podIP"
         {{- range $vars := .Values.exhibitor.extraEnvVars  }}
-        - name: {{ $vars.name }}
+        - name: {{ $vars.name | replace "-" "_" | replace "." "_" | upper }}
           value: {{ tpl $vars.value $ }}
         {{- end }}
         imagePullPolicy: {{ .Values.exhibitor.imagePullPolicy }}
