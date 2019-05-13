@@ -53,7 +53,7 @@ spec:
         {{- end }}
       {{- if .Values.postgres.private_image }}
       imagePullSecrets:
-      - name: docker.production.deciphernow.com
+      - name: docker.secret
       {{- end }}
       volumes:
       - name: postgres-slo

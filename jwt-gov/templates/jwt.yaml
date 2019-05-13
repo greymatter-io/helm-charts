@@ -113,7 +113,7 @@ spec:
         - name: edge
           mountPath: /etc/proxy/tls/edge
       imagePullSecrets:
-        - name: docker.production.deciphernow.com
+        - name: docker.secret
       volumes:
         - name: sidecar
           secret:

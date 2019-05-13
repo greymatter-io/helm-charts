@@ -63,7 +63,7 @@ spec:
         {{- end }}
       {{- if .Values.mongo.private_image }}
       imagePullSecrets:
-      - name: docker.production.deciphernow.com
+      - name: docker.secret
       {{- end }}
   volumeClaimTemplates:
   - metadata:

@@ -135,7 +135,7 @@ spec:
         - mountPath: /etc/proxy/tls/sidecar
           name: sidecar
       imagePullSecrets:
-      - name: docker.production.deciphernow.com
+      - name: docker.secret
       volumes:
       - name: sidecar
         secret:

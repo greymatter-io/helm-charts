@@ -50,7 +50,7 @@ spec:
           imagePullPolicy: {{ .Values.redis.imagePullPolicy }}
       {{- if .Values.redis.private_image }}
       imagePullSecrets:
-      - name: docker.production.deciphernow.com
+      - name: docker.secret
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
