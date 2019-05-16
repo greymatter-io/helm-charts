@@ -1,27 +1,27 @@
 dependencies:
 - name: dashboard
-  repository: file://../dashboard
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
   version: 1.0.0
 - name: catalog
-  repository: file://../catalog
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
   version: 1.0.0
 - name: xds
-  repository: file://../xds
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
   version: 1.0.0
 - name: edge
-  repository: file://../edge
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
   version: 1.0.0
 - name: data
-  repository: file://../data
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
   version: 1.0.0
 - name: jwt
-  repository: file://../jwt
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
   version: 1.0.0
 - name: slo
-  repository: file://../slo
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
   version: 1.0.0
 - name: exhibitor
-  repository: file://../exhibitor
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
   version: 1.0.0
-digest: sha256:74ef5b5cfe0bfe93f43b42e3058df3a59f71bc2d9de4dbe8d5af9aabbf8724ee
-generated: 2019-05-06T13:02:57.728103-04:00
+digest: sha256:cdbebc74c2bed28491556a6e3acbec554d8dc8d3ed39f66c1e384886124578ec
+generated: 2019-05-13T15:21:36.514673-04:00

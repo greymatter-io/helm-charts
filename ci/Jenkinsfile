@@ -1,0 +1,105 @@
+node('ubuntu-18.04'){
+    try{
+      
+        def helmVersion = "2.14.0"
+        unique_charts=""
+
+        stage ('Get Code') {
+            checkout scm
+        }
+
+        // Do some git and bash magic to find the charts that were updated in this pull request and ignore the ci folder
+        try { 
+            stage ('Find Updated Charts'){ 
+                sh '''#!/bin/bash
+                    files=$(git diff --name-only HEAD HEAD~1 ':(exclude).gitignore' ':(exclude)ci/*' ':(exclude)README.md')
+                    for file in ${files[@]}; do 
+                        charts+=($(cut -d'/' -f1 <<< $file))
+                    done
+                    [[ ${#files} -eq 0 ]] && echo "No files found for comparision, cleanly exiting" && echo "0" > exitstatus.txt && exit 1
+                    unique_charts=($(echo "${charts[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ' ))
+                    echo "${unique_charts[@]}" > charts.txt
+                '''
+            }
+        }
+        catch (err) {
+            status = readFile('exitstatus.txt').trim()
+
+            if (status == "0") {
+                echo "Catch the exception and cleanly exiting"
+                currentBuild.result = 'SUCCESS'
+                return
+            }
+            else {
+                echo "FATAL: Error with the git diff"
+                currentBuild.result = 'FAILURE'
+                throw err
+            }
+
+        }
+        
+
+        // We need to install Helm to be able to package the charts
+         try {
+            stage ('Install Helm') {
+                sh """
+                    curl -L https://storage.googleapis.com/kubernetes-helm/helm-v${helmVersion}-linux-amd64.tar.gz -o helm-v${helmVersion}-linux-amd64.tar.gz
+                    mkdir ./helm
+                    tar -zxvf helm-v${helmVersion}-linux-amd64.tar.gz -C ./helm --strip-components=1
+                """
+            }
+         }
+        catch (err) {
+            echo "FATAL: Helm failed to install"
+            currentBuild.result = 'UNSTABLE'
+            throw err
+        }
+        
+        try {
+            stage ('Package Helm Charts'){                  
+                charts = readFile('charts.txt').trim()
+                echo "Charts found to be packaged: " + charts
+
+                // We need to initialize Helm and add the Decipher repo since Grey Matter using the remote charts as dependencies
+                withCredentials([usernamePassword(credentialsId: 'jenkins-nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                        ./helm/helm init --client-only
+                        ./helm/helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-hosted/ --username ${USERNAME} --password ${PASSWORD}
+                    """
+                }
+                // Loop over the charts that be packaged
+                for (chart in charts.split()) {
+                    sh """
+                        echo "Packaging: ${chart}"
+                        ./helm/helm dependency update ${chart}
+                        ./helm/helm package ${chart}
+                    """
+                }
+            }
+        }
+        catch (err) {
+            echo "FATAL: Helm failed to package a chart: " + err
+            currentBuild.result = 'UNSTABLE'
+            throw err
+        }
+            
+
+        stage ('Publish Charts') { 
+            // Find all of the charts that were created, known by the *.tgz file extension.  Then upload them to Nexus
+            withCredentials([usernamePassword(credentialsId: 'jenkins-nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh '''#!/bin/bash
+                        toPublish=($(ls *.tgz))
+                        for pubChart in ${toPublish[@]}; do
+                            curl -u ${USERNAME}:${PASSWORD} https://nexus.production.deciphernow.com/repository/helm-hosted/ -T $pubChart
+                        done
+                    '''
+            }
+        }
+    }
+    catch (e) {
+        echo "Caught: ${e}"
+        currentBuild.result = 'FAILURE'
+        throw e
+    }     
+        
+}
