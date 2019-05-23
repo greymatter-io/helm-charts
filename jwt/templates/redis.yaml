@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: redis
-          {{- if and .Values.environment (eq .Values.environment "openshift") }}
+          {{- if and (tpl .Values.environment .) (eq (tpl .Values.environment . ) "openshift") }}
           image: {{ .Values.redis.openshift.image }}
           {{- else }}
           image: {{ .Values.redis.k8s.image }}

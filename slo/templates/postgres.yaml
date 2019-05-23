@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        {{- if and .Values.environment (eq .Values.environment "openshift") }}
+        {{- if and (tpl .Values.environment .) (eq (tpl .Values.environment . ) "openshift") }}
         image: {{ .Values.postgres.openshift.image }}
         {{- else }}
         image: {{ .Values.postgres.k8s.image }}

@@ -1,4 +1,4 @@
-{{- if and .Values.environment (eq .Values.environment "openshift") }}
+{{- if and (tpl .Values.environment .) (eq (tpl .Values.environment . ) "openshift") }}
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
