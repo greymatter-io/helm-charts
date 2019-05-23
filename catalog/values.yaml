@@ -1,3 +1,5 @@
+environment:
+
 catalog:
   image: docker.production.deciphernow.com/deciphernow/gm-catalog:0.3.6
   source: xds

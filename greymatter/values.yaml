@@ -1,4 +1,40 @@
 
+# What type of enviornment are you deploying Grey Matter into?
+#  Valid answers are openshift or kubernetes
+#  Defaults to kubernetes
+global:
+  environment:
+
+# This block will ovveride the subchart's environment with the 
+# global.environment setting if deploying greymatter as a package
+# All subcharts have default settings in their respective values.yaml file
+catalog:
+  environment: "{{ .Values.global.environment }}"
+
+dashboard:
+  environment: "{{ .Values.global.environment }}"
+
+data:
+  environment: "{{ .Values.global.environment }}"
+
+edge:
+  environment: "{{ .Values.global.environment }}"
+
+exhibitor:
+  environment: "{{ .Values.global.environment }}"
+
+jwt:
+  environment: "{{ .Values.global.environment }}"
+
+jwt-gov:
+  environment: "{{ .Values.global.environment }}"
+
+slo:
+  environment: "{{ .Values.global.environment }}"
+
+xds:
+  environment: "{{ .Values.global.environment }}"
+
 sidecar:
   # Set this to true if you are attempting to deploy Catalog by itself.  
   # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the 

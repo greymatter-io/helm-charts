@@ -1,4 +1,9 @@
-Grey Matter Catalog {{ .Chart.AppVersion }} has been installed.
+Grey Matter SLO {{ .Chart.AppVersion }} has been installed.
 
 NOTE: It may take a few minutes for the installation to become stable.
+    You are using an {{ .Values.environment | default "kubernetes" }} environment!
+      {{ if and .Values.environment (eq .Values.environment "openshift") }}
+      You can watch the status of the pods by running 'oc get pods -w -n {{ .Release.Namespace }}'
+      {{- else}}
       You can watch the status of the pods by running 'kubectl get pods -w -n {{ .Release.Namespace }}'
+      {{- end }}

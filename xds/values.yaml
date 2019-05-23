@@ -1,3 +1,5 @@
+environment:
+
 xds:
   image: 'docker.production.deciphernow.com/deciphernow/gm-xds:0.2.6'
   imagePullPolicy: Always
