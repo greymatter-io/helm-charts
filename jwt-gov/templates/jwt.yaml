@@ -20,8 +20,17 @@ spec:
       - name: jwt-security
         image: {{ .Values.jwt.image | quote }}
         imagePullPolicy: {{ .Values.jwt.imagePullPolicy }}
-        command: ["/bin/sh"]
-        args: ["-c", "if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /gm-jwt-security/gm-jwt-security"]
+        {{- if .Values.jwt.resources }}
+        resources:
+{{ toYaml .Values.jwt.resources | indent 10 }}
+        {{- end }}
+        {{- if .Values.jwt.command }}
+        command:
+{{ toYaml .Values.jwt.command | indent 8 }}
+        args:
+{{ toYaml .Values.jwt.args | indent 8 }}
+        {{- end }}
+        
         env:
       {{- range $envvar := .Values.jwt.envvars }}
       {{- $envName := $envvar.name | upper | replace "." "_" | replace "-" "_" }}

@@ -38,4 +38,4 @@ exhibitor:
     - name: AWS_REGION
       value: "{{ $.Values.exhibitor.aws.region }}"
     - name: EXHIBITOR_FOLDER
-      value: "sub-exhibitor"
+      value: "exhibitor"

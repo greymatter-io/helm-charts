@@ -4,6 +4,12 @@ jwt:
   version: 0.2.0
   use_aac: true # when deploying the jwt-gov version, this should be set to 'true' if you want jwt to use aac for auth control
   image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security-gov:0.2.0'
+  command: ['/bin/sh']
+  args:
+    [
+      '-c',
+      'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /gm-jwt-security-gov/gm-jwt-security-gov',
+    ]
   #redis_host: redis.greymatter.svc.cluster.local
   redis_db: "0"
   redis_pass: redis
@@ -12,7 +18,13 @@ jwt:
   users_mount_point: /gm-jwt-security/etc
   certs_mount_point: /gm-jwt-security/certs
   imagePullPolicy: Always
-  api_key: c2tpcGphY2stc2x1bmstc3VzcGVjdC1pc3JhZWwtc2NyYXA=
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
 
   envvars:
     - type: value
@@ -42,7 +54,7 @@ jwt:
       secret: jwt-certs
       key: jwt.key.pem
 
-  certificates:
+  secrets:
   - name: jwt-certs
     jwt.cert.pem: |-
       -----BEGIN CERTIFICATE-----
@@ -77,6 +89,8 @@ jwt:
       -----BEGIN PUBLIC KEY-----
       ...
       -----END PUBLIC KEY-----
+    jwt.api_key: c2tpcGphY2stc2x1bmstc3VzcGVjdC1pc3JhZWwtc2NyYXA=
+
 
   # A JSON list of users and their AOs that will be permited access to JWT
   users: |-
