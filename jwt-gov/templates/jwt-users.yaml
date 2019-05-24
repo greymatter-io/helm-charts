@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   AOs.json: |-
-{{- toJson .Values.jwt.users | nindent 4 }}
+{{- .Values.jwt.users | nindent 4 }}
   admins.json: |-
-{{- toJson .Values.jwt.admins | nindent 4 }}
+{{- .Values.jwt.admins | nindent 4 }}
 {{- end }}

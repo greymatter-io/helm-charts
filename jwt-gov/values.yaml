@@ -33,11 +33,11 @@ jwt:
     - type: secret
       name: PRIVATE_KEY
       secret: jwt-security
-      key: jwt_private_key
+      key: jwt.key
     - type: secret
       name: JWT_API_KEY	
       secret: jwt-security
-      key: jwt_api_key
+      key: jwt.api_key
     - type: value
       name: ENABLE_TLS
       value: true
