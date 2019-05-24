@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: data
-        image: {{ .Values.data.image | quote }}
+        image: {{ tpl .Values.data.image $ | quote }}
         imagePullPolicy: {{ .Values.data.imagePullPolicy }}
         {{- if .Values.data.resources }}
         resources:
@@ -44,7 +44,7 @@ spec:
               key: {{ $envvar.key }}
         {{- else if eq $envvar.type "value" }}
         - name: {{ $envName }}
-          value: {{ $envvar.value | quote }}
+          value: {{ tpl $envvar.value $ | quote }}
         {{- end }}
     {{- end  }}   
       
@@ -107,15 +107,35 @@ spec:
         - name: SERVICE_PORT
           value: "8181"
         - name: XDS_CLUSTER
+          {{- if .Values.data.deploy.standalone }}
+          {{- if .Values.data.deploy.xds.address }}
+          value: {{ .Values.data.deploy.xds.cluster }}
+          {{- end }}
+          {{- else }}
           value: {{ .Values.xds.cluster | quote }}
+          {{- end }}
         - name: XDS_HOST
+          {{- if .Values.data.deploy.standalone }}
+          {{- if .Values.data.deploy.xds.address }}
+          value: {{ .Values.data.deploy.xds.address }}
+          {{- end }}
+          {{- else }}
           value: "xds.{{ .Release.Namespace }}.svc.cluster.local"
+          {{- end }}
         - name: XDS_PORT
           value: {{ .Values.xds.port | quote }}
         - name: ZK_ADDRS
+          {{- if .Values.data.deploy.standalone }}
+          {{- if .Values.data.deploy.exhibitor_address }}
+          value: {{ .Values.data.deploy.exhibitor_address }}
+          {{- else }}
           value: {{ template "greymatter.exhibitor.address" . }}
+          {{- end }}
+          {{- else }}
+          value: {{ template "greymatter.exhibitor.address" . }}
+          {{- end }}
         - name: ZK_ANNOUNCE_PATH
-          value: {{ .Values.data.base_path | quote }}
+          value: {{ tpl .Values.data.base_path $ | quote }}
         - name: TIMEOUT
           value: {{ .Values.sidecar.timeout | quote  }}
         image: {{ .Values.sidecar.image | quote }}

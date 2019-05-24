@@ -1,15 +1,37 @@
 # Grey Matter Data settings
 
 data:
+  # The name of this installation of GM Data.  Used in the zookeeper address.  Allow to be unique to support multiple installations of Data
+  name: data
   version: 0.2.3
   client_jwt_endpoint_address: localhost
   client_jwt_endpoint_use_tls: 'true'
-  base_path: /services/data/0.2.3
-  image: docker.production.deciphernow.com/deciphernow/gm-data:0.2.3
+  base_path: /services/{{ .Release.Namespace | lower }}-{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
+  image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
   certs_mount_point: /certs
   imagePullPolicy: Always
   use_tls: true
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
+  
+  # If Grey Matter Data is being deployed as a standalone instance, these values need to be provided
+  deploy:
+    standalone: false 
+    exhibitor_address: 
+    xds:
+      cluster: 
+      address:
+    secrets:
+    - name: jwt-security
+      jwt.key:
+      jwt.pub:
+      jwt.api_key:
+    - name: jwt-certs
+      jwt.cert.pem: 
+      jwt.key.pem: 
+      jwt.trust.pem:
+      server.cert.pem:
+      server.key.pem:
+      server.trust.pem:
 
  # These are the AWS settings that Data requires if configured to use S3
  #  - bucket: The name of the bucket where Data will write it's shared config, if configured
@@ -30,7 +52,7 @@ data:
   envvars:
     - type: value
       name: uses3
-      value: true
+      value: "true"
     - type: secret
       name: aws_access_key_id
       secret: data
@@ -85,7 +107,7 @@ data:
       key: database
     - type: value
       name: gmdata_use_tls
-      value: true
+      value: "true"
     - type: secret
       name: gmdata_cert
       secret: jwt-certs
@@ -100,7 +122,7 @@ data:
       key: server.trust.pem
     - type: value
       name: client_prefix
-      value: /services/data/0.2.3
+      value: /services/{{ .Release.Namespace | lower }}-{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
     - type: value
       name: client_jwt_prefix
       value: /services/jwt-security/0.2.0
@@ -109,13 +131,13 @@ data:
       value: localhost
     - type: value
       name: client_jwt_endpoint_port
-      value: 8080
+      value: "8080"
     - type: value
       name: client_jwt_endpoint_prefix
       value: /services/jwt-security/0.2.0
     - type: value
       name: client_jwt_endpoint_use_tls
-      value: true
+      value: "true"
     - type: secret
       name: client_jwt_endpoint_cert
       secret: jwt-certs

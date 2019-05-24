@@ -5,4 +5,4 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   users.json: |-
-{{- toJson .Values.jwt.users | nindent 4 }}
+{{- .Values.jwt.users | nindent 4 }}
