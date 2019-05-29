@@ -27,7 +27,11 @@ spec:
     spec:
       containers:
       - name: data
+        {{- if .Values.data.deploy.standalone }}
+        image: {{ tpl .Values.data.standalone_image $ | quote }}
+        {{- else }} 
         image: {{ tpl .Values.data.image $ | quote }}
+        {{- end }}
         imagePullPolicy: {{ .Values.data.imagePullPolicy }}
         {{- if .Values.data.resources }}
         resources:
@@ -138,7 +142,13 @@ spec:
           value: {{ tpl .Values.data.base_path $ | quote }}
         - name: TIMEOUT
           value: {{ .Values.sidecar.timeout | quote  }}
-        image: {{ .Values.sidecar.image | quote }}
+        {{- if .Values.data.deploy.standalone }}
+        image: {{ tpl .Values.sidecar.standalone_image $ | quote }}
+        {{- else }} 
+        image: {{ tpl .Values.sidecar.image $ | quote }}
+        {{- end }}
+
+
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         {{- if .Values.sidecar.resources }}
         resources:

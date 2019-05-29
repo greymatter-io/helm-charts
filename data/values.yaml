@@ -8,6 +8,7 @@ data:
   client_jwt_endpoint_use_tls: 'true'
   base_path: /services/{{ .Release.Namespace | lower }}-{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
+  standalone_image:
   certs_mount_point: /certs
   imagePullPolicy: Always
   use_tls: true
@@ -15,7 +16,7 @@ data:
   
   # If Grey Matter Data is being deployed as a standalone instance, these values need to be provided
   deploy:
-    standalone: false 
+    standalone: galse
     exhibitor_address: 
     xds:
       cluster: 
@@ -154,6 +155,7 @@ data:
 mongo:
   replicas: 1
   image: 'deciphernow/mongo:4.0.3'
+  standalone_image:
   imagePullPolicy: Always
   #private_image: false
   # The size, in Gi, that the Mongo PVC should be
@@ -220,6 +222,7 @@ mongo:
 sidecar:
   version: 0.7.1
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1'
+  standalone_image:
   proxy_dynamic: 'true'
   metrics_key_function: depth
   ingress_use_tls: 'true'
