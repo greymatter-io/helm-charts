@@ -3,8 +3,8 @@ apiVersion: v1
 metadata:
   name: exhibitor
   namespace: {{ .Release.Namespace }}
-labels:
-  app: exhibitor
+  labels:
+    app: exhibitor
 spec:
   ports:
   - name: client
