@@ -9,36 +9,23 @@ node('ubuntu-18.04'){
         }
 
         // Do some git and bash magic to find the charts that were updated in this pull request and ignore the ci folder
-        try { 
-            stage ('Find Updated Charts'){ 
-                sh '''#!/bin/bash
-                    files=$(git diff --name-only HEAD@{0} HEAD@{1} ':(exclude).gitignore' ':(exclude)ci/*' ':(exclude)README.md')
-                    for file in ${files[@]}; do 
-                        charts+=($(cut -d'/' -f1 <<< $file))
-                    done
-                    [[ ${#files} -eq 0 ]] && echo "No files found for comparision, cleanly exiting" && echo "0" > exitstatus.txt && exit 1
-                    unique_charts=($(echo "${charts[@]}" | tr ' ' '\n' | sort -u | tr '\n' ' ' ))
-                    echo "${unique_charts[@]}" > charts.txt
-                '''
-            }
-        }
-        catch (err) {
-            status = readFile('exitstatus.txt').trim()
+        
+        stage ('Find Charts'){ 
+            sh '''#!/bin/bash
+                # check to see if the chart.txt file exists.  If so, remove it first to ensure we're using a clean file
+                [[ -e charts.txt ]] && rm -f charts.txt
 
-            if (status == "0") {
-                echo "Catch the exception and cleanly exiting"
-                currentBuild.result = 'SUCCESS'
-                return
-            }
-            else {
-                echo "FATAL: Error with the git diff"
-                currentBuild.result = 'FAILURE'
-                throw err
-            }
+                # get a list of all directories (ignoring the .git, ci and . directories)
+                charts=$(find . -type d \\( ! -name .git \\)  \\( ! -name ci \\) \\( ! -name . \\) -maxdepth 1)
 
+                # the charts are returned looking like "./dashboard", so we want to strip off the first two characters of each listing
+                for chart in $charts; do
+                    echo ${chart:2} >> charts.txt
+                done
+            '''
         }
         
-
+  
         // We need to install Helm to be able to package the charts
          try {
             stage ('Install Helm') {
