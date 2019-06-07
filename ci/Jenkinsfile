@@ -12,7 +12,7 @@ node('ubuntu-18.04'){
         try { 
             stage ('Find Updated Charts'){ 
                 sh '''#!/bin/bash
-                    files=$(git diff --name-only HEAD origin/master ':(exclude).gitignore' ':(exclude)ci/*' ':(exclude)README.md')
+                    files=$(git diff --name-only HEAD@{0} HEAD@{1} ':(exclude).gitignore' ':(exclude)ci/*' ':(exclude)README.md')
                     for file in ${files[@]}; do 
                         charts+=($(cut -d'/' -f1 <<< $file))
                     done
