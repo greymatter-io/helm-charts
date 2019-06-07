@@ -4,7 +4,7 @@ metadata:
   name: xds
   namespace: {{ .Release.Namespace }}
   labels:
-  app: xds
+    app: xds
 spec:
   ports:
     - name: grpc
