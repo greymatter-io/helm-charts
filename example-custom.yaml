@@ -7,8 +7,6 @@ dockerCredentials:
   email: 
   username: 
   password:
-domain: development.deciphernow.com
-route_url_name: fabric
 # What type of enviornment are you deploying Grey Matter into?
 #  Valid answers are openshift or kubernetes
 #  Defaults to kubernetes
@@ -110,6 +108,11 @@ sidecar:
       ...
       -----END RSA PRIVATE KEY-----
 edge:
+  ingress_config:
+    environment:
+    domain: 
+    route_url_name: 
+    remove_namespace_from_url: ''
   edge:
     create_edge_secret: true
     certificates:

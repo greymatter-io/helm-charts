@@ -1,4 +1,5 @@
 {{- if and .Values.ingress_config.environment (eq .Values.ingress_config.environment "openshift") }}
+
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
@@ -7,9 +8,9 @@ metadata:
 spec:
   host: 
   {{- if eq .Values.ingress_config.remove_namespace_from_url "true" }}
-    {{ .Values.ingress_config.route_url_name }}.{{ .Values.ingress_config.domain }}
+    {{ tpl .Values.ingress_config.custom_url . }}
   {{- else }}
-    {{ .Values.ingress_config.route_url_name }}.{{ .Release.Namespace }}.{{ .Values.ingress_config.domain }}
+    {{ tpl .Values.ingress_config.default_url . }}
   {{- end }}
   port: 
     targetPort: http
@@ -20,7 +21,9 @@ spec:
     name: edge
     weight: 100
   wildcardPolicy: None
+
 {{- else }}
+
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -33,9 +36,9 @@ metadata:
 spec:
   rules:
   {{- if eq .Values.ingress_config.remove_namespace_from_url "true" }}
-    - host: {{ .Values.ingress_config.route_url_name }}.{{ .Values.ingress_config.domain }}
+    - host: {{ tpl .Values.ingress_config.custom_url . }}
   {{- else }}
-    - host: {{ .Values.ingress_config.route_url_name }}.{{ .Release.Namespace }}.{{ .Values.ingress_config.domain }}
+    - host: {{ tpl .Values.ingress_config.default_url . }}
   {{- end }}
       http:
         paths:

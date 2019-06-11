@@ -1,15 +1,16 @@
 # Edge Values File
 
 ingress_config:
-  environment: openshift
+  environment: kubernetes
   domain: development.deciphernow.com
-
   # Edge access is typically determine by <route_url_name>.<namespace>.<domain>
   # Namespace is only removed whe setting remove_namespace_from_url to true
   #   If you choose to remove the namespace from the url you must ensure your 
   #   route_url_name is unique or openshift will throw errors.
   route_url_name: greymatter
   remove_namespace_from_url: 'false'
+  default_url: "{{ .Values.ingress_config.route_url_name }}.{{ .Release.Namespace }}.{{ .Values.ingress_config.domain }}"
+  custom_url: "{{ .Values.ingress_config.route_url_name }}.{{ .Values.ingress_config.domain }}"
 
 edge:
   egress_use_tls: 'true'

@@ -16,7 +16,7 @@ dependencies:
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
 
 - name: edge
-  version: "1.0.1"
+  version: "1.0.2"
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
   import-values:
     - child: ingress_config

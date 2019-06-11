@@ -42,7 +42,7 @@ The following table lists the configurable parameters of the edge chart and thei
 
 | Parameter                                | Description | Default                     |
 | ---------------------------------------- | ----------- | --------------------------- |
-| ingress_config.environment               |             | openshift                   |
+| ingress_config.environment               |             | kubernetes                  |
 | ingress_config.domain                    |             | development.deciphernow.com |
 | ingress_config.route_url_name            |             | greymatter                  |
 | ingress_config.remove_namespace_from_url |             | 'false'                     |
