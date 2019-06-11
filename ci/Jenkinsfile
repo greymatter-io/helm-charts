@@ -2,6 +2,8 @@ node('ubuntu-18.04'){
     try{
       
         def helmVersion = "2.14.0"
+        def branch = sh(returnStdout: true, script: "git rev-parse HEAD | git branch -a --contains | grep remotes | sed s/.*remotes.origin.//").trim()
+
         unique_charts=""
 
         stage ('Get Code') {
@@ -16,7 +18,7 @@ node('ubuntu-18.04'){
                 [[ -e charts.txt ]] && rm -f charts.txt
 
                 # get a list of all directories (ignoring the .git, ci and . directories)
-                charts=$(find . -type d \\( ! -name .git \\)  \\( ! -name ci \\) \\( ! -name . \\) -maxdepth 1)
+                charts=$(find . -type d \\( ! -name .git \\)  \\( ! -name ci \\) \\( ! -name . \\) \\( ! -name greymatter \\) -maxdepth 1)
 
                 # the charts are returned looking like "./dashboard", so we want to strip off the first two characters of each listing
                 for chart in $charts; do
@@ -52,6 +54,7 @@ node('ubuntu-18.04'){
                     sh """
                         ./helm/helm init --client-only
                         ./helm/helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-hosted/ --username ${USERNAME} --password ${PASSWORD}
+
                     """
                 }
                 // Loop over the charts that be packaged
@@ -70,26 +73,86 @@ node('ubuntu-18.04'){
             throw err
         }
             
-        branch = sh(returnStdout: true, script: "git rev-parse HEAD | git branch -a --contains | grep remotes | sed s/.*remotes.origin.//").trim()
         if ( branch == 'master' ){
             stage ('Publish Charts') { 
-                Find all of the charts that were created, known by the *.tgz file extension.  Then upload them to Nexus
+                // Find all of the charts that were created, known by the *.tgz file extension.  Then upload them to Nexus
                 withCredentials([usernamePassword(credentialsId: 'jenkins-nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh '''#!/bin/bash
                             toPublish=($(ls *.tgz))
                             for pubChart in ${toPublish[@]}; do
                                 curl -u ${USERNAME}:${PASSWORD} https://nexus.production.deciphernow.com/repository/helm-hosted/ -T $pubChart
                             done
+                            rm -f *.tgz
                         '''
                 }
             }
+
+            stage ('Package Grey Matter') {
+                    sh """
+                        echo "Packaging: Grey Matter"
+                        ./helm/helm dependency update greymatter
+                        ./helm/helm package greymatter
+                    """
+            }
+
+            stage ('Publish Grey Matter') {
+                withCredentials([usernamePassword(credentialsId: 'jenkins-nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh '''#!/bin/bash
+                        toPublish=($(ls greymatter*.tgz))
+                        for pubChart in ${toPublish[@]}; do
+                            curl -u ${USERNAME}:${PASSWORD} https://nexus.production.deciphernow.com/repository/helm-hosted/ -T $pubChart
+                        done
+                        rm -f *.tgz
+                    '''
+                }
+            }
         }
-        
+        else {
+            stage ('Publish Charts to Staging') {
+                // Find all of the charts that were created, known by the *.tgz file extension.  Then upload them to Nexus
+                withCredentials([usernamePassword(credentialsId: 'jenkins-nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh '''#!/bin/bash
+                            toPublish=($(ls *.tgz))
+                            for pubChart in ${toPublish[@]}; do
+                                curl -u ${USERNAME}:${PASSWORD} https://nexus.production.deciphernow.com/repository/helm-staging/ -T $pubChart
+                            done
+                            rm -f *.tgz
+                        '''
+                }
+            }
+
+            stage ('Package Grey Matter from Staging') {
+                // Need to point the Grey Matter requirements to the staging environment then package
+                withCredentials([usernamePassword(credentialsId: 'jenkins-nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                sh """
+                    ./helm/helm repo add decipher-staging https://nexus.production.deciphernow.com/repository/helm-staging/ --username ${USERNAME} --password ${PASSWORD}
+                """
+                }
+                sh """
+                    sed -i "s/helm-hosted/helm-staging/g" greymatter/requirements.yaml
+                    echo "Packaging: Grey Matter"
+                    ./helm/helm dependency update greymatter
+                    ./helm/helm package greymatter
+                """
+            }
+
+            stage ('Clean up the Staging Repo') {
+                withCredentials([usernamePassword(credentialsId: 'jenkins-nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                sh '''#!/bin/bash
+                    charts=($(curl -u ${USERNAME}:${PASSWORD} https://nexus.production.deciphernow.com/repository/helm-staging/index.yaml | grep tgz))
+
+                    for chart in ${charts[@]}; do
+                        if [ $chart == "-" ]; then continue; fi
+                        curl -u ${USERNAME}:${PASSWORD} -X DELETE https://nexus.production.deciphernow.com/repository/helm-staging/$chart
+                    done
+                '''
+                }
+             }
+        }
     }
     catch (e) {
         echo "Caught: ${e}"
         currentBuild.result = 'FAILURE'
         throw e
     }     
-        
 }
