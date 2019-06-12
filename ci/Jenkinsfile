@@ -2,13 +2,15 @@ node('ubuntu-18.04'){
     try{
       
         def helmVersion = "2.14.0"
-        def branch = sh(returnStdout: true, script: "git rev-parse HEAD | git branch -a --contains | grep remotes | sed s/.*remotes.origin.//").trim()
 
         unique_charts=""
 
         stage ('Get Code') {
             checkout scm
         }
+        
+        def branch = sh(returnStdout: true, script: "git rev-parse HEAD | git branch -a --contains | grep remotes | sed s/.*remotes.origin.//").trim()
+        echo "branch = ${branch}"
 
         // Do some git and bash magic to find the charts that were updated in this pull request and ignore the ci folder
         
