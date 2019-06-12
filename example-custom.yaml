@@ -11,7 +11,7 @@ dockerCredentials:
 #  Valid answers are openshift or kubernetes
 #  Defaults to kubernetes
 global:
-  environment: openshift
+  environment: kubernetes
 exhibitor:  
   exhibitor:
     aws:
