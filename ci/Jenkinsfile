@@ -137,19 +137,6 @@ node('ubuntu-18.04'){
                     ./helm/helm package greymatter
                 """
             }
-
-            stage ('Clean up the Staging Repo') {
-                withCredentials([usernamePassword(credentialsId: 'jenkins-nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                sh '''#!/bin/bash
-                    charts=($(curl -u ${USERNAME}:${PASSWORD} https://nexus.production.deciphernow.com/repository/helm-staging/index.yaml | grep tgz))
-
-                    for chart in ${charts[@]}; do
-                        if [ $chart == "-" ]; then continue; fi
-                        curl -u ${USERNAME}:${PASSWORD} -X DELETE https://nexus.production.deciphernow.com/repository/helm-staging/$chart
-                    done
-                '''
-                }
-             }
         }
     }
     catch (e) {
