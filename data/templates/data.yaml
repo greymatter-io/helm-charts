@@ -128,7 +128,13 @@ spec:
           value: {{ template "greymatter.exhibitor.address" . }}
           {{- end }}
         - name: ZK_ANNOUNCE_PATH
+          {{- if .Values.data.deploy.standalone }}
+          {{- if .Values.data.deploy.base_path }}
+          value: {{ tpl .Values.data.deploy.base_path $ | quote }}
+          {{- end }}
+          {{- else }}
           value: {{ tpl .Values.data.base_path $ | quote }}
+          {{- end }}
         - name: TIMEOUT
           value: {{ .Values.sidecar.timeout | quote  }}
         {{- if .Values.data.deploy.standalone }}

@@ -6,7 +6,7 @@ data:
   version: 0.2.3
   client_jwt_endpoint_address: localhost
   client_jwt_endpoint_use_tls: 'true'
-  base_path: /services/{{ .Release.Namespace | lower }}-{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
+  base_path: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
   standalone_image:
   certs_mount_point: /certs
@@ -18,6 +18,7 @@ data:
   deploy:
     standalone: false
     exhibitor_address: 
+    base_path: /services/{{ .Release.Namespace | lower }}-{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
     xds:
       cluster: 
       address:
