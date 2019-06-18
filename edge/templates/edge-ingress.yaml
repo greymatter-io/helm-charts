@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   host: 
-  {{- if eq .Values.global.remove_namespace_from_url "true" }}
+  {{- if .Values.global.remove_namespace_from_url }}
     {{ tpl .Values.ingress_config.custom_url . }}
   {{- else }}
     {{ tpl .Values.ingress_config.default_url . }}
@@ -35,7 +35,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   rules:
-  {{- if eq .Values.global.remove_namespace_from_url "true" }}
+  {{- if .Values.global.remove_namespace_from_url }}
     - host: {{ tpl .Values.ingress_config.custom_url . }}
   {{- else }}
     - host: {{ tpl .Values.ingress_config.default_url . }}

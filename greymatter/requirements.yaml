@@ -16,7 +16,7 @@ dependencies:
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
 
 - name: edge
-  version: "1.0.3"
+  version: "1.0.4"
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
 
 - name: xds
