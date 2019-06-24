@@ -20,12 +20,37 @@ global:
   environment: openshift
   domain:
   route_url_name:
+  ############ 
+  # To modify the version of any service from the default, comment out the below liens and update them to the desired avi_api_version
+  ############
+  # remove_namespace_from_url: false
+  # catalog:
+  #   version: 
+  # dashboard:
+  #   version: 
+  # data:
+  #   version: 
+  # documentation:
+  #   version: 
+  # edge:
+  #   version: 
+  # exhibitor:
+  #   replicas: 1
+  #   version: 
+  # jwt:
+  #   version: 
+  # slo:
+  #   version: 
+  # xds:
+  #   cluster: greymatter
+  #   port: 18000
+  #   version: 
 
 dockerCredentials:
   registry: docker.production.deciphernow.com
   email: 
   username: 
-  password: 
+  password:
 
 exhibitor:
   exhibitor:
