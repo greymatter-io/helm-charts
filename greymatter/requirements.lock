@@ -1,27 +1,30 @@
 dependencies:
-- name: dashboard
-  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
-  version: 1.0.0
 - name: catalog
   repository: https://nexus.production.deciphernow.com/repository/helm-hosted
-  version: 1.0.0
-- name: xds
-  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
-  version: 1.0.0
-- name: edge
-  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
-  version: 1.0.0
+  version: 1.0.3
 - name: data
   repository: https://nexus.production.deciphernow.com/repository/helm-hosted
-  version: 1.0.0
-- name: jwt
+  version: 1.0.2
+- name: dashboard
   repository: https://nexus.production.deciphernow.com/repository/helm-hosted
-  version: 1.0.0
-- name: slo
+  version: 1.0.3
+- name: documentation
   repository: https://nexus.production.deciphernow.com/repository/helm-hosted
-  version: 1.0.0
+  version: 1.0.1
+- name: edge
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
+  version: 1.0.4
+- name: xds
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
+  version: 1.0.1
 - name: exhibitor
   repository: https://nexus.production.deciphernow.com/repository/helm-hosted
-  version: 1.0.0
-digest: sha256:cdbebc74c2bed28491556a6e3acbec554d8dc8d3ed39f66c1e384886124578ec
-generated: 2019-05-13T15:21:36.514673-04:00
+  version: 1.0.1
+- name: jwt
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
+  version: 1.0.1
+- name: slo
+  repository: https://nexus.production.deciphernow.com/repository/helm-hosted
+  version: 1.0.1
+digest: sha256:cf97f2883e1904d24b6f0aa0baeab58a0e63220e210a623158087fefa1d65c64
+generated: 2019-06-24T09:36:42.900965-04:00

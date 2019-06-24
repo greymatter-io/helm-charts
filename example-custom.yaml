@@ -20,34 +20,12 @@ global:
   environment: openshift
   domain:
   route_url_name:
-  remove_namespace_from_url: false
-  catalog:
-    version: 
-  dashboard:
-    version: 
-  data:
-    version: 
-  documentation:
-    version: 
-  edge:
-    version: 
-  exhibitor:
-    replicas: 1
-    version: 
-  jwt:
-    version: 
-  slo:
-    version: 
-  xds:
-    cluster: greymatter-kg
-    port: 18000
-    version: 
 
 dockerCredentials:
   registry: docker.production.deciphernow.com
-  email:
-  username:
-  password:
+  email: 
+  username: 
+  password: 
 
 exhibitor:
   exhibitor:
