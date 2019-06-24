@@ -20,10 +20,10 @@ global:
   environment: openshift
   domain:
   route_url_name:
+  # remove_namespace_from_url: false
   ############ 
   # To modify the version of any service from the default, comment out the below liens and update them to the desired avi_api_version
   ############
-  # remove_namespace_from_url: false
   # catalog:
   #   version: 
   # dashboard:
