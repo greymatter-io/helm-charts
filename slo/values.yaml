@@ -35,31 +35,31 @@ sidecar:
       memory: 128Mi
   envvars:
   - type: value
-    nane: ingress_use_tls
+    name: ingress_use_tls
     value: 'true'
   - type: value
-    nane: ingress_ca_cert_path
+    name: ingress_ca_cert_path
     value: "/etc/proxy/tls/sidecar/ca.crt"
   - type: value
-    nane: ingress_cert_path
+    name: ingress_cert_path
     value: "/etc/proxy/tls/sidecar/server.crt"
   - type: value
-    nane: ingress_key_path
+    name: ingress_key_path
     value: "/etc/proxy/tls/sidecar/server.key"
   - type: value
-    nane: metrics_port
+    name: metrics_port
     value: '8081'
   - type: value
-    nane: port
+    name: port
     value: '8080'
   - type: value
-    nane: proxy_dynamic
+    name: proxy_dynamic
     value: 'true'
   - type: value
-    nane: service_host
+    name: service_host
     value: '127.0.0.1'
   - type: value
-    nane: service_port
+    name: service_port
     value: '1337'
   - type: value
     name: kafka_zk_discover

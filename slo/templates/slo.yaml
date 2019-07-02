@@ -61,6 +61,7 @@ spec:
         - name: certs
           mountPath: {{ .Values.postgres.ssl.mount_path | quote }}
         {{- end }}
+      
       - name: sidecar
         image: {{ .Values.sidecar.image | quote }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
@@ -74,7 +75,7 @@ spec:
         - name: metrics
           containerPort: 8081
         env:
-    {{- range $envvar := .Values.slo.envvars }}
+    {{- range $envvar := .Values.sidecar.envvars }}
       {{- $envName := $envvar.name | upper | replace "." "_" | replace "-" "_" }}
         {{- if eq $envvar.type "secret" }}
         - name: {{ $envName }}
