@@ -57,7 +57,7 @@ helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
 helm install appscode/voyager --name voyager-operator --version 10.0.0 \
   --namespace kube-system \
-  --set cloudProvider=$PROVIDER
+  --set cloudProvider=$PROVIDER \
   --set enableAnalytics=false
 ```
 
