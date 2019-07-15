@@ -127,6 +127,10 @@ To keep things simple, the `example-custom.yaml` uses the same certificates as t
 
 If you load `quickstart.p12` into your browser, when you access the GM Dashboard, you'll be prompted to use that certificate to verify yourself, which you should do to gain access.
 
+#### NOTE: Single-service deployments
+
+If you want to deploy a Helm chart for a single service without the entire service mesh, you need to make sure that your `custom.yaml` `globals.sidecar.envvars` key contains all of the necessary global defaults for the sidecar environment variables. You can just copy these values from our `example-custom.yaml` file. Otherwise, the sidecar for the single service will only contain the environment variables that are different for that service. This will most likely break your sidecar installation, so be sure that you set these values.
+
 ## 3. Add the Decipher Helm Repo to Helm
 
 You will need to add the Decipher Helm repo to helm running on your machine. Run the following command, replacing the username and password with the Decipher LDAP credentials you've been provided.

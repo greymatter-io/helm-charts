@@ -20,7 +20,7 @@
 #   Tells our ingress proxy voyager which cloud provider's API to use to
 #   provision LoadBalancers exposing the cluster to the internet
 global:
-  environment: 
+  environment:
   domain:
   route_url_name:
   # remove_namespace_from_url: false
@@ -51,12 +51,88 @@ global:
   sidecar:
     envvars:
       # You can customize the sidecar environment variables mesh-wide to enable features in the mesh
-      # Take a look at `./greymatter/values.yaml` to see how they are set up
-      # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services READMEs
+      # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services `configuration.md` files.
+      # These are sorted by how different the values are for the sidecars running on different services. The options are "all the same", "all except XDS". and "different"
+      # TODO: update each service to use default global values and only set the ones that are different.
+      # All the same
+      ingress_use_tls:
+        type: value
+        value: 'true'
+      ingress_ca_cert_path:
+        type: value
+        value: '/etc/proxy/tls/sidecar/ca.crt'
+      ingress_cert_path:
+        type: value
+        value: '/etc/proxy/tls/sidecar/server.crt'
+      ingress_key_path:
+        type: value
+        value: '/etc/proxy/tls/sidecar/server.key'
+      metrics_key_function:
+        type: value
+        value: 'depth'
+      service_host:
+        type: value
+        value: '127.0.0.1'
+      obs_enabled:
+        type: value
+        value: 'false'
+      obs_full_response:
+        type: value
+        value: 'false'
+      obs_enforce:
+        type: value
+        value: 'false'
+      kafka_enabled:
+        type: value
+        value: 'false'
+      kafka_zk_discover:
+        type: value
+        value: 'false'
+      kafka_server_connection:
+        type: value
+        value: 'kafka:9091,kafka2:9091'
+      # All except XDS
+      metrics_port:
+        type: value
+        value: '8081'
+      proxy_dynamic:
+        type: value
+        value: 'true'
+      # Different
+      port:
+        type: value
+        value: ''
+      service_port:
+        type: value
+        value: ''
+      kafka_topic:
+        type: value
+        value: ''
+      zk_addrs:
+        type: value
+        value: ''
+      zk_announce_path:
+        type: value
+        value: ''
+      egress_use_tls:
+        type: value
+        value: ''
+      egress_ca_cert_path:
+        type: value
+        value: ''
+      egress_cert_path:
+        type: value
+        value: ''
+      egress_key_path:
+        type: value
+        value: ''
+      # There may be more sidecar environment variables, but we haven't added them here yet.
+      # However, to use an env var with the sidecar, even if it doesn't have a global default,
+      # it needs to be set globally as either a value or a secret
 
 voyager:
   enabled: true
-  cloudProvider: 
+  cloudProvider:
   # This disables Voyager's default setting of sending data to Google Analytics
   # Don't change this -- you're never going to want to send analytics data
   enableAnalytics: false
