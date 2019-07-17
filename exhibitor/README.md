@@ -38,7 +38,7 @@ The following table lists the configurable parameters of the exhibitor chart and
 
 | Parameter                        | Description | Default    |
 | -------------------------------- | ----------- | ---------- |
-| global.environment               |             | kubernetes |
+| global.environment               |             | openshift |
 | global.domain                    |             |            |
 | global.route_url_name            |             |            |
 | global.remove_namespace_from_url |             |            |

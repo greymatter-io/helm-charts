@@ -38,7 +38,7 @@ The following tables list the configurable parameters of the xds chart and their
 
 | Parameter                        | Description | Default    |
 | -------------------------------- | ----------- | ---------- |
-| global.environment               |             | kubernetes |
+| global.environment               |             | openshift |
 | global.domain                    |             |            |
 | global.route_url_name            |             |            |
 | global.remove_namespace_from_url |             |            |

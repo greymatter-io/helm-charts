@@ -1,6 +1,6 @@
 # xDs values
 global:
-  environment: kubernetes
+  environment: openshift
   domain:
   route_url_name:
   remove_namespace_from_url: ''

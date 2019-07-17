@@ -1,5 +1,5 @@
 global:
-  environment: kubernetes
+  environment: openshift
   domain:
   route_url_name:
   remove_namespace_from_url: false
@@ -27,6 +27,9 @@ global:
   # sidecar:
   #   envvars:
   # All of the mesh-wide environment variables should be set in your `custom.yaml` file
+
+voyager:
+  enabled: false
 
 sidecar:
   # Set this to true if you are attempting to deploy Catalog by itself.

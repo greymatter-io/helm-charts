@@ -71,7 +71,7 @@ The following tables list the configurable parameters of the edge chart and thei
 
 | Parameter                        | Description       | Default                     |
 | -------------------------------- | ----------------- | --------------------------- |
-| global.environment               |                   | kubernetes                  |
+| global.environment               |                   | openshift                  |
 | global.domain                    | edge-ingress.yaml | development.deciphernow.com |
 | global.route_url_name            | edge-ingress.yaml | greymatter                  |
 | global.remove_namespace_from_url | edge-ingress.yaml | 'false'                     |

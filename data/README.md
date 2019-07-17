@@ -38,7 +38,7 @@ The following tables list the configurable parameters of the data chart and thei
 
 | Parameter                        | Description       | Default    |
 | -------------------------------- | ----------------- | ---------- |
-| global.environment               |                   | kubernetes |
+| global.environment               |                   | openshift |
 | global.domain                    | edge-ingress.yaml |            |
 | global.route_url_name            | edge-ingress.yaml |            |
 | global.remove_namespace_from_url | edge-ingress.yaml | ''         |

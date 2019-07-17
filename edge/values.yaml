@@ -1,7 +1,7 @@
 # Edge Values File
 
 global:
-  environment: kubernetes
+  environment: openshift
   domain: development.deciphernow.com
   # Edge access is typically determine by <route_url_name>.<namespace>.<domain>
   # Namespace is only removed whe setting remove_namespace_from_url to true

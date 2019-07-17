@@ -26,6 +26,8 @@ startDT = datetime.datetime.now()
 
 # The dot reducer or JS property access reducer reduces a nested dictionary into a string of the form `a.b.c`
 # following JS property access notation
+
+
 def dot_reducer(k1, k2):
     if k1 is None:
         return k2
@@ -205,9 +207,13 @@ def get_immediate_subdirectories(a_dir):
     ]
 
 
-defaultServices = set(get_immediate_subdirectories(".")).difference(
-    set(["ci", "examples", ".git", "docs"])
-)
+def dir_has_chart(dir_list):
+    return [
+        dir for dir in dir_list if os.path.exists(os.path.join(".", dir, "Chart.yaml"))
+    ]
+
+
+defaultServices = set(dir_has_chart(get_immediate_subdirectories(".")))
 
 
 if __name__ == "__main__":
