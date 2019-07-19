@@ -46,7 +46,7 @@ The following tables list the configurable parameters of the catalog chart and t
 | global.dashboard.version         |                   | 2.5.0      |
 | global.data.version              |                   | 0.2.3      |
 | global.documentation.version     |                   | 3.0.0      |
-| global.edge.version              |                   | 0.7.1      |
+| global.edge.version              |                   | 0.8.0      |
 | global.exhibitor.replicas        |                   | 1          |
 | global.exhibitor.version         |                   |            |
 | global.jwt.version               |                   | 0.2.0      |
@@ -120,8 +120,8 @@ The following tables list the configurable parameters of the catalog chart and t
 
 | Parameter                     | Description       | Default                                                        |
 | ----------------------------- | ----------------- | -------------------------------------------------------------- |
-| sidecar.version               | Proxy Version     | 0.7.1                                                          |
-| sidecar.image                 | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1' |
+| sidecar.version               | Proxy Version     | 0.8.0                                                          |
+| sidecar.image                 | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}' |
 | sidecar.proxy_dynamic         |                   | 'true'                                                         |
 | sidecar.metrics_key_function  |                   | depth                                                          |
 | sidecar.ingress_use_tls       | Enable TLS        | 'true'                                                         |
@@ -130,6 +130,7 @@ The following tables list the configurable parameters of the catalog chart and t
 | sidecar.certificates          |                   | {name:{ca: ... , cert: ... , key ...}}                         |
 
 ### Sidecar Environment Variable Configuration
+
 | Environment Variable | Default    |
 | -------------------- | ---------- |
 | port                 | 8080       |

@@ -42,15 +42,15 @@ In Kubernetes environments however, the user must take a few additional steps to
 Initially, we used [`ingress-nginx`](https://github.com/kubernetes/ingress-nginx), which is probably the most commonly known Kubernetes ingress controller.
 
 However, it for some reason still tried to decode and convert the TLS certs even when ["SSL passthrough"](https://kubernetes.github.io/ingress-nginx/user-guide/tls/#ssl-passthrough) was enabled.
-This was giving us some pretty cryptic errors, so we decided to just use a L4 TCP proxy that would proxy the entire connection and wouldn't care about TLS. We decided on Voyager, a Kubernetes Ingress controller built on top of HAProxy, mainly for its ease of use and existing integrations with major cloud providers. These integrations are what allow the automatic provisioning of real cloud load balancers from the Kubernetes created `LoadBalancer` resources. 
+This was giving us some pretty cryptic errors, so we decided to just use a L4 TCP proxy that would proxy the entire connection and wouldn't care about TLS. We decided on Voyager, a Kubernetes Ingress controller built on top of HAProxy, mainly for its ease of use and existing integrations with major cloud providers. These integrations are what allow the automatic provisioning of real cloud load balancers from the Kubernetes created `LoadBalancer` resources.
 
 We have linked Voyager as a dependency of the `greymatter` helm chart, so it can be configured from your `custom.yaml` file, but can also be installed manually if you would like more flexibility, or to have it be managed as a separate helm release.
 
 We recommend however that you simply configure your `custom.yaml` with your `cloudProvider` and use it as a managed Helm dependency.
 
 ### Manual installation
-To install Voyager in your environment using helm, set the `$PROVIDER` environment variable to one of the [supported options](https://appscode.com/products/voyager/7.1.1/setup/install/#using-script) (includes acs, aks, aws, azure, baremetal, gce, gke, minikube, and a few more) and run the following commands: 
 
+To install Voyager in your environment using helm, set the `$PROVIDER` environment variable to one of the [supported options](https://appscode.com/products/voyager/7.1.1/setup/install/#using-script) (includes acs, aks, aws, azure, baremetal, gce, gke, minikube, and a few more) and run the following commands:
 
 ```sh
 helm repo add appscode https://charts.appscode.com/stable/
@@ -87,7 +87,7 @@ The following tables list the configurable parameters of the edge chart and thei
 | edge.inheaders_enabled         |             | 'true'               |
 | edge.obs_enabled               |             | 'false'              |
 | edge.obs_full_response         |             | 'false'              |
-| edge.base_path                 |             | /services/edge/0.7.1 |
+| edge.base_path                 |             | /services/edge/0.8.0 |
 | edge.acl_enabled               |             | 'false'              |
 | edge.imagePullPolicy           |             | Always               |
 | edge.ingress_use_tls           |             | true                 |
@@ -99,21 +99,21 @@ The following tables list the configurable parameters of the edge chart and thei
 
 ### Sidecar Configuration
 
-| Parameter                         | Description       | Default                                                        |
-| --------------------------------- | ----------------- | -------------------------------------------------------------- |
-| sidecar.version                   | Proxy Version     | 0.7.1                                                          |
-| sidecar.image                     | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1' |
-| sidecar.proxy_dynamic             |                   | 'true'                                                         |
-| sidecar.metrics_key_function      |                   | depth                                                          |
-| sidecar.ingress_use_tls           | Enable TLS        | 'true'                                                         |
-| sidecar.imagePullPolicy           | Image pull policy | Always                                                         |
-| sidecar.create_sidecar_secret     | Create Certs      | false                                                          |
-| sidecar.certificates              |                   | {name:{ca: ... , cert: ... , key ...}}                         |
-| sidecar.resources.limits.cpu      |                   | 200m                                                           |
-| sidecar.resources.limits.memory   |                   | 512Mi                                                          |
-| sidecar.resources.requests.cpu    |                   | 100m                                                           |
-| sidecar.resources.requests.memory |                   | 128Mi                                                          |
-|                                   |                   |                                                                |
+| Parameter                         | Description       | Default                                                                                 |
+| --------------------------------- | ----------------- | --------------------------------------------------------------------------------------- |
+| sidecar.version                   | Proxy Version     | 0.8.0                                                                                   |
+| sidecar.image                     | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}' |
+| sidecar.proxy_dynamic             |                   | 'true'                                                                                  |
+| sidecar.metrics_key_function      |                   | depth                                                                                   |
+| sidecar.ingress_use_tls           | Enable TLS        | 'true'                                                                                  |
+| sidecar.imagePullPolicy           | Image pull policy | Always                                                                                  |
+| sidecar.create_sidecar_secret     | Create Certs      | false                                                                                   |
+| sidecar.certificates              |                   | {name:{ca: ... , cert: ... , key ...}}                                                  |
+| sidecar.resources.limits.cpu      |                   | 200m                                                                                    |
+| sidecar.resources.limits.memory   |                   | 512Mi                                                                                   |
+| sidecar.resources.requests.cpu    |                   | 100m                                                                                    |
+| sidecar.resources.requests.memory |                   | 128Mi                                                                                   |
+|                                   |                   |                                                                                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

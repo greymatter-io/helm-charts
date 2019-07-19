@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: edge
-        image: {{ .Values.sidecar.image | quote }}
+        image: {{ tpl $.Values.sidecar.image $ }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         {{- if .Values.edge.resources }}
         resources:

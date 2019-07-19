@@ -67,13 +67,13 @@ The following tables list the configurable parameters of the dashboard chart and
 
 #### Sidecar Configuration
 
-| Parameter                     | Description       | Default                                                        |
-| ----------------------------- | ----------------- | -------------------------------------------------------------- |
-| sidecar.version               | Proxy Version     | 0.7.1                                                          |
-| sidecar.image                 | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1' |
-| sidecar.imagePullPolicy       | Image pull policy | Always                                                         |
-| sidecar.create_sidecar_secret | Create Certs      | false                                                          |
-| sidecar.certificates          |                   | {name:{ca: ... , cert: ... , key ...}}                         |
+| Parameter                     | Description       | Default                                                                                 |
+| ----------------------------- | ----------------- | --------------------------------------------------------------------------------------- |
+| sidecar.version               | Proxy Version     | 0.8.0                                                                                   |
+| sidecar.image                 | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}' |
+| sidecar.imagePullPolicy       | Image pull policy | Always                                                                                  |
+| sidecar.create_sidecar_secret | Create Certs      | false                                                                                   |
+| sidecar.certificates          |                   | {name:{ca: ... , cert: ... , key ...}}                                                  |
 
 #### Sidecar Environment Variables
 
@@ -115,8 +115,8 @@ The following tables list the configurable parameters of the dashboard chart and
 
 | Parameter                                | Description       | Default                                                        |
 | ---------------------------------------- | ----------------- | -------------------------------------------------------------- |
-| sidecar_prometheus.version               | Proxy Version     | 0.7.1                                                          |
-| sidecar_prometheus.image                 | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1' |
+| sidecar_prometheus.version               | Proxy Version     | 0.8.0                                                          |
+| sidecar_prometheus.image                 | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}' |
 | sidecar_prometheus.imagePullPolicy       | Image pull policy | Always                                                         |
 | sidecar_prometheus.create_sidecar_secret | Create Certs      | false                                                          |
 | sidecar_prometheus.certificates          |                   | {name:{ca: ... , cert: ... , key ...}}                         |
@@ -139,8 +139,8 @@ The following tables list the configurable parameters of the dashboard chart and
 | obs_enforce          | 'false'                             |
 | obs_full_response    | 'false'                             |
 
-
 ### Sidecar Environment Variable Configuration
+
 | Environment Variable | Default |
 | -------------------- | ------: |
 | port                 |    8080 |

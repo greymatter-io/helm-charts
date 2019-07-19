@@ -67,8 +67,8 @@ Environment variables set in values.yaml:
 
 | Parameter                         | Description | Default                                                       |
 | --------------------------------- | ----------- | ------------------------------------------------------------- |
-| sidecar.version                   |             | 0.7.1                                                         |
-| sidecar.image                     |             | docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1' |
+| sidecar.version                   |             | 0.8.0                                                         |
+| sidecar.image                     |             | docker.production.deciphernow.com/deciphernow/gm-proxy:0.8.0' |
 | sidecar.imagePullPolicy           |             | Always                                                        |
 | sidecar.resources.limits.cpu      |             | 200m                                                          |
 | sidecar.resources.limits.memory   |             | 4Gi                                                           |
@@ -77,8 +77,8 @@ Environment variables set in values.yaml:
 | sidecar.create_sidecar_secret     |             | false                                                         |
 | sidecar.certificates              |             | Set in values.yaml                                            |
 
-
 ### Sidecar Environment Variable Configuration
+
 | Environment Variable | Default          |
 | -------------------- | ---------------- |
 | service_port         | 8080             |

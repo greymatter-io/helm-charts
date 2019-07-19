@@ -65,8 +65,8 @@ The following tables list the configurable parameters of the xds chart and their
 
 | Parameter                         | Description       | Default                                                        |
 | --------------------------------- | ----------------- | -------------------------------------------------------------- |
-| sidecar.version                   | Proxy Version     | 0.7.1                                                          |
-| sidecar.image                     | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1' |
+| sidecar.version                   | Proxy Version     | 0.8.0                                                          |
+| sidecar.image                     | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}' |
 | sidecar.imagePullPolicy           | Image pull policy | Always                                                         |
 | sidecar.create_sidecar_secret     | Create Certs      | false                                                          |
 | sidecar.certificates              |                   | {name:{ca: ... , cert: ... , key ...}}                         |

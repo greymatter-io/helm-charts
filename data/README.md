@@ -90,22 +90,23 @@ The following tables list the configurable parameters of the data chart and thei
 
 ## Sidecar Configuration
 
-| Parameter                         | Description       | Default                                                        |
-| --------------------------------- | ----------------- | -------------------------------------------------------------- |
-| sidecar.version                   | Proxy Version     | 0.7.1                                                          |
-| sidecar.image                     | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1' |
-| sidecar.proxy_dynamic             |                   | 'true'                                                         |
-| sidecar.metrics_key_function      |                   | depth                                                          |
-| sidecar.ingress_use_tls           | Enable TLS        | 'true'                                                         |
-| sidecar.imagePullPolicy           | Image pull policy | Always                                                         |
-| sidecar.create_sidecar_secret     | Create Certs      | false                                                          |
-| sidecar.certificates              |                   | {name:{ca: ... , cert: ... , key ...}}                         |
-| sidecar.resources.limits.cpu      |                   | 200m                                                           |
-| sidecar.resources.limits.memory   |                   | 512Mi                                                          |
-| sidecar.resources.requests.cpu    |                   | 100m                                                           |
-| sidecar.resources.requests.memory |                   | 128Mi                                                          |
+| Parameter                         | Description       | Default                                                                                 |
+| --------------------------------- | ----------------- | --------------------------------------------------------------------------------------- |
+| sidecar.version                   | Proxy Version     | 0.8.0                                                                                   |
+| sidecar.image                     | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}' |
+| sidecar.proxy_dynamic             |                   | 'true'                                                                                  |
+| sidecar.metrics_key_function      |                   | depth                                                                                   |
+| sidecar.ingress_use_tls           | Enable TLS        | 'true'                                                                                  |
+| sidecar.imagePullPolicy           | Image pull policy | Always                                                                                  |
+| sidecar.create_sidecar_secret     | Create Certs      | false                                                                                   |
+| sidecar.certificates              |                   | {name:{ca: ... , cert: ... , key ...}}                                                  |
+| sidecar.resources.limits.cpu      |                   | 200m                                                                                    |
+| sidecar.resources.limits.memory   |                   | 512Mi                                                                                   |
+| sidecar.resources.requests.cpu    |                   | 100m                                                                                    |
+| sidecar.resources.requests.memory |                   | 128Mi                                                                                   |
 
 ## Sidecar Environment Variable Configuration
+
 | Environment Variable | Default                           |
 | -------------------- | --------------------------------- |
 | egress_use_tls       | {{ .Values.data.use_tls }}        |

@@ -83,17 +83,18 @@ The following tables list the configurable parameters of the jwt-gov chart and t
 
 ### Sidecar Configuration
 
-| Parameter                     | Description       | Default                                                        |
-| ----------------------------- | ----------------- | -------------------------------------------------------------- |
-| sidecar.image                 | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1' |
-| sidecar.proxy_dynamic         |                   | 'true'                                                         |
-| sidecar.metrics_key_function  |                   | depth                                                          |
-| sidecar.ingress_use_tls       | Enable TLS        | 'true'                                                         |
-| sidecar.imagePullPolicy       | Image pull policy | Always                                                         |
-| sidecar.create_sidecar_secret | Create Certs      | false                                                          |
-| sidecar.secrets               |                   | {name:{ca: ... , cert: ... , key ...}}                         |
+| Parameter                     | Description       | Default                                                                                 |
+| ----------------------------- | ----------------- | --------------------------------------------------------------------------------------- |
+| sidecar.image                 | Proxy Image       | 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}' |
+| sidecar.proxy_dynamic         |                   | 'true'                                                                                  |
+| sidecar.metrics_key_function  |                   | depth                                                                                   |
+| sidecar.ingress_use_tls       | Enable TLS        | 'true'                                                                                  |
+| sidecar.imagePullPolicy       | Image pull policy | Always                                                                                  |
+| sidecar.create_sidecar_secret | Create Certs      | false                                                                                   |
+| sidecar.secrets               |                   | {name:{ca: ... , cert: ... , key ...}}                                                  |
 
 ### Sidecar Environment Variable Configuration
+
 | Environment Variable | Default                           |
 | -------------------- | --------------------------------- |
 | egress_use_tls       | {{ .Values.jwt.egress_use_tls }}  |
@@ -103,7 +104,6 @@ The following tables list the configurable parameters of the jwt-gov chart and t
 | port                 | 8080                              |
 | service_host         | 127.0.0.1                         |
 | service_port         | 3000                              |
-
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

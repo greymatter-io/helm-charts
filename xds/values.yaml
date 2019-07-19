@@ -30,8 +30,8 @@ xds:
       memory: 128Mi
 
 sidecar:
-  version: 0.7.1
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1'
+  version: '{{- $.Values.global.xds.sidecar.version | default "0.8.0" }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: Always
   resources:
     limits:

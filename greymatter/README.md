@@ -41,7 +41,7 @@ The following table lists the configurable parameters of the edge chart and thei
 | global.dashboard.version         |                   | latest     |
 | global.data.version              |                   | 0.2.3      |
 | global.documentation.version     |                   | 3.0.0      |
-| global.edge.version              |                   | 0.7.1      |
+| global.edge.version              |                   | 0.8.0      |
 | global.exhibitor.replicas        |                   | 1          |
 | global.exhibitor.version         |                   |            |
 | global.jwt.version               |                   | 0.2.0      |
@@ -83,7 +83,8 @@ In the table below we outline all of the supported sidecar environment variables
 | egress_key_path         |                                   |         |
 
 #### Caveats
-This is implemented by a helper template (in  `templates/_helpers.tpl`) which loops over the global envvars and uses local ones if they are available. This means that to use a sidecar environment variable at the local level, its name and type must already be defined at the global level, however, a global default does not need to be set.
+
+This is implemented by a helper template (in `templates/_helpers.tpl`) which loops over the global envvars and uses local ones if they are available. This means that to use a sidecar environment variable at the local level, its name and type must already be defined at the global level, however, a global default does not need to be set.
 
 If no value is found, either at the local level or in a global default, the template will just ignore that environment variable.
 
