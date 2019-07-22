@@ -31,6 +31,6 @@ if __name__ == "__main__":
 
     defaultServices = set(dir_has_chart(directories)).difference(set(["greymatter"]))
 
-    # print(defaultServices)
+    print(defaultServices)
 
-    write_list_to_file(dir_has_chart(directories))
+    write_list_to_file(defaultServices)
