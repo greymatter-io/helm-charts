@@ -20,7 +20,7 @@ def dir_has_chart(dir_list):
 
 
 def write_list_to_file(a_list):
-    with open('charts.txt', 'w') as f:
+    with open("charts.txt", "w") as f:
         for item in a_list:
             f.write("%s\n" % item)
 
@@ -29,9 +29,8 @@ if __name__ == "__main__":
     # get all the directories
     directories = get_immediate_subdirectories(".")
 
-    # for dir in directories:
-    #     print(dir)
+    defaultServices = set(dir_has_chart(directories)).difference(set(["greymatter"]))
 
-    # print(dir_has_chart(directories))
+    # print(defaultServices)
 
     write_list_to_file(dir_has_chart(directories))
