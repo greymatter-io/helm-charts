@@ -11,14 +11,14 @@ global:
 
 documentation:
   name: documentation
-  base_path: '/services/documentation/3.0.0/'
-  version: 3.0.0
-  image: 'docker.production.deciphernow.com/deciphernow/gm-documentation:v3.0.0'
+  base_path: '/services/documentation/{{ $.Values.global.documentation.version }}/'
+  version: 3.0.1
+  image: 'docker.production.deciphernow.com/deciphernow/gm-documentation:v{{ $.Values.global.documentation.version }}'
   imagePullPolicy: Always
   envvars:
     - type: value
       name: base_path
-      value: '/services/documentation/3.0.0/'
+      value: '/services/documentation/{{ $.Values.global.documentation.version }}/'
     - type: value
       name: hidden_content_titles
       value: 'Setup,FAQ'

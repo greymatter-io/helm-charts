@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: {{ .Values.documentation.name }}
-          image: {{ .Values.documentation.image | quote }}
+          image: {{ tpl .Values.documentation.image $ | quote }}
           imagePullPolicy: {{ .Values.documentation.imagePullPolicy }}
           env:
       {{- range $envvar := .Values.documentation.envvars }}
@@ -53,7 +53,7 @@ spec:
           - name: ZK_ADDRS
             value: {{ template "greymatter.exhibitor.address" . }}
           - name: ZK_ANNOUNCE_PATH
-            value: {{ .Values.documentation.base_path | quote }}
+            value: {{ tpl .Values.documentation.base_path $ }}
 
           ports:
             - containerPort: 8080

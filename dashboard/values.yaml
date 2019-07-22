@@ -83,7 +83,7 @@ prometheus:
       memory: 256Mi
 
 sidecar_prometheus:
-  version: '{{- $.Values.global.catalog.prometheus_sidecar.version | default "0.8.0" }}'
+  version: '{{- $.Values.global.dashboard.prometheus_sidecar.version | default "0.8.0" }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
   imagePullPolicy: Always
   resources:
