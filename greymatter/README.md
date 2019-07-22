@@ -67,14 +67,14 @@ In the table below we outline all of the supported sidecar environment variables
 | proxy_dynamic           | true                              |         |
 | service_host            | 127.0.0.1                         |         |
 | obs_enabled             | false                             |         |
-| obs_enforce             | false                             |         |
+| obs_enforced             | false                             |         |
 | obs_full_response       | false                             |         |
 | kafka_enabled           | false                             |         |
 | kafka_zk_discover       | false                             |         |
 | kafka_server_connection | kafka:9091,kafka2:9091            |         |
 | port                    |                                   |         |
 | service_port            |                                   |         |
-| kafka_topic             |                                   |         |
+| obs_kafka_topic             |                                   |         |
 | zk_addrs                |                                   |         |
 | zk_announce_path        |                                   |         |
 | egress_use_tls          |                                   |         |

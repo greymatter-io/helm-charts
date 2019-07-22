@@ -123,7 +123,7 @@ sidecar:
     service_port:
       type: 'value'
       value: '9080'
-    kafka_topic:
+    obs_kafka_topic:
       type: value
       value: 'gm-catalog'
 

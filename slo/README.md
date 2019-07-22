@@ -97,7 +97,7 @@ The following tables list the configurable parameters of the slo chart and their
 | -------------------- | ------- |
 | port                 | 8080    |
 | service_port         | 1337    |
-| kafka_topic          | gm-slo  |
+| obs_kafka_topic          | gm-slo  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

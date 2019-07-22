@@ -99,7 +99,7 @@ global:
       obs_full_response:
         type: value
         value: 'false'
-      obs_enforce:
+      obs_enforced:
         type: value
         value: 'false'
       kafka_enabled:
@@ -125,7 +125,7 @@ global:
       service_port:
         type: value
         value: ''
-      kafka_topic:
+      obs_kafka_topic:
         type: value
         value: ''
       zk_addrs:

@@ -47,7 +47,7 @@ sidecar:
     port:
       type: value
       value: '8443'
-    kafka_topic:
+    obs_kafka_topic:
       type: value
       value: 'xds'
     proxy_dynamic:

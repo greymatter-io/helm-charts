@@ -83,7 +83,7 @@ Environment variables set in values.yaml:
 | -------------------- | ---------------- |
 | service_port         | 8080             |
 | service_host         | 127.0.0.1        |
-| kafka_topic          | gm-documentation |
+| obs_kafka_topic          | gm-documentation |
 | port                 | 9080             |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

@@ -80,7 +80,7 @@ The following tables list the configurable parameters of the xds chart and their
 | -------------------- | ---------------------- |
 | metrics_port         | 8080                   |
 | port                 | 8443                   |
-| kafka_topic          | xds                    |
+| obs_kafka_topic          | xds                    |
 | proxy_dynamic        | False                  |
 | service_port         | {{ .Values.xds.port }} |
 

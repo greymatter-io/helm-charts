@@ -128,7 +128,7 @@ sidecar_prometheus:
       name: obs_enabled 
       value: 'false'
     - type: value
-      name: obs_enforce 
+      name: obs_enforced 
       value: 'false'
     - type: value
       name: obs_full_response

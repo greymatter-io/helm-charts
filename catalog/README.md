@@ -135,7 +135,7 @@ The following tables list the configurable parameters of the catalog chart and t
 | -------------------- | ---------- |
 | port                 | 8080       |
 | service_port         | 9080       |
-| kafka_topic          | gm-catalog |
+| obs_kafka_topic          | gm-catalog |
 
 ### Additional Configuration
 

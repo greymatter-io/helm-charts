@@ -90,7 +90,7 @@ The following tables list the configurable parameters of the dashboard chart and
 | service_host         | 127.0.0.1                           |
 | service_port         | 1337                                |
 | obs_enabled          | 'false'                             |
-| obs_enforce          | 'false'                             |
+| obs_enforced          | 'false'                             |
 | obs_full_response    | 'false'                             |
 
 ### Prometheus
@@ -136,7 +136,7 @@ The following tables list the configurable parameters of the dashboard chart and
 | service_host         | 127.0.0.1                           |
 | service_port         | 9090                                |
 | obs_enabled          | 'false'                             |
-| obs_enforce          | 'false'                             |
+| obs_enforced          | 'false'                             |
 | obs_full_response    | 'false'                             |
 
 ### Sidecar Environment Variable Configuration

@@ -40,7 +40,7 @@ sidecar:
     service_port:
       type: value
       value: '1337'
-    kafka_topic:
+    obs_kafka_topic:
       type: value
       value: 'gm-slo'
 

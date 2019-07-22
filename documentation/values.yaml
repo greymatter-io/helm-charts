@@ -41,7 +41,7 @@ sidecar:
     service_host:
       type: value
       value: '127.0.0.1'
-    kafka_topic:
+    obs_kafka_topic:
       type: value
       value: 'gm-documentation'
     port:
