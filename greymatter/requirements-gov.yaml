@@ -1,0 +1,42 @@
+dependencies:
+  - name: catalog
+    version: '1.0.3'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
+
+  - name: data
+    version: '1.0.4'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
+
+  - name: dashboard
+    version: '1.0.3'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
+
+  - name: documentation
+    version: '1.0.2'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
+
+  - name: edge
+    version: '1.0.5'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
+
+  - name: xds
+    version: '1.0.3'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
+
+  - name: exhibitor
+    version: '1.0.1'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
+
+  - name: jwt-gov
+    version: '1.0.3'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-government'
+
+  - name: slo
+    version: '1.0.2'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
+
+  # This is the Kubernetes ingress controller
+  - name: voyager
+    repository: 'https://charts.appscode.com/stable/'
+    version: '10.0.0'
+    condition: voyager.enabled

@@ -10,7 +10,7 @@ data:
     db = db.getSiblingDB({{ quote .database }})
     db.createUser({
         user: {{ quote .root_username }},
-        pwd: {{ quote .admin_password }},
+        pwd: {{ quote .root_password }},
         roles: [
         {
             role: 'root',

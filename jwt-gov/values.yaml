@@ -17,7 +17,8 @@ jwt:
   args:
     [
       '-c',
-      'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /gm-jwt-security-gov/gm-jwt-security-gov',
+      'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./certs/aac ]]; then mkdir -p ./certs/aac; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /app/gm-jwt-security-gov.linux',
+
     ]
   #redis_host: redis.greymatter.svc.cluster.local
   redis_db: '0'
