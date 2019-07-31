@@ -5,29 +5,45 @@ global:
   remove_namespace_from_url: false
   catalog:
     version: 0.3.6
+    sidecar:
+      version: 0.7.1
   dashboard:
     version: 2.5.0
+    sidecar:
+      version:
+    prometheus_sidecar:
+      version: 0.8.0
   data:
     version: 0.2.3
+    sidecar:
+      version:
   documentation:
     version: 3.0.0
+    sidecar:
+      version:
   edge:
     version: 0.7.1
+    sidecar:
+      version:
   exhibitor:
     replicas: 1
-    version:
+    version: 
+    sidecar:
+      version:
   jwt:
     version: 0.2.0
+    sidecar:
+      version:
   slo:
     version: 0.4.0
+    sidecar:
+      version:
   xds:
     cluster: greymatter
     port: 18000
     version: 0.2.6
-  
-  # sidecar:
-  #   envvars:
-  # All of the mesh-wide environment variables should be set in your `custom.yaml` file
+    sidecar:
+      version:
 
 sidecar:
   # Set this to true if you are attempting to deploy Catalog by itself.

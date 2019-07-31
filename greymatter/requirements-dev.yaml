@@ -1,27 +1,27 @@
 dependencies:
   - name: catalog
     repository: 'file://../catalog'
-    version: '1.0.3'
+    version: '1.0.5'
 
   - name: data
     repository: 'file://../data'
-    version: '1.0.4'
+    version: '1.0.5'
 
   - name: dashboard
     repository: 'file://../dashboard'
-    version: '1.0.3'
+    version: '1.0.4'
 
   - name: documentation
     repository: 'file://../documentation'
-    version: '1.0.2'
+    version: '1.0.3'
 
   - name: edge
     repository: 'file://../edge'
-    version: '1.0.5'
+    version: '1.0.6'
 
   - name: xds
     repository: 'file://../xds'
-    version: '1.0.3'
+    version: '1.0.4'
 
   - name: exhibitor
     repository: 'file://../exhibitor'
@@ -29,8 +29,14 @@ dependencies:
 
   - name: jwt
     repository: 'file://../jwt'
-    version: '1.0.1'
+    version: '1.0.2'
 
   - name: slo
     repository: 'file://../slo'
-    version: '1.0.2'
+    version: '1.0.3'
+
+  # This is the Kubernetes ingress controller
+  - name: voyager
+    repository: 'https://charts.appscode.com/stable/'
+    version: '10.0.0'
+    condition: voyager.enabled
