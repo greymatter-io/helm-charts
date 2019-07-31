@@ -24,6 +24,7 @@ global:
     cluster: greymatter
     port: 18000
     version: 0.2.6
+  
   # sidecar:
   #   envvars:
   # All of the mesh-wide environment variables should be set in your `custom.yaml` file

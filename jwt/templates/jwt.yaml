@@ -64,7 +64,10 @@ spec:
         volumeMounts:
         - name: jwt-users
           mountPath: {{ .Values.jwt.users_mount_point }}
+      
       - name: sidecar
+        image: {{ tpl .Values.sidecar.image $ | quote }}
+        imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         env:
         {{- include "greymatter.envvars" . | indent 8 }}
         - name: XDS_CLUSTER
@@ -77,8 +80,6 @@ spec:
           value: {{ template "greymatter.exhibitor.address" . }}
         - name: ZK_ANNOUNCE_PATH
           value: "/services/jwt-security/{{ .Values.jwt.version }}"
-        image: {{ .Values.sidecar.image | quote }}
-        imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         {{- if .Values.sidecar.resources }}
         resources:
 {{ toYaml .Values.sidecar.resources | indent 10 }}

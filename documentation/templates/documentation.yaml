@@ -40,7 +40,7 @@ spec:
 
 
         - name: sidecar
-          image: {{ .Values.sidecar.image | quote }}
+          image: {{ tpl .Values.sidecar.image $ | quote }}
           imagePullPolicy: Always
           env:
           {{- include "greymatter.envvars" . | indent 10 }}

@@ -106,8 +106,8 @@ catalog:
       zookeeper_announcement_point: '/services/documentation/{{ $.Values.global.documentation.version }}/metrics'
 
 sidecar:
-  version: 0.7.1
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}'
+  version: '{{- $.Values.global.catalog.sidecar.version | default "0.8.0" }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: Always
   resources:
     limits:

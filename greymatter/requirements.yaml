@@ -1,26 +1,26 @@
 dependencies:
 - name: catalog
-  version: "1.0.3"
-  repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
-
-- name: data
-  version: "1.0.4"
-  repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
-
-- name: dashboard
-  version: "1.0.3"
-  repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
-
-- name: documentation
-  version: "1.0.2"
-  repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
-
-- name: edge
   version: "1.0.5"
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
 
-- name: xds
+- name: data
+  version: "1.0.5"
+  repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
+
+- name: dashboard
+  version: "1.0.4"
+  repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
+
+- name: documentation
   version: "1.0.3"
+  repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
+
+- name: edge
+  version: "1.0.6"
+  repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
+
+- name: xds
+  version: "1.0.4"
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
 
 - name: exhibitor
@@ -28,11 +28,11 @@ dependencies:
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
 
 - name: jwt
-  version: "1.0.1"
+  version: "1.0.2"
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
 
 - name: slo
-  version: "1.0.2"
+  version: "1.0.3"
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
 
 # This is the Kubernetes ingress controller

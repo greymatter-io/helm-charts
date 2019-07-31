@@ -54,8 +54,8 @@ edge:
       -----END RSA PRIVATE KEY-----
 
 sidecar:
-  version: 0.7.1
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1'
+  version: '{{- $.Values.global.edge.sidecar.version | default "0.8.0" }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   metrics_key_function: depth
   imagePullPolicy: Always
   resources:
@@ -67,7 +67,7 @@ sidecar:
       memory: 128Mi
   envvars:
     - name: egress_use_tls
-      type: 'value'
+      type: value
       value: '{{ .Values.edge.egress_use_tls }}'
     - name: egress_ca_cert_path
       type: 'value'
@@ -108,9 +108,6 @@ sidecar:
     - name: acl_enabled
       type: 'value'
       value: '{{ .Values.edge.acl_enabled }}'
-    - name: timeout
-      type: 'value'
-      value: '{{ .Values.sidecar.timeout }}'
 
   # Set this to true if you are attempting to deploy Catalog by itself.
   # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the

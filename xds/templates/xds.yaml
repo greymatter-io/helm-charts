@@ -53,7 +53,7 @@ spec:
           value: {{ template "greymatter.exhibitor.address" . }}
       
       - name: sidecar
-        image: {{ .Values.sidecar.image }}
+        image: {{ tpl .Values.sidecar.image $ }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         {{- if .Values.sidecar.resources }}
         resources:

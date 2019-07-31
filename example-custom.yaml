@@ -29,25 +29,43 @@ global:
   ############
   # catalog:
   #   version:
+  #   sidecar:
+  #     version:
   # dashboard:
   #   version:
+  #   sidecar:
+  #     version:
   # data:
   #   version:
+  #   sidecar:
+  #     version:
   # documentation:
   #   version:
+  #   sidecar:
+  #     version:
   # edge:
   #   version:
+  #   sidecar:
+  #     version:
   # exhibitor:
   #   replicas: 1
   #   version:
+  #   sidecar:
+  #     version:
   # jwt:
   #   version:
+  #   sidecar:
+  #     version:
   # slo:
   #   version:
+  #   sidecar:
+  #     version:
   # xds:
   #   cluster: greymatter
   #   port: 18000
   #   version:
+  #   sidecar:
+  #     version:
   sidecar:
     envvars:
       # You can customize the sidecar environment variables mesh-wide to enable features in the mesh

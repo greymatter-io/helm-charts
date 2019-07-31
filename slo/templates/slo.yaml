@@ -63,7 +63,7 @@ spec:
         {{- end }}
       
       - name: sidecar
-        image: {{ .Values.sidecar.image | quote }}
+        image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         {{- if .Values.sidecar.resources }}
         resources:

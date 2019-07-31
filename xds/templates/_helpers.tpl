@@ -10,7 +10,7 @@ Define the exhibitor host.
 {{- end -}}
 
 {{- define "proxy" -}}
-        image: {{ .Values.sidecar.image }}
+        image: {{ tpl .Values.sidecar.image $ }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         ports:
         - name: grpc

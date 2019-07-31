@@ -36,7 +36,7 @@ spec:
         - name: BASE_PATH
           value: '{{ .Values.dashboard.base_path }}'
       - name: sidecar
-        image: '{{ .Values.sidecar.image }}'
+        image: '{{ tpl .Values.sidecar.image $ }}'
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         {{- if .Values.dashboard.resources }}
         resources:

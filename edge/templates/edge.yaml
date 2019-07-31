@@ -17,14 +17,14 @@ spec:
     spec:
       containers:
       - name: edge
-        image: {{ .Values.sidecar.image | quote }}
+        image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         {{- if .Values.edge.resources }}
         resources:
 {{ toYaml .Values.edge.resources | indent 10 }}
         {{- end }}
         env:
-    {{- range $envvar := .Values.sidecar.envvars }}
+        {{- range $envvar := .Values.sidecar.envvars }}
         {{- $envName := $envvar.name | upper | replace "." "_" | replace "-" "_" }}
         {{- if eq $envvar.type "secret" }}
         - name: {{ $envName }}

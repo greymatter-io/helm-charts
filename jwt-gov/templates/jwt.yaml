@@ -80,7 +80,7 @@ spec:
           value: {{ template "greymatter.exhibitor.address" . }}
         - name: ZK_ANNOUNCE_PATH
           value: "/services/jwt-security/{{ .Values.jwt.version }}"
-        image: {{ .Values.sidecar.image | quote }}
+        image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         ports:
         - containerPort: 8080

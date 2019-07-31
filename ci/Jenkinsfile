@@ -132,6 +132,9 @@ node('ubuntu-18.04'){
             stage ('Package Grey Matter') {
                 try{
                     sh """
+                        echo "List charts in decipher"
+                        ./helm/helm search decipher
+                        
                         echo "Packaging: Grey Matter"
                         ./helm/helm dependency update greymatter
                         ./helm/helm package greymatter
@@ -194,6 +197,9 @@ node('ubuntu-18.04'){
                     }
                     sh """
                         sed -i "s/helm-hosted/helm-staging/g" greymatter/requirements.yaml
+                        echo "List charts in decipher-staging"
+                        ./helm/helm search decipher-staging
+
                         echo "Packaging: Grey Matter"
                         ./helm/helm dependency update greymatter
                         ./helm/helm package greymatter

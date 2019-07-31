@@ -195,7 +195,8 @@ redis:
   #private_image: false
 
 sidecar:
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.7.1'
+  version: '{{- $.Values.global.jwt.sidecar.version | default "0.8.0" }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: Always
   envvars:
     egress_use_tls:

@@ -48,7 +48,7 @@ spec:
           mountPath: {{ .Values.prometheus.data_mount_point }}
       
       - name: sidecar
-        image: {{ .Values.sidecar_prometheus.image | quote }}
+        image: {{ tpl .Values.sidecar_prometheus.image $ }}
         imagePullPolicy: {{ .Values.prometheus.imagePullPolicy }}
         {{- if .Values.sidecar_prometheus.resources }}
         resources:
