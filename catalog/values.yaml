@@ -120,6 +120,19 @@ catalog:
       name: 'Grey Matter Service Level Objectives'
       owner: 'Decipher'
       version: '{{ $.Values.global.slo.version | trunc 3 }}'
+      
+
+    # service_7:
+      
+    #   cluster_name: documentation
+    #   enable_instance_metrics: "true"
+      
+    #   capability: 'Grey Matter'
+    #   documentation: '/services/documentation/latest/'
+    #   name: 'Grey Matter Documentation'
+    #   owner: 'Decipher'
+    #   version: '{{ $.Values.global.documentation.version | trunc 3 }}'
+      
 
 sidecar:
   version: '{{- $.Values.global.catalog.sidecar.version | default "0.8.0" }}'
