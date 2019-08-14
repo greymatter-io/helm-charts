@@ -7,6 +7,27 @@
   "outlier_detection": null,
   "health_checks": []{{- if .service.mTLS }},
   "require_tls": true,
+  {{- if and (.Values.global.mesh_tls.use_provided_certs) }}
+  "ssl_config": {
+    "cipher_filter": "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH",
+    "protocols": [
+      "SSLv3",
+      "SSLv2",
+      "TLSv1",
+      "TLSv1.1",
+      "TLSv1.2"
+    ],
+    "require_client_certs": true,
+    "trust_file": "/etc/proxy/tls/sidecar/ca.crt",
+    "cert_key_pairs": [
+      {
+        "certificate_path": "/etc/proxy/tls/sidecar/server.crt",
+        "key_path": "/etc/proxy/tls/sidecar/server.key"
+      }
+    ]
+  }
+  {{- end }}
+  {{- if .Values.global.spire.enabled }}
   "secret": {
     "secret_key": "secret-edge-secret",
     "secret_name": "spiffe://deciphernow.com/edge/mTLS",
@@ -15,5 +36,6 @@
         "X25519:P-256:P-521:P-384"
     ]
   }
+  {{- end}}
   {{- end }}
 }

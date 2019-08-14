@@ -41,7 +41,9 @@ spec:
         - name: spire-agent-socket
           mountPath: /run/spire/sockets
           readOnly: true
-        {{- end }}
+        {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+        {{- include "sidecar_volume_certs_mount" . | indent 8 }}
+        {{- end}}
       imagePullSecrets:
       - name: docker.secret
       volumes:
@@ -53,4 +55,6 @@ spec:
         hostPath:
           path: /run/spire/sockets
           type: Directory
+      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}

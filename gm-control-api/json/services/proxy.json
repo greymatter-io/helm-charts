@@ -21,7 +21,7 @@
       "metrics_key_function": "depth",
       "metrics_key_depth": "1"
     }
-  }{{- if .service.mTLS }},
+  }{{- if .service.mTLS }}{{ if .Values.global.spire.enabled }},
   "secret": {
     "secret_key": "secret-{{.service.serviceName}}-secret",
     "secret_name": "spiffe://deciphernow.com/{{.service.serviceName}}/mTLS",
@@ -34,5 +34,6 @@
         "uri": true
     }
   }
+  {{- end }}
   {{- end }}
 }

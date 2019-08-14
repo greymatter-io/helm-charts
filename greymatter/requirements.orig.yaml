@@ -11,13 +11,17 @@ dependencies:
   version: "1.0.4"
   repository: "file://../dashboard"
 
+- name: documentation
+  version: "1.0.3"
+  repository: "file://../documentation"
+
 - name: edge
   version: "1.0.6"
   repository: "file://../edge"
 
-- name: jwt-gov
-  version: "1.0.4"
-  repository: "file://../jwt-gov"
+- name: jwt
+  version: "1.0.2"
+  repository: "file://../jwt"
 
 - name: slo
   version: "1.0.3"
@@ -31,6 +35,6 @@ dependencies:
   repository: 'file://../control'
   version: '0.1.0'
   
-# - name: spire
-#   repository: 'file://../spire'
-#   version: '0.1.0'
+- name: spire
+  repository: 'file://../spire'
+  version: '0.1.0'
