@@ -48,10 +48,11 @@ greymatter create listener <listener.json
 greymatter create proxy < proxy.json
 greymatter create cluster < cluster.json
 greymatter create shared_rules < shared_rules.json
+greymatter create route < route.json
 
-for file in $(ls route*.json); do 
-    greymatter create route < $file
-done
+# for file in $(ls route*.json); do 
+#     greymatter create route < $file
+# done
 
 cd $MESH_CONFIG_DIR/edge
 echo "Creating edge configuration objects"
@@ -76,3 +77,8 @@ for d in */; do
 
     cd $MESH_CONFIG_DIR/edge
 done
+
+cd $MESH_CONFIG_DIR/special
+echo "Adding GM Data to JWT Routes"
+greymatter create route < route-data-jwt-slash.json
+greymatter create route < route-data-jwt.json
