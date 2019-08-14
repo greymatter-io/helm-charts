@@ -8,6 +8,7 @@
   "health_checks": []{{- if .service.mTLS }},
   "require_tls": true,
   {{- if and (.Values.global.mesh_tls.use_provided_certs) }}
+  "require_tls": true,
   "ssl_config": {
     "cipher_filter": "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH",
     "protocols": [
