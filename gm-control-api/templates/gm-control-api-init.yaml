@@ -7,7 +7,7 @@ spec:
     metadata:
       name: {{.Values.gmControlApi.name}}-init
     spec:
-      restartPolicy: "OnFailure"
+      restartPolicy: "Never"
       # We need a SA with read access to the `Endpoints` resource
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
