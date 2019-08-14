@@ -58,6 +58,9 @@ spec:
         {{- if .Values.global.spire.enabled }}
         volumeMounts:
         {{- include "sidecar_volume_mounts" . | indent 8 }}
+        {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+        volumeMounts:
+        {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
         ports:
         - name: proxy
@@ -71,6 +74,9 @@ spec:
       volumes:
       {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
+      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      volumes:
+      {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       - name: prometheus-configuration
         configMap:

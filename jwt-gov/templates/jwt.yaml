@@ -79,17 +79,22 @@ spec:
         - containerPort: 8081
           name: metrics
           protocol: TCP
+        {{- if .Values.global.spire.enabled }}
         volumeMounts:
-        - mountPath: /etc/proxy/tls/sidecar
-          name: sidecar
-        - name: edge
-          mountPath: /etc/proxy/tls/edge
+        {{- include "sidecar_volume_mounts" . | indent 10 }}
+        {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+        volumeMounts:
+        {{- include "sidecar_volume_certs_mount" . | indent 10 }}
+        {{- end }}
       imagePullSecrets:
         - name: docker.secret
+      {{- if .Values.global.spire.enabled }}
       volumes:
-        - name: sidecar
-          secret:
-            secretName: sidecar
+      {{- include "sidecar_volumes" . | indent 8 }}
+      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      volumes:
+      {{- include "sidecar_certs_volumes" . | indent 8 }}
+      {{- end }}
         - name: jwt-security
           secret:
             secretName: jwt-security

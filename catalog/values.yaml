@@ -42,10 +42,8 @@ catalog:
 
   services:
     service_0:
-      
       cluster_name: catalog
       enable_instance_metrics: "true"
-      
       capability: 'Grey Matter'
       documentation: '/services/catalog/latest/'
       name: 'Grey Matter Catalog'

@@ -21,5 +21,19 @@
       "metrics_key_function": "depth",
       "metrics_key_depth": "1"
     }
+  }{{- if .service.mTLS }}{{ if .Values.global.spire.enabled }},
+  "secret": {
+    "secret_key": "secret-{{.service.serviceName}}-secret",
+    "secret_name": "spiffe://deciphernow.com/{{.service.serviceName}}/mTLS",
+    "secret_validation_name": "spiffe://deciphernow.com",
+    "ecdh_curves": [
+        "X25519:P-256:P-521:P-384"
+    ],
+    "forward_client_cert_details": "SANITIZE_SET",
+    "set_current_client_cert_details": {
+        "uri": true
+    }
   }
+  {{- end }}
+  {{- end }}
 }
