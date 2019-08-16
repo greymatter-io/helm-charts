@@ -1,7 +1,13 @@
 {
     "domain_key": "edge",
     "zone_key": "{{ .Values.gmControlApi.zone }}",
-    "name": "*",
+    {{- if .Values.global }}
+    {{- if .Values.global.remove_namespace_from_url  }}
+    "name": "{{ .Values.global.route_url_name }}.{{ .Values.global.domain }}",
+    {{- else }}
+    "name": "{{ .Values.global.route_url_name }}.{{ .Release.Namespace }}.{{ .Values.global.domain }}",
+    {{- end }}
+    {{- end }}
     "port": 8080,
     "redirects": null,
     "gzip_enabled": false,
