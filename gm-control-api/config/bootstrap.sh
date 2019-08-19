@@ -79,6 +79,10 @@ for d in */; do
 done
 
 cd $MESH_CONFIG_DIR/special
-echo "Adding GM Data to JWT Routes"
-greymatter create route < route-data-jwt-slash.json
-greymatter create route < route-data-jwt.json
+echo "Adding additional Special Routes"
+for rte in $(ls route-*.json); do
+    greymatter create route < $rte
+done
+# greymatter create route < route-data-jwt-slash.json
+# greymatter create route < route-data-jwt.json
+# greymatter create route < route-dashboard-slash.json

@@ -33,7 +33,7 @@ global:
     sidecar:
       version:
   control:
-   version: 0.2.1 
+   version: 0.2.1
   spire:
     trustDomain: "deciphernow.com"
   # The waiter serviceaccount is used by multiple services to wait on other services. It uses the readiness checks and kubernetes API
@@ -90,6 +90,14 @@ global:
       routes:
         - '/services/jwt-security/{{ $.Values.global.jwt.version }}'
         - '/services/jwt-security/{{ $.Values.global.jwt.version }}/'
+
+    control:
+      name: 'Grey Matter Control API'
+      serviceName: 'gm-control-api'
+      port: 5555
+      routes:
+        - '/services/control-api/{{ $.Values.global.control.version }}'
+        - '/services/control-api/{{ $.Values.global.control.version }}/'
 
     # edge:
     #   name: 'Grey Matter Edge'
