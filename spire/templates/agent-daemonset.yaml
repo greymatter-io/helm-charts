@@ -21,7 +21,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: {{ .Values.spire.agent.serviceAccount.name }}
       initContainers:
-      # We use this workaround to fix the issue that Kubernetes HostPath volumes are by default root only: https://github.com/kubernetes/minikube/issues/1990#issuecomment-445033074
+        # We use this workaround to fix the issue that Kubernetes HostPath volumes are by default root only: https://github.com/kubernetes/minikube/issues/1990#issuecomment-445033074
         # - name: setup-mountpath
         #   image: alpine:latest
         #   command: ['sh', '-c', 'echo "UID: $(id -u)"; id; mkdir -p /run/spire/sockets; stat /run/spire/sockets; chown 20000 /run/spire/sockets' ]
@@ -29,12 +29,13 @@ spec:
         #     - name: spire-agent-socket
         #       mountPath: /run/spire
         #       readOnly: false
-        - name: wait-for-spire
-          # This is a small image with wait-for-it, choose whatever image
-          # you prefer that waits for a service to be up. This image is built
-          # from https://github.com/lqhl/wait-for-it
-          image: gcr.io/spiffe-io/wait-for-it
-          args: ["-t", "30", "spire-server:8081"]
+        - name: ensure-spire-server
+          image: deciphernow/k8s-waiter
+          env:
+            - name: NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: SERVICE
+              value: {{ .Values.spire.server.name }}
       containers:
         - name: spire-agent
           image: {{ .Values.spire.agent.image }}
@@ -47,7 +48,7 @@ spec:
               mountPath: /run/spire/sockets
               readOnly: false
           # We need to set these so that OpenShift can work
-          securityContext:
+          # securityContext:
             # fsGroup: 20000
             # fsGroup: 0?
             # runAsUser: 20000
