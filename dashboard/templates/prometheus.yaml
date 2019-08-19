@@ -16,7 +16,9 @@ spec:
         deployment: prometheus
     spec:
       serviceAccountName: control-sa
-      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+      {{- if ((.Values.global.spire.enabled) or (ne .Values.global.environment "openshift")) }}
+      # Pod security contexts are propagated to their children volumes to allow r/w permissions
+      # We only do this in openshift when spire is enabled because then it is running with a more relaxed security context constraint
       securityContext:
         fsGroup: 65534
       {{- end }}  
@@ -47,7 +49,6 @@ spec:
           mountPath: {{ .Values.prometheus.config_mount_point }}
         - name: prometheus-data
           mountPath: {{ .Values.prometheus.data_mount_point }}
-      
       - name: sidecar
         image: {{ tpl .Values.sidecar_prometheus.image $ }}
         imagePullPolicy: {{ .Values.prometheus.imagePullPolicy }}
