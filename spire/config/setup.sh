@@ -20,12 +20,12 @@ echo "Checking existing registration entries"
 entries=$(/opt/spire/bin/spire-server entry show -registrationUDSPath $REGISTRATION_API_PATH)
 echo "$entries"
 
-
+echo "Creating registration entries using trust domain: $TRUST_DOMAIN"
 echo "Creating entry for nodes ..."
 { # try
     /opt/spire/bin/spire-server \
         entry create -node \
-        -spiffeID spiffe://deciphernow.com/nodes \
+        -spiffeID spiffe://$TRUST_DOMAIN/nodes \
         -selector k8s_sat:cluster:$CLUSTER_NAME \
         -selector k8s_sat:agent_ns:$AGENT_NAMESPACE \
         -selector k8s_sat:agent_sa:$AGENT_SERVICEACCOUNT \
@@ -45,15 +45,15 @@ else
         { # try
             /opt/spire/bin/spire-server \
                 entry create \
-                -parentID spiffe://deciphernow.com/nodes \
-                -spiffeID spiffe://deciphernow.com/$service \
+                -parentID spiffe://$TRUST_DOMAIN/nodes \
+                -spiffeID spiffe://$TRUST_DOMAIN/$service \
                 -selector k8s:pod-label:app:$service \
                 -selector k8s:ns:$KUBERNETES_NAMESPACE \
                 -registrationUDSPath $REGISTRATION_API_PATH &&
             /opt/spire/bin/spire-server \
                 entry create \
-                -parentID spiffe://deciphernow.com/$service \
-                -spiffeID spiffe://deciphernow.com/$service/mTLS \
+                -parentID spiffe://$TRUST_DOMAIN/$service \
+                -spiffeID spiffe://$TRUST_DOMAIN/$service/mTLS \
                 -selector k8s:pod-label:app:$service \
                 -selector k8s:ns:$KUBERNETES_NAMESPACE \
                 -registrationUDSPath $REGISTRATION_API_PATH &&

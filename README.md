@@ -155,11 +155,18 @@ For securing communication between the sidecar proxies in the mesh, we support:
 
 Firstly, if you want to disable TLS in the mesh, just don't enable either of the following options.
 
+For both of the following options, you need:
+```yaml
+mesh_tls:
+  enabled: true
+```
+
 **Static mTLS** - this configures static mTLS between each proxy by mounting the appropriate certs and setting up the configuration in `gm-control-api`
 
 To enable it just set the following in your `custom.yaml`:
 ```yaml
 mesh_tls:
+  enabled: true
   use_provided_certs: true
 ```
 
@@ -169,8 +176,10 @@ Currently, this just uses the certificates mounted at the path `/etc/proxy/tls/s
 
 To enable it just set the following in your `custom.yaml`:
 ```yaml
+mesh_tls:
+  enabled: true
 spire:
-  enabled: false
+  enabled: true
   trustDomain: deciphernow.com
 ```
 

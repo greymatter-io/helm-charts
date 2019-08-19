@@ -68,6 +68,9 @@ global:
   # spire:
   #   enabled: false
   #   trustDomain: deciphernow.com
+  # mesh_tls:
+  #   enabled: true
+  #   use_provided_certs: true
   # control:
   #   version: 0.3.0
   #   name: control # This specifies the service name that all XDS clients will try to connect to

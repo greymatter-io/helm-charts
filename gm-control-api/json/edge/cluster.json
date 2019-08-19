@@ -5,9 +5,9 @@
   "instances": [],
   "circuit_breakers": null,
   "outlier_detection": null,
-  "health_checks": []{{- if .service.mTLS }},
+  "health_checks": []{{- if .Values.global.mesh_tls.enabled }},
   "require_tls": true,
-  {{- if and (.Values.global.mesh_tls.use_provided_certs) }}
+  {{- if .Values.global.mesh_tls.use_provided_certs }}
   "ssl_config": {
     "cipher_filter": "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH",
     "protocols": [
@@ -30,8 +30,8 @@
   {{- if .Values.global.spire.enabled }}
   "secret": {
     "secret_key": "secret-edge-secret",
-    "secret_name": "spiffe://deciphernow.com/edge/mTLS",
-    "secret_validation_name": "spiffe://deciphernow.com",
+    "secret_name": "spiffe://{{ .Values.global.spire.trustDomain }}/edge/mTLS",
+    "secret_validation_name": "spiffe://{{ .Values.global.spire.trustDomain }}",
     "ecdh_curves": [
         "X25519:P-256:P-521:P-384"
     ]

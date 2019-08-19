@@ -6,11 +6,11 @@
   "port": 8080,
   "protocol": "http_auto",
   "domain_keys": ["domain-{{.service.serviceName}}"],
-  "tracing_config": null{{- if .service.mTLS }},
+  "tracing_config": null{{- if .Values.global.spire.enabled }},
   "secret": {
     "secret_key": "secret-{{.service.serviceName}}-secret",
-    "secret_name": "spiffe://deciphernow.com/{{.service.serviceName}}/mTLS",
-    "secret_validation_name": "spiffe://deciphernow.com",
+    "secret_name": "spiffe://{{ .Values.global.spire.trustDomain }}/{{.service.serviceName}}/mTLS",
+    "secret_validation_name": "spiffe://{{ .Values.global.spire.trustDomain }}",
     "ecdh_curves": [
         "X25519:P-256:P-521:P-384"
     ],

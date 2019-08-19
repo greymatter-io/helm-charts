@@ -49,6 +49,8 @@ spec:
             # The following environment variables are used by the spire bootstrap script to properly create registration entries
             - name: SERVICE_LIST_FILE
               value: /etc/config/services.txt
+            - name: TRUST_DOMAIN
+              value: {{ .Values.global.spire.trustDomain }}
             - name: KUBERNETES_NAMESPACE
               value: {{ .Release.Namespace }}
             - name: CONFIG_FILE_PATH
