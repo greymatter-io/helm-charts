@@ -20,10 +20,13 @@
 #   Tells our ingress proxy voyager which cloud provider's API to use to
 #   provision LoadBalancers exposing the cluster to the internet
 global:
-  environment:
-  domain:
-  route_url_name:
-  # remove_namespace_from_url: false
+  # The below example is for openshift
+  # If you set `environment` to Kubernetes, the rest of the url values don't really matter,
+  # as you'll be accessing the cluster through a load balancer 
+  environment: openshift
+  domain: staging.deciphernow.com
+  route_url_name: greymatter
+  remove_namespace_from_url: false
   ############
   # To modify the version of any service from the default, comment out the below liens and update them to the desired avi_api_version
   ############
@@ -44,6 +47,8 @@ global:
   #   sidecar:
   #     version:
   # edge:
+  #   enableTLS: true
+  #   certPath: /etc/proxy/tls/edge
   #   version:
   #   sidecar:
   #     version:
@@ -60,106 +65,54 @@ global:
   #   version:
   #   sidecar:
   #     version:
-  # xds:
-  #   cluster: greymatter
-  #   port: 18000
-  #   version:
-  #   sidecar:
-  #     version:
+  # spire:
+  #   enabled: false
+  #   trustDomain: deciphernow.com
+  # control:
+  #   version: 0.3.0
+  #   name: control # This specifies the service name that all XDS clients will try to connect to
+  #   port: 50000
+  # gmControlApi:
+  #   version: 0.7.0
+  #   cli:
+  #     version: 0.4.0
+  
   sidecar:
+    version: 0.8.1
     envvars:
       # You can customize the sidecar environment variables mesh-wide to enable features in the mesh
       # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services `configuration.md` files.
       # These are sorted by how different the values are for the sidecars running on different services. The options are "all the same", "all except XDS". and "different"
-      # TODO: update each service to use default global values and only set the ones that are different.
-      # All the same
-      ingress_use_tls:
-        type: value
-        value: 'true'
-      ingress_ca_cert_path:
-        type: value
-        value: '/etc/proxy/tls/sidecar/ca.crt'
-      ingress_cert_path:
-        type: value
-        value: '/etc/proxy/tls/sidecar/server.crt'
-      ingress_key_path:
-        type: value
-        value: '/etc/proxy/tls/sidecar/server.key'
-      metrics_key_function:
-        type: value
-        value: 'depth'
-      service_host:
-        type: value
-        value: '127.0.0.1'
-      obs_enabled:
-        type: value
-        value: 'false'
-      obs_full_response:
-        type: value
-        value: 'false'
-      obs_enforce:
-        type: value
-        value: 'false'
-      kafka_enabled:
-        type: value
-        value: 'false'
-      kafka_zk_discover:
-        type: value
-        value: 'false'
-      kafka_server_connection:
-        type: value
-        value: 'kafka:9091,kafka2:9091'
-      # All except XDS
-      metrics_port:
-        type: value
-        value: '8081'
       proxy_dynamic:
-        type: value
+        type: 'value'
         value: 'true'
-      # Different
-      port:
-        type: value
-        value: ''
-      service_port:
-        type: value
-        value: ''
-      kafka_topic:
-        type: value
-        value: ''
-      zk_addrs:
-        type: value
-        value: ''
-      zk_announce_path:
-        type: value
-        value: ''
-      egress_use_tls:
-        type: value
-        value: ''
-      egress_ca_cert_path:
-        type: value
-        value: ''
-      egress_cert_path:
-        type: value
-        value: ''
-      egress_key_path:
-        type: value
-        value: ''
       xds_cluster:
         type: 'value'
-        value: '{{ .Values.global.xds.cluster }}'
+        value: ''
       xds_host:
         type: 'value'
-        value: 'xds.{{ .Release.Namespace }}.svc.cluster.local'
+        value: 'control.{{ .Release.Namespace }}.svc.cluster.local'
       xds_port:
         type: 'value'
-        value: '{{ .Values.global.xds.port }}'
+        value: '{{ .Values.global.control.port }}'
+      xds_node_id:
+        type: 'value'
+        value: 'default'
+      # You can leave or remove this depending on if you're using SPIRE mTLS in the deployment
+      spire_path:
+        type: 'value'
+        value: '/run/spire/sockets/agent.sock'
+      # This enables basic access logging to the console, allowing us to view requests through `kubectl log`, and is useful for debugging
+      envoy_admin_log_path:
+        type: 'value'
+        value: '/dev/stdout'
       # There may be more sidecar environment variables, but we haven't added them here yet.
       # However, to use an env var with the sidecar, even if it doesn't have a global default,
-      # it needs to be set globally as either a value or a secret
+      # it needs to be set globally as either a value or a secret, but the value can be empty
 
 voyager:
-  enabled: true
-  cloudProvider:
+  enabled: false
+  cloudProvider: minikube
   # This disables Voyager's default setting of sending data to Google Analytics
   # Don't change this -- you're never going to want to send analytics data
   enableAnalytics: false
@@ -168,22 +121,51 @@ dockerCredentials:
   registry: docker.production.deciphernow.com
   email:
   username:
+  # LDAP Password:
   password:
 
-exhibitor:
-  exhibitor:
-    aws:
-      access_key:
-      secret_key:
-      region:
-      bucket:
 data:
+  sidecar:
+    envvars:
+      # See, you can ovverride individual sidecar environment variables here:
+      ingress_use_tls:
+        value: 'false'
+        type: 'value'
+  enabled: false
   data:
     aws:
       access_key:
       secret_key:
       region:
       bucket:
+
+spire:
+  spire:
+    certs:
+      bootstrap:
+        # Right now this is a self-signed root CA certificate
+        # In the future we should support joining existing PKIs and using a CA bundle so SPIRE only gets an intermediate CA
+        crt: |-
+          -----BEGIN CERTIFICATE-----
+          MIIBtzCCAT6gAwIBAgIIRgAeqzuvwfowCgYIKoZIzj0EAwIwIzEhMB8GA1UEAxMY
+          QWxleCBLIFNQSVJFIERldiBSb290IENBMB4XDTE5MDczMTEzNTcwMFoXDTI5MDcz
+          MTEzNTcwMFowIzEhMB8GA1UEAxMYQWxleCBLIFNQSVJFIERldiBSb290IENBMHYw
+          EAYHKoZIzj0CAQYFK4EEACIDYgAEri4JQ9z2u3GT0/CIwPsqeAryUP9HpEnT25Gg
+          OEJzLJzJqs0/hoViHpmgxD5U6Wuy21IkC9drKGsEFO3bmeGwNtHSrmIpenO5g4YV
+          cRDBrDAxSHG1pB43xTe3SBU97Ztooz8wPTAPBgNVHRMBAf8EBTADAQH/MB0GA1Ud
+          DgQWBBT2AwiabRJP6DUVgZYV9i1Fqyj4rjALBgNVHQ8EBAMCAQYwCgYIKoZIzj0E
+          AwIDZwAwZAIwOx642jO7QW6mB+zJPiMEmPytLdoN0Chs7ONdIZbYOme+69/clW30
+          J9rj3pt9vnd3AjBXckvtX/YNpHec7lNLSr9/yXs7HEDIeiMIVMB6wp9aoQjlHmdf
+          BJG9dR0/VTDM7Ps=
+          -----END CERTIFICATE-----
+
+        key: |-
+          -----BEGIN EC PRIVATE KEY-----
+          MIGkAgEBBDCX4PferX4VO3P7ey0Wpqpat69ImR+ic2eXeqym0dZJSIaK9UrwSQMN
+          W/TqQMtF4Y6gBwYFK4EEACKhZANiAASuLglD3Pa7cZPT8IjA+yp4CvJQ/0ekSdPb
+          kaA4QnMsnMmqzT+GhWIemaDEPlTpa7LbUiQL12soawQU7duZ4bA20dKuYil6c7mD
+          hhVxEMGsMDFIcbWkHjfFN7dIFT3tm2g=
+          -----END EC PRIVATE KEY-----
 
 jwt:
   jwt:

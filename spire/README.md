@@ -2,13 +2,11 @@
 
 This Helm chart deploys the spire server and agent following the guidelines of the `spire-tutorials` example kubernetes template.
 
-### Deployment overview
+### Spire Helm Charts implementation details/configuration overview
+
 We create the server as a StatefulSet using a PersistentVolumeClaim for data storage (aka. registration entries)
 
 We then create the agent as a DaemonSet to run on each node, which assumes that internal node networking is not compromised but that the network is, which is one of the main use-cases of SPIRE and zero-trust mesh configuration. 
-
-
-### Spire configuration overview
 
 #### Server
 
@@ -64,7 +62,7 @@ Certificate:
          70:b6:b9:ba:6c:41:0b:4b:18:e7:d9:05
 ```
 
-A naive/basic way of configuring the agents to trust the trust bundle would be to wait for the SPIRE server to start up and then export the trust bundle cert, and somehow mount it in the agent. In fact, a few SPIRE examples do this, and our SPIRE example in the `oldtown` repo also does this. However, this is an ineffective method.
+A naive/basic way of configuring the agents to trust the trust bundle would be to wait for the SPIRE server to start up and then export the trust bundle cert, and somehow mount it in the agent. In fact, a few SPIRE examples do this, and our SPIRE example in the `gm-control-api` repo also does this. However, this is an ineffective method.
 
 This is why SPIRE supports the UpstreamCA plugin type, which will take in a public and private key of a upstream/already trusted CA and sign its trust bundle using that CA.
 
@@ -90,12 +88,30 @@ Additionally, the types of selectors used in each registration entry may be diff
 
 This means that for now, all registration entries need to be created by the SRE/DevOps team in the organization. However, this sort of manual configuration is exactly what these Helm charts hope to eliminate, so we provide a basic script to create registration entries for all the default Grey Matter services.
 
-In the future, `oldtown/gm-control` may communicate directly with the SPIRE server using the Registration API to create a set of sensible default registration entries for both Unix and Kubernetes environments.
+In the future, `gm-control`/`gm-control-api` may communicate directly with the SPIRE server using the Registration API to create a set of sensible default registration entries for both Unix and Kubernetes environments.
 
-Oldtown and gm-control will also need to provide a good API for route-based secret management and allowing/disallowing TLS to specific services/clusters.
+GM Control API and gm-control will also need to provide a good API for route-based secret management and allowing/disallowing TLS to specific services/clusters.
 
 #### mTLS/Proxy configuration
 
 Once they have SVIDs, the SPIRE agent automatically pushes them out as secrets through the Secret Discovery Service to the Envoy gm-proxy so that they can use the SVID certs as mTLS certs.
 
-They are discovered by a dynamic discovery mechanism which is configured in Oldtown. Grey Matter assumes that the secrets (SVIDs) and thus the registration entries which allow access to the SVIDs already exist when Envoy tries to query them.
+They are discovered by a dynamic discovery mechanism which is configured in GM Control API. Grey Matter assumes that the secrets (SVIDs) and thus the registration entries which allow access to the SVIDs already exist when Envoy tries to query them.
+
+### Caveats
+
+TLDR: the current state of SPIRE in Openshift is:
+
+Needs modified Security Context Constraints in OpenShift for the spire-agent daemonset to have access to the hostNetwork (for accessing the kubelet port), hostPID, and hostPath volumes (for the Workload API/SDS socket).
+
+#### Future possibilities
+
+We cannot run SPIRE in Kubernetes/OpenShift and use their provided node attestors without the agent daemonset construct, as the current k8s nodeAttestor needs a certain level of "priveleged"/trusted access to both the kubelet and some way to communicate over UDS to workload pods.
+
+Theoretically, both these problems could be solved, so we could run the agent as a daemonset, or even just in one pod, and then serve SDS over TLS and not UDS, if SPIRE was upgraded to do the following
+- Just use a regular Kubernetes serviceAccount to read which pods are on which nodes, end create all of the selectors from that
+- Then serve SDS over TLS. Currently I believe that the SPIRE agent only provides the Workload API over Unix Domain Socket, which is why it could (easily?) extend it to serve SDS over UDS. However, SDS over TLS would be a great feature enabling much better deployment models. 
+
+These two steps would allow us to run the spire agent possibly as a single pod in the cluster. However, both these steps move SPIRE further away from the "node"/agent construct of SPIRE, which IMO is going to become obsolete as people try to add zero-trust to multiple different types of architectures.
+
+See [this issue](https://github.com/DecipherNow/helm-charts/issues/180#issuecomment-521725383) for more background

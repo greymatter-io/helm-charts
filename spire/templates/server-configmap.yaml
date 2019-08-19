@@ -56,6 +56,8 @@ data:
           ttl = "12h"
           key_file_path = "/run/spire/secrets/bootstrap.key"
           cert_file_path = "/run/spire/config/bootstrap.crt"
+          # TODO: add support for joining upstream CA
+          # bundle_file_path
         }
       }
     }

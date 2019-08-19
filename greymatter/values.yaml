@@ -7,9 +7,9 @@ global:
   mesh_tls:
     use_provided_certs: false
   catalog:
-    version: 1.0.0
+    version: 1.0.1
     sidecar:
-      version: # 0.7.1
+      version:
   dashboard:
     version: 3.0.0
     sidecar:
@@ -21,6 +21,8 @@ global:
     sidecar:
       version:
   edge:
+    # This enables mTLS on the edge proxy (ingress mTLS)
+    enableTLS: true
     version: 0.8.0
     sidecar:
       version:
@@ -33,9 +35,19 @@ global:
     sidecar:
       version:
   control:
-   version: 0.2.1
+    version: 0.3.0
+    # This specifies the service name that all XDS clients will try to connect to
+    name: control
+    port: 50000
+  gmControlApi:
+    version: 0.7.0
+    cli:
+      version: 0.4.0
+  sidecar:
+    version: 0.8.1
   spire:
-    trustDomain: "deciphernow.com"
+    enabled: false
+    trustDomain: deciphernow.com
   # The waiter serviceaccount is used by multiple services to wait on other services. It uses the readiness checks and kubernetes API
   waiter:
     serviceAccount:

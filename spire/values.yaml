@@ -6,13 +6,8 @@ global:
   remove_namespace_from_url: ''
   exhibitor:
     replicas: 1
-  # XDS will be replaced with gm-control-api eventually
-  xds:
-    port: 18000
-    cluster: greymatter
-  gmControlApi:
-    version: latest
   spire:
+    enabled: true
     trustDomain: deciphernow.com
 
 spire:
@@ -42,6 +37,7 @@ spire:
   certs:
     # This certificate must match the trust domain specified above
     bootstrap:
+      # TODO: add support for joining upstream CA
       # ca: |-
       #   -----BEGIN CERTIFICATE-----
       #   ...
@@ -54,23 +50,3 @@ spire:
         -----BEGIN RSA PRIVATE KEY-----
         ...
         -----END RSA PRIVATE KEY-----
-      # crt: |- 
-      #   -----BEGIN CERTIFICATE-----
-      #   MIIBzjCCAVWgAwIBAgIBADAKBggqhkjOPQQDAzAeMQswCQYDVQQGEwJVUzEPMA0G
-      #   A1UEChMGU1BJRkZFMB4XDTE5MDcyNDIwNDgxMVoXDTE5MDcyNTIwNDgyMVowHjEL
-      #   MAkGA1UEBhMCVVMxDzANBgNVBAoTBlNQSUZGRTB2MBAGByqGSM49AgEGBSuBBAAi
-      #   A2IABAKUAso8KnSr2Dq2SbNxSAtRArwWWaSye4p8LgZVzGVxe8Blc2Clq3P4JB8/
-      #   gbFZ+eyuAZrNLXRp5pc3LcpyBFr9I0uSqb5tSYvuJojObvmMoDyxH4Lq1NxO4nv8
-      #   jQoa8KNnMGUwDgYDVR0PAQH/BAQDAgGGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0O
-      #   BBYEFA0uf/LNhd+RVTwArBT7WpBZSFrmMCMGA1UdEQQcMBqGGHNwaWZmZTovL2Rl
-      #   Y2lwaGVybm93LmNvbTAKBggqhkjOPQQDAwNnADBkAjBgXowK9p5RKE0BcOwHhyjQ
-      #   +zIVu8S5FrXiKZBQOcX9wRgCIztb03HMtE52mjkozUYCMHv0XTpLS3QXceoSnGkS
-      #   ZQ3K7DFR97ZTz5iOofykjx1jzpvQvfEpHIa4Rm7SIFl5QQ==
-      #   -----END CERTIFICATE-----
-      # key: |-
-      #   -----BEGIN EC PRIVATE KEY-----
-      #   MIGkAgEBBDAg2LbulXzQX1NF+2Di0RKzMWfEGioBhh/fFpx7yOEqka//TpaeU3O5
-      #   QJRZXdWHKuagBwYFK4EEACKhZANiAARaMH6dIZLEhiLOdvzjG7lYYNmPzScvtbVz
-      #   fN/jxaHLSZrtjuYIErN9CSuAOC4jiPRn7T+0Mf+vyC060susim4zBYeh7i9tUEW1
-      #   7W+Ppe3pZ4TyVfBwK8uz+Zya8+pUr2M=
-      #   -----END EC PRIVATE KEY-----

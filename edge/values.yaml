@@ -11,10 +11,8 @@ global:
   remove_namespace_from_url: 'false'
   exhibitor:
     replicas: 1
-  xds:
-    port: 18000
-    cluster: greymatter
   edge:
+    enableTLS: true
     certPath: /etc/proxy/tls/edge
 
 ingress_config:

@@ -25,10 +25,6 @@ spec:
         {{- end }}
         env:
         {{- include "greymatter.envvars" . | indent 8 }}
-        # - name: ZK_ADDRS
-        #   value: {{ template "greymatter.exhibitor.address" . }}
-        # - name: ZK_ANNOUNCE_PATH
-        #   value: {{ .Values.edge.base_path | quote }}
         ports:
         - name: proxy
           containerPort: 8080

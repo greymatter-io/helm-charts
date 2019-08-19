@@ -40,7 +40,7 @@ Follow the link provided and use the provided comand to login. The command will 
 
 ### AWS
 
-AWS is used for configuring Exhibitor, the Zookeeper-based service discovery system, along with GM Data. If exhibitor does not have valid S3 credentials, the cluster will not come up.
+AWS is used for configuring Grey Matter Data. If GM Data does not have valid S3 credentials, it will not be able to write or read any data.
 
 Make sure you have an:
 
@@ -83,27 +83,32 @@ global:
   route_url_name:
 ```
 
-The final domain of your GM deployment will be located at `<route_url_name>.<kubernetes_namespace>.<domain>`. This can be changed by setting `remove_namespace_from_url` to `true` which would remove the Kubernetes namespace from the URL.
+The final domain of your GM deployment will be located at `<route_url_name>.<helm_release_namespace>.<domain>`. This can be changed by setting `remove_namespace_from_url` to `true` which would remove the Helm release namespace from the URL.
 
 For example, with
 
 ```yaml
-domain: deciphernow.com
-route_url_name: greymatter
-# and by default, but configurable when deploying via helm:
-namespace: default
+global:
+  environment: openshift
+  domain: staging.deciphernow.com
+  route_url_name: greymatter
+  remove_namespace_from_url: false
 ```
 
-The URL would be `greymatter.default.deciphernow.com`.
+The URL would be `greymatter.{{ Release.Namespace }}.staging.deciphernow.com`, so if you deployed into a Kubernetes namespace with a command like, `helm install greymatter --namespace helm`, the final URL would be: `greymatter.helm.staging.deciphernow.com`.
 
-#### Voyager
+#### Ingress into the cluster
 
-Next, you need to set the type of environment you are in and pass it to the Voyager edge proxy.
+Depending on your environment, either Openshift or a Kubernetes environment, you'll need to set up ingress into the cluster. For openshift, the only thing you need to do is set the proper `domain`, e.g. your OpenShift cluster URL, and the Helm charts will automatically create an OpenShift route as described above.
+
+For Kubernetes, e.g. in a managed Kubernetes service (like EKS) from a cloud provider (like AWS), you need to set up the Voyager ingress controller, which automatically provisions a cloud load balancer from a variety of supported cloud providers. This allows you to access the cluster at the provided load balancer URL.
+
+Yo use voyager, you need to set the type of environment you are in and pass it to the Voyager edge proxy.
 Edit `cloudProvider` in the following to be one of the [supported providers](https://appscode.com/products/voyager/7.1.1/setup/install/#using-script)
 
 ```yaml
 voyager:
-  cloudProvider: # aws | gcp | gks | azure | aks | baremetal | some others
+  cloudProvider: # aws | gce | gks | azure | aks | baremetal | some others
   enableAnalytics: false
 ```
 
@@ -115,9 +120,8 @@ Finally, you need to set the values for all the AWS and Docker credentials you l
 
 ```yaml
 dockerCredentials: ...
-exhibitor: ...
 
-# Optionally:
+# Optionally: aws
 data: ...
 ```
 
@@ -130,6 +134,45 @@ To actually access the Grey Matter Dashboard or any other service in the cluster
 To keep things simple, the `example-custom.yaml` uses the same certificates as those from `common/certificates/user/quickstart.p12` in the [DecipherNow/grey-matter-quickstart](https://github.com/DecipherNow/grey-matter-quickstarts) repository.
 
 If you load `quickstart.p12` into your browser, when you access the GM Dashboard, you'll be prompted to use that certificate to verify yourself, which you should do to gain access.
+
+We also support using SPIFFE/SPIRE as a way to enable zero-trust attestation of different "workloads" (services). 
+
+#### TLS Options
+
+We support multiple TLS options both for the ingress to the edge proxy, and between the sidecar proxies in the mesh. For the ingress, we support mTLS or no TLS, to do this, enable the following
+``` yaml
+edge:
+  enableTLS: true
+  certPath: /etc/proxy/tls/edge
+```
+
+Most of our deployments enable ingress mTLS, so we haven't tested plain HTTP that much.
+
+For securing communication between the sidecar proxies in the mesh, we support:
+- No TLS
+- Static mTLS (two-way TLS)
+- SPIFFE/SPIRE mTLS with certificate rotation
+
+Firstly, if you want to disable TLS in the mesh, just don't enable either of the following options.
+
+**Static mTLS** - this configures static mTLS between each proxy by mounting the appropriate certs and setting up the configuration in `gm-control-api`
+
+To enable it just set the following in your `custom.yaml`:
+```yaml
+mesh_tls:
+  use_provided_certs: true
+```
+
+Currently, this just uses the certificates mounted at the path `/etc/proxy/tls/sidecar/`, but in the future this path may be configurable.
+
+**SPIFFE/SPIRE mTLS** - enables the `spire` subchart, which creates the SPIRE agent and server. Also creates appropriate SPIRE registration entries automatically, and adds SPIRE secrets to the proxy and clustrer configuration in `gm-control-api`
+
+To enable it just set the following in your `custom.yaml`:
+```yaml
+spire:
+  enabled: false
+  trustDomain: deciphernow.com
+```
 
 #### NOTE: Single-service deployments
 
