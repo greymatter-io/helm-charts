@@ -50,11 +50,37 @@ spec:
                   value: Bearer xxx
             initialDelaySeconds: 60
             periodSeconds: 3
+          {{- if .Values.resources }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
+          {{- end }}
+        - name: sidecar   
+          image: {{ tpl .Values.sidecar.image $ | quote }}
+          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+          {{- if .Values.sidecar.resources }}
+          resources:
+{{ toYaml .Values.sidecar.resources | indent 12 }}
+          {{- end }}
+          ports:
+            - name: proxy
+              containerPort: 8080
+            - name: metrics
+              containerPort: 8081
+          env:
+          {{- include "greymatter.envvars" . | indent 12 }}
+        {{- if .Values.global.spire.enabled }}
+          volumeMounts:
+          {{- include "sidecar_volume_mounts" . | indent 12 }}
+          {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+          volumeMounts:
+          {{- include "sidecar_volume_certs_mount" . | indent 12 }}
+          {{- end }}
       imagePullSecrets:
         - name: docker.secret
-      # volumes:
-      #   - name: "config"
-      #     configMap:
-      #       name: "config"
+      {{- if .Values.global.spire.enabled }}
+      volumes:
+      {{- include "sidecar_volumes" . | indent 6 }}
+      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      volumes:
+      {{- include "sidecar_certs_volumes" . | indent 6 }}
+      {{- end }}
