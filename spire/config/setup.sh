@@ -8,7 +8,7 @@ echo "k8s Namespace: $KUBERNETES_NAMESPACE"
 services=$(cat $SERVICE_LIST_FILE)
 echo "Got: $services"
 
-services="$services edge spire-client"
+services="$services spire-client"
 echo "Final service list: $services"
 
 delay=5

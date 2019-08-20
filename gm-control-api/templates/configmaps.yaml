@@ -7,6 +7,7 @@
 {{- $svidList = append $svidList (print "spiffe://" $top.Values.global.spire.trustDomain "/spire-client/mTLS") }}
 {{- /* We loop over all the services to create the individual service objects */}}
 {{- range $name, $service := .Values.global.services }}
+{{- if $service.controlEnabled }}
 ---
 {{/* {{- $lSecret := (default $service.removeListenerSecret false) }} */}}
 {{- $serviceExtras := (dict "top" $top "authorizedSvids" $svidList "mTLS" $top.Values.global.spire.enabled "zone" $top.Values.gmControlApi.zone "svidList" (toJson $svidList)) }}
@@ -24,8 +25,10 @@ data:
 {{- end }}
 ...
 {{- end}}
+{{- end }}
 {{- /* Then we loop over the services again in order to create the edge objects */}}
 {{- range $name, $service := .Values.global.services }}
+{{- if $service.controlEnabled }}
 ---
 {{- $scope := set $top "service" $service }}
 {{- $scope = set $scope "zone" $top.Values.gmControlApi.zone }}
@@ -42,6 +45,7 @@ data:
 {{- end }}
 ...
 {{- end}}
+{{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap

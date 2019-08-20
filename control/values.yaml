@@ -11,6 +11,7 @@ global:
 
 control:
   name: 'control'
+  port: 50000
   displayName: 'Control'
   replicas: 1
   image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.global.control.version }}'

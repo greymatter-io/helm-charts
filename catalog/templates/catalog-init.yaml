@@ -1,61 +1,56 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{.Values.gmControlApi.name}}-init
+  name: {{ .Values.catalog.name }}-init
 spec:
   template:
     metadata:
-      name: {{.Values.gmControlApi.name}}-init
+      name: {{ .Values.catalog.name }}-init
     spec:
       restartPolicy: "Never"
       # We need a SA with read access to the `Endpoints` resource
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
-        - name: ensure-gm-control-api
+        - name: ensure-{{ .Values.catalog.name }}
           image: deciphernow/k8s-waiter
           imagePullPolicy: Always
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
             - name: SERVICE
-              value: {{ .Values.gmControlApi.name }}
+              value: catalog
       containers:
-        - image: {{ tpl .Values.gmControlApi.init.image . }}
-          name: {{ .Values.gmControlApi.name }}-init
-          imagePullPolicy: {{ .Values.gmControlApi.init.imagePullPolicy }}
+        - image: {{ tpl .Values.catalog.init.image . }}
+          name: {{ .Values.catalog.name }}-init
+          imagePullPolicy: {{ .Values.catalog.init.imagePullPolicy }}
           command: ["/tmp/bootstrap/bootstrap.sh"]
           env:
-          {{- include "envvars" (dict "envvar" .Values.gmControlApi.init.envvars "top" $) | indent 12 }}
+          {{- include "envvars" (dict "envvar" .Values.catalog.init.envvars "top" $) | indent 12 }}
           volumeMounts:
           {{- range $name, $service := .Values.global.services }}
-          {{- if $service.controlEnabled }}
+          {{- if $service.catalogEnabled }}
             - name: service-config-volume-{{$service.serviceName}}
               mountPath: /etc/config/mesh/services/{{$service.serviceName}}
-            - name: edge-config-volume-{{$service.serviceName}}
-              mountPath: /etc/config/mesh/edge/{{$service.serviceName}}
           {{- end }}
           {{- end }}
-            - name: special-config-volume
-              mountPath: /etc/config/mesh/special
             - name: bootstrap-script-volume
               mountPath: /tmp/bootstrap
+            - name: bootstrap-zone-volume
+              mountPath: /etc/config/mesh/zones/
       volumes:
         {{- range $name, $service := .Values.global.services }}
-        {{- if $service.controlEnabled }}
+        {{- if $service.catalogEnabled }}
         - name: service-config-volume-{{ $service.serviceName }}
           configMap:
-            name: service-{{ $service.serviceName }}-mesh-config
-        - name: edge-config-volume-{{ $service.serviceName }}
-          configMap:
-            name: edge-{{ $service.serviceName }}-mesh-config
+            name: service-{{ $service.serviceName }}-catalog-api-config
         {{- end }}
         {{- end }}
         - name: bootstrap-script-volume
           configMap:
-            name: bootstrap-script
+            name: {{ .Values.catalog.name }}-bootstrap-script
             defaultMode: 0777
-        - name: special-config-volume
+        - name: bootstrap-zone-volume
           configMap:
-            name: special-mesh-config
+            name: {{ .Values.global.catalog.name}}-zone-bootstrap
       imagePullSecrets:
         - name: docker.secret

@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   ports:
-  - port: 50000
+  - port: {{ .Values.control.port }}
     protocol: TCP
     targetPort: grpc
   selector:

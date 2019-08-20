@@ -3,10 +3,11 @@ global:
   domain:
   route_url_name:
   remove_namespace_from_url: false
-  zone: default-zone
+  zone: zone-default-zone
   mesh_tls:
     use_provided_certs: false
   catalog:
+    name: catalog
     version: 1.0.1
     sidecar:
       version:
@@ -20,6 +21,7 @@ global:
     version: 0.2.7
     sidecar:
       version:
+    jwt_prefix: '/jwt'
   edge:
     # This enables mTLS on the edge proxy (ingress mTLS)
     enableTLS: true
@@ -55,9 +57,19 @@ global:
       name: waiter-sa
   services:
     catalog:
-      name: 'Grey Matter Catalog'
+      catalogEnabled: true
+      controlEnabled: true
       serviceName: 'catalog'
+      zone: 'zone-default-zone'
       port: 9080
+      enableInstanceMetrics: 'true'
+      capability: 'Grey Matter'
+      documentation: '/services/catalog/latest/'
+      name: 'Grey Matter Catalog'
+      owner: 'Decipher'
+      version: 1.0.1
+      minInstances: 1
+      maxInstances: 1
       # egressTLS: 'false'
       routes:
         - '/services/catalog/{{ $.Values.global.catalog.version }}'
@@ -71,62 +83,114 @@ global:
         # - '/services/xds/{{ $.Values.global.xds.version }}'
 
     dashboard:
+      catalogEnabled: true
+      controlEnabled: true
       name: 'Grey Matter Dashboard'
       serviceName: 'dashboard'
+      zone: zone-default-zone
       port: 1337
+      enableInstanceMetrics: "true" 
+      capability: 'Grey Matter'
+      documentation: ''
+      name: 'Grey Matter Dashboard'
+      owner: 'Decipher'
+      version: 3.1.0
       # egressTLS: 'false'
       routes:
         - '/services/dashboard/latest'
         - '/services/dashboard/latest/'
     
     prometheus:
+      catalogEnabled: false
+      controlEnabled: true
       name: 'Prometheus'
       serviceName: 'prometheus'
       port: 9090
       # egressTLS: 'false'
 
     data:
+      catalogEnabled: true
+      controlEnabled: true
       name: 'Grey Matter Data'
+      zone: zone-default-zone
       serviceName: 'data'
       port: 8181
+      enableInstanceMetrics: "true" 
+      capability: 'Grey Matter'
+      documentation: '/services/data/latest/static/ui/index.html'
+      name: 'Grey Matter Data'
+      owner: 'Decipher'
+      version: 0.2.7   
       # egressTLS: 'true'
       routes:
         - '/services/data/{{ $.Values.global.data.version }}'
         - '/services/data/{{ $.Values.global.data.version }}/'
 
     jwt:
+      catalogEnabled: true
+      controlEnabled: true
       name: 'Grey Matter JWT Security'
       serviceName: 'jwt-security'
+      zone: zone-default-zone
       port: 3000
       # egressTLS: 'true'
+      enableInstanceMetrics: 'true'
+      capability: 'Grey Matter'
+      documentation: ''
+      name: 'Grey Matter JWT Security'
+      owner: 'Decipher'
+      version: '0.2.0'
       routes:
         - '/services/jwt-security/{{ $.Values.global.jwt.version }}'
         - '/services/jwt-security/{{ $.Values.global.jwt.version }}/'
 
-    control:
+    controlApi:
+      catalogEnabled: true
+      controlEnabled: true
       name: 'Grey Matter Control API'
       serviceName: 'gm-control-api'
+      zone: zone-default-zone
       port: 5555
+      enableInstanceMetrics: 'true'
+      capability: 'Grey Matter'
+      documentation:
+      name: 'Grey Matter Control API'
+      owner: 'Decipher'
+      version: '0.3.1'
       routes:
         - '/services/control-api/{{ $.Values.global.control.version }}'
         - '/services/control-api/{{ $.Values.global.control.version }}/'
 
-    # edge:
-    #   name: 'Grey Matter Edge'
-    #   serviceName: 'edge'
-    #   port: 8080
-    #   # We use a static cert on the edge listener
-    #   removeListenerSecret: true
-    #   routes:
-    #     - '/' #/services/edge/{{ $.Values.global.edge.version }}
-    #     # - '/' #/services/edge/{{ $.Values.global.edge.version }}
-    # # TODO: multiple routes
+    edge:
+      catalogEnabled: true
+      controlEnabled: false
+      name: 'Grey Matter Edge'
+      serviceName: 'edge'
+      zone: zone-default-zone
+      port: 8080
+      # We use a static cert on the edge listener
+      removeListenerSecret: true
+      enableInstanceMetrics: 'true'
+      capability: 'Grey Matter'
+      documentatio: ''
+      name: "Grey Matter Edge"
+      owner: 'Decipher'
+      version: '0.8.1'
 
     slo:
+      catalogEnabled: true
+      controlEnabled: true
       name: 'Grey Matter Service Level Objectives'
       serviceName: 'slo'
+      zone: zone-default-zone
       port: 1337
       # egressTLS: 'false'
+      enableInstanceMetrics: 'true'
+      capability: 'Grey Matter'
+      documentation:
+      name: 'Grey Matter Service Level Objectives'
+      owner: 'Decipher'
+      version: '0.5.0'
       routes:
         - '/services/slo/{{ $.Values.global.slo.version }}'
         - '/services/slo/{{ $.Values.global.slo.version }}/'

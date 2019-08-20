@@ -3,7 +3,9 @@ global:
   domain:
   route_url_name:
   remove_namespace_from_url: false
+  zone: zone-default-zone
   catalog:
+    name: catalog
     version: 0.3.6
   dashboard:
     version: 2.5.0
@@ -12,7 +14,7 @@ global:
   documentation:
     version: 3.0.0
   edge:
-    version: 0.7.1
+    version: 0.8.1
   exhibitor:
     replicas: 1
     version:
@@ -24,8 +26,15 @@ global:
     cluster: greymatter
     port: 18000
     version: 0.2.6
+  waiter:
+    serviceAccount:
+      Name: waiter
+  control:
+    name: control
+    port: 50000
 
 catalog:
+  name: catalog
   image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.global.catalog.version }}
   source: control
   debug: 'true'
@@ -40,99 +49,16 @@ catalog:
 
   port: 9080
 
-  services:
-    service_0:
-      cluster_name: catalog
-      enable_instance_metrics: "true"
-      capability: 'Grey Matter'
-      documentation: '/services/catalog/latest/'
-      name: 'Grey Matter Catalog'
-      owner: 'Decipher'
-      version: '{{ $.Values.global.catalog.version | trunc 3 }}'
-
-    service_1:
-      # 
-      # cluster_name: control
-      # enable_instance_metrics: "true"
-      # 
-      capability: 'Grey Matter'
-      documentation: ''
-      name: 'Grey Matter Control'
-      owner: 'Decipher'
-      version: '{{ $.Values.global.xds.version | trunc 3 }}'
-      
-
-    service_2:
-      
-      cluster_name: dashboard
-      enable_instance_metrics: "true"
-      
-      capability: 'Grey Matter'
-      documentation: ''
-      name: 'Grey Matter Dashboard'
-      owner: 'Decipher'
-      version: '{{ $.Values.global.dashboard.version | trunc 3 }}'
-      
-
-    service_3:
-      
-      cluster_name: data
-      enable_instance_metrics: "true"
-      
-      capability: 'Grey Matter'
-      documentation: '/services/data/latest/static/ui/index.html'
-      name: 'Grey Matter Data'
-      owner: 'Decipher'
-      version: '{{ $.Values.global.data.version | trunc 3 }}'
-      
-
-    service_4:
-      
-      cluster_name: jwt-security
-      enable_instance_metrics: "true"
-      
-      capability: 'Grey Matter'
-      documentation: ''
-      name: 'Grey Matter JWT Security'
-      owner: 'Decipher'
-      version: '{{ $.Values.global.jwt.version | trunc 3 }}'
-      
-
-    service_5:
-      
-      cluster_name: edge
-      enable_instance_metrics: "true"
-      
-      capability: 'Grey Matter'
-      documentation: ''
-      name: 'Grey Matter Edge'
-      owner: 'Decipher'
-      version: '{{ $.Values.global.edge.version | trunc 3 }}'
-      
-
-    service_6:
-      
-      cluster_name: slo
-      enable_instance_metrics: "true"
-      
-      capability: 'Grey Matter'
-      documentation: ''
-      name: 'Grey Matter Service Level Objectives'
-      owner: 'Decipher'
-      version: '{{ $.Values.global.slo.version | trunc 3 }}'
-      
-
-    # service_7:
-      
-    #   cluster_name: documentation
-    #   enable_instance_metrics: "true"
-      
-    #   capability: 'Grey Matter'
-    #   documentation: '/services/documentation/latest/'
-    #   name: 'Grey Matter Documentation'
-    #   owner: 'Decipher'
-    #   version: '{{ $.Values.global.documentation.version | trunc 3 }}'
-      
+  init:
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+    imagePullPolicy: Always
+    envvars:
+      debug:
+        type: 'value'
+        value: 'false'
+      catalog_api_host:
+        type: 'value'
+        value: '{{ .Values.catalog.name }}:{{ .Values.catalog.port }}'
 
 sidecar:
   version: '{{- $.Values.global.catalog.sidecar.version | default $.Values.global.sidecar.version }}'

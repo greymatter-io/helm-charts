@@ -14,6 +14,8 @@ global:
     version: 0.7.0
     cli:
       version: 0.4.0
+  data:
+    jwt_prefix: 
 
 gmControlApi:
   name: gm-control-api
@@ -79,7 +81,7 @@ gmControlApi:
     #   memory: 256Mi
   pvc:
     #  We  default the PVC to 1Gi, but if more is desired, uncomment this line and update the size
-    size: # 10Gi
+    size: 
 
 sidecar:
   version: '{{- $.Values.global.catalog.sidecar.version | default "0.8.0" }}'
