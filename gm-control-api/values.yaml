@@ -24,6 +24,7 @@ gmControlApi:
   containerPort: 5555
   zone: zone-default-zone
   proxyPort: 8080
+  pvcMountPoint: '/app/control-api/data/backend.json'
   init:
     image: 'docker.production.deciphernow.com/deciphernow/greymatter:{{ $.Values.global.gmControlApi.cli.version }}'
     imagePullPolicy: Always
@@ -59,6 +60,12 @@ gmControlApi:
     gm_control_api_zone_key:
       type: 'value'
       value: '{{ .Values.gmControlApi.zone }}'
+    gm_control_api_persister_type:
+      type: value
+      value: 'file'
+    gm_control_api_persister_path:
+      type: value
+      value: '{{ .Values.gmControlApi.pvcMountPoint }}'
   resources: 
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -70,6 +77,9 @@ gmControlApi:
     # requests:
     #   cpu: 250m
     #   memory: 256Mi
+  pvc:
+    #  We  default the PVC to 1Gi, but if more is desired, uncomment this line and update the size
+    # size: 10Gi
 
 sidecar:
   version: '{{- $.Values.global.catalog.sidecar.version | default "0.8.0" }}'

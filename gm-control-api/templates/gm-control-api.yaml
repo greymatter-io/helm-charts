@@ -54,6 +54,9 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
+          volumeMounts:
+            - name: prometheus-data
+              mountPath: {{ .Values.gmControlApi.pvcMountPoint }}
         - name: sidecar   
           image: {{ tpl .Values.sidecar.image $ | quote }}
           imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
@@ -77,10 +80,12 @@ spec:
           {{- end }}
       imagePullSecrets:
         - name: docker.secret
-      {{- if .Values.global.spire.enabled }}
       volumes:
+      {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-      volumes:
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
+      - name: gm-control-api-backup
+        persistentVolumeClaim:
+          claimName: gm-control-api-pvc
