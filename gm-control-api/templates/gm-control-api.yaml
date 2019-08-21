@@ -55,7 +55,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
           volumeMounts:
-            - name: prometheus-data
+            - name: gm-control-api-backup
               mountPath: {{ .Values.gmControlApi.pvcMountPoint }}
         - name: sidecar   
           image: {{ tpl .Values.sidecar.image $ | quote }}
