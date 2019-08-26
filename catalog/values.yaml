@@ -4,6 +4,9 @@ global:
   route_url_name:
   remove_namespace_from_url: false
   zone: zone-default-zone
+  catalog:
+    name: catalog
+    version: 1.0.1
   dashboard:
     version: 2.5.0
   data:
