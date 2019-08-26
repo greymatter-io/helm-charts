@@ -23,7 +23,6 @@ jwt:
     ]
   redis_db: '0'
   redis_pass: redis
-  base_path: /services/jwt-security/{{ .Values.jwt.version | trunc 3}}
   egress_use_tls: 'true'
   users_mount_point: /gm-jwt-security/etc
   certs_mount_point: /gm-jwt-security/certs

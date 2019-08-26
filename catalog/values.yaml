@@ -4,9 +4,6 @@ global:
   route_url_name:
   remove_namespace_from_url: false
   zone: zone-default-zone
-  catalog:
-    name: catalog
-    version: 0.3.6
   dashboard:
     version: 2.5.0
   data:
@@ -35,6 +32,7 @@ global:
 
 catalog:
   name: catalog
+  version: 1.0.1
   image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.global.catalog.version }}
   source: control
   debug: 'true'

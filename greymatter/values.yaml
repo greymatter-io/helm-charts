@@ -5,6 +5,7 @@ global:
   remove_namespace_from_url: false
   zone: zone-default-zone
   mesh_tls:
+    enabled: true
     use_provided_certs: false
   catalog:
     name: catalog

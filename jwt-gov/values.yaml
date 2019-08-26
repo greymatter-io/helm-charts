@@ -8,11 +8,13 @@ global:
   xds:
     port: 18000
     cluster: greymatter
+  jwt:
+    version: 0.2.0
 
 jwt:
-  version: 0.2.0
+  version: '{{ tpl $.Values.global.jwt.version $ }}'
   use_aac: true # when deploying the jwt-gov version, this should be set to 'true' if you want jwt to use aac for auth control
-  image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security-gov:0.2.0'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
@@ -23,7 +25,6 @@ jwt:
   #redis_host: redis.greymatter.svc.cluster.local
   redis_db: '0'
   redis_pass: redis
-  base_path: /services/jwt-security/0.2.0
   egress_use_tls: 'true'
   users_mount_point: /gm-jwt-security/etc
   certs_mount_point: /gm-jwt-security/certs

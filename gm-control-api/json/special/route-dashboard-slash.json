@@ -1,5 +1,5 @@
 {
-  "route_key": "edge-dashboard-route-no-services",
+  "route_key": "edge-dashboard-route-no-slash",
   "domain_key": "edge",
   "zone_key": "{{ .Values.gmControlApi.zone }}",
   "path": "/",
