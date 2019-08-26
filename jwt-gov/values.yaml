@@ -185,6 +185,7 @@ jwt:
           
 
 redis:
+  name: redis
   secret_name: redis-password
   password: 'redis'
   openshift:

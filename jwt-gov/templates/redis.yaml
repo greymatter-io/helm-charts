@@ -2,16 +2,16 @@ kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
   labels:
-    app: redis
-  name: redis
+    app: {{ .Values.redis.name | default "redis" }}
+  name: {{ .Values.redis.name | default "redis" }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.redis.replica_count  }}
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: redis
-      deployment: redis
+      app: {{ .Values.redis.name | default "redis" }}
+      deployment: {{ .Values.redis.name | default "redis" }}
   strategy:
     activeDeadlineSeconds: 21600
     resources: {}
@@ -26,8 +26,8 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: redis
-        deployment: redis
+        app: {{ .Values.redis.name | default "redis" }}
+        deployment: {{ .Values.redis.name | default "redis" }}
     spec:
       containers:
         - name: redis

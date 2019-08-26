@@ -1,20 +1,20 @@
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
-    name: jwt-security
+    name: {{ .Values.jwt.name | default "jwt-security"  }}
     namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.global.exhibitor.replicas | default 1 }}
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: jwt-security
-      deployment: jwt-security
+      app: {{ .Values.jwt.name | default "jwt-security"  }}
+      deployment: {{ .Values.jwt.name | default "jwt-security"  }}
   template:
     metadata:
       labels:
-        app: jwt-security
-        deployment: jwt-security
+        app: {{ .Values.jwt.name | default "jwt-security"  }}
+        deployment: {{ .Values.jwt.name | default "jwt-security"  }}
     spec:
       containers:
       - name: jwt-security
@@ -46,7 +46,7 @@ spec:
         {{- end }}
       {{- end  }}   
         - name: REDIS_HOST
-          value: redis.{{ .Release.Namespace }}.svc.cluster.local
+          value: {{ .Values.redis.name }}.{{ .Release.Namespace }}.svc.cluster.local
         - name:  REDIS_PORT
           value: "6379"
         - name: REDIS_DB
@@ -101,7 +101,7 @@ spec:
         {{- if not .Values.jwt.use_aac }}
         - name: jwt-users
           configMap:
-            name: jwt-users
+            name: {{ .Values.jwt.users_cg_name }}
         {{- end }}
         - name: edge
           secret:

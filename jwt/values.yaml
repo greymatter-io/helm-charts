@@ -87,6 +87,8 @@ jwt:
         -----END PUBLIC KEY-----
       jwt.api_key: c2tpcGphY2stc2x1bmstc3VzcGVjdC1pc3JhZWwtc2NyYXA=
 
+  # Sets thee default configMap name from jwt-users
+  users_cg_name: jwt-users
   # A JSON list of users that will be permited access to JWT
   users: |-
     {
@@ -108,6 +110,8 @@ jwt:
     }
 
 redis:
+  # Sets the name of the redis components to be deployed. (deployment, service)
+  name: redis
   secret_name: redis-password
   password: 'redis'
   openshift:

@@ -145,6 +145,22 @@ global:
         - '/services/jwt-security/{{ $.Values.global.jwt.version }}'
         - '/services/jwt-security/{{ $.Values.global.jwt.version }}/'
 
+    gm-jwt:
+      catalogEnabled: false
+      controlEnabled: true
+      name: 'Grey Matter JWT Security Internal'
+      serviceName: 'jwt-security-internal'
+      zone: zone-default-zone
+      port: 3000
+      # egressTLS: 'true'
+      enableInstanceMetrics: 'true'
+      capability: 'Grey Matter'
+      documentation: ''
+      name: 'Grey Matter JWT Security Internal'
+      owner: 'Decipher'
+      version: '0.2.0'
+
+
     controlApi:
       catalogEnabled: true
       controlEnabled: true
