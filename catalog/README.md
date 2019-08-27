@@ -42,15 +42,15 @@ The following tables list the configurable parameters of the catalog chart and t
 | global.domain                    | edge-ingress.yaml |            |
 | global.route_url_name            | edge-ingress.yaml |            |
 | global.remove_namespace_from_url | edge-ingress.yaml | false      |
-| global.catalog.version           |                   | 0.3.6      |
-| global.dashboard.version         |                   | 2.5.0      |
+| global.catalog.version           |                   | 1.0.1      |
+| global.dashboard.version         |                   | 3.1.0      |
 | global.data.version              |                   | 0.2.3      |
 | global.documentation.version     |                   | 3.0.0      |
 | global.edge.version              |                   | 0.7.1      |
 | global.exhibitor.replicas        |                   | 1          |
 | global.exhibitor.version         |                   |            |
 | global.jwt.version               |                   | 0.2.0      |
-| global.slo.version               |                   | 0.4.0      |
+| global.slo.version               |                   | 0.5.0      |
 | global.xds.cluster               |                   | greymatter |
 | global.xds.port                  |                   | 18000      |
 | global.xds.version               |                   | 0.2.6      |
@@ -59,10 +59,10 @@ The following tables list the configurable parameters of the catalog chart and t
 
 | Parameter                                               | Description                | Default                                                        |
 | ------------------------------------------------------- | -------------------------- | -------------------------------------------------------------- |
-| catalog.image                                           | Image                      | docker.production.deciphernow.com/deciphernow/gm-catalog:0.3.6 |
+| catalog.image                                           | Image                      | docker.production.deciphernow.com/deciphernow/gm-catalog:1.0.1 |
 | catalog.source                                          |                            | xds                                                            |
 | catalog.debug                                           | Enable Logging             | 'false'                                                        |
-| catalog.version                                         | Catalog Version            | 0.3.6                                                          |
+| catalog.version                                         | Catalog Version            | 1.0.1                                                          |
 | catalog.imagePullPolicy                                 | Image pull policy          | Always                                                         |
 | catalog.port                                            |                            | 9080                                                           |
 |                                                         |                            |                                                                |
@@ -144,7 +144,7 @@ The following tables list the configurable parameters of the catalog chart and t
 | dashboard.version | Dashboard Version | latest  |
 | data.version      | Data Version      | 0.2.3   |
 | jwt.version       | JWT Version       | 0.2.0   |
-| slo.version       | Slo Version       | 0.4.0   |
+| slo.version       | SLO Version       | 0.5.0   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -50,20 +50,26 @@ The following tables list the configurable parameters of the dashboard chart and
 
 #### Service Configuration
 
-| Parameter                           | Description           | Default                                                            |
-| ----------------------------------- | --------------------- | ------------------------------------------------------------------ |
-| dashboard.image                     | Docker Image          | 'docker.production.deciphernow.com/deciphernow/gm-dashboard:2.5.0' |
-| dashboard.fabric_server             | Path to fabric server | '/services/catalog/0.3.6/'                                         |
-| dashboard.use_prometheus            |                       | 'true'                                                             |
-| dashboard.prometheus_server         |                       | '/services/prometheus/2.7.1/api/v1/'                               |
-| dashboard.objectives_server         |                       | '/services/slo/0.4.0/'                                             |
-| dashboard.base_path                 |                       | '/services/dashboard/latest'                                       |
-| dashboard.version                   |                       | latest                                                             |
-| dashboard.imagePullPolicy           |                       | Always                                                             |
-| dashboard.resources.limits.cpu      |                       | 200m                                                               |
-| dashboard.resources.limits.memory   |                       | 1Gi                                                                |
-| dashboard.resources.requests.cpu    |                       | 100m                                                               |
-| dashboard.resources.requests.memory |                       | 128Mi                                                              |
+| Parameter                           | Description                                                         | Default                                                            |
+| ----------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| dashboard.base_path                 | Base path used by client side router                                | '/services/dashboard/latest/'                                      |
+| dashboard.config_server             | Configuration service (gm-control-api) endpoint                     | '/services/gm-control-api/1.0/v1.0'                                |
+| dashboard.enable_sense              | Sense feature toggle                                                | 'false'                                                            |
+| dashboard.expose_source_maps        | Allow JS source maps in production (recommended for debugging only) | 'false'                                                            |
+| dashboard.fabric_server             | Catalog service endpoint                                            | '/services/catalog/1.0.1/'                                         |
+| dashboard.hide_external_links       | Hide Decipher social links in app footer                            | 'false'                                                            |
+| dashboard.objectives_server         | SLO service endpoint                                                | '/services/slo/0.5.0/'                                             |
+| dashboard.prometheus_server         | Prometheus service endpoint                                         | '/services/prometheus/2.7.1/api/v1/'                               |
+| dashboard.request_timeout           | API request timeout                                                 | 5000                                                               |
+| dashboard.sense_server              | Sense service endpoint                                              | '/services/sense/latest'/                                          |
+| dashboard.use_prometheus            | Enable historical metrics via Prometheus                            | 'true'                                                             |
+| dashboard.image                     | Docker Image                                                        | 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.1.0' |
+| dashboard.imagePullPolicy           |                                                                     | Always                                                             |
+| dashboard.resources.limits.cpu      |                                                                     | 200m                                                               |
+| dashboard.resources.limits.memory   |                                                                     | 1Gi                                                                |
+| dashboard.resources.requests.cpu    |                                                                     | 100m                                                               |
+| dashboard.resources.requests.memory |                                                                     | 128Mi                                                              |
+| dashboard.version                   |                                                                     | latest                                                             |
 
 #### Sidecar Configuration
 
@@ -83,7 +89,7 @@ The following tables list the configurable parameters of the dashboard chart and
 | ingress_ca_cert_path | '/etc/proxy/tls/sidecar/ca.crt'     |
 | ingress_cert_path    | '/etc/proxy/tls/sidecar/server.crt' |
 | ingress_key_path     | '/etc/proxy/tls/sidecar/server.key' |
-| metrics_port         | '8081                               |
+| metrics_port         | '8081'                              |
 | port                 | '8080'                              |
 | metrics_key_function | 'depth'                             |
 | proxy_dynamic        | 'true'                              |

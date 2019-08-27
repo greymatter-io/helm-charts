@@ -11,10 +11,11 @@ global:
 
 dashboard:
   image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.global.dashboard.version }}'
-  fabric_server: '/services/catalog/0.3.6/'
-  use_prometheus: 'true'
-  objectives_server: '/services/slo/0.4.0/'
+  config_server: '/services/gm-control-api/1.0/v1.0'
+  fabric_server: '/services/catalog/1.0.1/'
+  objectives_server: '/services/slo/0.5.0/'
   prometheus_server: '/services/prometheus/2.7.1/api/v1/'
+  use_prometheus: 'true'
   base_path: '/services/dashboard/latest/'
   version: latest
   imagePullPolicy: Always

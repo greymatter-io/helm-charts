@@ -33,6 +33,8 @@ spec:
           value: '{{ .Values.dashboard.objectives_server }}'
         - name: PROMETHEUS_SERVER
           value: '{{ .Values.dashboard.prometheus_server }}'
+        - name: CONFIG_SERVER
+          value: '{{ .Values.dashboard.config_server }}'
         - name: BASE_PATH
           value: '{{ .Values.dashboard.base_path }}'
       - name: sidecar

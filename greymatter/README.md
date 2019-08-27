@@ -37,7 +37,7 @@ The following table lists the configurable parameters of the edge chart and thei
 | global.domain                    | edge-ingress.yaml |            |
 | global.route_url_name            | edge-ingress.yaml |            |
 | global.remove_namespace_from_url | edge-ingress.yaml | false      |
-| global.catalog.version           |                   | 0.3.6      |
+| global.catalog.version           |                   | 1.0.1      |
 | global.dashboard.version         |                   | latest     |
 | global.data.version              |                   | 0.2.3      |
 | global.documentation.version     |                   | 3.0.0      |
@@ -45,7 +45,7 @@ The following table lists the configurable parameters of the edge chart and thei
 | global.exhibitor.replicas        |                   | 1          |
 | global.exhibitor.version         |                   |            |
 | global.jwt.version               |                   | 0.2.0      |
-| global.slo.version               |                   | 0.4.0      |
+| global.slo.version               |                   | 0.5.0      |
 | global.xds.cluster               |                   | greymatter |
 | global.xds.port                  |                   | 18000      |
 | global.xds.version               |                   | 0.2.6      |

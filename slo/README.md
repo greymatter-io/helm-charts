@@ -50,8 +50,8 @@ The following tables list the configurable parameters of the slo chart and their
 
 | Parameter                          | Description | Default                                                    |
 | ---------------------------------- | ----------- | ---------------------------------------------------------- |
-| slo.version                        |             | 0.4.0                                                      |
-| slo.image                          |             | docker.production.deciphernow.com/deciphernow/gm-slo:0.4.0 |
+| slo.version                        |             | 0.5.0                                                      |
+| slo.image                          |             | docker.production.deciphernow.com/deciphernow/gm-slo:0.5.0 |
 | slo.imagePullPolicy                |             | Always                                                     |
 | slo.resources.limits.cpu           |             | 250m                                                       |
 | slo.resources.limits.memory        |             | 512Mi                                                      |
