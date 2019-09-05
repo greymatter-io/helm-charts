@@ -12,8 +12,8 @@ spec:
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
         - name: ensure-gm-control-api
-          image: deciphernow/k8s-waiter
-          imagePullPolicy: Always
+          image: {{ .Values.global.waiter.image }}
+          imagePullPolicy: IfNotPresent
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}

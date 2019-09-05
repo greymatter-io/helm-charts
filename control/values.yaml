@@ -8,21 +8,26 @@ global:
     replicas: 1
   control:
     version: 0.3.0
+  waiter:
+    image: deciphernow/k8s-waiter:latest
 
 control:
   name: 'control'
   port: 50000
+  # This represents the namespaces that the control server will be aware of and able to monitor.  It should be a comma delimited list.  
+  # The namespace used for the deployment will be include by default For example, "projecta,projectb"
+  additionalNamespacesToControl: 
   displayName: 'Control'
   replicas: 1
   image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.global.control.version }}'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   serviceAccount:
     create: true
     name: control-sa
   envvars:
     gm_control_console_level:
       type: 'value'
-      value: 'debug'
+      value: 'info'
     gm_control_api_key:
       type: 'value'
       value: 'xxx'
@@ -56,9 +61,9 @@ control:
     gm_control_kubernetes_port_name:
       type: 'value'
       value: 'proxy'
-    gm_control_kubernetes_namespace:
+    gm_control_kubernetes_namespaces:
       type: 'value'
-      value: '{{ .Release.Namespace }}'
+      value: '{{ include "control.namespaces" . }}'
     # gm_control_diff_dry_run:
     #   type: 'value'
     #   value: 'true'

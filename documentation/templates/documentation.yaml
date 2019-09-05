@@ -39,7 +39,7 @@ spec:
               name: http
         - name: sidecar
           image: {{ tpl .Values.sidecar.image $ | quote }}
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           env:
           {{- include "greymatter.envvars" . | indent 10 }}
           ports:

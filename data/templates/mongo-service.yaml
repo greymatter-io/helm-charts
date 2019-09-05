@@ -1,7 +1,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: mongo
+  name: {{ .Values.mongo.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   clusterIP: None
@@ -11,6 +11,6 @@ spec:
       protocol: TCP
       targetPort: 27017
   selector:
-    app: mongo
+    app: {{ .Values.mongo.name }}
   sessionAffinity: None
   type: ClusterIP

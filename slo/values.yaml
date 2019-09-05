@@ -8,11 +8,13 @@ global:
   xds:
     port: 18000
     cluster: greymatter
+  waiter:
+    image: deciphernow/k8s-waiter:latest
 
 slo:
   version: 0.5.0
   image: docker.production.deciphernow.com/deciphernow/gm-slo:0.5.0
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 250m
@@ -25,7 +27,7 @@ sidecar:
   version: '{{- $.Values.global.slo.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   metrics_key_function: depth
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m
@@ -64,7 +66,7 @@ postgres:
     image: 'docker.io/centos/postgresql-95-centos7:9.5'
   k8s:
     image: 'postgres:9.5'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   replica_count: 1
   #private_image: false
   resources:

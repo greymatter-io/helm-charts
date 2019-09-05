@@ -2,36 +2,25 @@ kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   labels:
-    app: mongo
-  name: mongo
+    app: {{ .Values.mongo.name }}
+  name: {{ .Values.mongo.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: Parallel
   replicas: {{ .Values.mongo.replicas }}
   selector:
     matchLabels:
-      app: mongo
-  serviceName: mongo
+      app: {{ .Values.mongo.name }}
+  serviceName: {{ .Values.mongo.name }}
   template:
     metadata:
       labels:
-        app: mongo
+        app: {{ .Values.mongo.name }}
     spec:
       containers:
       - env:
-      {{- range $envvar := .Values.mongo.envvars }}
-      {{- $envName := $envvar.name | upper | replace "." "_" | replace "-" "_" }}
-        {{- if eq $envvar.type "secret" }}
-        - name: {{ $envName }}
-          valueFrom:
-            secretKeyRef:
-              name: {{ $envvar.secret }}
-              key: {{ $envvar.key }}
-        {{- else if eq $envvar.type "value" }}
-        - name: {{ $envName }}
-          value: {{ $envvar.value | quote }}
-        {{- end }}
-      {{- end  }}
+        {{- include "envvars" (dict "envvar" .Values.mongo.envvars "top" $) | indent 8 }}
+
         {{- if .Values.data.deploy.standalone }}
         image: {{ tpl .Values.mongo.standalone_image $ | quote }}
         {{- else }} 
@@ -59,7 +48,7 @@ spec:
       volumes:
         - name: mongo-init
           configMap:
-            name: mongo-init
+            name: {{ .Values.mongo.name }}-init
         {{- if .Values.mongo.ssl.enabled }}
         - name: certificates
           secret:

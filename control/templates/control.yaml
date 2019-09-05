@@ -36,7 +36,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
       initContainers:
         - name: ensure-gm-control-api
-          image: deciphernow/k8s-waiter
+          image: {{ .Values.global.waiter.image }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}

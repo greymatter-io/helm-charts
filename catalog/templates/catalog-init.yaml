@@ -2,6 +2,12 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Values.catalog.name }}-init
+  # annotations:
+  #   # This is what defines this resource as a hook. Without this line, the
+  #   # job is considered part of the release.
+  #   "helm.sh/hook": post-install
+  #   "helm.sh/hook-weight": "0"
+  #   "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   template:
     metadata:
@@ -12,8 +18,8 @@ spec:
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
         - name: ensure-{{ .Values.catalog.name }}
-          image: deciphernow/k8s-waiter
-          imagePullPolicy: Always
+          image: {{ .Values.global.waiter.image }}
+          imagePullPolicy: {{ .Values.catalog.init.imagePullPolicy }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
@@ -37,6 +43,10 @@ spec:
               mountPath: /tmp/bootstrap
             - name: bootstrap-zone-volume
               mountPath: /etc/config/mesh/zones/
+            {{- if and $.Values.global.services.catalog.egressTLS }}
+            - name: certs
+              mountPath: /etc/pki
+            {{- end }}
       volumes:
         {{- range $name, $service := .Values.global.services }}
         {{- if $service.catalogEnabled }}
@@ -52,5 +62,10 @@ spec:
         - name: bootstrap-zone-volume
           configMap:
             name: {{ .Values.global.catalog.name}}-zone-bootstrap
+        {{- if and $.Values.global.services.catalog.egressTLS }}
+        - name: certs
+          secret:
+            secretName: sidecar-certs
+        {{- end }}
       imagePullSecrets:
         - name: docker.secret

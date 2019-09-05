@@ -116,6 +116,7 @@ node('ubuntu-18.04'){
                         sh '''#!/bin/bash
                             toPublish=($(ls *.tgz))
                             for pubChart in ${toPublish[@]}; do
+                                echo "Publishing $pubChart to Hosted"
                                 curl -u ${USERNAME}:${PASSWORD} https://nexus.production.deciphernow.com/repository/helm-hosted/ -T $pubChart
                             done
                             rm -f *.tgz
@@ -153,6 +154,7 @@ node('ubuntu-18.04'){
                         sh '''#!/bin/bash
                             toPublish=($(ls greymatter*.tgz))
                             for pubChart in ${toPublish[@]}; do
+                                echo "Publishing $pubChart to Hosted"
                                 curl -u ${USERNAME}:${PASSWORD} https://nexus.production.deciphernow.com/repository/helm-hosted/ -T $pubChart
                             done
                             rm -f *.tgz
@@ -174,6 +176,7 @@ node('ubuntu-18.04'){
                             sh '''#!/bin/bash
                                 toPublish=($(ls *.tgz))
                                 for pubChart in ${toPublish[@]}; do
+                                    echo "Publishing $pubChart to Staging"
                                     curl -u ${USERNAME}:${PASSWORD} https://nexus.production.deciphernow.com/repository/helm-staging/ -T $pubChart
                                 done
                                 rm -f *.tgz

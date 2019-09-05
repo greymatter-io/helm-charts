@@ -9,7 +9,7 @@ global:
     port: 18000
     cluster: greymatter
   jwt:
-    version: 0.2.0
+    version: 0.2.4
 
 jwt:
   version: '{{ tpl $.Values.global.jwt.version $ }}'
@@ -28,7 +28,7 @@ jwt:
   egress_use_tls: 'true'
   users_mount_point: /gm-jwt-security/etc
   certs_mount_point: /gm-jwt-security/certs
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m
@@ -64,6 +64,9 @@ jwt:
       name: SERVER_KEY
       secret: jwt-certs
       key: jwt.key.pem
+    - type: value
+      name: ZEROLOG_LEVEL
+      value: info
 
   secrets:
     - name: jwt-certs
@@ -193,13 +196,13 @@ redis:
   k8s:
     image: 'redis:3.2'
   replica_count: 1
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   #private_image: false
 
 sidecar:
   version: '{{- $.Values.global.jwt.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   envvars:
     xds_cluster:
       type: value

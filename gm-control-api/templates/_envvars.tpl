@@ -7,8 +7,8 @@
 - name: {{ $envName }}
     valueFrom:
     secretKeyRef:
-        name: {{ $envvar.secret }}
-        key: {{ $envvar.key }}
+      name: {{ $envvar.secret }}
+      key: {{ $envvar.key }}
       {{- else if eq $envvar.type "value" }}
 - name: {{ $envName }}
   value: {{ tpl $envvar.value $t | quote }}

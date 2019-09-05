@@ -14,7 +14,7 @@ documentation:
   base_path: '/services/documentation/3.0.0/'
   version: 3.0.0
   image: 'docker.production.deciphernow.com/deciphernow/gm-documentation:v3.0.0'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   envvars:
     - type: value
       name: base_path
@@ -29,7 +29,7 @@ documentation:
 sidecar:
   version: '{{- $.Values.global.documentation.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m

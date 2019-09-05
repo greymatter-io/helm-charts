@@ -16,20 +16,22 @@ global:
       version: 0.4.0
   data:
     jwt_prefix: 
+  waiter:
+    image: deciphernow/k8s-waiter:latest
 
 gmControlApi:
   name: gm-control-api
   displayName: gm-control-api
   replicas: 1
   image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.global.gmControlApi.version }}'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   containerPort: 5555
   zone: zone-default-zone
   proxyPort: 8080
   pvcMountPoint: '/app/control-api/data/backend.json'
   init:
     image: 'docker.production.deciphernow.com/deciphernow/greymatter:{{ $.Values.global.gmControlApi.cli.version }}'
-    imagePullPolicy: Always
+    imagePullPolicy: IfNotPresent
     envvars:
       greymatter_console_level:
           value: 'debug'
@@ -86,7 +88,7 @@ gmControlApi:
 sidecar:
   version: '{{- $.Values.global.catalog.sidecar.version | default "0.8.0" }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m

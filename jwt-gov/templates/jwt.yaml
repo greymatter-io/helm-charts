@@ -95,9 +95,6 @@ spec:
       volumes:
       {{- include "sidecar_certs_volumes" . | indent 8 }}
       {{- end }}
-        - name: jwt-security
-          secret:
-            secretName: jwt-security
         {{- if not .Values.jwt.use_aac }}
         - name: jwt-users
           configMap:

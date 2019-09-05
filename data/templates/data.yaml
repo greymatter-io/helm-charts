@@ -1,21 +1,30 @@
 kind: Deployment
-apiVersion: extensions/v1beta1
-#apiVersion: apps/v1
+apiVersion: apps/v1
 metadata:
-  name: data
+  name: {{ .Values.data.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: data
+      app: {{ .Values.data.name }}
   template:
     metadata:
       labels:
-        app: data
+        app: {{ .Values.data.name }}
     spec:
+      serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
+      initContainers:
+        - name: ensure-{{ .Values.data.name }}
+          image: {{ .Values.global.waiter.image }}
+          imagePullPolicy: {{ .Values.data.imagePullPolicy }}
+          env:
+            - name: NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: SERVICE
+              value: {{ .Values.mongo.name }}
       containers:
-      - name: data
+      - name: {{ .Values.data.name }}
         {{- if .Values.data.deploy.standalone }}
         image: {{ tpl .Values.data.standalone_image $ | quote }}
         {{- else }} 
@@ -27,20 +36,7 @@ spec:
 {{ toYaml .Values.data.resources | indent 10 }}
         {{- end }}
         env:
-    {{- range $envvar := .Values.data.envvars }}
-      {{- $envName := $envvar.name | upper | replace "." "_" | replace "-" "_" }}
-        {{- if eq $envvar.type "secret" }}
-        - name: {{ $envName }}
-          valueFrom:
-            secretKeyRef:
-              name: {{ $envvar.secret }}
-              key: {{ $envvar.key }}
-        {{- else if eq $envvar.type "value" }}
-        - name: {{ $envName }}
-          value: {{ tpl $envvar.value $ | quote }}
-        {{- end }}
-    {{- end  }}   
-      
+          {{- include "data.envvars" (dict "envvar" .Values.data.envvars "top" $) | indent 8 }}
         - name: MONGOHOST
           value: {{ template "greymatter.mongo.address" . }}
         
@@ -63,6 +59,11 @@ spec:
               name: {{ .Values.mongo.ssl.name }}
               key: ca_b64
         {{- end }}
+        {{- if  (eq .Values.data.envvars.uses3.value  "false") }}
+        volumeMounts:
+          - name: data-pvc
+            mountPath: {{ tpl .Values.data.pvc.mountPath $ }}
+        {{- end }}
       - name: sidecar
         {{- if .Values.data.deploy.standalone }}
         image: {{ tpl .Values.sidecar.standalone_image $ | quote }}
@@ -70,7 +71,8 @@ spec:
         image: {{ tpl .Values.sidecar.image $ | quote }}
         {{- end }}
         env:
-          {{- include "greymatter.envvars" . | indent 10 }}
+           {{- include "greymatter.envvars" . | indent 8 }}
+
             # XDS_CLUSTER should be set in values.yaml for regular (non-standalone) deployments
             # The rest of the values will automatically be populated by the envvars template
             {{- if .Values.data.deploy.standalone }}
@@ -102,19 +104,25 @@ spec:
         {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
-        {{- end }}
+        {{- end}}
+
       imagePullSecrets:
       - name: docker.secret
       volumes:
       {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-      volumes:
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       - name: data
         secret:
-          secretName: data
+          secretName: {{ .Values.data.name }}-secrets
       - name: jwt-security
         secret:
           secretName: jwt-security
+      {{- if  (eq .Values.data.envvars.uses3.value  "false") }}
+      - name: data-pvc
+        persistentVolumeClaim:
+          claimName: {{ .Values.data.name }}-pvc
+      {{- end }}
+

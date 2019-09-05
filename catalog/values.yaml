@@ -7,6 +7,7 @@ global:
   catalog:
     name: catalog
     version: 1.0.1
+    data_prefix: /data
   dashboard:
     version: 3.1.0
   data:
@@ -32,14 +33,18 @@ global:
   control:
     name: control
     port: 50000
+  services:
+    catalog:
+      egressTLS: false
+  waiter:
+    image: deciphernow/k8s-waiter:latest
 
 catalog:
   name: catalog
   version: 1.0.1
   image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.global.catalog.version }}
-  source: control
   debug: 'true'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m
@@ -47,12 +52,86 @@ catalog:
     requests:
       cpu: 100m
       memory: 128Mi
-
   port: 9080
+
+  envvars:
+    config_source:
+      type: value
+      value: 'gmdata'
+    port:
+      type: value
+      value: '9080'
+    control_server_0_address:
+      type: value
+      value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
+    control_server_0_zone_name:
+      type: value
+      value: '{{ .Values.global.zone }}'
+    control_server_0_request_cluster_name:
+      type: value
+      value: 'edge'
+    use_tls:
+      type: value
+      value: 'true'
+    ca_cert_path:
+      type: value
+      value: '/etc/pki/ca.crt'
+    server_cert_path:
+      type: value
+      value: '/etc/pki/server.crt'
+    server_key_path:
+      type: value
+      value: '/etc/pki/server.key'
+    client_address:
+      type: value
+      value: localhost
+    client_port:
+      type: value
+      value: '8080'
+    client_prefix:
+      type: value
+      value: '/data'
+    client_use_tls:
+      type: value
+      value: 'true'
+    client_cn:
+      type: value
+      value: '*.greymatter.svc.cluster.local'
+    client_cert:
+      type: secret
+      secret: sidecar-certs
+      key: server_b64
+    client_key:
+      type: secret
+      secret: sidecar-certs
+      key: key_b64
+    client_trust:
+      type: secret
+      secret: sidecar-certs
+      key: ca_b64
+    gmdata_startup_delay:
+      type: value
+      value: '10s'
+    gmdata_max_retries:
+      type: value
+      value: '100'
+    gmdata_retry_delay:
+      type: value
+      value: '5s'
+    gmdata_root_event_name:
+      type: value
+      value: 'world'
+    client_identity:
+      type: value
+      value: 'CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US'
+    client_email:
+      type: value
+      value: 'gm-control@deciphernow.com'
+
 
   init:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-    imagePullPolicy: Always
+    imagePullPolicy: IfNotPresent
     envvars:
       debug:
         type: 'value'
@@ -60,11 +139,14 @@ catalog:
       catalog_api_host:
         type: 'value'
         value: '{{ .Values.catalog.name }}:{{ .Values.catalog.port }}'
+      use_tls:
+        type: value
+        value: '{{ $.Values.global.services.catalog.egressTLS | default false }}'
 
 sidecar:
   version: '{{- $.Values.global.catalog.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m

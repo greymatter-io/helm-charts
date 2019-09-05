@@ -22,11 +22,17 @@
 global:
   # The below example is for openshift
   # If you set `environment` to Kubernetes, the rest of the url values don't really matter,
-  # as you'll be accessing the cluster through a load balancer 
+  # as you'll be accessing the cluster through a load balancer
   environment: openshift
   domain: staging.deciphernow.com
   route_url_name: greymatter
   remove_namespace_from_url: false
+  zone: zone-default-zone
+  mesh_tls:
+    enabled: true
+    use_provided_certs: true
+  kafka:
+    replicas: 3
   ############
   # To modify the version of any service from the default, comment out the below liens and update them to the desired avi_api_version
   ############
@@ -52,11 +58,6 @@ global:
   #   version:
   #   sidecar:
   #     version:
-  # exhibitor:
-  #   replicas: 1
-  #   version:
-  #   sidecar:
-  #     version:
   # jwt:
   #   version:
   #   sidecar:
@@ -79,7 +80,7 @@ global:
   #   version: 0.7.0
   #   cli:
   #     version: 0.4.0
-  
+
   sidecar:
     version: 0.8.1
     envvars:
@@ -141,6 +142,40 @@ data:
       secret_key:
       region:
       bucket:
+
+internal-data:
+  sidecar:
+    envvars:
+      # See, you can ovverride individual sidecar environment variables here:
+      ingress_use_tls:
+        value: 'false'
+        type: 'value'
+      xds_cluster:
+        type: value
+        value: 'data-internal'
+  enabled: false
+  data:
+    name: data-internal
+    envvars:
+      gmdata_namespace:
+        type: value
+        value: 'world'
+      gmdata_namespace_userfield:
+        type: value
+        value: email
+      uses3:
+        type: value
+        value: 'false'
+      aws_access_key_id:
+        type: 'null'
+      aws_secret_access_key:
+        type: 'null'
+      aws_region:
+        type: 'null'
+  mongo:
+    name: internal-data-mongo
+    credentials:
+      secret_name: internal-mongo-credentials
 
 spire:
   spire:

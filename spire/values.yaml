@@ -9,6 +9,8 @@ global:
   spire:
     enabled: true
     trustDomain: deciphernow.com
+  waiter:
+    image: deciphernow/k8s-waiter:latest
 
 spire:
   clusterName: k8s

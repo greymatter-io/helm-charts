@@ -11,6 +11,9 @@ global:
   data:
     # This value is used to data where to find jwt and also used to configure the mesh to enable routes from data to jwt
     jwt_prefix: /jwt
+  
+  waiter:
+    image: deciphernow/k8s-waiter:latest
 
 data:
   # The name of this installation of GM Data.  Used in the zookeeper address.  Allow to be unique to support multiple installations of Data
@@ -22,9 +25,12 @@ data:
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
   standalone_image:
   certs_mount_point: /certs
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   use_tls: true
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
+  pvc:
+    #size:
+    mountPath: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
 
   # If Grey Matter Data is being deployed as a standalone instance, these values need to be provided
   deploy:
@@ -62,114 +68,114 @@ data:
     requests:
       cpu: 100m
       memory: 128Mi
-
   envvars:
-    - type: value
-      name: uses3
+    uses3:
+      type: value
       value: 'true'
-    - type: secret
-      name: aws_access_key_id
-      secret: data
+    aws_access_key_id:
+      type: secret
+      secret: '{{ $.Values.data.name | lower }}-secrets'
       key: aws_access_key_id
-    - type: secret
-      name: aws_secret_access_key
-      secret: data
+    aws_secret_access_key:
+      type: secret
+      secret: '{{ $.Values.data.name | lower }}-secrets'
       key: aws_secret_access_key
-    - type: secret
-      name: aws_region
-      secret: data
+    aws_region:
+      type: secret
+      secret: '{{ $.Values.data.name | lower }}-secrets'
       key: aws_region
-    - type: secret
-      name: aws_s3_bucket
-      secret: data
+    aws_s3_bucket:
+      type: secret
+      secret: '{{ $.Values.data.name | lower }}-secrets'
       key: aws_s3_bucket
-    - type: value
-      name: aws_s3_partition
+    aws_s3_partition:
+      type: value
       value: data
-    - type: value
-      name: gmdata_namespace
+    gmdata_namespace:
+      type: value
       value: home
-    - type: value
-      name: gmdata_namespace_userfield
+    gmdata_namespace_userfield:
+      type: value
       value: userDN
-    - type: secret
-      name: jwt_pub
+    jwt_pub:
+      type: secret
       secret: jwt-security
       key: jwt.pub
-    - type: secret
-      name: jwt_api_key
+    jwt_api_key:
+      type: secret
       secret: jwt-security
       key: jwt.api_key
-    - type: value
-      name: less_chatty_info
+    less_chatty_info:
+      type: value
       value: 'false'
-    - type: secret
-      name: masterkey
-      secret: data
+    masterkey:
+      type: secret
+      secret: '{{ .Values.data.name }}-secrets'
       key: master_key
-    - type: secret
-      name: mongo_initdb_root_username
+    mongo_initdb_root_username:
+      type: secret
       secret: mongo-credentials
       key: root_username
-    - type: secret
-      name: mongo_initdb_root_password
+    mongo_initdb_root_password:
+      type: secret
       secret: mongo-credentials
       key: root_password
-    - type: secret
-      name: mongodb
+    mongodb:
+      type: secret
       secret: mongo-credentials
       key: database
-    - type: value
-      name: gmdata_use_tls
+    gmdata_use_tls:
+      type: value
       value: 'false'
-    - type: secret
-      name: gmdata_cert
+    gmdata_cert:
+      type: secret
       secret: jwt-certs
       key: server.cert.pem
-    - type: secret
-      name: gmdata_key
+    gmdata_key:
+      type: secret
       secret: jwt-certs
       key: server.key.pem
-    - type: secret
-      name: gmdata_trust
+    gmdata_trust:
+      type: secret
       secret: jwt-certs
       key: server.trust.pem
-    - type: value
-      name: client_prefix
+    client_prefix:
+      type: value
       value: /services/{{ .Release.Namespace | lower }}-{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
-    - type: value
-      name: client_jwt_prefix
+    client_jwt_prefix:
+      type: value
       value: '{{ .Values.global.data.jwt_prefix }}'
-    - type: value
-      name: client_jwt_endpoint_address
+    client_jwt_endpoint_address:
+      type: value
       value: localhost
-    - type: value
-      name: client_jwt_endpoint_port
+    client_jwt_endpoint_port:
+      type: value
       value: '8080'
-    - type: value
-      name: client_jwt_endpoint_prefix
+    client_jwt_endpoint_prefix:
+      type: value
       value: '{{ .Values.global.data.jwt_prefix }}'
-    - type: value
-      name: client_jwt_endpoint_use_tls
+    client_jwt_endpoint_use_tls:
+      type: value
       value: 'true'
-    - type: secret
-      name: client_jwt_endpoint_cert
+    client_jwt_endpoint_cert:
+      type: secret
       secret: jwt-certs
       key: jwt.cert.pem
-    - type: secret
-      name: client_jwt_endpoint_key
+    client_jwt_endpoint_key:
+      type: secret
       secret: jwt-certs
       key: jwt.key.pem
-    - type: secret
-      name: client_jwt_endpoint_trust
+    client_jwt_endpoint_trust:
+      type: secret
       secret: jwt-certs
       key: jwt.trust.pem
 
 mongo:
+  name: data-mongo
   replicas: 1
   image: 'deciphernow/mongo:4.0.3'
   standalone_image:
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   #private_image: false
   # The size, in Gi, that the Mongo PVC should be
   pvc_size: 40
@@ -182,20 +188,20 @@ mongo:
       memory: 128Mi
 
   envvars:
-    - type: secret
-      name: MONGO_INITDB_DATABASE
+    mongo_initdb_database:
+      type: secret
       secret: mongo-credentials
       key: database
-    - type: secret
-      name: MONGO_INITDB_ROOT_USERNAME
+    mongo_initdb_root_username:
+      type: secret
       secret: mongo-credentials
       key: root_username
-    - type: secret
-      name: MONGO_INITDB_ROOT_PASSWORD
+    mongo_initdb_root_password:
+      type: secret
       secret: mongo-credentials
       key: root_password
-    - type: secret
-      name: MONGODB_ADMIN_PASSWORD
+    mongodb_admin_password:
+      type: secret
       secret: mongo-credentials
       key: admin_password
 
@@ -236,7 +242,7 @@ sidecar:
   version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   standalone_image:
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m

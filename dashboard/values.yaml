@@ -20,7 +20,7 @@ dashboard:
   prometheus_server: '/services/prometheus/latest/api/v1/'
   base_url: '/services/dashboard/{{ $.Values.global.dashboard.version }}/'
   version: 3.0.0
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m
@@ -32,7 +32,7 @@ dashboard:
 sidecar:
   version: '{{- $.Values.global.dashboard.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m
@@ -66,7 +66,7 @@ sidecar:
 
 prometheus:
   image: 'prom/prometheus:v2.7.1'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   zk_announce_path: '/services/prometheus/2.7.1'
   version: '2.7.1'
   replica_count: 1
@@ -88,7 +88,7 @@ prometheus:
 sidecar_prometheus:
   version: '{{- $.Values.global.dashboard.prometheus_sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m

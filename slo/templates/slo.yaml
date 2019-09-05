@@ -18,7 +18,7 @@ spec:
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
         - name: ensure-postgres
-          image: deciphernow/k8s-waiter
+          image: {{ .Values.global.waiter.image }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}

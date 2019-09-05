@@ -30,7 +30,7 @@ spec:
         #       mountPath: /run/spire
         #       readOnly: false
         - name: ensure-spire-server
-          image: deciphernow/k8s-waiter
+          image: {{ .Values.global.waiter.image }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}

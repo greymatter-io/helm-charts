@@ -251,10 +251,20 @@ Here are some additional parameters we often use:
 - `--dry-run` w/ debug will print out the deployment YAML without actually deploying to OpenShift/Kubernetes environment
 - `--replace` will create new deployments if they are undefined or replace old ones if they exist
 
-To install the entire Grey Matter service mesh, it's always prudent to do a dry-run first to ensure that your charts are configured correctly.
+To install the entire Grey Matter service mesh, it's always pruden:wqt to do a dry-run first to ensure that your charts are configured correctly.
 
 ```bash
 helm install greymatter -f custom.yaml --name gm-deploy --namespace fabric-development --tiller-namespace helm --debug --dry-run
 ```
 
 If the result of running the above command prints YAML to your terminal then your charts are configured correctly. Once you're ready, drop the `--dry-run` parameter and run the command again. At this point, `helm` has successfully instructed `tiller` to deploy Grey Matter to the Openshift/Kubernetes environment.
+
+### 5.a Example Deployment
+
+This repo contains two custom values files that will deploy Grey Matter with minimal updates required. You will need to add your Decipher LDAP credentials to [greymatter-custom-secrets.yaml](../greymatter-custom-secrets.yaml) to be able to pull images.
+
+To deploy with these files, you can issue this command
+
+```bash
+helm install --name <release_name> --namespace <my_namespace> -f greymatter-custom.yaml -f greymatter-custom-secrets.yaml greymatter --tiller-namespace <tiller_namespace> 
+```

@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: 0.7.1
 description: A Helm chart to deploy Grey Matter Edge
 name: edge
-version: 1.0.6
+version: 1.0.7
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
   - name: Decipher Technology Studios Engineering

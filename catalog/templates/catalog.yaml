@@ -18,7 +18,7 @@ spec:
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
         - name: ensure-gm-control
-          image: deciphernow/k8s-waiter
+          image: {{ .Values.global.waiter.image }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
@@ -35,32 +35,12 @@ spec:
 {{ toYaml .Values.catalog.resources | indent 12 }}
           {{- end }}
           env:
-            - name: DATA_SOURCE
-              value: {{ .Values.catalog.source | quote }}
-            - name: DEBUG
-              value: {{ .Values.catalog.debug | quote }}
-            - name: PORT
-              value: '9080'
-            - name: CONTROL_SERVER_0_ADDRESS
-              value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
-            - name: 'CONTROL_SERVER_0_ZONE_NAME'
-              value: '{{ .Values.global.zone }}'
-            - name: 'CONTROL_SERVER_0_REQUEST_CLUSTER_NAME'
-              value: 'edge'
-
-            {{- range $index, $service := .Values.catalog.services }}
-            - name: "{{ $index | upper }}_ZONE_NAME"
-              value: "default-zone"
-            - name: "{{ $index | upper }}_METRICS_PORT"
-              value: "8081"
-            - name: "{{ $index | upper }}_ENABLE_HISTORICAL_METRICS"
-              value: "true"
-            {{- range $key, $val := $service }}
-            - name: "{{ $index | upper }}_{{ $key | upper}}"
-              value: "{{ tpl $val $ }}"
-            {{- end }}
-            {{- end }}
-            
+          {{- include "envvars" (dict "envvar" .Values.catalog.envvars "top" $) | indent 10 }}
+          {{- if and $.Values.global.services.catalog.egressTLS }}
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/pki
+          {{- end }}
         - name: sidecar
           image: {{ tpl $.Values.sidecar.image $ }}
           imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
@@ -74,7 +54,7 @@ spec:
             - name: metrics
               containerPort: 8081
           env:
-          {{- include "greymatter.envvars" . | indent 10 }}
+          {{- include "greymatter.envvars" $ | indent 10 }}
           {{- if .Values.global.spire.enabled }}
           volumeMounts:
           {{- include "sidecar_volume_mounts" . | indent 10 }}
@@ -85,9 +65,24 @@ spec:
       {{- if .Values.global.spire.enabled }}
       volumes:
       {{- include "sidecar_volumes" . | indent 6 }}
+        {{- if and $.Values.global.services.catalog.egressTLS }}
+        - name: certs
+          secret:
+            secretName: sidecar-certs
+        {{- end }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
       volumes:
       {{- include "sidecar_certs_volumes" . | indent 6 }}
+        {{- if and $.Values.global.services.catalog.egressTLS }}
+      - name: certs
+        secret:
+          secretName: sidecar-certs
+        {{- end }}
+      {{- else if and $.Values.global.services.catalog.egressTLS }}
+      volumes:
+        - name: certs
+          secret:
+            secretName: sidecar-certs
       {{- end }}
       imagePullSecrets:
         - name: docker.secret

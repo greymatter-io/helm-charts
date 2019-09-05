@@ -1,7 +1,7 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: mongo-init
+  name: {{ .Values.mongo.name }}-init
   namespace: {{ .Release.Namespace }}
 data:
   gmdata.js: |-

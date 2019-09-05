@@ -26,7 +26,7 @@ edge:
   obs_full_response: 'false'
   base_path: /services/edge/0.7.1
   acl_enabled: 'false'
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   ingress_use_tls: true
   resources:
     limits:
@@ -57,7 +57,7 @@ sidecar:
   version: '{{- $.Values.global.edge.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   metrics_key_function: depth
-  imagePullPolicy: Always
+  imagePullPolicy: IfNotPresent
   resources:
     limits:
       cpu: 200m

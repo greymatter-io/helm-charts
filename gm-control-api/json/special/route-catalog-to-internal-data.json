@@ -1,0 +1,13 @@
+{
+  "route_key": "catalog-internal-data-route",
+  "domain_key": "domain-catalog",
+  "zone_key": "{{ .Values.gmControlApi.zone }}",
+  "path": "{{ .Values.global.catalog.data_prefix }}/",
+  "prefix_rewrite": "/",
+  "redirects": null,
+  "shared_rules_key": "edge-data-internal-shared-rules",
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "retry_policy": null
+}

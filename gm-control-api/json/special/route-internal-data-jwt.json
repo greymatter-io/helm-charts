@@ -1,0 +1,13 @@
+{
+  "route_key": "data-internal-jwt-route",
+  "domain_key": "domain-data-internal",
+  "zone_key": "{{ .Values.gmControlApi.zone }}",
+  "path": "{{ .Values.global.data.jwt_prefix }}/",
+  "prefix_rewrite": "/",
+  "redirects": null,
+  "shared_rules_key": "edge-internal-jwt-security-shared-rules",
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "retry_policy": null
+}

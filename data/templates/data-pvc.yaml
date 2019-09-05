@@ -1,0 +1,13 @@
+{{- if  (eq .Values.data.envvars.uses3.value  "false") }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.data.name }}-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.data.pvc.size | default "40" }}Gi
+{{- end }}

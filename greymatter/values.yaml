@@ -12,6 +12,7 @@ global:
     version: 1.0.1
     sidecar:
       version:
+    data_prefix: /data
   dashboard:
     version: 3.1.0
     sidecar:
@@ -19,6 +20,11 @@ global:
     prometheus_sidecar:
       version: 0.8.0
   data:
+    version: 0.2.7
+    sidecar:
+      version:
+    jwt_prefix: '/jwt'
+  internal-data:
     version: 0.2.7
     sidecar:
       version:
@@ -56,6 +62,7 @@ global:
     serviceAccount:
       create: true
       name: waiter-sa
+    image: 
   services:
     catalog:
       catalogEnabled: true
@@ -125,6 +132,22 @@ global:
         - '/services/data/{{ $.Values.global.data.version }}'
         - '/services/data/{{ $.Values.global.data.version }}/'
 
+
+    internal-data:
+      catalogEnabled: false
+      controlEnabled: true
+      name: 'Grey Matter Internal Data'
+      zone: zone-default-zone
+      serviceName: 'data-internal'
+      port: 8181
+      enableInstanceMetrics: "true" 
+      capability: 'Grey Matter'
+      documentation: '/services/data/latest/static/ui/index.html'
+      name: 'Grey Matter Internal Data'
+      owner: 'Decipher'
+      version: 0.2.7   
+      # egressTLS: 'true'
+
     jwt:
       catalogEnabled: true
       controlEnabled: true
@@ -142,11 +165,11 @@ global:
         - '/services/jwt-security/{{ $.Values.global.jwt.version }}'
         - '/services/jwt-security/{{ $.Values.global.jwt.version }}/'
 
-    gm-jwt:
+    internal-jwt:
       catalogEnabled: false
       controlEnabled: true
       name: 'Grey Matter JWT Security Internal'
-      serviceName: 'jwt-security-internal'
+      serviceName: 'internal-jwt-security'
       zone: zone-default-zone
       port: 3000
       # egressTLS: 'true'

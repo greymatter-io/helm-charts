@@ -14,7 +14,7 @@ The waiter service account can be created automatically with `.Values.global.wai
 
 All of the service accounts needed for Grey Matter can either be created automatically by Helm (if it has the appropriate permissions), or be created manually by a cluster admin. This is configured in the `serviceAccount` map that is found at different locations for various service accounts, which always looks like this:
 
-```
+```yaml
 serviceAccount:
     create: true
     name: waiter-sa
@@ -29,3 +29,5 @@ The following list gives the service that needs a serviceAccount along with the 
 - `waiter` - greymatter chart - `.Values.global.waiter.serviceAccount`
 - `spire-agent` - spire subchart - `.Values.spire.agent.serviceAccount`
 - `spire-server` - spire subchart - `.Values.spire.server.serviceAccount`
+
+If you're deploying into an environment where Helm/Tiller doesn't have sufficient permissions to create service accounts, you'll need to apply the [greymatter-service-accounts.yaml](../greymatter-service-accounts.yaml) file first.  The user to apply this file will need to have sufficient permissions to create accounts.  The custom values file will also need to be updated to ensure Helm doe not try to create the accounts.
