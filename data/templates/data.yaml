@@ -2,20 +2,20 @@ kind: Deployment
 apiVersion: extensions/v1beta1
 #apiVersion: apps/v1
 metadata:
-  name: data
+  name: {{ .Values.data.name | lower }}
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.data.replicas }}
   selector:
     matchLabels:
-      app: data
+      app: {{ .Values.data.name | lower }}
   template:
     metadata:
       labels:
-        app: data
+        app: {{ .Values.data.name | lower | lower }}
     spec:
       containers:
-      - name: data
+      - name: {{ .Values.data.name | lower }}
         {{- if .Values.data.deploy.standalone }}
         image: {{ tpl .Values.data.standalone_image $ | quote }}
         {{- else }} 
@@ -67,6 +67,7 @@ spec:
         - containerPort: 8181
           name: internal
           protocol: TCP
+
       - name: sidecar
         {{- if .Values.data.deploy.standalone }}
         image: {{ tpl .Values.sidecar.standalone_image $ | quote }}
@@ -89,7 +90,7 @@ spec:
             value: {{ .Values.data.deploy.xds.address }}
             {{- end }}
             {{- else }}
-            value: "xds.{{ .Release.Namespace }}.svc.cluster.local"
+            value: "xds.{{ .Values.global.xds.cluster }}.svc.cluster.local"
             {{- end }}
           - name: XDS_PORT
             value: {{ .Values.global.xds.port | quote }}
@@ -106,10 +107,10 @@ spec:
           - name: ZK_ANNOUNCE_PATH
             {{- if .Values.data.deploy.standalone }}
             {{- if .Values.data.deploy.base_path }}
-            value: {{ tpl .Values.data.deploy.base_path $ | trunc 3 | quote }}
+            value: {{ tpl .Values.data.deploy.base_path $ | quote }}
             {{- end }}
             {{- else }}
-            value: {{ tpl .Values.data.base_path $ | trunc 3 | quote }}
+            value: {{ tpl .Values.data.base_path $ | quote }}
             {{- end }}
           - name: TIMEOUT
             value: {{ .Values.sidecar.timeout | quote  }}
@@ -131,7 +132,13 @@ spec:
         - mountPath: /etc/proxy/tls/sidecar
           name: sidecar
       imagePullSecrets:
+      {{- if .Values.createDockerSecret }}
       - name: docker.secret
+      {{- end }}
+      {{- if .Values.dockerSecret }}
+      - name: {{ .Values.dockerSecret }}
+      {{- end }}
+
       volumes:
       - name: sidecar
         secret:

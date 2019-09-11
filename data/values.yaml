@@ -11,10 +11,22 @@ global:
     port: 18000
     cluster: greymatter
 
+# If createDockerSecret is true then you will need to add dockerCredentials: registry, username, and password to values file.  
+# A dockerSecret will need to be defined if createDockerSecret is false
+createDockerSecret: true
+# dockerSecret: "docker-greymatter-ro"
+# dockerCredentials:
+#   registry: 
+#   email:
+#   username:
+#   password:
+
+
 data:
   # The name of this installation of GM Data.  Used in the zookeeper address.  Allow to be unique to support multiple installations of Data
   name: data
   version: 0.2.3
+  replicas: 1
   client_jwt_endpoint_address: localhost
   client_jwt_endpoint_use_tls: 'true'
   base_path: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
@@ -262,6 +274,21 @@ sidecar:
     service_port:
       type: 'value'
       value: '8181'
+    proxy_dynamic:
+      type: 'value'
+      value: 'true'
+    ingress_use_tls:
+      type: 'value'
+      value: '{{ .Values.data.use_tls }}'
+    ingress_ca_cert_path:
+      type: 'value'
+      value: '/etc/proxy/tls/sidecar/ca.crt'
+    ingress_cert_path:
+      type: 'value'
+      value: '/etc/proxy/tls/sidecar/server.crt'
+    ingress_key_path:
+      type: 'value'
+      value: '/etc/proxy/tls/sidecar/server.key'
 
   # Set this to true if you are attempting to deploy Catalog by itself.
   # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
