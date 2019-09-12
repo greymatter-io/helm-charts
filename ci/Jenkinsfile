@@ -3,7 +3,7 @@ import groovy.transform.Field
 
 @Library('slack-notifications') import jenkins.Slack
 
-@Field def slackNotificationChannel = 'decipher-sres'
+@Field def slackNotificationChannel = 'decipher-sres-bots'
 @Field def branch
 @Field def commitId
 @Field def author

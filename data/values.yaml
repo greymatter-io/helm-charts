@@ -15,11 +15,11 @@ global:
 # A dockerSecret will need to be defined if createDockerSecret is false
 createDockerSecret: true
 # dockerSecret: "docker-greymatter-ro"
-# dockerCredentials:
-#   registry: 
-#   email:
-#   username:
-#   password:
+dockerCredentials: ''
+  registry: ''
+  email: ''
+  username: ''
+  password: ''
 
 
 data:
