@@ -1,36 +1,36 @@
 dependencies:
   - name: catalog
     repository: 'file://../catalog'
-    version: '1.0.5'
+    version: '2.0.1'
 
   - name: data
     repository: 'file://../data'
-    version: '1.0.5'
+    version: '2.0.1'
 
   - name: dashboard
     repository: 'file://../dashboard'
-    version: '1.0.4'
+    version: '2.0.1'
 
   - name: documentation
     repository: 'file://../documentation'
-    version: '1.0.3'
+    version: '2.0.1'
 
   - name: edge
     repository: 'file://../edge'
-    version: '1.0.6'
+    version: '2.0.1'
 
   - name: xds
     repository: 'file://../xds'
-    version: '1.0.4'
+    version: '2.0.1'
 
   - name: exhibitor
     repository: 'file://../exhibitor'
-    version: '1.0.1'
+    version: '2.0.1'
 
   - name: jwt
     repository: 'file://../jwt'
-    version: '1.0.2'
+    version: '2.0.1'
 
   - name: slo
     repository: 'file://../slo'
-    version: '1.0.3'
+    version: '2.0.1'

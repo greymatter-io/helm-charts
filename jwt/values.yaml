@@ -9,7 +9,7 @@ global:
     port: 18000
     cluster: greymatter
   jwt:
-    version: 0.2.0
+    version: 0.2.4
 
 jwt:
   version: '{{ .Values.global.jwt.version }}'

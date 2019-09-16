@@ -1,42 +1,42 @@
 dependencies:
   - name: catalog
-    version: '1.0.8'
+    version: '2.0.1'
     repository: 'file://../catalog'
 
   - name: data
-    version: '1.0.6'
+    version: '2.0.1'
     repository: 'file://../data'
 
   - name: data
-    version: '1.0.6'
+    version: '2.0.1'
     repository: 'file://../data'
     alias: internal-data
 
   - name: dashboard
-    version: '1.0.6'
+    version: '2.0.1'
     repository: 'file://../dashboard'
 
   - name: edge
-    version: '1.0.7'
+    version: '2.0.1'
     repository: 'file://../edge'
 
   - name: jwt-gov
-    version: '1.0.5'
+    version: '2.0.1'
     repository: 'file://../jwt-gov'
 
   - name: jwt
-    version: '1.0.3'
+    version: '2.0.1'
     repository: 'file://../jwt'
     alias: internal-jwt
 
   - name: slo
-    version: '1.0.5'
+    version: '2.0.1'
     repository: 'file://../slo'
 
   - name: gm-control-api
     repository: 'file://../gm-control-api'
-    version: '0.1.1'
+    version: '2.0.1'
 
   - name: control
     repository: 'file://../control'
-    version: '0.1.2'
+    version: '2.0.1'
