@@ -108,7 +108,7 @@ node('ubuntu-18.04'){
             throw err
         }
             
-        if ( branch =~ 'release-[0-9].[0-9]').matches() {
+        if (branch =~ /release-[0-9].[0-9]/) {
             stage ('Publish Charts') { 
                 try{
                     // Find all of the charts that were created, known by the *.tgz file extension.  Then upload them to Nexus
@@ -124,7 +124,7 @@ node('ubuntu-18.04'){
                     }
                 }
                 catch (e){
-                    errMessage = "WARN: failed to publish some or all subcharts [Stage- Publish Charts (master)]"
+                    errMessage = "WARN: failed to publish some or all subcharts [Stage- Publish Charts (${branch})]"
                     warnings.add(errMessage)
                     currentBuild.result = 'UNSTABLE'
                 }
@@ -162,7 +162,7 @@ node('ubuntu-18.04'){
                     }
                 }
                 catch (e){
-                    errMessage = "WARN: failed to publish Greymatter [Stage- Publish Grey Matter (master)]"
+                    errMessage = "WARN: failed to publish Greymatter [Stage- Publish Grey Matter (${branch})]"
                     warnings.add(errMessage)
                     currentBuild.result = 'UNSTABLE'
                 }
