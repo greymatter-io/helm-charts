@@ -108,7 +108,7 @@ node('ubuntu-18.04'){
             throw err
         }
             
-        if ( branch == 'master' ){
+        if ( branch =~ 'release-[0-9].[0-9]').matches() {
             stage ('Publish Charts') { 
                 try{
                     // Find all of the charts that were created, known by the *.tgz file extension.  Then upload them to Nexus
