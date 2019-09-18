@@ -20,7 +20,7 @@ dependencies:
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
 
 - name: xds
-  version: "1.0.4"
+  version: "1.0.5"
   repository: "https://nexus.production.deciphernow.com/repository/helm-hosted"
 
 - name: exhibitor

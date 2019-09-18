@@ -14,7 +14,7 @@ global:
 xds:
   image: 'docker.production.deciphernow.com/deciphernow/gm-xds:0.2.6'
   imagePullPolicy: Always
-  version: 0.2.6
+  version: 0.2.10
   cluster: greymatter
   #host: 'xds.greymatter.svc.cluster.local'
   port: 18000

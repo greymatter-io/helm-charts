@@ -46,20 +46,20 @@ The following tables list the configurable parameters of the xds chart and their
 
 ### Service Configuration
 
-| Parameter                     | Description | Default                                                      |
-| ----------------------------- | ----------- | ------------------------------------------------------------ |
-| xds.version                   |             | 0.2.6                                                        |
-| xds.image                     |             | 'docker.production.deciphernow.com/deciphernow/gm-xds:0.2.6' |
-| xds.imagePullPolicy           |             | Always                                                       |
-| xds.cluster                   |             | greymatter                                                   |
-| xds.port                      |             | 18000                                                        |
-| xds.use_zk                    |             | 'true'                                                       |
-| xds.logging_level             |             | 'true'                                                       |
-| xds.zk_base_path              |             | '/services'                                                  |
-| xds.resources.limits.cpu      |             | 250m                                                         |
-| xds.resources.limits.memory   |             | 512Mi                                                        |
-| xds.resources.requests.cpu    |             | 100m                                                         |
-| xds.resources.requests.memory |             | 128Mi                                                        |
+| Parameter                     | Description | Default                                                       |
+| ----------------------------- | ----------- | ------------------------------------------------------------- |
+| xds.version                   |             | 0.2.10                                                        |
+| xds.image                     |             | 'docker.production.deciphernow.com/deciphernow/gm-xds:0.2.10' |
+| xds.imagePullPolicy           |             | Always                                                        |
+| xds.cluster                   |             | greymatter                                                    |
+| xds.port                      |             | 18000                                                         |
+| xds.use_zk                    |             | 'true'                                                        |
+| xds.logging_level             |             | 'true'                                                        |
+| xds.zk_base_path              |             | '/services'                                                   |
+| xds.resources.limits.cpu      |             | 250m                                                          |
+| xds.resources.limits.memory   |             | 512Mi                                                         |
+| xds.resources.requests.cpu    |             | 100m                                                          |
+| xds.resources.requests.memory |             | 128Mi                                                         |
 
 ### Sidecar Configuration
 
@@ -76,6 +76,7 @@ The following tables list the configurable parameters of the xds chart and their
 | sidecar.resources.requests.memory |                   | 128Mi                                                          |
 
 ### Sidecar Environment Variable Configuration
+
 | Environment Variable | Default                |
 | -------------------- | ---------------------- |
 | metrics_port         | 8080                   |
