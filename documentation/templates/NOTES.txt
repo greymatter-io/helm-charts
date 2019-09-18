@@ -1,0 +1,8 @@
+Grey Matter Documentation {{ .Chart.AppVersion }} has been installed.
+
+NOTE: It may take a few minutes for the installation to become stable.
+    {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
+    You can watch the status of the pods by running 'oc get pods -w -n {{ .Release.Namespace }}
+    {{- else }}
+    You can watch the status of the pods by running 'kubectl get pods -w -n {{ .Release.Namespace }}'
+    {{- end }}
