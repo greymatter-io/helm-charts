@@ -63,9 +63,9 @@ sidecar:
 postgres:
   data_mount_point: /var/lib/pgsql/data
   openshift:
-    image: 'docker.io/centos/postgresql-95-centos7:9.5'
+    image: 'docker.io/centos/postgresql-10-centos7'
   k8s:
-    image: 'postgres:9.5'
+    image: 'postgres:10'
   imagePullPolicy: IfNotPresent
   replica_count: 1
   #private_image: false
@@ -76,6 +76,10 @@ postgres:
     requests:
       cpu: 100m
       memory: 128Mi
+  confMountPoint: /conf
+  # This override is unique to OpenShift's postgresql container
+  # https://github.com/sclorg/postgresql-container/tree/master/examples/custom-config
+  overridesMountPoint: /opt/app-root/src/postgresql-cfg
 
   credentials:
     secret_name: postgres-credentials
@@ -86,18 +90,18 @@ postgres:
   ssl:
     enabled: false
     name: postgres-ssl-certs
-    mount_path: /secret/cert
+    mountPoint: /certs
     certificates:
   #  - name: mongo-ssl-certs
-  #    ca: |-
+  #    ca.pem: |-
   #      -----BEGIN CERTIFICATE-----
   #      ...
   #      -----END CERTIFICATE-----
-  #    cert: |-
+  #    server.crt: |-
   #      -----BEGIN CERTIFICATE-----
   #      ...
   #      -----END CERTIFICATE-----
-  #    key: |-
+  #    server.key: |-
   #      -----BEGIN RSA PRIVATE KEY-----
   #      ...
   #      -----END RSA PRIVATE KEY-----

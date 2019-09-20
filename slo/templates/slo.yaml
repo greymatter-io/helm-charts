@@ -52,24 +52,21 @@ spec:
               key: database 
         - name: DATABASE_URI
           value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc.cluster.local:5432/$(POSTGRESQL_DATABASE)
-        - name: DROP_SCHEMA
-          value: "true"
         - name: SERVICE_PORT
           value: "1337"
         {{- if .Values.postgres.ssl.enabled  }}
-        - name: "SSL_ENABLED"
+        - name: SSL_ENABLED
           value: {{ .Values.postgres.ssl.enabled | quote }}
         - name: SSL_SERVER_CA
-          value: "{{ .Values.postgres.ssl.mount_path }}/ca.pem"
+          value: {{ .Values.postgres.ssl.mountPoint}}/ca.pem
         - name: SSL_SERVER_CERT
-          value: "{{ .Values.postgres.ssl.mount_path }}/postgres.crt"
+          value: {{ .Values.postgres.ssl.mountPoint}}/server.crt
         - name: SSL_SERVER_KEY
-          value: "{{ .Values.postgres.ssl.mount_path }}/postgres.key"
+          value: {{ .Values.postgres.ssl.mountPoint}}/server.key
         volumeMounts:
         - name: postgres-certs
-          mountPath: {{ .Values.postgres.ssl.mount_path | quote }}
+          mountPath: {{ .Values.postgres.ssl.mountPoint | quote }}
         {{- end }}
-      
       - name: sidecar
         image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
@@ -104,4 +101,5 @@ spec:
       - name: postgres-certs
         secret:
           secretName: {{ .Values.postgres.ssl.name }}
+          defaultMode: 0600
       {{- end }}
