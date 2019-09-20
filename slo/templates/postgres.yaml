@@ -50,7 +50,11 @@ spec:
             mountPath: {{ .Values.postgres.data_mount_point }}
         {{- if .Values.postgres.ssl.enabled }}
           - name: certificates
-            mountPath: {{ .Values.postgres.ssl.mount_path }}
+            mountPath: {{ .Values.postgres.ssl.mountPoint }}
+          - name: postgres-slo-config
+            mountPath: {{ .Values.postgres.confMountPoint }}
+          - name: postgres-slo-overrides
+            mountPath: {{ .Values.postgres.overridesMountPoint }}
         {{- end }}
         readinessProbe:
           tcpSocket:
@@ -66,8 +70,15 @@ spec:
       - name: postgres-slo
         persistentVolumeClaim:
           claimName: postgres-slo
+      - name: postgres-slo-config
+        configMap:
+          name: postgres-slo-config
+      - name: postgres-slo-overrides
+        configMap:
+          name: postgres-slo-overrides
       {{- if .Values.postgres.ssl.enabled }}
       - name: certificates
         secret:
           secretName: {{ .Values.postgres.ssl.name }}
+          defaultMode: 0400
       {{- end }}

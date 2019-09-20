@@ -470,7 +470,12 @@ slo:
     ssl:
       enabled: true
       name: postgres-ssl-certs
-      mount_path: /secret/cert
+      mountPoint: /certs
+    credentials:
+      secret_name: postgres-credentials
+      username: greymatter
+      password: greymatter
+      database: greymatter
 
     envvars:
       - type: secret

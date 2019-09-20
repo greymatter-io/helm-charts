@@ -30,7 +30,7 @@ dependencies:
     alias: internal-jwt
 
   - name: slo
-    version: '2.0.1'
+    version: '2.0.2'
     repository: 'file://../slo'
 
   - name: gm-control-api
