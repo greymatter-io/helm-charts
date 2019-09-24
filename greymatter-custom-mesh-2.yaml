@@ -1,0 +1,30 @@
+global:
+  zone: "zone-default-zone-2"
+  zoneName: "default-zone-2"
+  services:
+    catalog:
+      zone: "zone-default-zone-2"
+    jwt:
+      zone: "zone-default-zone-2"
+    dashboard:
+      zone: "zone-default-zone-2"
+    data:
+      zone: "zone-default-zone-2"
+    controlApi:
+      zone: "zone-default-zone-2"
+    edge:
+      zone: "zone-default-zone-2"
+    slo:
+      zone: "zone-default-zone-2"
+    internal-data:
+      zone: "zone-default-zone-2"
+    internal-jwt:
+      zone: "zone-default-zone-2"
+control:
+  control: 
+    zone: "zone-default-zone-2"
+    zoneName: "default-zone-2"
+gm-control-api:
+  gmControlApi:
+    zone: "zone-default-zone-2"
+    zoneName: "default-zone-2"

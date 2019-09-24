@@ -64,6 +64,9 @@ gmControlApi:
     gm_control_api_zone_key:
       type: 'value'
       value: '{{ .Values.gmControlApi.zone }}'
+    gm_control_api_zone_name:
+      type: 'value'
+      value: '{{ .Values.gmControlApi.zoneName }}'
     gm_control_api_persister_type:
       type: value
       value: 'file'
