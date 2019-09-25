@@ -66,7 +66,7 @@ catalog:
       value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
     control_server_0_zone_name:
       type: value
-      value: '{{ .Values.global.zone }}'
+      value: '{{ .Values.global.zoneName}}'
     control_server_0_request_cluster_name:
       type: value
       value: 'edge'
