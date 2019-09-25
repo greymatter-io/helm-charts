@@ -33,7 +33,7 @@ control:
       value: 'xxx'
     gm_control_api_zone_name:
       type: 'value'
-      value: '{{ .Values.control.zoneName }}'
+      value: 'default-zone'
     gm_control_api_ssl:
       type: 'value'
       value: 'false'
@@ -79,5 +79,3 @@ control:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
-gmControlApi:
-  zoneName: 
