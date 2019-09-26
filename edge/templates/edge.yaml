@@ -15,6 +15,20 @@ spec:
         app: edge
         deployment: edge
     spec:
+      initContainers:
+      {{- if .Values.global.consul.enabled }}
+      - name: consul
+        image: consul:1.5.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        command: ["/bin/sh", "-ec"]
+        args: 
+          - "/bin/consul services register -http-addr={{ .Values.global.consul.consul_hostport }} -name=edge -address=$(POD_IP) -port={{ .Values.global.services.edge.port }} -tag tbn-cluster"
+        {{- end }}
       containers:
       - name: edge
         image: {{ tpl .Values.sidecar.image $ | quote }}
