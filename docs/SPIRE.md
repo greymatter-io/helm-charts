@@ -100,7 +100,7 @@ They are discovered by a dynamic discovery mechanism which is configured in GM C
 
 ### Caveats
 
-TLDR: the current state of SPIRE in Openshift is:
+TLDR: the current state of SPIRE in OpenShift is:
 
 Needs modified Security Context Constraints in OpenShift for the spire-agent daemonset to have access to the hostNetwork (for accessing the kubelet port), hostPID, and hostPath volumes (for the Workload API/SDS socket).
 
