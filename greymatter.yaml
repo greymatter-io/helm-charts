@@ -155,7 +155,7 @@ data:
         value: home
       gmdata_namespace_userfield:
         type: value
-        value: userDN
+        value: email
       jwt_pub:
         type: secret
         secret: jwt-security
