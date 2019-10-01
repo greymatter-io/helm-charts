@@ -18,6 +18,22 @@ data:
       - job_name: 'prometheus'
         static_configs:
           - targets: ['localhost:9090']
+      {{- if .Values.global.consul.enabled }}
+      - job_name: consul
+        metrics_path: /prometheus
+        consul_sd_configs:
+        - server: '{{ .Values.global.consul.consul_hostport }}'
+        relabel_configs:
+          - source_labels: ['__meta_consul_service_metadata_metrics']
+            regex: '(\d+)'
+            action: 'keep'
+          - source_labels: ['__meta_consul_service_address', '__meta_consul_service_metadata_metrics']
+            regex: '(.*);(\d+)'
+            replacement: '${1}:${2}'
+            target_label: __address__
+          - source_labels: ['__meta_consul_service']
+            target_label: job
+      {{- else }}
       - job_name: kubernetes
         metrics_path: /prometheus
         kubernetes_sd_configs:
@@ -36,6 +52,7 @@ data:
           target_label:  'job'
           #replacement:   '${1}'
           replacement:   '${1}'
+        {{- end }}
 
   # Copied from https://github.com/DecipherNow/gm-dashboard/blob/master/docker/prometheus/recording_rules.yml
   recording_rules.yaml: |-
