@@ -34,7 +34,12 @@ spec:
                 fieldPath: status.podIP
           command: ["/bin/sh", "-ec"]
           args: 
-            - "/bin/consul services register -http-addr={{ .Values.global.consul.consul_hostport }} -name={{ .Values.data.name }} -address=$(POD_IP) -port={{ .Values.global.services.data.port }} -tag tbn-cluster"
+            - "/bin/consul services register \
+              -http-addr={{ .Values.global.consul.consul_hostport }} \
+              -name={{ .Values.data.name }} -address=$(POD_IP) \
+              -port={{ .Values.global.services.edge.port }} \
+              -tag tbn-cluster \
+              -meta metrics=8081"
         {{- end }}
       containers:
       - name: {{ .Values.data.name }}
