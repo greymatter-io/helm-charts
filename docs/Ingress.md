@@ -8,13 +8,13 @@ For Kubernetes, you need to take some additional steps to install Voyager, the i
 
 To view the provisioned loadbalancer (if using a cloud provider), run:
 
-```
+```sh
 kubectl get ing.voy
 ```
 
 ## How to set your ingress URL
 
-By default Helm will deploy edge with an ingress URL of `<route_url_name>.<namespace>.<domain>`. If you would like to deploy it without the namespace as part of the url you will need to set `remove_namespace_from_url` to `'true'`. This will result in the url being set to `<route_url_name>.<domain>`. NOTE: make sure you choose a unique `route_url_name` in the openshift environment.
+By default Helm will deploy edge with an ingress URL of `<route_url_name>.<namespace>.<domain>`. If you would like to deploy it without the namespace as part of the url you will need to set `remove_namespace_from_url` to `'true'`. This will result in the url being set to `<route_url_name>.<domain>`. NOTE: make sure you choose a unique `route_url_name` in the OpenShift environment.
 
 ## Setting up the Ingress
 
