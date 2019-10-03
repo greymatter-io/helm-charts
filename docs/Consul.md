@@ -72,4 +72,4 @@ gm_control_consul_hostport:
 
 * To verify that gm-control is discovering from Consul, run `kubectl get pods` and `kubectl port-forward gm-control-api-{pod-hash} 5555:5555`.  Then, `greymatter list cluster` should show that the listed instances for the registered services are from Consul.
 
-* To verify that Prometheus is discovering from Consul, run `kubectl get pods` and `kubectl port-forward prometheus-{pod-hash} 9090:9090`. Navigate to http://localhost:9090/targets and verify that the service metrics endpoints are listed under the Consul job.
+* To verify that Prometheus is discovering from Consul, run `kubectl get pods` and `kubectl port-forward prometheus-{pod-hash} 9090:9090`. Navigate to http://localhost:9090/targets and verify that the service metrics endpoints are listed under the Consul job.  Another way to check this is by accessing voyager-edge - after [this step](./Deploy%20with%20Minikube.md#ingress), change "`http`" of the given URL to "`https`" and navigate to <https://{voyager-edge_URL}/services/prometheus/latest/targets>.
