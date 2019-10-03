@@ -123,6 +123,20 @@ jwt:
               "root"
             ]
           }
+        },
+        {
+          "label": "CN=*.greymatter.svc.cluster.local,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+          "values": {
+            "email": [
+              "localuser@deciphernow.com"
+            ],
+            "org": [
+              "www.deciphernow.com"
+            ],
+            "privilege": [
+              "root"
+            ]
+          }
         }
       ]
     }

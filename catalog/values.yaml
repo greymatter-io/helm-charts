@@ -127,7 +127,9 @@ catalog:
     client_email:
       type: value
       value: 'gm-control@deciphernow.com'
-
+    DEBUG:
+      type: value
+      value: 'true'
 
   init:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
