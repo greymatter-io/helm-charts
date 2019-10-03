@@ -36,6 +36,7 @@ data:
           target_label:  'job'
           #replacement:   '${1}'
           replacement:   '${1}'
+      {{- if .Values.global.sense.enabled }}
       - job_name: sense
         metrics_path: /stats/prometheus
         kubernetes_sd_configs:
@@ -54,6 +55,7 @@ data:
           target_label:  'job'
           #replacement:   '${1}'
           replacement:   '${1}'
+      {{- end }}  
 
   # Copied from https://github.com/DecipherNow/gm-dashboard/blob/master/docker/prometheus/recording_rules.yml
   recording_rules.yaml: |-
