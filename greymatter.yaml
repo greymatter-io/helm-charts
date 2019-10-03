@@ -18,7 +18,7 @@ global:
     sidecar:
       version: 0.9.1
   sense:
-    enableed: false
+    enabled: false
   edge:
     enableTLS: true
     certPath: /etc/proxy/tls/edge

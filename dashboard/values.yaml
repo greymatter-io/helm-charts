@@ -8,6 +8,8 @@ global:
   xds:
     port: 18000
     cluster: greymatter
+  sense:
+    enabled: false  
 
 dashboard:
   image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.global.dashboard.version }}'
