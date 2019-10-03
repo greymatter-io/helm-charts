@@ -65,7 +65,7 @@ postgres:
   openshift:
     image: 'docker.io/centos/postgresql-10-centos7'
   k8s:
-    image: 'postgres:10'
+    image: 'docker.io/centos/postgresql-10-centos7'
   imagePullPolicy: IfNotPresent
   replica_count: 1
   #private_image: false

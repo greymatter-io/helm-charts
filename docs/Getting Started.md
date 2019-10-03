@@ -1,4 +1,3 @@
-
 # Getting Started
 
 - [Getting Started](#getting-started)
@@ -192,8 +191,22 @@ If you want to deploy a Helm chart for a single service without the entire servi
 ## Install
 
 ### Prepare Tiller
+Tiller requires permissions to run installations in the cluster.  Depending on your 
+setup and security requirements, these particular permissions will change.  Please see
+the [official Helm docs](https://helm.sh/docs/using_helm/#tiller-and-role-based-access-control) to prepare your 
+production setup, but we do provide highlights in our [Multi-tenant Helm guide](./Multi-tenant%20Helm.md). 
 
-For production deployments of multi-tenant clusters we highly recommend that you setup Tiller following our [Multi-tenant Helm guide](./Multi-tenant%20Helm.md). If you're comfortable with providing Tiller with full cluster access then proceed onward. Full Tiller access should be granted when installing with Minikube.
+For development deployments with MiniKube, you can skip these steps and proceed on.  Full Tiller access should be granted by default when installing with Minikube.
+
+For a quick setup, giving Tiller full cluster-wide access, have an admin apply the `helm-service-account.yaml` found in this repository.  This will enable Tiller 
+to act and install across the entire kubernetes cluster. 
+```
+kubectl apply -f ./helm-service-account.yaml
+```
+You'll then be able to initialize helm using this account:
+```
+helm init --service-account tiller
+```
 
 ### Prepare Service Accounts
 
