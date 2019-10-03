@@ -40,7 +40,7 @@ spec:
               -port={{ .Values.global.services.edge.port }} \
               -tag tbn-cluster \
               -meta metrics=8081"
-        {{- end }}
+      {{- end }}
       containers:
       - name: {{ .Values.data.name }}
         {{- if .Values.data.deploy.standalone }}

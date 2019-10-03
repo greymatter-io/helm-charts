@@ -31,7 +31,7 @@ spec:
             -port={{ .Values.global.services.edge.port }} \
             -tag tbn-cluster \
             -meta metrics=8081"
-        {{- end }}
+      {{- end }}
       containers:
       - name: dashboard
         image: '{{ tpl .Values.dashboard.image $ }}'

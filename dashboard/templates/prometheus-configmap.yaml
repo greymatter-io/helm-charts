@@ -52,7 +52,7 @@ data:
           target_label:  'job'
           #replacement:   '${1}'
           replacement:   '${1}'
-        {{- end }}
+      {{- end }}
 
   # Copied from https://github.com/DecipherNow/gm-dashboard/blob/master/docker/prometheus/recording_rules.yml
   recording_rules.yaml: |-

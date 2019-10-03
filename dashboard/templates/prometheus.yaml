@@ -39,7 +39,7 @@ spec:
             -name=prometheus -address=$(POD_IP) \
             -port={{ .Values.global.services.edge.port }} \
             -meta metrics=8081"
-        {{- end }}
+      {{- end }}
       containers:
       - name: prometheus
         image: {{ .Values.prometheus.image | quote }}
