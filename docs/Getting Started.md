@@ -200,13 +200,19 @@ production setup, but we do provide highlights in our [Multi-tenant Helm guide](
 For development deployments with Minikube, you can skip these steps and proceed on. Full Tiller access should be granted by default when installing with Minikube.
 
 For a quick setup, giving Tiller full cluster-wide access, have an admin apply the `helm-service-account.yaml` found in this repository. This will enable Tiller
-to act and install across the entire kubernetes cluster.
+to act and install across the entire Kubernetes cluster.
 
+For Openshift:
+```
+oc apply -f ./helm-service-account.yaml
+```
+
+For Kubernetes:
 ```
 kubectl apply -f ./helm-service-account.yaml
 ```
 
-You'll then be able to initialize helm using this account:
+You'll then be able to initialize Helm using this account:
 
 ```
 helm init --service-account tiller
