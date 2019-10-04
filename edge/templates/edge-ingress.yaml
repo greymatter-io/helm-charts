@@ -24,6 +24,10 @@ kind: Ingress
 metadata:
   name: edge
   namespace: {{ .Release.Namespace }}
+  annotations:
+    kubernetes.io/ingress.class: "voyager"
+    ingress.appscode.com/type: NodePort
+    ingress.appscode.com/ssl-passthrough: "true"
 spec:
   rules:
   - tcp:
