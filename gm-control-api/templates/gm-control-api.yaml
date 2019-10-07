@@ -15,25 +15,6 @@ spec:
         app: {{ .Values.gmControlApi.name }}
         deployment: {{ .Values.gmControlApi.name }}
     spec:
-      initContainers:
-        {{- if .Values.global.consul.enabled }}
-        - name: consul
-          image: consul:1.5.0
-          imagePullPolicy: IfNotPresent
-          env:
-          - name: POD_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-          command: ["/bin/sh", "-ec"]
-          args:
-            - "/bin/consul services register \
-              -http-addr={{ .Values.global.consul.consul_hostport }} \
-              -name={{ .Values.gmControlApi.name }} -address=$(POD_IP) \
-              -port={{ .Values.global.services.edge.port }} \
-              -tag tbn-cluster \
-              -meta metrics=8081"
-        {{- end }}
       containers:
         - name: {{ .Values.gmControlApi.name }}
           image: {{ tpl .Values.gmControlApi.image $ }}
@@ -97,9 +78,50 @@ spec:
           volumeMounts:
           {{- include "sidecar_volume_certs_mount" . | indent 12 }}
           {{- end }}
+        {{- if .Values.global.consul.enabled }}
+        - name: consul
+          image: consul:1.5.0
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          command: ["/bin/sh", "-ec"]
+          args: 
+            - "echo '{
+              \"Service\": {
+                  \"name\":\"{{ .Values.gmControlApi.name }}\",
+                  \"address\": \"$(POD_IP)\",
+                  \"port\": {{ .Values.global.services.edge.port }},
+                  \"tags\": [\"tbn-cluster\"],
+                  \"meta\": {
+                      \"metrics\": \"8081\"
+                      },
+                  \"check\": [
+                      {
+                        \"name\": \"{{ .Values.gmControlApi.name }} health check\",
+                        \"tcp\": \"$(POD_IP):{{ .Values.global.services.edge.port }}\",
+                        \"interval\": \"10s\"
+                      }
+                    ]
+                  }}' > /consul/config/{{ .Values.gmControlApi.name }}-consul.json \
+                && exec /bin/consul agent \
+                  -data-dir=/consul/data \
+                  -advertise=\"$(POD_IP)\" \
+                  -retry-join=\"{{ .Values.global.consul.host }}\" \
+                  -config-dir=/consul/config"
+          volumeMounts:
+          - name: data-consul
+            mountPath: /consul/data
+        {{- end }}
       imagePullSecrets:
         - name: docker.secret
       volumes:
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      {{- end }}
       {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}

@@ -26,24 +26,6 @@ spec:
               value: control
             - name: POST_DELAY
               value: "10"
-        {{- if .Values.global.consul.enabled }}
-        - name: consul
-          image: consul:1.5.0
-          imagePullPolicy: IfNotPresent
-          env:
-          - name: POD_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-          command: ["/bin/sh", "-ec"]
-          args:
-            - "/bin/consul services register \
-              -http-addr={{ .Values.global.consul.consul_hostport }} \
-              -name=catalog -address=$(POD_IP) \
-              -port={{ .Values.global.services.edge.port }} \
-              -tag tbn-cluster \
-              -meta metrics=8081"
-        {{- end }}
       containers:
         - name: catalog
           image: {{ tpl .Values.catalog.image $ }}
@@ -80,8 +62,49 @@ spec:
           volumeMounts:
           {{- include "sidecar_volume_certs_mount" . | indent 10 }}
           {{- end }}
-      {{- if .Values.global.spire.enabled }}
+        {{- if .Values.global.consul.enabled }}
+        - name: consul
+          image: consul:1.5.0
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          command: ["/bin/sh", "-ec"]
+          args: 
+            - "echo '{
+              \"Service\": {
+                  \"name\":\"catalog\",
+                  \"address\": \"$(POD_IP)\",
+                  \"port\": {{ .Values.global.services.edge.port }},
+                  \"tags\": [\"tbn-cluster\"],
+                  \"meta\": {
+                      \"metrics\": \"8081\"
+                      },
+                  \"check\": [
+                      {
+                        \"name\": \"catalog health check\",
+                        \"tcp\": \"$(POD_IP):{{ .Values.global.services.edge.port }}\",
+                        \"interval\": \"10s\"
+                      }
+                    ]
+                  }}' > /consul/config/catalog-consul.json \
+                && exec /bin/consul agent \
+                  -data-dir=/consul/data \
+                  -advertise=\"$(POD_IP)\" \
+                  -retry-join=\"{{ .Values.global.consul.host }}\" \
+                  -config-dir=/consul/config"
+          volumeMounts:
+          - name: data-consul
+            mountPath: /consul/data
+        {{- end }}
       volumes:
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      {{- end }}
+      {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
         {{- if and $.Values.global.services.catalog.egressTLS }}
         - name: certs
@@ -89,7 +112,6 @@ spec:
             secretName: sidecar-certs
         {{- end }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-      volumes:
       {{- include "sidecar_certs_volumes" . | indent 6 }}
         {{- if and $.Values.global.services.catalog.egressTLS }}
       - name: certs
@@ -97,7 +119,6 @@ spec:
           secretName: sidecar-certs
         {{- end }}
       {{- else if and $.Values.global.services.catalog.egressTLS }}
-      volumes:
         - name: certs
           secret:
             secretName: sidecar-certs

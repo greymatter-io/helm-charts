@@ -19,7 +19,8 @@ global:
       version: 0.9.1
   consul:
     enabled: false
-    consul_hostport: ''
+    host: ''
+    port: 8500
 
   edge:
     enableTLS: true
@@ -116,7 +117,7 @@ control:
       #  value: 'dc1'
       #gm_control_consul_hostport:
       #  type: 'value'
-      #  value: ''
+      #  value: '{{ .Values.global.consul.host }}:{{ .Values.global.consul.port }}'
 
 gm-control-api:
   gmControlApi:

@@ -16,25 +16,6 @@ spec:
         app: {{ .Values.jwt.name | default "jwt-security"  }}
         deployment: {{ .Values.jwt.name | default "jwt-security"  }}
     spec:
-      initContainers:
-      {{- if .Values.global.consul.enabled }}
-      - name: consul
-        image: consul:1.5.0
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
-        command: ["/bin/sh", "-ec"]
-        args: 
-          - "/bin/consul services register \
-            -http-addr={{ .Values.global.consul.consul_hostport }} \
-            -name={{ .Values.jwt.name | default "jwt-security"  }} -address=$(POD_IP) \
-            -port={{ .Values.global.services.edge.port }} \
-            -tag tbn-cluster \
-            -meta metrics=8081"
-      {{- end }}
       containers:
       - name: jwt-security
         image: {{ tpl .Values.jwt.image $ | quote }}
@@ -102,6 +83,45 @@ spec:
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
+      {{- if .Values.global.consul.enabled }}
+      - name: consul
+        image: consul:1.5.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: NAME
+          value: {{ .Values.jwt.name | default "jwt-security"  }}
+        command: ["/bin/sh", "-ec"]
+        args: 
+          - "echo '{
+            \"Service\": {
+                \"name\":\"$(NAME)\",
+                \"address\": \"$(POD_IP)\",
+                \"port\": {{ .Values.global.services.edge.port }},
+                \"tags\": [\"tbn-cluster\"],
+                \"meta\": {
+                    \"metrics\": \"8081\"
+                    },
+                \"check\": [
+                    {
+                      \"name\": \"$(NAME) health check\",
+                      \"tcp\": \"$(POD_IP):{{ .Values.global.services.edge.port }}\",
+                      \"interval\": \"10s\"
+                    }
+                  ]
+                }}' > /consul/config/$(NAME)-con.json \
+              && exec /bin/consul agent \
+                -data-dir=/consul/data \
+                -advertise=\"$(POD_IP)\" \
+                -retry-join=\"{{ .Values.global.consul.host }}\" \
+                -config-dir=/consul/config"
+        volumeMounts:
+        - name: data-consul
+          mountPath: /consul/data
+      {{- end }}
       imagePullSecrets:
         - name: docker.secret
       volumes:
@@ -114,3 +134,7 @@ spec:
       - name: jwt-users
         configMap:
           name: {{ .Values.jwt.users_cg_name }}
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      {{- end }}
