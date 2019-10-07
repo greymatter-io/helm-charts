@@ -15,8 +15,7 @@ spec:
         app: {{ .Values.gmControlApi.name }}
         deployment: {{ .Values.gmControlApi.name }}
     spec:
-      {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
-      {{- else }}
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
