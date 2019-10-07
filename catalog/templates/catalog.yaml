@@ -107,9 +107,9 @@ spec:
       {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
         {{- if and $.Values.global.services.catalog.egressTLS }}
-        - name: certs
-          secret:
-            secretName: sidecar-certs
+      - name: certs
+        secret:
+          secretName: sidecar-certs
         {{- end }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}

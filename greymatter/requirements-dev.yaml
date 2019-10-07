@@ -5,7 +5,7 @@ dependencies:
 
   - name: data
     repository: 'file://../data'
-    version: '2.0.1'
+    version: '2.0.2'
 
   - name: dashboard
     repository: 'file://../dashboard'
