@@ -4,11 +4,11 @@ dependencies:
     repository: 'file://../catalog'
 
   - name: data
-    version: '2.0.1'
+    version: '2.0.2'
     repository: 'file://../data'
 
   - name: data
-    version: '2.0.1'
+    version: '2.0.2'
     repository: 'file://../data'
     alias: internal-data
 

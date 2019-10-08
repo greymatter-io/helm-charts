@@ -477,7 +477,6 @@ slo:
         value: 'slo'
 
   postgres:
-    openshift:
     private_image: true
     data_mount_point: /var/lib/pgsql/data
     ssl:
@@ -567,7 +566,6 @@ jwt:
         key: jwt.key.pem
 
   redis:
-    openshift:
     private_image: true
 
 internal-jwt:

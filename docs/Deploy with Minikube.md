@@ -230,7 +230,7 @@ Once the repository has successfully been added to your `helm` CLI, you can inst
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
 ```sh
-helm install decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml -f custom-greymatter-minikube.yaml --name gm
+helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f greymatter-minikube.yaml --name gm-deploy
 ```
 
 ### Local Helm charts
@@ -321,6 +321,12 @@ Select the security group you're using and edit the following:
 Select **Save**. Navigate back to the AWS instances dashboard and find the `IPv4 Public IP` column. You should be able to see the Grey Matter Dashboard at  `https://<public-ip>:<voyager-edge-port>`.
 
 ### Debugging
+
+If you're not prompted for a certificate when navigating to voyager-edge, or you suspect something went wrong with the installation run the following command to see if there were any errors running pods:
+
+```sh
+kubectl get events -w | grep error
+```
 
 To see the status of Kubernetes configs, you can access the Kubernetes dashboard running within the Minikube cluster with `minikube dashboard`
 

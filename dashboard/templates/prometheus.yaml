@@ -22,6 +22,12 @@ spec:
       securityContext:
         fsGroup: 65534
       {{- end }}  
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 0
+        fsGroup: 2000
+      {{- end }}
       containers:
       - name: prometheus
         image: {{ .Values.prometheus.image | quote }}

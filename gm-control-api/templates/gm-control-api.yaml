@@ -15,6 +15,12 @@ spec:
         app: {{ .Values.gmControlApi.name }}
         deployment: {{ .Values.gmControlApi.name }}
     spec:
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 0
+        fsGroup: 2000
+      {{- end }}
       containers:
         - name: {{ .Values.gmControlApi.name }}
           image: {{ tpl .Values.gmControlApi.image $ }}

@@ -16,6 +16,12 @@ spec:
       labels:
         app: postgres-slo
     spec:
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 0
+        fsGroup: 2000
+      {{- end }}
       containers:
       - name: postgres
         {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
@@ -65,7 +71,7 @@ spec:
       {{- if .Values.postgres.private_image }}
       imagePullSecrets:
       - name: docker.secret
-      {{- end }}
+      {{- end }} 
       volumes:
       - name: postgres-slo
         persistentVolumeClaim:
