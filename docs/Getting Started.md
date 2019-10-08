@@ -5,6 +5,7 @@
   - [OpenShift](#openshift)
   - [Configuration](#configuration)
     - [Ingress](#ingress)
+    - [Observables](#observables)
     - [Docker credentials](#docker-credentials)
     - [AWS credentials (optional)](#aws-credentials-optional)
     - [Certificates](#certificates)
@@ -90,6 +91,21 @@ helm install appscode/voyager --name voyager-operator --version 10.0.0 \
 Once the edge proxy is deployed, voyager-operator will create a custom ingress resource which will provision a load balancer for you. You can run `kubectl get svc voyager-edge` to see the cluster IP and port.
 
 Read [Ingress](./Ingress.md) for further details.
+
+### Observables
+
+The Grey Matter Helm chart provides the ability to enable observables in the mesh, but they are disabled by default.  To enable observables, modify the following settings in your local custom values file.  The `kafkaServerConnection` should be a reference to a kafka ensemble that is available in the mesh.  The format is `<host1>:<port1>,<host2>:<port2>`
+
+These are global settings for all observables:
+
+```yaml
+globals:
+  observables:
+    topic: observables
+    kafkaServerConnection: 
+```
+
+Observables can be enabled or disabled for each service.  You can enable observables by setting `.Values.global.services.<service>.observables` to `true` or `false`
 
 ### Docker credentials
 

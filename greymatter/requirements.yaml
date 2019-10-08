@@ -35,7 +35,7 @@ dependencies:
 
   - name: gm-control-api
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
-    version: '2.0.1'
+    version: '2.0.2'
 
   - name: control
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'

@@ -9,9 +9,23 @@
       "listener-{{.service.serviceName}}"
   ],
   "listeners": null,
-  "active_proxy_filters": ["gm.metrics"],
+  "active_proxy_filters": [
+  {{- if (.service.observables) }}
+    "gm.observables",
+  {{- end }}
+    "gm.metrics" 
+  ],
   "proxy_filters": {
+    {{-  if (.service.observables) }}
+    "gm_observables": {
+      "useKafka": true,
+      "topic": "{{.service.serviceName}}",
+      "eventTopic": "{{ .Values.global.observables.topic }}",
+      "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"
+    }
+    {{- end }}
     "gm_metrics": {
+      "service_observable": "{{.service.observables}}"
       "metrics_port": 8081,
       "metrics_host": "0.0.0.0",
       "metrics_dashboard_uri_path": "/metrics",
