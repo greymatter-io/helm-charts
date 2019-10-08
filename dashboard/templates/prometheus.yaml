@@ -50,41 +50,8 @@ spec:
         - name: prometheus-data
           mountPath: {{ .Values.prometheus.data_mount_point }}
       {{- if .Values.global.consul.enabled }}
-      - name: consul
-        image: consul:1.5.0
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
-        command: ["/bin/sh", "-ec"]
-        args: 
-          - "echo '{
-            \"Service\": {
-                \"name\":\"prometheus\",
-                \"address\": \"$(POD_IP)\",
-                \"port\": {{ .Values.global.services.edge.port }},
-                \"tags\": [\"tbn-cluster\"],
-                \"meta\": {
-                    \"metrics\": \"8081\"
-                    },
-                \"check\": [
-                    {
-                      \"name\": \"prometheus health check\",
-                      \"tcp\": \"$(POD_IP):{{ .Values.global.services.edge.port }}\",
-                      \"interval\": \"10s\"
-                    }
-                  ]
-                }}' > /consul/config/prometheus-consul.json \
-              && exec /bin/consul agent \
-                -data-dir=/consul/data \
-                -advertise=\"$(POD_IP)\" \
-                -retry-join=\"{{ .Values.global.consul.host }}\" \
-                -config-dir=/consul/config"
-        volumeMounts:
-        - name: data-consul
-          mountPath: /consul/data
+      {{- $data := dict "Values" .Values "ServiceName" "prometheus" }}
+      {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}
       - name: sidecar
         image: {{ tpl .Values.sidecar_prometheus.image $ }}
