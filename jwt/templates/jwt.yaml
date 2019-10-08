@@ -102,4 +102,6 @@ spec:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul
         emptyDir: {}
+      - name: config-consul
+        emptyDir: {}
       {{- end }}

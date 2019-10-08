@@ -37,4 +37,6 @@
   volumeMounts:
   - name: data-consul
     mountPath: /consul/data
+  - name: config-consul
+    mountPath: /consul/config
 {{- end }}
