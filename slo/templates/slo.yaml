@@ -66,9 +66,9 @@ spec:
         - name: SSL_SERVER_CA
           value: {{ .Values.postgres.ssl.mountPoint}}/ca.pem
         - name: SSL_SERVER_CERT
-          value: {{ .Values.postgres.ssl.mountPoint}}/server.crt
+          value: {{ .Values.postgres.ssl.mountPoint}}/postgres.crt
         - name: SSL_SERVER_KEY
-          value: {{ .Values.postgres.ssl.mountPoint}}/server.key
+          value: {{ .Values.postgres.ssl.mountPoint}}/postgres.key
         volumeMounts:
         - name: postgres-certs
           mountPath: {{ .Values.postgres.ssl.mountPoint | quote }}

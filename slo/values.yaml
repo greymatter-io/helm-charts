@@ -92,15 +92,15 @@ postgres:
     name: postgres-ssl-certs
     mountPoint: /certs
     certificates:
-      ca.pem: |-
+      ca: |-
         -----BEGIN CERTIFICATE-----
         ...
         -----END CERTIFICATE-----
-      server.crt: |-
+      cert: |-
         -----BEGIN CERTIFICATE-----
         ...
         -----END CERTIFICATE-----
-      server.key: |-
+      key: |-
         -----BEGIN RSA PRIVATE KEY-----
         ...
         -----END RSA PRIVATE KEY-----

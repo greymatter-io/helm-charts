@@ -8,6 +8,6 @@ data:
     # These override configs in OpenShift's postgres container located at /var/lib/pgsql/data/userdata/postgresql.conf
     ssl = on
     hba_file = '{{ .Values.postgres.confMountPoint }}/pg_hba.conf'
-    ssl_cert_file = '{{ .Values.postgres.ssl.mountPoint }}/server.crt'
-    ssl_key_file = '{{ .Values.postgres.ssl.mountPoint }}/server.key'
+    ssl_cert_file = '{{ .Values.postgres.ssl.mountPoint }}/postgres.crt'
+    ssl_key_file = '{{ .Values.postgres.ssl.mountPoint }}/postgres.key'
     ssl_ca_file = '{{ .Values.postgres.ssl.mountPoint }}/ca.pem'
