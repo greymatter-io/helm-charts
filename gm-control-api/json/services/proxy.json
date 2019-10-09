@@ -10,13 +10,13 @@
   ],
   "listeners": null,
   "active_proxy_filters": [
-  {{- if (.service.observables) }}
+  {{- if (.service.observablesEnabled) }}
     "gm.observables",
   {{- end }}
     "gm.metrics" 
   ],
   "proxy_filters": {
-    {{-  if (.service.observables) }}
+    {{-  if (.service.observablesEnabled) }}
     "gm_observables": {
       "useKafka": true,
       "topic": "{{.service.serviceName}}",
@@ -25,7 +25,6 @@
     }
     {{- end }}
     "gm_metrics": {
-      "service_observable": "{{.service.observables}}"
       "metrics_port": 8081,
       "metrics_host": "0.0.0.0",
       "metrics_dashboard_uri_path": "/metrics",

@@ -62,6 +62,13 @@ global:
 
   # whether to include the virtual cluster namespace in the final hostname of the deployment
   remove_namespace_from_url: false
+
+  # a map of information specific for Grey Matter observables
+  observables:
+    # the Kafka topic that the observables should be written to
+    topic: observables
+    # the Kafka server connection string
+    kafkaServerConnection: 
 ```
 
 ### Ingress
@@ -94,7 +101,7 @@ Read [Ingress](./Ingress.md) for further details.
 
 ### Observables
 
-The Grey Matter Helm chart provides the ability to enable observables in the mesh, but they are disabled by default.  To enable observables, modify the following settings in your local custom values file.  The `kafkaServerConnection` should be a reference to a kafka ensemble that is available in the mesh.  The format is `<host1>:<port1>,<host2>:<port2>`
+The Grey Matter Helm chart provides the ability to enable observables in the mesh, but they are disabled by default.  To enable observables, modify the following settings in your local custom values file.  The `kafkaServerConnection` should be a reference to a Kafka ensemble that is available in the mesh.  The format is `<host1>:<port1>,<host2>:<port2>`
 
 These are global settings for all observables:
 
@@ -105,7 +112,7 @@ globals:
     kafkaServerConnection: 
 ```
 
-Observables can be enabled or disabled for each service.  You can enable observables by setting `.Values.global.services.<service>.observables` to `true` or `false`
+Observables can be enabled or disabled for each service.  You can enable observables by setting `.Values.global.services.<service>.observablesEnabled` to `true` or `false`
 
 ### Docker credentials
 

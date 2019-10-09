@@ -74,7 +74,7 @@ global:
       catalogEnabled: true
       controlEnabled: true
       serviceName: 'catalog'
-      observables: false
+      observablesEnabled: false
       zone: 'zone-default-zone'
       port: 9080
       enableInstanceMetrics: 'true'
@@ -102,7 +102,7 @@ global:
       controlEnabled: true
       name: 'Grey Matter Dashboard'
       serviceName: 'dashboard'
-      observables: false
+      observablesEnabled: false
       zone: zone-default-zone
       port: 1337
       enableInstanceMetrics: 'true'
@@ -120,7 +120,7 @@ global:
       controlEnabled: true
       name: 'Prometheus'
       serviceName: 'prometheus'
-      observables: false
+      observablesEnabled: false
       port: 9090
       # egressTLS: 'false'
 
@@ -130,7 +130,7 @@ global:
       name: 'Grey Matter Data'
       zone: zone-default-zone
       serviceName: 'data'
-      observables: false
+      observablesEnabled: false
       port: 8181
       enableInstanceMetrics: 'true'
       capability: 'Grey Matter'
@@ -149,7 +149,7 @@ global:
       name: 'Grey Matter Internal Data'
       zone: zone-default-zone
       serviceName: 'data-internal'
-      observables: false
+      observablesEnabled: false
       port: 8181
       enableInstanceMetrics: "true" 
       capability: 'Grey Matter'
@@ -164,7 +164,7 @@ global:
       controlEnabled: true
       name: 'Grey Matter JWT Security'
       serviceName: 'jwt-security'
-      observables: false
+      observablesEnabled: false
       zone: zone-default-zone
       port: 3000
       # egressTLS: 'true'
@@ -182,7 +182,7 @@ global:
       controlEnabled: true
       name: 'Grey Matter JWT Security Internal'
       serviceName: 'internal-jwt-security'
-      observables: false
+      observablesEnabled: false
       zone: zone-default-zone
       port: 3000
       # egressTLS: 'true'
@@ -197,7 +197,7 @@ global:
       controlEnabled: true
       name: 'Grey Matter Control API'
       serviceName: 'gm-control-api'
-      observables: false
+      observablesEnabled: false
       zone: zone-default-zone
       port: 5555
       enableInstanceMetrics: 'true'
@@ -214,7 +214,7 @@ global:
       controlEnabled: false
       name: 'Grey Matter Edge'
       serviceName: 'edge'
-      observables: false
+      observablesEnabled: false
       zone: zone-default-zone
       port: 8080
       # We use a static cert on the edge listener
@@ -230,7 +230,7 @@ global:
       controlEnabled: true
       name: 'Grey Matter Service Level Objectives'
       serviceName: 'slo'
-      observables: false
+      observablesEnabled: false
       zone: zone-default-zone
       port: 1337
       # egressTLS: 'false'
