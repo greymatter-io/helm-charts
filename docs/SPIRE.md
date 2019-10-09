@@ -2,6 +2,15 @@
 
 This Helm chart deploys the spire server and agent following the guidelines of the `spire-tutorials` example Kubernetes template.
 
+### General architecture
+SPIRE consists of the Server, Nodes, Agents, and Workloads.
+
+The Server issues SVIDS and manages registration entries which determine how nodes are attested. The Spire Agent runs on each Node and transmits information about the node, along with information about each Workload to the Spire Server.
+
+At startup, or as nodes are added, the Spire Server attests the identity of the Agents and establishes a basic level of trust. The Agents need to trust the Server, and the Server can use multiple node attestation strategies, including join tokens and PKI certificates, over the Node API, as configured by the registration entries.
+
+As Workloads are deployed, the Agent communicates with workloads over a Unix Domain Socket. The workload inherently trusts the Agent due to its trusted/priveleged position. The Agent then gathers information about the workload and sends it to the Server to attest it against the registration entries.
+
 ### Spire Helm Charts implementation details/configuration overview
 
 We create the server as a StatefulSet using a PersistentVolumeClaim for data storage (aka. registration entries)
@@ -12,11 +21,13 @@ We then create the agent as a DaemonSet to run on each node, which assumes that 
 
 The SPIRE server uses the `k8s-sat` NodeAttestor, which uses service account tokens to verify the identity of nodes. It can either use a local `service_account_key_file` or it can use the Token Review API if running inside or connected to a cluster via a kubeconfig file.
 
-In our case, we just use the Token Review API using a in-cluster serviceAccount. To do this, the spire-server pod needs some additional permissions, namely auth-delegator. Additionally, "[Token review API validation for SAT attestor is available starting on SPIRE 0.8.0](https://github.com/spiffe/spire/issues/956#issuecomment-502122628)," so we need to use a recent version.
+In our case, we just use the Token Review API using a in-cluster serviceAccount. To do this, the spire-server pod needs some additional permissions, namely auth-delegator. Additionally, ["Token review API validation for SAT attestor is available starting on SPIRE 0.8.0"](https://github.com/spiffe/spire/issues/956#issuecomment-502122628), so we need to use a recent version.
 
 There are other deloyment considerations such as which storage plugins to use, and additional configuration options depending on the deployment environment (e.g. inside AWS)
 
-**Note: Certs**
+#### Trusting the SPIRE Server Certs
+
+The Agent needs to trust the Spire Server in order to attest to it.
 
 All SPIRE servers create a "trust bundle" on startup which they use to sign every SVID that they issue. By default it is just a random self-signed certificate. It looks like this: 
 
