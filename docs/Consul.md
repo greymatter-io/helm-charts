@@ -11,7 +11,7 @@ Grey Matter supports service discovery using [HashiCorp Consul](https://www.cons
 
 ## Core Service Announcement
 
-In order to configure the Grey Matter Helm charts to announce core services to Consul, edit the `greymatter.yaml` file and set `global.consul.enabled` to true, set `global.consul_hostport` to your Consul server address.
+In order to configure the Grey Matter Helm charts to announce core services to Consul, edit the `greymatter.yaml` file and set `global.consul.enabled` to true, set `global.consul.host` and `global.consul.port` to your Consul server host and port respectively.
 
 The core services will then be configured to register in Consul with a tag `tbn-cluster`, metadata with value `metrics: 8081` and a TCP health check for the service.
 
