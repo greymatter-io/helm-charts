@@ -22,7 +22,7 @@
       "topic": "{{.service.serviceName}}",
       "eventTopic": "{{ .Values.global.observables.topic }}",
       "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"
-    }
+    },
     {{- end }}
     "gm_metrics": {
       "metrics_port": 8081,
