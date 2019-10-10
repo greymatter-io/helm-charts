@@ -12,9 +12,9 @@ metadata:
     heritage: "{{ $.Release.Service }}"
 type: Opaque
 data:
-  ca.pem: {{ .ca | b64enc }}
-  postgres.crt: {{ .cert | b64enc }}
-  postgres.key: {{ .key | b64enc }}
+  {{ .caName }}: {{ .ca | b64enc }}
+  {{ .certName }}: {{ .cert | b64enc }}
+  {{ .keyName }}: {{ .key | b64enc }}
 {{- end }}
 {{- end }}
 {{- end }}

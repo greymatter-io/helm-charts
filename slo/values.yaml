@@ -92,14 +92,20 @@ postgres:
     name: postgres-ssl-certs
     mountPoint: /certs
     certificates:
+      # This sets a default file name for the Postgres CA.  Can be overridden to change the filename
+      caName: ca.pem
       ca: |-
         -----BEGIN CERTIFICATE-----
         ...
         -----END CERTIFICATE-----
+      # This sets a default file name for the Postgres SSL Cert.  Can be overridden to change the filename
+      certName: server.crt
       cert: |-
         -----BEGIN CERTIFICATE-----
         ...
         -----END CERTIFICATE-----
+      # This sets a default file name for the Postgres SSL Key.  Can be overridden to change the filename
+      keyName: server.key
       key: |-
         -----BEGIN RSA PRIVATE KEY-----
         ...

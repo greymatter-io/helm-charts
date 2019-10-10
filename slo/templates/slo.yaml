@@ -64,11 +64,11 @@ spec:
         - name: SSL_ENABLED
           value: {{ .Values.postgres.ssl.enabled | quote }}
         - name: SSL_SERVER_CA
-          value: {{ .Values.postgres.ssl.mountPoint}}/ca.pem
+          value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.caName }}
         - name: SSL_SERVER_CERT
-          value: {{ .Values.postgres.ssl.mountPoint}}/postgres.crt
+          value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.certName }}
         - name: SSL_SERVER_KEY
-          value: {{ .Values.postgres.ssl.mountPoint}}/postgres.key
+          value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.keyName }}
         volumeMounts:
         - name: postgres-certs
           mountPath: {{ .Values.postgres.ssl.mountPoint | quote }}
