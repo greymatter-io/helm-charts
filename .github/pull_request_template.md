@@ -1,17 +1,28 @@
-**Please provide enough information so that others can review your pull request:**
+<!-- Thanks for contributing to our Helm Charts.  Please be as thorough as possible when answering the below questions so that reviewers can quickly review your PR-->
 
-1. Explain the **details** for making this change. What existing problem does the pull request solve? If it resolves an existing issue, be sure to use a Github [keyword](https://help.github.com/en/articles/closing-issues-using-keywords) to automatically close it.
+<!-- Please provide answers to the following questions -->
 
-<br/><br/>
+#### Explain in detail what this PR does / why we need it:
 
-2. What **changes to custom.yaml** are required?
+<!-- If this PR resolves an existing issue, provide the number after the # below to link the PR and issue together -->
+#### Which issue this PR fixes 
 
-<br/><br/>
+- fixes #
 
-3. Have you documented any additional setup steps or configurations options?
+#### Special notes for your reviewer:
 
-<br/><br/>
+#### Did you make any changes to the custom.yaml?  If so, provide them below:
 
-4. Demonstrate the code is solid. Example: The exact commands you ran and their output, screenshots / videos if the pull request changes UI.
 
-<br/><br/>
+#### Have you documented any setup steps or new configurations options?
+
+
+
+#### Demonstrate the code is solid. Example: The exact commands you ran and their output, screenshots / videos if the pull request changes UI.
+
+
+#### Checklist
+[Place an '[x]' (no spaces) in all applicable fields. Please remove unrelated fields.]
+- [ ] Chart Version bumped
+- [ ] Chart Version bumped in Grey Matter requirements.yaml
+- [ ] Variables are documented in the <chart>/configuration.md
