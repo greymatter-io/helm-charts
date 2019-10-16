@@ -5,7 +5,7 @@ This Helm chart deploys the spire server and agent following the guidelines of t
 ### General architecture
 SPIRE consists of the Server, Nodes, Agents, and [Workloads](https://spiffe.io/spiffe/#workload).
 
-In the SPIFFE vernacular a Workload is a single piece of software, deployed with a particular configuration for a single purpose; it may comprise multiple running instances of software, all of which perform the same task. Ultimately, SPIFFE is concerned with the authentication of -- and secure communication between -- each Workload.
+In the SPIFFE lexicon a Workload is a single piece of software, deployed with a particular configuration for a single purpose; it may comprise multiple running instances of software, all of which perform the same task. Ultimately, SPIFFE is concerned with the authentication of -- and secure communication between -- each Workload.
 
 The Server issues SVIDS and manages registration entries which determine how nodes are attested. The Spire Agent runs on each Node and transmits information about the node, along with information about each Workload to the Spire Server.
 
