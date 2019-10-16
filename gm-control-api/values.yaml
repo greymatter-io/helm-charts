@@ -58,9 +58,6 @@ gmControlApi:
     gm_control_api_org_key:
       type: 'value'
       value: 'deciphernow'
-    gm_control_api_persister_type:
-      type: 'value'
-      value: 'null'
     gm_control_api_zone_key:
       type: 'value'
       value: '{{ .Values.gmControlApi.zone }}'

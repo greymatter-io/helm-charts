@@ -19,6 +19,10 @@ global:
       version: 0.9.1
   sense:
     enabled: false
+  consul:
+    enabled: false
+    host: ''
+    port: 8500
   edge:
     enableTLS: true
     certPath: /etc/proxy/tls/edge
@@ -106,6 +110,15 @@ control:
       gm_control_console_level:
         type: 'value'
         value: 'debug'
+      #gm_control_cmd:
+      #  type: 'value'
+      #  value: 'consul'
+      #gm_control_consul_dc:
+      #  type: 'value'
+      #  value: 'dc1'
+      #gm_control_consul_hostport:
+      #  type: 'value'
+      #  value: '{{ .Values.global.consul.host }}:{{ .Values.global.consul.port }}'
 
 gm-control-api:
   gmControlApi:
@@ -465,7 +478,6 @@ slo:
         value: 'slo'
 
   postgres:
-    openshift:
     private_image: true
     data_mount_point: /var/lib/pgsql/data
     ssl:
@@ -555,7 +567,6 @@ jwt:
         key: jwt.key.pem
 
   redis:
-    openshift:
     private_image: true
 
 internal-jwt:

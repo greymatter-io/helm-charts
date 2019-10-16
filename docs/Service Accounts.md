@@ -30,14 +30,29 @@ The following list gives the service that needs a service account along with the
 - `spire-agent` - spire subchart - `.Values.spire.agent.serviceAccount`
 - `spire-server` - spire subchart - `.Values.spire.server.serviceAccount`
 
-If you're deploying into an environment where Helm/Tiller doesn't have sufficient permissions to create service accounts, you'll need to apply the [greymatter-service-accounts.yaml](../greymatter-service-accounts.yaml) file first. Be sure to set the appropriate namespace you're deploying to throughout that file. The user to apply this file will need to have sufficient permissions to create accounts. The custom values file will also need to be updated to ensure Helm doesn't try to create the accounts.
+If you're deploying into an environment where Tiller doesn't have sufficient permissions to create service accounts, you'll need to apply the [greymatter-service-accounts.yaml](../greymatter-service-accounts.yaml) file.
 
-For example:
+1. In your custom values file be sure to prevent Tiller from attempting to create the accounts. All occurrences of `serviceAccount.create` should be set to `false`.
 
-```yaml
-serviceAccount:
-  create: false
-  name: waiter-sa
-```
+    ```yaml
+    waiter:
+      serviceAccount:
+        create: false
+    ...
+    control:
+      serviceAccount:
+        create: false
+    ...
+    prometheus:
+      serviceAccount:
+        create: false
+    ```
+
+2. Change all occurrences of `namespace` in `greymatter-service-accounts.yaml` to the namespace you're deploying to.
+3. Creat the service accounts by applying the `greymatter-service-accounts.yaml` as a cluster admin.
+
+    ```sh
+    oc apply -f greymatter-service-accounts.yaml
+    ```
 
 [Multi-tenant Helm guide](./Multi-tenant%20Helm.md) provides further details on deploying Tiller securely.

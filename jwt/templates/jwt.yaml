@@ -30,7 +30,6 @@ spec:
         args:
 {{ toYaml .Values.jwt.args | indent 8 }}
         {{- end }}
-        
 
         env:
       {{- range $envvar := .Values.jwt.envvars }}
@@ -84,6 +83,10 @@ spec:
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
+      {{- if .Values.global.consul.enabled }}
+      {{- $data := dict "Values" .Values "ServiceName"  (default "jwt-security"  .Values.jwt.name) }}
+      {{- include "consul.agent" $data | nindent 6 }}
+      {{- end }}
       imagePullSecrets:
         - name: docker.secret
       volumes:
@@ -96,3 +99,9 @@ spec:
       - name: jwt-users
         configMap:
           name: {{ .Values.jwt.users_cg_name }}
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      - name: config-consul
+        emptyDir: {}
+      {{- end }}

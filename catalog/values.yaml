@@ -30,14 +30,13 @@ global:
   waiter:
     serviceAccount:
       Name: waiter
+    image: deciphernow/k8s-waiter:latest
   control:
     name: control
     port: 50000
   services:
     catalog:
       egressTLS: false
-  waiter:
-    image: deciphernow/k8s-waiter:latest
 
 catalog:
   name: catalog
@@ -127,7 +126,6 @@ catalog:
     client_email:
       type: value
       value: 'gm-control@deciphernow.com'
-
 
   init:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'

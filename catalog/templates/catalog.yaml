@@ -62,16 +62,25 @@ spec:
           volumeMounts:
           {{- include "sidecar_volume_certs_mount" . | indent 10 }}
           {{- end }}
-      {{- if .Values.global.spire.enabled }}
+        {{- if .Values.global.consul.enabled }}
+        {{- $data := dict "Values" .Values "ServiceName" "catalog" }}
+        {{- include "consul.agent" $data | nindent 8 }}
+        {{- end }}
       volumes:
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      - name: config-consul
+        emptyDir: {}
+      {{- end }}
+      {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
         {{- if and $.Values.global.services.catalog.egressTLS }}
-        - name: certs
-          secret:
-            secretName: sidecar-certs
+      - name: certs
+        secret:
+          secretName: sidecar-certs
         {{- end }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-      volumes:
       {{- include "sidecar_certs_volumes" . | indent 6 }}
         {{- if and $.Values.global.services.catalog.egressTLS }}
       - name: certs
@@ -79,7 +88,6 @@ spec:
           secretName: sidecar-certs
         {{- end }}
       {{- else if and $.Values.global.services.catalog.egressTLS }}
-      volumes:
         - name: certs
           secret:
             secretName: sidecar-certs

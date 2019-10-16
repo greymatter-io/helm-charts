@@ -85,7 +85,6 @@ spec:
           - name: XDS_PORT
             value: {{ .Values.global.xds.port | quote }}
             {{- end }}
-
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
         {{- if .Values.sidecar.resources }}
         resources:
@@ -105,10 +104,20 @@ spec:
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end}}
+      {{- if .Values.global.consul.enabled }}
+      {{- $data := dict "Values" .Values "ServiceName" .Values.data.name }}
+      {{- include "consul.agent" $data | nindent 6 }}
+      {{- end }}
 
       imagePullSecrets:
       - name: docker.secret
       volumes:
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      - name: config-consul
+        emptyDir: {}
+      {{- end }}
       {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
@@ -125,4 +134,5 @@ spec:
         persistentVolumeClaim:
           claimName: {{ .Values.data.name }}-pvc
       {{- end }}
+
 

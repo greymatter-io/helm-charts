@@ -46,4 +46,4 @@ To verify that Voyager has started, run:
   kubectl --namespace=kube-system get deployments -l "release=voyager-operator, app=voyager"
 ```
 
-Now you're all set. When you deploy the edge service, voyager-operator will create a custom `Ingress` resource which will provision a load balancer for you. You can run `kc get svc voyager-edge` to see the cluster ip and port.
+Now you're all set. When you deploy the edge service, voyager-operator will create a custom `Ingress` resource which will provision a load balancer for you. You can run `kubectl get svc voyager-edge` to see the cluster ip and port.

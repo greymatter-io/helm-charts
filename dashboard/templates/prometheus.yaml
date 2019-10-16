@@ -22,6 +22,12 @@ spec:
       securityContext:
         fsGroup: 65534
       {{- end }}  
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 0
+        fsGroup: 2000
+      {{- end }}
       containers:
       - name: prometheus
         image: {{ .Values.prometheus.image | quote }}
@@ -49,6 +55,10 @@ spec:
           mountPath: {{ .Values.prometheus.config_mount_point }}
         - name: prometheus-data
           mountPath: {{ .Values.prometheus.data_mount_point }}
+      {{- if .Values.global.consul.enabled }}
+      {{- $data := dict "Values" .Values "ServiceName" "prometheus" }}
+      {{- include "consul.agent" $data | nindent 6 }}
+      {{- end }}
       - name: sidecar
         image: {{ tpl .Values.sidecar_prometheus.image $ }}
         imagePullPolicy: {{ .Values.prometheus.imagePullPolicy }}
@@ -73,10 +83,15 @@ spec:
       imagePullSecrets:
       - name: docker.secret
       volumes:
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      - name: config-consul
+        emptyDir: {}
+      {{- end }}
       {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-      volumes:
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       - name: prometheus-configuration

@@ -1,4 +1,3 @@
-
 # Getting Started
 
 - [Getting Started](#getting-started)
@@ -6,6 +5,7 @@
   - [OpenShift](#openshift)
   - [Configuration](#configuration)
     - [Ingress](#ingress)
+    - [Observables](#observables)
     - [Docker credentials](#docker-credentials)
     - [AWS credentials (optional)](#aws-credentials-optional)
     - [Certificates](#certificates)
@@ -53,15 +53,22 @@ At the top of `custom-greymatter.yaml`, set the following four values according 
 global:
   # used in our subcharts to apply platform specific settings, values can be `openshift` or `kubernetes` only
   environment: openshift
-  
+
   # the domain you're deploying to
   domain: development.deciphernow.com
-  
+
   # a string that will be prefixed to the final hostname of the deployment
   route_url_name: greymatter
-  
+
   # whether to include the virtual cluster namespace in the final hostname of the deployment
   remove_namespace_from_url: false
+
+  # a map of information specific for Grey Matter observables
+  observables:
+    # the Kafka topic that the observables should be written to
+    topic: observables
+    # the Kafka server connection string
+    kafkaServerConnection: 
 ```
 
 ### Ingress
@@ -92,6 +99,21 @@ Once the edge proxy is deployed, voyager-operator will create a custom ingress r
 
 Read [Ingress](./Ingress.md) for further details.
 
+### Observables
+
+The Grey Matter Helm chart provides the ability to enable observables in the mesh, but they are disabled by default.  To enable observables, modify the following settings in your local custom values file.  The `kafkaServerConnection` should be a reference to a Kafka ensemble that is available in the mesh.  The format is `<host1>:<port1>,<host2>:<port2>`
+
+These are global settings for all observables:
+
+```yaml
+globals:
+  observables:
+    topic: observables
+    kafkaServerConnection: 
+```
+
+Observables can be enabled or disabled for each service.  You can enable observables by setting `.Values.global.services.<service>.observablesEnabled` to `true` or `false`
+
 ### Docker credentials
 
 At the top of your `custom-greymatter-secrets.yaml` file set your Docker credentials so Helm can pull the necessary Grey Matter images. If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
@@ -107,7 +129,7 @@ dockerCredentials:
 ### AWS credentials (optional)
 
 Set AWS credentials for gm-data to authenticate and push content to S3. This step is **optional** because gm-data stores files on disk or in S3. If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
-  
+
 ```yaml
 data:
   data:
@@ -138,7 +160,7 @@ Read [SPIRE](./SPIRE.md) for further details.
 
 We support multiple TLS options both for ingress/egress (north/south traffic) to the edge proxy, and between the sidecar proxies (east/west traffic) within the mesh. For ingress, we support mTLS or non-TLS. To do this, enable the following:
 
-``` yaml
+```yaml
 edge:
   enableTLS: true
   certPath: /etc/proxy/tls/edge
@@ -193,7 +215,31 @@ If you want to deploy a Helm chart for a single service without the entire servi
 
 ### Prepare Tiller
 
-For production deployments of multi-tenant clusters we highly recommend that you setup Tiller following our [Multi-tenant Helm guide](./Multi-tenant%20Helm.md). If you're comfortable with providing Tiller with full cluster access then proceed onward. Full Tiller access should be granted when installing with Minikube.
+Tiller requires permissions to run installations in the cluster. Depending on your
+setup and security requirements, these particular permissions will change. Please see
+the [official Helm docs](https://helm.sh/docs/using_helm/#tiller-and-role-based-access-control) to prepare your
+production setup, but we do provide highlights in our [Multi-tenant Helm guide](./Multi-tenant%20Helm.md).
+
+For development deployments with Minikube, you can skip these steps and proceed on. Full Tiller access should be granted by default when installing with Minikube.
+
+For a quick setup, giving Tiller full cluster-wide access, have an admin apply the `helm-service-account.yaml` found in this repository. This will enable Tiller
+to act and install across the entire Kubernetes cluster.
+
+For Openshift:
+```
+oc apply -f ./helm-service-account.yaml
+```
+
+For Kubernetes:
+```
+kubectl apply -f ./helm-service-account.yaml
+```
+
+You'll then be able to initialize Helm using this account:
+
+```
+helm init --service-account tiller
+```
 
 ### Prepare Service Accounts
 

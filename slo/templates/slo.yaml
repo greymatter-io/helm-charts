@@ -15,6 +15,12 @@ spec:
         app: slo
         deployment: slo
     spec:
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 0
+        fsGroup: 2000
+      {{- end }}
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
         - name: ensure-postgres
@@ -60,9 +66,9 @@ spec:
         - name: SSL_SERVER_CA
           value: {{ .Values.postgres.ssl.mountPoint}}/ca.pem
         - name: SSL_SERVER_CERT
-          value: {{ .Values.postgres.ssl.mountPoint}}/server.crt
+          value: {{ .Values.postgres.ssl.mountPoint}}/postgres.crt
         - name: SSL_SERVER_KEY
-          value: {{ .Values.postgres.ssl.mountPoint}}/server.key
+          value: {{ .Values.postgres.ssl.mountPoint}}/postgres.key
         volumeMounts:
         - name: postgres-certs
           mountPath: {{ .Values.postgres.ssl.mountPoint | quote }}
@@ -88,6 +94,10 @@ spec:
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
+      {{- if .Values.global.consul.enabled }}
+      {{- $data := dict "Values" .Values "ServiceName" "slo" }}
+      {{- include "consul.agent" $data | nindent 6 }}
+      {{- end }}
       imagePullSecrets:
         - name: docker.secret
       volumes:
@@ -102,4 +112,10 @@ spec:
         secret:
           secretName: {{ .Values.postgres.ssl.name }}
           defaultMode: 0600
+      {{- end }}
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      - name: config-consul
+        emptyDir: {}
       {{- end }}

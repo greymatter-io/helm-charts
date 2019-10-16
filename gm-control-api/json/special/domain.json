@@ -1,7 +1,7 @@
 {
     "domain_key": "edge",
     "zone_key": "{{ .Values.gmControlApi.zone }}",
-    "name": {{ include "greymatter.domain" . | quote }},
+    "name": "*",
     "port": 8080,
     "redirects": null,
     "gzip_enabled": false,

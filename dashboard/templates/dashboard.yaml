@@ -55,11 +55,20 @@ spec:
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
-      {{- if .Values.global.spire.enabled }}
+      {{- if .Values.global.consul.enabled }}
+      {{- $data := dict "Values" .Values "ServiceName" "dashboard" }}
+      {{- include "consul.agent" $data | nindent 6 }}
+      {{- end }}
       volumes:
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      - name: config-consul
+        emptyDir: {}
+      {{- end }}
+      {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-      volumes:
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       imagePullSecrets:
