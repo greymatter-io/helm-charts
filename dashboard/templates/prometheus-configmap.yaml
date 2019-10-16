@@ -33,7 +33,7 @@ data:
             target_label: __address__
           - source_labels: ['__meta_consul_service']
             target_label: job
-      {{- else }}
+      {{- end }}
       - job_name: kubernetes
         metrics_path: /prometheus
         kubernetes_sd_configs:
