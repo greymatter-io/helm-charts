@@ -33,7 +33,7 @@ data:
             target_label: __address__
           - source_labels: ['__meta_consul_service']
             target_label: job
-      {{- end }}
+      {{- else }}
       - job_name: kubernetes
         metrics_path: /prometheus
         kubernetes_sd_configs:
@@ -52,6 +52,7 @@ data:
           target_label:  'job'
           #replacement:   '${1}'
           replacement:   '${1}'
+      {{- end }}
       {{- if .Values.global.sense.enabled }}
       - job_name: sense
         metrics_path: /stats/prometheus
