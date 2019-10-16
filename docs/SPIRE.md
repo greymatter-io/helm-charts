@@ -1,6 +1,6 @@
 # SPIRE
 
-This Helm chart deploys the spire server and agent following the guidelines of the `spire-tutorials` example Kubernetes template.
+This Helm chart deploys the spire server and agent following the guidelines of the [`spire-tutorials`](https://github.com/spiffe/spire-tutorials) example Kubernetes template (described in the ["Getting Started Guide for Kubernetes"](https://spiffe.io/spire/getting-started-k8s/)).
 
 ### General architecture
 SPIRE consists of the Server, Nodes, Agents, and [Workloads](https://spiffe.io/spiffe/#workload).
