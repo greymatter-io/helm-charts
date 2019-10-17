@@ -14,6 +14,10 @@ global:
   edge:
     enableTLS: true
     certPath: /etc/proxy/tls/edge
+  consul:
+    enabled: false
+    host: ''
+    port: 8500
 
 ingress_config:
   default_url: '{{ .Values.global.route_url_name }}.{{ .Release.Namespace }}.{{ .Values.global.domain }}'

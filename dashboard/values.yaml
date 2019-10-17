@@ -10,6 +10,10 @@ global:
     cluster: greymatter
   sense:
     enabled: false  
+  consul:
+    enabled: false
+    host: ''
+    port: 8500
 
 dashboard:
   image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.global.dashboard.version }}'

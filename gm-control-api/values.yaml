@@ -18,6 +18,10 @@ global:
     jwt_prefix: 
   waiter:
     image: deciphernow/k8s-waiter:latest
+  consul:
+    enabled: false
+    host: ''
+    port: 8500
 
 gmControlApi:
   name: gm-control-api

@@ -7,6 +7,10 @@ global:
   remove_namespace_from_url: ''
   exhibitor:
     replicas: 1
+  consul:
+    enabled: false
+    host: ''
+    port: 8500
 
   data:
     # This value is used to data where to find jwt and also used to configure the mesh to enable routes from data to jwt

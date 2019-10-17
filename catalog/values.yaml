@@ -37,6 +37,10 @@ global:
   services:
     catalog:
       egressTLS: false
+  consul:
+    enabled: false
+    host: ''
+    port: 8500
 
 catalog:
   name: catalog
