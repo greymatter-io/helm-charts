@@ -33,6 +33,35 @@ You will need the following tools installed (tested on both Mac OS and Linux Ubu
 - [helm](https://github.com/helm/helm/releases/tag/v2.14.3)@2.14.3
 - [virtualbox](https://www.virtualbox.org/wiki/Downloads)@6.0.12
 
+### Quickstart
+
+A couple of makefile targets provide a fast and easy way to standup greymatter on minikube.
+
+Before starting via Minikube you need to supply your credentials to dechipers docker registry. This will be your decipher email address and your decipher password.
+
+You can interactively fillout your credentials with the credentials make target.
+
+```sh
+make credentials
+```
+
+After you have filled out your credentials using the above target you can get minikube up and running in one target using:
+
+```sh
+make minikube
+```
+
+To spin down minikube.
+
+```sh
+make destroy
+```
+Additionally there is the fresh makefile target. Which effectively runs make credentials and then make minikube.
+
+```sh
+make fresh
+```
+
 ### Start Minikube
 
 To launch a Minikube cluster to a `gm-deploy` VM profile, run the following command:
