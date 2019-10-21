@@ -35,7 +35,7 @@ You will need the following tools installed (tested on both Mac OS and Linux Ubu
 
 ### Quickstart
 
-A couple of makefile targets provide a fast and easy way to standup greymatter on minikube.
+A couple of makefile targets provide a fast and easy way to standup Grey Matter on minikube.
 
 Before starting via Minikube you need to supply your credentials to dechipers docker registry. This will be your decipher email address and your decipher password.
 
