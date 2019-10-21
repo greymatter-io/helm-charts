@@ -21,11 +21,11 @@ dependencies:
     repository: 'file://../edge'
 
   - name: jwt-gov
-    version: '2.0.1'
+    version: '2.0.2'
     repository: 'file://../jwt-gov'
 
   - name: jwt
-    version: '2.0.1'
+    version: '2.0.3'
     repository: 'file://../jwt'
     alias: internal-jwt
 

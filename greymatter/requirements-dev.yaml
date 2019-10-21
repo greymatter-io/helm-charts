@@ -29,7 +29,7 @@ dependencies:
 
   - name: jwt
     repository: 'file://../jwt'
-    version: '2.0.1'
+    version: '2.0.3'
 
   - name: slo
     repository: 'file://../slo'

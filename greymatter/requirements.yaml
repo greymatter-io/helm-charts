@@ -21,11 +21,11 @@ dependencies:
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: jwt
-    version: '2.0.2'
+    version: '2.0.3'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: jwt
-    version: '2.0.2'
+    version: '2.0.3'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
     alias: internal-jwt
 

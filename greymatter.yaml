@@ -441,7 +441,7 @@ catalog:
         debug:
           type: value
           value: 'true'
-  
+
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
     create_sidecar_secret: false
@@ -519,7 +519,7 @@ jwt:
   jwt:
     use_aac: true
     users_mount_point: /gm-jwt-security/etc
-    image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:0.2.0
+    image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
       - type: value
         name: HTTPS_PORT
@@ -580,7 +580,7 @@ internal-jwt:
   jwt:
     name: internal-jwt-security
     certs_mount_point: /gm-jwt-security/certs
-    image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:0.2.0
+    image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
       - type: value
         name: HTTPS_PORT
