@@ -56,7 +56,7 @@ To spin down minikube.
 ```sh
 make destroy
 ```
-Additionally there is the fresh makefile target. Which effectively runs make credentials and then make minikube.
+Additionally, there is the `fresh` makefile target that runs `make credentials` and `make minikube`.
 
 ```sh
 make fresh
