@@ -14,7 +14,7 @@ global:
     sidecar:
       version: 0.9.1
   catalog:
-    version: 1.0.1
+    version: 1.0.2
     sidecar:
       version: 0.9.1
   sense:
@@ -45,7 +45,7 @@ global:
     catalog:
       egressTLS: true
       mTLS: true
-      version: 1.0.1
+      version: 1.0.2
     dashboard:
       egressTLS: false
       mTLS: true
@@ -441,7 +441,7 @@ catalog:
         debug:
           type: value
           value: 'true'
-  
+
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
     create_sidecar_secret: false
