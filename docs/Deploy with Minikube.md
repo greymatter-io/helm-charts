@@ -63,6 +63,8 @@ To spin down minikube.
 make destroy
 ```
 
+If you don't have the `envsubst` command you can get it with the `gettext` package on Mac or Ubuntu. The command is required for using `make credentials`.
+
 ### Start Minikube
 
 To launch a Minikube cluster to a `gm-deploy` VM profile, run the following command:
