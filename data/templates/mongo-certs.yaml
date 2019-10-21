@@ -1,5 +1,6 @@
 {{- if .Values.mongo.ssl.enabled }}
 {{ if .Values.mongo.ssl.certificates }}
+{{- if .Values.data.deploy.resources.mongo_certs.create }}
 {{- with .Values.mongo.ssl.certificates }}
 ---
 apiVersion: v1
@@ -22,5 +23,5 @@ data:
 {{- end }}
 {{- end }}
 {{- end }}
-
+{{- end }}
 

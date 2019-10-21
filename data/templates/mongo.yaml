@@ -2,20 +2,20 @@ kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   labels:
-    app: mongo
-  name: mongo
+    app: mongo-{{ .Release.Name | lower}}
+  name: mongo-{{ .Release.Name | lower}}
   namespace: {{ .Release.Namespace }}
 spec:
   podManagementPolicy: Parallel
   replicas: {{ .Values.mongo.replicas }}
   selector:
     matchLabels:
-      app: mongo
-  serviceName: mongo
+      app: mongo-{{ .Release.Name | lower}}
+  serviceName: mongo-{{ .Release.Name | lower}}
   template:
     metadata:
       labels:
-        app: mongo
+        app: mongo-{{ .Release.Name | lower}}
     spec:
       containers:
       - env:
@@ -49,7 +49,7 @@ spec:
           protocol: TCP
         volumeMounts:
         - mountPath: /var/lib/mongodb/data
-          name: data
+          name: data-{{ .Release.Name | lower}}
         - mountPath: /docker-entrypoint-initdb.d/
           name: mongo-init
         {{- if .Values.mongo.ssl.enabled }}
@@ -59,19 +59,19 @@ spec:
       volumes:
         - name: mongo-init
           configMap:
-            name: mongo-init
+            name: {{ if .Values.data.deploy.resources.mongo_configmap.create }}mongo-init{{else}}{{ .Values.data.deploy.resources.mongo_configmap.manual_name }}{{ end }}
         {{- if .Values.mongo.ssl.enabled }}
         - name: certificates
           secret:
-            secretName: {{ .Values.mongo.ssl.name }}
+            secretName: {{ if .Values.data.deploy.resources.mongo_certs.create }}{{ .Values.mongo.ssl.name }}{{else}}{{ .Values.data.deploy.resources.mongo_certs.manual_name }}{{ end }}
         {{- end }}
       {{- if .Values.mongo.private_image }}
       imagePullSecrets:
-      - name: docker.secret
+      - name: {{ if .Values.data.deploy.resources.docker_secret.create }}docker.secret{{else}}{{ .Values.data.deploy.resources.docker_secret.manual_name }}{{ end }}
       {{- end }}
   volumeClaimTemplates:
   - metadata:
-      name: data
+      name: data-{{ .Release.Name | lower}}
     spec:
       accessModes:
         - ReadWriteOnce

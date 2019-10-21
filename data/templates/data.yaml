@@ -2,17 +2,17 @@ kind: Deployment
 apiVersion: extensions/v1beta1
 #apiVersion: apps/v1
 metadata:
-  name: data
+  name: data-{{ .Release.Name | lower}}
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.data.replicas | default 1 }}
   selector:
     matchLabels:
-      app: data
+      app: data-{{ .Release.Name | lower}}
   template:
     metadata:
       labels:
-        app: data
+        app: data-{{ .Release.Name | lower}}
     spec:
       containers:
       - name: data
@@ -106,10 +106,10 @@ spec:
           - name: ZK_ANNOUNCE_PATH
             {{- if .Values.data.deploy.standalone }}
             {{- if .Values.data.deploy.base_path }}
-            value: {{ tpl .Values.data.deploy.base_path $ | trunc 3 | quote }}
+            value: {{ tpl .Values.data.deploy.base_path $ | quote }}
             {{- end }}
             {{- else }}
-            value: {{ tpl .Values.data.base_path $ | trunc 3 | quote }}
+            value: {{ tpl .Values.data.base_path $ | quote }}
             {{- end }}
           - name: TIMEOUT
             value: {{ .Values.sidecar.timeout | quote  }}
@@ -131,14 +131,14 @@ spec:
         - mountPath: /etc/proxy/tls/sidecar
           name: sidecar
       imagePullSecrets:
-      - name: docker.secret
+      - name: {{ if .Values.data.deploy.resources.docker_secret.create }}docker.secret{{else}}{{ .Values.data.deploy.resources.docker_secret.manual_name }}{{ end }}
       volumes:
       - name: sidecar
         secret:
           secretName: sidecar
       - name: data
         secret:
-          secretName: data
+          secretName: {{ if .Values.data.deploy.resources.data_secret.create }}data{{else}}{{ .Values.data.deploy.resources.data_secret.manual_name }}{{ end }}
       - name: jwt-security
         secret:
           secretName: jwt-security
