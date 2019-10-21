@@ -39,8 +39,14 @@ A couple of makefile targets provide a fast and easy way to standup Grey Matter 
 
 Before starting via Minikube you need to supply your credentials for Decipher's docker registry. This will be your decipher email address and your decipher password.
 
-You can interactively fillout your credentials with the credentials make target.
 
+The `fresh` makefile target runs `make credentials` and `make minikube`.
+
+```sh
+make fresh
+```
+
+You can interactively fillout your credentials with the credentials make target.
 ```sh
 make credentials
 ```
@@ -55,11 +61,6 @@ To spin down minikube.
 
 ```sh
 make destroy
-```
-Additionally, there is the `fresh` makefile target that runs `make credentials` and `make minikube`.
-
-```sh
-make fresh
 ```
 
 ### Start Minikube
