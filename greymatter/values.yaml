@@ -26,12 +26,12 @@ global:
     prometheus_sidecar:
       version: 0.8.0
   data:
-    version: 0.2.7
+    version: 1.0.0
     sidecar:
       version:
     jwt_prefix: '/jwt'
   internal-data:
-    version: 0.2.7
+    version: 1.0.0
     sidecar:
       version:
     jwt_prefix: '/jwt'
@@ -136,7 +136,7 @@ global:
       capability: 'Grey Matter'
       documentation: '/services/data/latest/static/ui/index.html'
       owner: 'Decipher'
-      version: 0.2.7
+      version: 1.0.0
       # egressTLS: 'true'
       routes:
         - '/services/data/{{ $.Values.global.data.version }}'
@@ -156,7 +156,7 @@ global:
       documentation: '/services/data/latest/static/ui/index.html'
       name: 'Grey Matter Internal Data'
       owner: 'Decipher'
-      version: 0.2.7   
+      version: 1.0.0   
       # egressTLS: 'true'
 
     jwt:

@@ -139,7 +139,7 @@ data:
         value: 'data'
 
   data:
-    image: docker.production.deciphernow.com/deciphernow/gm-data:0.2.7
+    image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
     envvars:
       uses3:
@@ -214,7 +214,7 @@ data:
         key: server.trust.pem
       client_prefix:
         type: value
-        value: /services/data/0.2.7
+        value: /services/data/1.0.0
       client_jwt_prefix:
         type: value
         value: /jwt
@@ -278,9 +278,9 @@ internal-data:
         type: value
         value: 'data-internal'
   data:
-    image: docker.production.deciphernow.com/deciphernow/gm-data:0.2.7
+    image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
-    version: 0.2.7
+    version: 1.0.0
     name: data-internal
     pvc:
       mountPath: /buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
