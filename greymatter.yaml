@@ -441,7 +441,7 @@ catalog:
         debug:
           type: value
           value: 'true'
-  
+
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
     create_sidecar_secret: false
@@ -468,7 +468,7 @@ dashboard:
 
 slo:
   slo:
-    image: docker.production.deciphernow.com/deciphernow/gm-slo:0.5.0
+    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.0.0
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
     create_sidecar_secret: false

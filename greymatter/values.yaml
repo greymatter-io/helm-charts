@@ -46,7 +46,7 @@ global:
     sidecar:
       version:
   slo:
-    version: 0.5.0
+    version: 1.0.0
     sidecar:
       version:
   control:
@@ -238,7 +238,7 @@ global:
       capability: 'Grey Matter'
       documentation:
       owner: 'Decipher'
-      version: '0.5.0'
+      version: '1.0.0'
       routes:
         - '/services/slo/{{ $.Values.global.slo.version }}'
         - '/services/slo/{{ $.Values.global.slo.version }}/'

@@ -30,7 +30,7 @@ dependencies:
     alias: internal-jwt
 
   - name: slo
-    version: '2.0.5'
+    version: '2.0.6'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: gm-control-api
