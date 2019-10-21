@@ -36,7 +36,7 @@ global:
     # This specifies the service name that all XDS clients will try to connect to
     name: control
     port: 50000
-    version: 0.5.1
+    version: 1.0.2
   data:
     jwt_prefix: '/jwt'
   internal-data:
@@ -105,7 +105,7 @@ control:
   control:
     serviceAccount:
       create: true
-    image: docker.production.deciphernow.com/deciphernow/gm-control:0.5.1
+    image: docker.production.deciphernow.com/deciphernow/gm-control:1.0.2
     envvars:
       gm_control_console_level:
         type: 'value'
@@ -441,7 +441,7 @@ catalog:
         debug:
           type: value
           value: 'true'
-  
+
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
     create_sidecar_secret: false
