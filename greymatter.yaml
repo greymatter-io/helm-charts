@@ -12,11 +12,11 @@ global:
   dashboard:
     version: 3.1.0
     sidecar:
-      version: 0.9.1
+      version: 1.0.0
   catalog:
-    version: 1.0.1
+    version: 1.0.2
     sidecar:
-      version: 0.9.1
+      version: 1.0.0
   sense:
     enabled: false
   consul:
@@ -26,7 +26,7 @@ global:
   edge:
     enableTLS: true
     certPath: /etc/proxy/tls/edge
-    version: 0.9.1
+    version: 1.0.0
   spire:
     enabled: false
   waiter:
@@ -36,7 +36,7 @@ global:
     # This specifies the service name that all XDS clients will try to connect to
     name: control
     port: 50000
-    version: 0.5.1
+    version: 1.0.2
   data:
     jwt_prefix: '/jwt'
   internal-data:
@@ -45,7 +45,7 @@ global:
     catalog:
       egressTLS: true
       mTLS: true
-      version: 1.0.1
+      version: 1.0.2
     dashboard:
       egressTLS: false
       mTLS: true
@@ -72,7 +72,7 @@ global:
       mTLS: true
 
   sidecar:
-    version: 0.9.1
+    version: 1.0.0
     envvars:
       # You can customize the sidecar environment variables mesh-wide to enable features in the mesh
       # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services `configuration.md` files.
@@ -105,7 +105,7 @@ control:
   control:
     serviceAccount:
       create: true
-    image: docker.production.deciphernow.com/deciphernow/gm-control:0.5.1
+    image: docker.production.deciphernow.com/deciphernow/gm-control:1.0.2
     envvars:
       gm_control_console_level:
         type: 'value'
@@ -122,16 +122,16 @@ control:
 
 gm-control-api:
   gmControlApi:
-    image: docker.production.deciphernow.com/deciphernow/gm-control-api:0.8.1
+    image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.0.2
     zone: zone-default-zone
     init:
-      image: docker.production.deciphernow.com/deciphernow/greymatter:0.5.1
+      image: docker.production.deciphernow.com/deciphernow/greymatter:1.0.2
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
 
 data:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -139,7 +139,7 @@ data:
         value: 'data'
 
   data:
-    image: docker.production.deciphernow.com/deciphernow/gm-data:0.2.7
+    image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
     envvars:
       uses3:
@@ -214,7 +214,7 @@ data:
         key: server.trust.pem
       client_prefix:
         type: value
-        value: /services/data/0.2.7
+        value: /services/data/1.0.0
       client_jwt_prefix:
         type: value
         value: /jwt
@@ -271,16 +271,16 @@ data:
 
 internal-data:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
         type: value
         value: 'data-internal'
   data:
-    image: docker.production.deciphernow.com/deciphernow/gm-data:0.2.7
+    image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
-    version: 0.2.7
+    version: 1.0.0
     name: data-internal
     pvc:
       mountPath: /buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
@@ -436,14 +436,14 @@ catalog:
         value: 'gm-control@deciphernow.com'
 
     init:
-      image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+      image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
       envvars:
         debug:
           type: value
           value: 'true'
-  
+
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -454,23 +454,23 @@ dashboard:
   dashboard:
     image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.1.0'
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
         type: value
         value: 'dashboard'
   sidecar_prometheus:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
   prometheus:
     serviceAccount:
       create: false
 
 slo:
   slo:
-    image: docker.production.deciphernow.com/deciphernow/gm-slo:0.5.0
+    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.0.0
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -509,7 +509,7 @@ slo:
 
 jwt:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -519,7 +519,7 @@ jwt:
   jwt:
     use_aac: true
     users_mount_point: /gm-jwt-security/etc
-    image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:0.2.0
+    image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
       - type: value
         name: HTTPS_PORT
@@ -571,7 +571,7 @@ jwt:
 
 internal-jwt:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -580,7 +580,7 @@ internal-jwt:
   jwt:
     name: internal-jwt-security
     certs_mount_point: /gm-jwt-security/certs
-    image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:0.2.0
+    image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
       - type: value
         name: HTTPS_PORT
@@ -648,17 +648,17 @@ internal-jwt:
     password: 'internalRedis'
 
 sidecar:
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
   create_sidecar_secret: true
 
 edge:
   sidecar:
-    version: 0.9.1
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:0.9.1'
+    version: 1.0.0
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     envvars:
       xds_cluster:
         type: value
         value: 'edge'
   edge:
-    base_path: /services/edge/0.9.1
+    base_path: /services/edge/1.0.0
     create_edge_secret: true

@@ -1,5 +1,6 @@
 *.tgz
 custom*.yaml
+credentials.yaml
 greymatter/charts
 charts.txt
 *.log

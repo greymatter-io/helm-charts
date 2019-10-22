@@ -15,7 +15,7 @@ global:
     use_provided_certs: false
   catalog:
     name: catalog
-    version: 1.0.1
+    version: 1.0.2
     sidecar:
       version:
     data_prefix: /data
@@ -24,42 +24,42 @@ global:
     sidecar:
       version:
     prometheus_sidecar:
-      version: 0.8.0
+      version: 1.0.0
   data:
-    version: 0.2.7
+    version: 1.0.0
     sidecar:
       version:
     jwt_prefix: '/jwt'
   internal-data:
-    version: 0.2.7
+    version: 1.0.0
     sidecar:
       version:
     jwt_prefix: '/jwt'
   edge:
     # This enables mTLS on the edge proxy (ingress mTLS)
     enableTLS: true
-    version: 0.9.1
+    version: 1.0.0
     sidecar:
       version:
   jwt:
-    version: 0.2.0
+    version: 1.0.0
     sidecar:
       version:
   slo:
-    version: 0.5.0
+    version: 1.0.0
     sidecar:
       version:
   control:
-    version: 0.5.1
+    version: 1.0.2
     # This specifies the service name that all XDS clients will try to connect to
     name: control
     port: 50000
   gmControlApi:
-    version: 0.8.1
+    version: 1.0.2
     cli:
-      version: 0.5.1
+      version: 1.0.2
   sidecar:
-    version: 0.9.1
+    version: 1.0.0
   spire:
     enabled: false
     trustDomain: deciphernow.com
@@ -82,7 +82,7 @@ global:
       documentation: '/services/catalog/latest/'
       name: 'Grey Matter Catalog'
       owner: 'Decipher'
-      version: 1.0.1
+      version: 1.0.2
       minInstances: 1
       maxInstances: 1
       # egressTLS: 'false'
@@ -136,7 +136,7 @@ global:
       capability: 'Grey Matter'
       documentation: '/services/data/latest/static/ui/index.html'
       owner: 'Decipher'
-      version: 0.2.7
+      version: 1.0.0
       # egressTLS: 'true'
       routes:
         - '/services/data/{{ $.Values.global.data.version }}'
@@ -156,7 +156,7 @@ global:
       documentation: '/services/data/latest/static/ui/index.html'
       name: 'Grey Matter Internal Data'
       owner: 'Decipher'
-      version: 0.2.7   
+      version: 1.0.0   
       # egressTLS: 'true'
 
     jwt:
@@ -204,7 +204,7 @@ global:
       capability: 'Grey Matter'
       documentation:
       owner: 'Decipher'
-      version: '0.8.1'
+      version: '1.0.2'
       routes:
         - '/services/control-api/{{ $.Values.global.control.version }}'
         - '/services/control-api/{{ $.Values.global.control.version }}/'
@@ -223,7 +223,7 @@ global:
       capability: 'Grey Matter'
       documentatio: ''
       owner: 'Decipher'
-      version: '0.9.1'
+      version: '1.0.0'
 
     slo:
       catalogEnabled: true
@@ -238,7 +238,7 @@ global:
       capability: 'Grey Matter'
       documentation:
       owner: 'Decipher'
-      version: '0.5.0'
+      version: '1.0.0'
       routes:
         - '/services/slo/{{ $.Values.global.slo.version }}'
         - '/services/slo/{{ $.Values.global.slo.version }}/'
