@@ -3,6 +3,7 @@
 - [Local Minikube Deployment](#local-minikube-deployment)
   - [Prerequisites](#prerequisites)
   - [Quick Start](#quick-start)
+    - [Pre-Requisite](#pre-requisite)
   - [Start Minikube](#start-minikube)
     - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
     - [OS X](#os-x)
@@ -37,6 +38,10 @@ You will need the following tools installed (tested on both Mac OS and Linux Ubu
 
 A couple of Makefile targets provide a fast and easy way to standup Grey Matter on Minikube.
 
+#### Pre-Requisite
+
+- If you don't have the `envsubst` command you can get it with the `gettext` package on [Mac](https://stackoverflow.com/questions/23620827/envsubst-command-not-found-on-mac-os-x-10-8) or Linux. The command is required for using `make credentials`.
+
 Before starting via Minikube you need to supply your credentials for Decipher's Docker registry. These will be your Decipher LDAP credentials: email address and password.
 
 The `fresh` Makefile target runs `make credentials` and `make minikube`.
@@ -45,13 +50,13 @@ The `fresh` Makefile target runs `make credentials` and `make minikube`.
 make fresh
 ```
 
-You can interactively fill out your credentials with the `credentials` make target.
+You can interactively fillout your credentials with the `credentials` target. This will fillout your docker registry credentials and ask you if you want to setup S3 backing for gm-data. If you chose to have S3 backing you will need to enter a valid access key and secret key.
 
 ```sh
 make credentials
 ```
 
-After you have filled out your credentials using the above target you can get Minikube up and running in one target using:
+After you have filled out your credentials, you can get Minikube up with Grey Matter deployed using:
 
 ```sh
 make minikube
@@ -62,8 +67,6 @@ To spin down minikube.
 ```sh
 make destroy
 ```
-
-If you don't have the `envsubst` command you can get it with the `gettext` package on Mac or Ubuntu. The command is required for using `make credentials`.
 
 ### Start Minikube
 
