@@ -1,24 +1,24 @@
 # Minikube
 
-- [Minikube](#minikube)
-  - [Local Minikube Deployment](#local-minikube-deployment)
-    - [Prerequisites](#prerequisites)
-    - [Start Minikube](#start-minikube)
-      - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
-      - [OS X](#os-x)
-  - [AWS EC2 Deployment](#aws-ec2-deployment)
-  - [Configuration](#configuration)
-    - [Copy Files to EC2](#copy-files-to-ec2)
-    - [Docker Credentials](#docker-credentials)
-  - [Setup Helm](#setup-helm)
-    - [Configure Voyager Ingress](#configure-voyager-ingress)
-  - [Install](#install)
-    - [Latest Helm charts release](#latest-helm-charts-release)
-    - [Local Helm charts](#local-helm-charts)
-    - [Verification](#verification)
-    - [Ingress](#ingress)
-      - [EC2](#ec2)
-    - [Debugging](#debugging)
+- [Local Minikube Deployment](#local-minikube-deployment)
+  - [Prerequisites](#prerequisites)
+  - [Quick Start](#quick-start)
+  - [Start Minikube](#start-minikube)
+    - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
+    - [OS X](#os-x)
+- [AWS EC2 Deployment](#aws-ec2-deployment)
+- [Configuration](#configuration)
+  - [Copy Files to EC2](#copy-files-to-ec2)
+  - [Docker Credentials](#docker-credentials)
+- [Setup Helm](#setup-helm)
+  - [Configure Voyager Ingress](#configure-voyager-ingress)
+- [Install](#install)
+  - [Latest Helm charts release](#latest-helm-charts-release)
+  - [Local Helm charts](#local-helm-charts)
+  - [Verification](#verification)
+  - [Ingress](#ingress)
+    - [EC2](#ec2)
+  - [Debugging](#debugging)
 
 Minikube allows us to quicky setup a Kubernetes cluster and test drive Grey Matter before deploying to a production environment. We've provided instructions for two scenarios, [Local Minikube Deployment](#local-minikube-deployment) or [AWS EC2 Deployment](#aws-ec2-deployment).
 
@@ -33,25 +33,25 @@ You will need the following tools installed (tested on both Mac OS and Linux Ubu
 - [helm](https://github.com/helm/helm/releases/tag/v2.14.3)@2.14.3
 - [virtualbox](https://www.virtualbox.org/wiki/Downloads)@6.0.12
 
-### Quickstart
+### Quick Start
 
-A couple of makefile targets provide a fast and easy way to standup Grey Matter on minikube.
+A couple of Makefile targets provide a fast and easy way to standup Grey Matter on Minikube.
 
-Before starting via Minikube you need to supply your credentials for Decipher's docker registry. This will be your decipher email address and your decipher password.
+Before starting via Minikube you need to supply your credentials for Decipher's Docker registry. This will be your Decipher LDAP credentials: email address and password.
 
-
-The `fresh` makefile target runs `make credentials` and `make minikube`.
+The `fresh` Makefile target runs `make credentials` and `make minikube`.
 
 ```sh
 make fresh
 ```
 
-You can interactively fillout your credentials with the credentials make target.
+You can interactively fill out your credentials with the `credentials` make target.
+
 ```sh
 make credentials
 ```
 
-After you have filled out your credentials using the above target you can get minikube up and running in one target using:
+After you have filled out your credentials using the above target you can get Minikube up and running in one target using:
 
 ```sh
 make minikube

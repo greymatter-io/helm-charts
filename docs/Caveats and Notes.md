@@ -1,10 +1,10 @@
 # Caveats and Notes
 
-### Deleting install:
+## Deleting Install
 
 To delete a deployment run `helm del --purge <namespace>`. This will delete everything in the deployment. If using OpenShift, you can use `oc get pods` and `oc get pvc` to check that the rescources in the deployment have been removed (persistent volumes seem to take longer than pods).
 
-### Custom file:
+## Custom File
 
 You can override configurations in the `values.yaml` file by including them in the `custom.yaml` file, the `example-custom.yaml` file can be used to start modifications from. To use a custom file you will need to pass a flag, `-f <custom_file>`.
 
@@ -18,16 +18,16 @@ To override values in a particular chart's values.yaml file you will need to inc
 
 The most important keys for a barebones deployment are described in Step #2: Configuration above.
 
-### Jenkins pipeline:
+## Jenkins Pipeline
 
 - To change the branch jenkins builds from use `./change-build-branch.sh`. The script will ask if you want to change to master, then your current branch, then a manual entry. You must be logged in openshift for this to work.
 - The CI pipeline can be skipped by including any of skip term ("ci skip", "skip ci", "ci-skip", "skip-ci").
 
-### Troubleshooting:
+## Troubleshooting
 
 - Keep in mind that helm will not tear down any resources that it did not create in the firstplace. Therefore the best practice is to manage everything inside a project/namespace with helm or nothing at all.
 
-### Sidecar environment variables
+## Sidecar environment variables
 
 Currently, all sidecar environment variables are configured in the `values.yaml` file of each service and can be configured globally at `.Values.global.sidecar.envvars`. This allows for easy setting of mesh-wide defaults for sidecar environment variables but also for easy configuration for each service/subchart.
 

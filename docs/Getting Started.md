@@ -1,24 +1,23 @@
 # Getting Started
 
-- [Getting Started](#getting-started)
-  - [Helm](#helm)
-  - [OpenShift](#openshift)
-  - [Configuration](#configuration)
-    - [Ingress](#ingress)
-    - [Observables](#observables)
-    - [Docker credentials](#docker-credentials)
-    - [AWS credentials (optional)](#aws-credentials-optional)
-    - [Certificates](#certificates)
-    - [SPIRE](#spire)
-    - [TLS Options](#tls-options)
-    - [Single-service deployments](#single-service-deployments)
-  - [Install](#install)
-    - [Prepare Tiller](#prepare-tiller)
-    - [Prepare Service Accounts](#prepare-service-accounts)
-    - [Latest Helm charts release](#latest-helm-charts-release)
-    - [Local Helm charts](#local-helm-charts)
-    - [Additional Helm install flags](#additional-helm-install-flags)
-  - [Verification](#verification)
+- [Helm](#helm)
+- [OpenShift](#openshift)
+- [Configuration](#configuration)
+  - [Ingress](#ingress)
+  - [Observables](#observables)
+  - [Docker credentials](#docker-credentials)
+  - [AWS credentials (optional)](#aws-credentials-optional)
+  - [Certificates](#certificates)
+  - [SPIRE](#spire)
+  - [TLS Options](#tls-options)
+  - [Single-service deployments](#single-service-deployments)
+- [Install](#install)
+  - [Prepare Tiller](#prepare-tiller)
+  - [Prepare Service Accounts](#prepare-service-accounts)
+  - [Latest Helm charts release](#latest-helm-charts-release)
+  - [Local Helm charts](#local-helm-charts)
+  - [Additional Helm install flags](#additional-helm-install-flags)
+- [Verification](#verification)
 
 This guide assumes that your target environment is a hosted Kubernetes based platform. If you want to test drive Grey Matter on your local machine, follow [Deploy with Minikube](./Deploy%20with%20Minikube.md).
 
@@ -68,7 +67,7 @@ global:
     # the Kafka topic that the observables should be written to
     topic: observables
     # the Kafka server connection string
-    kafkaServerConnection: 
+    kafkaServerConnection:
 ```
 
 ### Ingress
@@ -109,7 +108,7 @@ These are global settings for all observables:
 globals:
   observables:
     topic: observables
-    kafkaServerConnection: 
+    kafkaServerConnection:
 ```
 
 Observables can be enabled or disabled for each service.  You can enable observables by setting `.Values.global.services.<service>.observablesEnabled` to `true` or `false`
@@ -226,18 +225,20 @@ For a quick setup, giving Tiller full cluster-wide access, have an admin apply t
 to act and install across the entire Kubernetes cluster.
 
 For Openshift:
-```
+
+```sh
 oc apply -f ./helm-service-account.yaml
 ```
 
 For Kubernetes:
-```
+
+```sh
 kubectl apply -f ./helm-service-account.yaml
 ```
 
 You'll then be able to initialize Helm using this account:
 
-```
+```sh
 helm init --service-account tiller
 ```
 
