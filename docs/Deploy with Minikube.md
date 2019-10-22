@@ -37,7 +37,7 @@ You will need the following tools installed (tested on both Mac OS and Linux Ubu
 
 A couple of Makefile targets provide a fast and easy way to standup Grey Matter on Minikube.
 
-Before starting via Minikube you need to supply your credentials for Decipher's Docker registry. This will be your Decipher LDAP credentials: email address and password.
+Before starting via Minikube you need to supply your credentials for Decipher's Docker registry. These will be your Decipher LDAP credentials: email address and password.
 
 The `fresh` Makefile target runs `make credentials` and `make minikube`.
 
