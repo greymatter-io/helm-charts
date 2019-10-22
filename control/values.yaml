@@ -7,16 +7,16 @@ global:
   exhibitor:
     replicas: 1
   control:
-    version: 0.5.1
+    version: 1.0.2
   waiter:
     image: deciphernow/k8s-waiter:latest
 
 control:
   name: 'control'
   port: 50000
-  # This represents the namespaces that the control server will be aware of and able to monitor.  It should be a comma delimited list.  
+  # This represents the namespaces that the control server will be aware of and able to monitor.  It should be a comma delimited list.
   # The namespace used for the deployment will be include by default For example, "projecta,projectb"
-  additionalNamespacesToControl: 
+  additionalNamespacesToControl:
   displayName: 'Control'
   replicas: 1
   image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.global.control.version }}'

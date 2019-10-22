@@ -11,9 +11,9 @@ spec:
   - name: {{ .Release.Name }}-connections-test
     image: "centos"
 {{- if and .Values.global .Values.global.remove_namespace_from_url  }}
-    command: ["sh", "-c", "curl --location --cert /etc/test/certs/server.crt --key /etc/test/certs/server.key --request GET \"https://{{ .Values.global.route_url_name }}.{{ .Values.global.domain }}/services/catalog/1.0.1/\" -vk"]
+    command: ["sh", "-c", "curl --location --cert /etc/test/certs/server.crt --key /etc/test/certs/server.key --request GET \"https://{{ .Values.global.route_url_name }}.{{ .Values.global.domain }}/services/catalog/1.0.2/\" -vk"]
 {{- else }}
-    command: ["sh", "-c", "curl --location --cert /etc/test/certs/server.crt --key /etc/test/certs/server.key --request GET \"https://{{ .Values.global.route_url_name }}.{{ .Release.Namespace }}.{{ .Values.global.domain }}/services/catalog/1.0.1/\" -vk"]
+    command: ["sh", "-c", "curl --location --cert /etc/test/certs/server.crt --key /etc/test/certs/server.key --request GET \"https://{{ .Values.global.route_url_name }}.{{ .Release.Namespace }}.{{ .Values.global.domain }}/services/catalog/1.0.2/\" -vk"]
 {{- end }}
     volumeMounts:
       - name: test-certs

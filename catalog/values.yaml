@@ -6,12 +6,12 @@ global:
   zone: zone-default-zone
   catalog:
     name: catalog
-    version: 1.0.1
+    version: 1.0.2
     data_prefix: /data
   dashboard:
     version: 3.1.0
   data:
-    version: 0.2.3
+    version: 1.0.0
   documentation:
     version: 3.0.0
   edge:
@@ -20,7 +20,7 @@ global:
     replicas: 1
     version:
   jwt:
-    version: 0.2.0
+    version: 1.0.0
   slo:
     version: 1.0.0
   xds:
@@ -40,7 +40,7 @@ global:
 
 catalog:
   name: catalog
-  version: 1.0.1
+  version: 1.0.2
   image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.global.catalog.version }}
   debug: 'true'
   imagePullPolicy: IfNotPresent
