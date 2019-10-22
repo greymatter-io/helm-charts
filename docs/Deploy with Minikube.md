@@ -141,6 +141,7 @@ Our Helm charts can be overridden by custom YAML files that are chained together
 - [greymatter-secrets.yaml](../greymatter-secrets.yaml) provides a separate set of overrides specifically for passwords, secrets, and other sensitive data
 - [greymatter-minikube.yaml](../greymatter-minikube.yaml) provides Minikube specific configurations but requires no changes
   
+
 Copy these files to `custom-greymatter.yaml`, `custom-greymatter-secrets.yaml` and `custom-greymatter-minikube.yaml`.
 
 ### Copy Files to EC2
@@ -225,12 +226,24 @@ helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-
 helm repo update
 ```
 
-Once the repository has successfully been added to your `helm` CLI, you can install Grey Matter from the latest charts.
+Now let's tell our helm chart to use `minikube` as its environment. In `greymatter.yaml` change 
+
+```yaml
+  environment: openshift
+```
+
+to
+
+```yaml
+  environment: minikube
+```
+
+Once the repository has successfully been added to your `helm` CLI, and our environment has been changed to`minikube`, you can install Grey Matter from the latest charts.
 
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
 ```sh
-helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f greymatter-minikube.yaml --name gm-deploy
+helm install greymatter -f greymatter.yaml -f greymatter-secrets.yaml  --name gm-deploy
 ```
 
 ### Local Helm charts

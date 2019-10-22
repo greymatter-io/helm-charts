@@ -1,7 +1,5 @@
 {{- define "greymatter.domain" }}
-    {{- if .Values.global.minikube }}
-{{- .Values.global.domain }}
-    {{- else if .Values.global.remove_namespace_from_url  }}
+    {{- if .Values.global.remove_namespace_from_url  }}
 {{- .Values.global.route_url_name }}.{{ .Values.global.domain }}
     {{- else }}
 {{- .Values.global.route_url_name }}.{{ .Release.Namespace }}.{{ .Values.global.domain }}
