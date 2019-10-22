@@ -28,7 +28,6 @@ metadata:
     kubernetes.io/ingress.class: "voyager"
     ingress.appscode.com/type: LoadBalancer
     ingress.appscode.com/ssl-passthrough: "true"
-    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   rules:
   - tcp:
