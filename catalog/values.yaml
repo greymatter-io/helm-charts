@@ -22,7 +22,7 @@ global:
   jwt:
     version: 1.0.0
   slo:
-    version: 0.5.0
+    version: 1.0.0
   xds:
     cluster: greymatter
     port: 18000

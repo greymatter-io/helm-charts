@@ -83,7 +83,7 @@ gmControlApi:
     size:
 
 sidecar:
-  version: '{{- $.Values.global.catalog.sidecar.version | default "0.9.1" }}'
+  version: '{{- $.Values.global.catalog.sidecar.version | default "1.0.0" }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:

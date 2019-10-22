@@ -12,8 +12,8 @@ global:
     image: deciphernow/k8s-waiter:latest
 
 slo:
-  version: 0.5.0
-  image: docker.production.deciphernow.com/deciphernow/gm-slo:0.5.0
+  version: 1.0.0
+  image: docker.production.deciphernow.com/deciphernow/gm-slo:1.0.0
   imagePullPolicy: IfNotPresent
   resources:
     limits:

@@ -24,7 +24,7 @@ global:
     sidecar:
       version:
     prometheus_sidecar:
-      version: 0.8.0
+      version: 1.0.0
   data:
     version: 1.0.0
     sidecar:
@@ -38,7 +38,7 @@ global:
   edge:
     # This enables mTLS on the edge proxy (ingress mTLS)
     enableTLS: true
-    version: 0.9.1
+    version: 1.0.0
     sidecar:
       version:
   jwt:
@@ -46,7 +46,7 @@ global:
     sidecar:
       version:
   slo:
-    version: 0.5.0
+    version: 1.0.0
     sidecar:
       version:
   control:
@@ -59,7 +59,7 @@ global:
     cli:
       version: 1.0.2
   sidecar:
-    version: 0.9.1
+    version: 1.0.0
   spire:
     enabled: false
     trustDomain: deciphernow.com
@@ -223,7 +223,7 @@ global:
       capability: 'Grey Matter'
       documentatio: ''
       owner: 'Decipher'
-      version: '0.9.1'
+      version: '1.0.0'
 
     slo:
       catalogEnabled: true
@@ -238,7 +238,7 @@ global:
       capability: 'Grey Matter'
       documentation:
       owner: 'Decipher'
-      version: '0.5.0'
+      version: '1.0.0'
       routes:
         - '/services/slo/{{ $.Values.global.slo.version }}'
         - '/services/slo/{{ $.Values.global.slo.version }}/'
