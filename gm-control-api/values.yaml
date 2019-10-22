@@ -11,11 +11,11 @@ global:
     port: 18000
     cluster: greymatter
   gmControlApi:
-    version: 0.8.1
+    version: 1.0.2
     cli:
-      version: 0.5.1
+      version: 1.0.2
   data:
-    jwt_prefix: 
+    jwt_prefix:
   waiter:
     image: deciphernow/k8s-waiter:latest
 
@@ -34,20 +34,20 @@ gmControlApi:
     imagePullPolicy: IfNotPresent
     envvars:
       greymatter_console_level:
-          value: 'debug'
-          type: 'value'
+        value: 'debug'
+        type: 'value'
       greymatter_api_host:
-          value: '{{ .Values.gmControlApi.name }}:{{ .Values.gmControlApi.containerPort }}'
-          type: 'value'
+        value: '{{ .Values.gmControlApi.name }}:{{ .Values.gmControlApi.containerPort }}'
+        type: 'value'
       greymatter_api_key:
-          value: 'xxx'
-          type: 'value'
+        value: 'xxx'
+        type: 'value'
       greymatter_api_ssl:
-          value: 'false'
-          type: 'value'
+        value: 'false'
+        type: 'value'
       basic_object_path:
-          value: '/tmp/mesh/basic_objects'
-          type: 'value'
+        value: '/tmp/mesh/basic_objects'
+        type: 'value'
   envvars:
     gm_control_api_log_level:
       type: 'value'
@@ -67,7 +67,7 @@ gmControlApi:
     gm_control_api_persister_path:
       type: value
       value: '{{ .Values.gmControlApi.pvcMountPoint }}'
-  resources: 
+  resources:
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -80,7 +80,7 @@ gmControlApi:
     #   memory: 256Mi
   pvc:
     #  We  default the PVC to 1Gi, but if more is desired, uncomment this line and update the size
-    size: 
+    size:
 
 sidecar:
   version: '{{- $.Values.global.catalog.sidecar.version | default "0.9.1" }}'

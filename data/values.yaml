@@ -11,14 +11,14 @@ global:
   data:
     # This value is used to data where to find jwt and also used to configure the mesh to enable routes from data to jwt
     jwt_prefix: /jwt
-  
+
   waiter:
     image: deciphernow/k8s-waiter:latest
 
 data:
   # The name of this installation of GM Data.  Used in the zookeeper address.  Allow to be unique to support multiple installations of Data
   name: data
-  version: 0.2.3
+  version: 1.0.0
   client_jwt_endpoint_address: localhost
   client_jwt_endpoint_use_tls: 'true'
   base_path: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
