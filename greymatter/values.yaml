@@ -15,7 +15,7 @@ global:
     use_provided_certs: false
   catalog:
     name: catalog
-    version: 1.0.1
+    version: 1.0.2
     sidecar:
       version:
     data_prefix: /data
@@ -50,14 +50,14 @@ global:
     sidecar:
       version:
   control:
-    version: 0.5.1
+    version: 1.0.2
     # This specifies the service name that all XDS clients will try to connect to
     name: control
     port: 50000
   gmControlApi:
-    version: 0.8.1
+    version: 1.0.2
     cli:
-      version: 0.5.1
+      version: 1.0.2
   sidecar:
     version: 0.9.1
   spire:
@@ -82,7 +82,7 @@ global:
       documentation: '/services/catalog/latest/'
       name: 'Grey Matter Catalog'
       owner: 'Decipher'
-      version: 1.0.1
+      version: 1.0.2
       minInstances: 1
       maxInstances: 1
       # egressTLS: 'false'
@@ -204,7 +204,7 @@ global:
       capability: 'Grey Matter'
       documentation:
       owner: 'Decipher'
-      version: '0.8.1'
+      version: '1.0.2'
       routes:
         - '/services/control-api/{{ $.Values.global.control.version }}'
         - '/services/control-api/{{ $.Values.global.control.version }}/'
