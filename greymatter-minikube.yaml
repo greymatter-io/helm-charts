@@ -1,4 +1,4 @@
 global:
-  environment: kubernetes
+  environment: eks
   domain: "*"
   minikube: true

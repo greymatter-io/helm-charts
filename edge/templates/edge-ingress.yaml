@@ -26,7 +26,11 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     kubernetes.io/ingress.class: "voyager"
+    {{- if and .Values.global.environment (eq .Values.global.environment "eks") }}
     ingress.appscode.com/type: LoadBalancer
+    {{- else }}
+    ingress.appscode.com/type: NodePort
+    {{- end }}
     ingress.appscode.com/ssl-passthrough: "true"
 spec:
   rules:
