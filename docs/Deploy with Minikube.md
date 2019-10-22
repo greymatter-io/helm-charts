@@ -171,17 +171,16 @@ Our Helm charts can be overridden by custom YAML files that are chained together
 
 - [greymatter.yaml](../greymatter.yaml) provides a primary set of overrides
 - [greymatter-secrets.yaml](../greymatter-secrets.yaml) provides a separate set of overrides specifically for passwords, secrets, and other sensitive data
-- [greymatter-minikube.yaml](../greymatter-minikube.yaml) provides Minikube specific configurations but requires no changes
   
 
-Copy these files to `custom-greymatter.yaml`, `custom-greymatter-secrets.yaml` and `custom-greymatter-minikube.yaml`.
+Copy these files to `custom-greymatter.yaml` and  `custom-greymatter-secrets.yaml`.
 
 ### Copy Files to EC2
 
 If deploying to EC2, secure copy these files into the instance.
 
 ```sh
-scp -i <path-to-keyfile> custom-greymatter-secrets.yaml custom-greymatter.yaml custom-greymatter-minikube.yaml ubuntu@<public-dns>:/home/ubuntu
+scp -i <path-to-keyfile> custom-greymatter-secrets.yaml custom-greymatter.yaml ubuntu@<public-dns>:/home/ubuntu
 ```
 
 ### Docker Credentials
@@ -301,7 +300,7 @@ Then you can run the following commands to update the local charts and then inst
 
 ```sh
 helm dep up greymatter
-helm install greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml -f custom-reymatter-minikube.yaml --name gm
+helm install greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --name gm
 ```
 
 The `helm dep up greymatter` command will create a `./greymatter/charts` directory with tarballs of each sub-chart that the parent `greymatter` chart will use to install Grey Matter.
@@ -315,7 +314,7 @@ We also have the option to specify:
 - "--replace" will replace an existing deployment
 - "--dry-run" will print all Kubernetes configs to stdout
 
-We can run `helm ls` to see all our current deployments and `helm delete --purge $DEPLOYMENT` to delete deployments. If you need to make changes, you can run `helm upgrade gm deciperhnow/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml -f custom-greymatter-minikube.yaml` to update your release in place.
+We can run `helm ls` to see all our current deployments and `helm delete --purge $DEPLOYMENT` to delete deployments. If you need to make changes, you can run `helm upgrade gm deciperhnow/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml` to update your release in place.
 
 ```sh
 NAME                    REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE  
