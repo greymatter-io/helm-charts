@@ -24,7 +24,7 @@ global:
     sidecar:
       version:
     prometheus_sidecar:
-      version: 0.8.0
+      version: 1.0.0
   data:
     version: 0.2.7
     sidecar:
