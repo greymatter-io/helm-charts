@@ -37,14 +37,15 @@ spec:
           name: mongo
           protocol: TCP
         volumeMounts:
-        - mountPath: /data/db
-          name: data
+        # - mountPath: /data/db
+        #   name: data
         - mountPath: /docker-entrypoint-initdb.d/
           name: mongo-init
         {{- if .Values.mongo.ssl.enabled }}
         - name: certificates
           mountPath: {{ .Values.mongo.ssl.mount_path }}
         {{- end }}
+        # command: [ "sh", "-c", "sleep 1h" ]
       volumes:
         - name: mongo-init
           configMap:
@@ -63,7 +64,7 @@ spec:
       name: data
     spec:
       accessModes:
-        - ReadWriteOnce
+        - ReadWriteMany
       resources:
         requests:
           storage: {{ .Values.mongo.pvc_size }}Gi
