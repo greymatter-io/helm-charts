@@ -10,9 +10,4 @@ NOTE: It may take a few minutes for the installation to become stable.
     You can watch the status of the pods by running 'kubectl get pods -w -n {{ .Release.Namespace }}'
     {{- end }}
 
-{{- if .Values.global }}
-Once the environment has spun up you will be able to view Grey Matter's Dashboard at:
-    https://{{ include "greymatter.domain" . }}/services/dashboard/latest/
-{{- end }}
-        
         
