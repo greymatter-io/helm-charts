@@ -28,9 +28,9 @@ Minikube allows us to quicky setup a Kubernetes cluster and test drive Grey Matt
 
 You will need the following tools installed (tested on both Mac OS and Linux Ubuntu):
 
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)@1.15.3
-- [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)@1.3.1
-- [helm](https://github.com/helm/helm/releases/tag/v2.14.3)@2.14.3
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)@1.16.0
+- [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)@1.4.0
+- [helm](https://github.com/helm/helm/releases/tag/v2.14.3)@2.15.0
 - [virtualbox](https://www.virtualbox.org/wiki/Downloads)@6.0.12
 
 ### Quick Start
@@ -145,7 +145,7 @@ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.3.1/miniku
 # Install Helm
 curl -LO https://git.io/get_helm.sh
 chmod 700 get_helm.sh
-./get_helm.sh --version v2.14.3
+./get_helm.sh --version v2.15.0
 
 # add helpful aliases
 alias minikube='sudo minikube'
@@ -225,7 +225,8 @@ helm install appscode/voyager --name voyager-operator --version 10.0.0 \
   --set cloudProvider=$PROVIDER \
   --set enableAnalytics=false \
   --set apiserver.enableAdmissionWebhook=false
-...
+```
+```sh
 NOTES:
 Set cloudProvider for installing Voyager
 
