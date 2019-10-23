@@ -17,6 +17,12 @@ spec:
       labels:
         app: {{ .Values.mongo.name }}
     spec:
+      {{- if and .Values.global.environment (eq .Values.global.environment "eks") }}
+      securityContext:
+        runAsUser: 1099
+        runAsGroup: 1099
+        fsGroup: 1099
+      {{- else }}
       containers:
       - env:
         {{- include "envvars" (dict "envvar" .Values.mongo.envvars "top" $) | indent 8 }}
@@ -37,15 +43,14 @@ spec:
           name: mongo
           protocol: TCP
         volumeMounts:
-        # - mountPath: /data/db
-        #   name: data
+        - mountPath: /data/db
+          name: data
         - mountPath: /docker-entrypoint-initdb.d/
           name: mongo-init
         {{- if .Values.mongo.ssl.enabled }}
         - name: certificates
           mountPath: {{ .Values.mongo.ssl.mount_path }}
         {{- end }}
-        # command: [ "sh", "-c", "sleep 1h" ]
       volumes:
         - name: mongo-init
           configMap:
@@ -64,7 +69,7 @@ spec:
       name: data
     spec:
       accessModes:
-        - ReadWriteMany
+        - ReadWriteOnce
       resources:
         requests:
           storage: {{ .Values.mongo.pvc_size }}Gi
