@@ -167,7 +167,7 @@ sudo apt-get update && sudo apt-get install socat
 
 ## Configuration
 
-Our Helm charts can be overridden by custom YAML files that are chained together during install. We've provided three examples:
+Our Helm charts can be overridden by custom YAML files that are chained together during install. We've provided two templates:
 
 - [greymatter.yaml](../greymatter.yaml) provides a primary set of overrides
 - [greymatter-secrets.yaml](../greymatter-secrets.yaml) provides a separate set of overrides specifically for passwords, secrets, and other sensitive data
@@ -212,7 +212,7 @@ For more information on securing your installation see: https://docs.helm.sh/usi
 
 ### Configure Voyager Ingress
 
-For Kubernetes, we recommend the [Voyager Ingress Controller](https://appscode.com/products/voyager/), which automatically provisions a load balancer from a variety of supported cloud providers like EKS in AWS. This allows you to access the cluster at the provided load balancer URL.
+For Kubernetes, we use the [Voyager Ingress Controller](https://appscode.com/products/voyager/), which automatically provisions a load balancer from a variety of supported cloud providers like EKS in AWS. This allows you to access the cluster at the provided load balancer URL.
 
 At present, there's [an issue](https://github.com/appscode/voyager/issues/1415) specifying Voyager as a dependency so we need to manually configure Voyager ingress as a prerequisite. This can be done with following commands:
 
@@ -258,7 +258,7 @@ helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-
 helm repo update
 ```
 
-Now let's tell our helm chart to use `minikube` as its environment. In `greymatter.yaml` change 
+We also need to tell our helm chart to use `minikube` as its environment. In `greymatter-custom.yaml` change 
 
 ```yaml
   environment: openshift
@@ -300,6 +300,7 @@ dependencies:
 Then you can run the following commands to update the local charts and then install them.
 
 ```sh
+rm -rf greymatter/charts
 helm dep up greymatter
 helm install greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --name gm
 ```
