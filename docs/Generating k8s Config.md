@@ -23,25 +23,6 @@ helm fetch --untar --untardir . decipher/greymatter
 helm template greymatter -f greymatter.yaml -f greymatter-secrets.yaml
 ```
 
-### Docker Images
-
-The following images are expected to be available in the configured docker repository:
-
-- `gm-catalog:1.0.1`
-- `gm-proxy:0.9.1`
-- `gm-control:0.5.1`
-- `gm-dashboard:3.1.0`
-- `gm-data:0.2.7`
-- `gm-control-api:0.8.1`
-- `gm-jwt-security:0.2.0`
-- `gm-slo:0.5.0`
-- `greymatter:0.5.1`
-- `k8s-waiter:latest`
-- `mongo:4.0.3`
-- `postgresql-10-centos7`
-- `prometheus:v2.7.1`
-- `redis-32-centos7`
-
 ## Deploying
 
 To validate `template.yaml` and confirm that placeholders were templated correctly, run the following:
