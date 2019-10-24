@@ -258,7 +258,7 @@ helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-
 helm repo update
 ```
 
-We also need to tell our helm chart to use `minikube` as its environment. In `greymatter-custom.yaml` change 
+We also need to tell our helm chart to use `minikube` as its environment. In `custom-greymatter.yaml` change 
 
 ```yaml
   environment: openshift
@@ -267,7 +267,7 @@ We also need to tell our helm chart to use `minikube` as its environment. In `gr
 to
 
 ```yaml
-  environment: minikube
+  environment: kubernetes
 ```
 
 Once the repository has successfully been added to your `helm` CLI, and our environment has been changed to`minikube`, you can install Grey Matter from the latest charts.
@@ -275,7 +275,7 @@ Once the repository has successfully been added to your `helm` CLI, and our envi
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
 ```sh
-helm install decipher/greymatter custom-greymatter-secrets.yaml custom-greymatter.yaml --name gm-deploy
+helm install decipher/greymatter -f custom-greymatter-secrets.yaml -f custom-greymatter.yaml --name gm
 ```
 
 ### Local Helm charts
