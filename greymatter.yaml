@@ -1,5 +1,5 @@
 global:
-  environment: eks
+  environment: openshift
   domain: staging.deciphernow.com
   route_url_name: greymatter
   remove_namespace_from_url: false
