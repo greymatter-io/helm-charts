@@ -275,7 +275,7 @@ Once the repository has successfully been added to your `helm` CLI, and our envi
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
 ```sh
-helm install decipher/greymatter -f custom-greymatter-secrets.yaml -f custom-greymatter.yaml --name gm
+helm install decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --name gm
 ```
 
 ### Local Helm charts
