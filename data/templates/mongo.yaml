@@ -22,7 +22,7 @@ spec:
         runAsUser: 1099
         runAsGroup: 1099
         fsGroup: 1099
-      {{- else }}
+      {{- end }}
       containers:
       - env:
         {{- include "envvars" (dict "envvar" .Values.mongo.envvars "top" $) | indent 8 }}
@@ -67,9 +67,10 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: data
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "sc-gp2"
     spec:
-      accessModes:
-        - ReadWriteOnce
+      accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
           storage: {{ .Values.mongo.pvc_size }}Gi
