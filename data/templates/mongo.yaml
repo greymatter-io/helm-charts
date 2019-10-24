@@ -67,8 +67,6 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: data
-      annotations:
-        volume.beta.kubernetes.io/storage-class: "sc-gp2"
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
