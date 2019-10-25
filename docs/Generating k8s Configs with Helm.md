@@ -1,10 +1,12 @@
 # Generating k8s Configuration with Helm
 
-It is sometimes necessary to deploy Grey Matter without the use of Helm/Tiller. Luckily, Helm provides commands that can be used to generate raw kubernetes configuration.
+It is sometimes necessary to deploy Grey Matter without the use of Tiller, Helm's server side component. Luckily, Helm provides commands that can be used to generate raw kubernetes configuration. 
+
+To generate configuration, you will still need to install Tiller into a Kubernetes cluster in order to run commands. The easiest way to do this is locally using [Minikube.](./Deploy%20with%20Minikube.md) This guide assumes that you have [Tiller installed](./Deploy%20with%20Minikube.md#Setup%20Helm) and have added the Decipher [Helm repository](./Deploy%20with%20Minikube.md#Latest%20Helm%20charts%20release).
 
 ## Configuring the deployment
 
-If you know all the custom values necessary to generate the deployment ahead of time, fill out `greymatter.yaml` and `greymatter-secrets.yaml` which are hosted in the [Decipher Helm charts repo](https://github.com/DecipherNow/helm-charts) and [run the template command](#generating-templated-k8s-config) with them.
+If you know all the custom values necessary to generate the deployment ahead of time, fill out `greymatter.yaml` and `greymatter-secrets.yaml` which are hosted in the [Decipher Helm charts repo](https://github.com/DecipherNow/helm-charts) and [run the template command](#templating) with them.
 
 If deployment configuration is not known beforehand, for example if the template is being passed off to a client, you can just add placeholder values to `greymatter.yaml`.
 
