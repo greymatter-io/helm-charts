@@ -40,7 +40,7 @@ data:
           - role: pod
             namespaces:
               names:
-                - {{ .Release.Namespace | quote }}
+{{ include "greymatter.dashboard.prometheus_namespaces" . | indent 16 }}
         relabel_configs:
         # Drop all named ports that are not "metrics"
         - source_labels: ['__meta_kubernetes_pod_container_port_name']
@@ -60,7 +60,7 @@ data:
           - role: pod
             namespaces:
               names:
-                - {{ .Release.Namespace | quote }}
+{{ include "greymatter.dashboard.prometheus_namespaces" . | indent 16 }}
         relabel_configs:
         # Drop all named ports that are not "metrics"
         - source_labels: ['__meta_kubernetes_pod_container_port_name']

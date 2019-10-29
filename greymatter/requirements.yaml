@@ -13,7 +13,7 @@ dependencies:
     alias: internal-data
 
   - name: dashboard
-    version: '2.0.5'
+    version: '2.0.6'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: edge
@@ -39,7 +39,7 @@ dependencies:
 
   - name: control
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
-    version: '2.0.2'
+    version: '2.0.3'
 
   - name: spire
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'

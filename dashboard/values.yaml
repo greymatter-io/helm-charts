@@ -8,6 +8,8 @@ global:
   xds:
     port: 18000
     cluster: greymatter
+  control:
+    additionalNamespacesToControl:
   sense:
     enabled: false  
   consul:
