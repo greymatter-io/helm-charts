@@ -19,9 +19,9 @@ spec:
     spec:
       {{- if and .Values.global.environment (eq .Values.global.environment "eks") }}
       securityContext:
-        runAsUser: 1099
-        runAsGroup: 1099
-        fsGroup: 1099
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
       {{- end }}
       containers:
       - env:
