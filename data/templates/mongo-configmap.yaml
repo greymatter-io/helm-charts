@@ -9,8 +9,8 @@ data:
     db.auth({{ quote .root_username }}, {{ quote .root_password }})
     db = db.getSiblingDB({{ quote .database }})
     db.createUser({
-        user: {{ quote .root_username }},
-        pwd: {{ quote .root_password }},
+        user: {{ quote .gmdata_username }},
+        pwd: {{ quote .gmdata_password }},
         roles: [
         {
             role: 'root',
