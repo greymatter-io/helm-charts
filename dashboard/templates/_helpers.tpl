@@ -20,7 +20,6 @@ Create the namespace list for Prometheus to monitor
 {{- $noop := printf "%s" $e | append $namespaces.namespaces | set $namespaces "namespaces" -}}
 {{- end -}}
 {{- end -}}
-{{/*}} {{- join "\n" $namespaces.namespaces | quote -}} */}}
 {{- range $a, $b := $namespaces.namespaces -}}
 {{- $c := $b | quote -}}
 {{- $d := cat "-" $c -}}
