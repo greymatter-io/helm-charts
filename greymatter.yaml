@@ -188,11 +188,11 @@ data:
       mongo_initdb_root_username:
         type: secret
         secret: '{{ .Values.mongo.credentials.secret_name }}'
-        key: root_username
+        key: gmdata_username
       mongo_initdb_root_password:
         type: secret
         secret: '{{ .Values.mongo.credentials.secret_name }}'
-        key: root_password
+        key: gmdata_password
       mongodb:
         type: secret
         secret: '{{ .Values.mongo.credentials.secret_name }}'
@@ -252,7 +252,7 @@ data:
       mongodb_admin_password:
         type: secret
         secret: mongo-credentials
-        key: root_username
+        key: gmdata_password
       mongodb_database:
         type: secret
         secret: mongo-credentials
@@ -327,7 +327,7 @@ internal-data:
       mongodb_admin_password:
         type: secret
         secret: internal-mongo-credentials
-        key: root_username
+        key: gmdata_password
       mongodb_database:
         type: secret
         secret: internal-mongo-credentials
