@@ -1,6 +1,7 @@
 *.tgz
 custom*.yaml
 credentials.yaml
+ci/scripts/manifest.yaml
 greymatter/charts
 charts.txt
 *.log
