@@ -13,7 +13,7 @@ dependencies:
     alias: internal-data
 
   - name: dashboard
-    version: '2.0.6'
+    version: '2.0.7'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: edge
@@ -30,7 +30,7 @@ dependencies:
     alias: internal-jwt
 
   - name: slo
-    version: '2.0.7'
+    version: '2.0.8'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: gm-control-api
