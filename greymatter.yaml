@@ -47,7 +47,7 @@ global:
       mTLS: true
       version: 1.0.2
     dashboard:
-      egressTLS: false
+      egressTLS: true
       mTLS: true
     prometheus:
       egressTLS: false
@@ -65,7 +65,7 @@ global:
       egressTLS: true
       mTLS: true
     slo:
-      egressTLS: false
+      egressTLS: true
       mTLS: true
     control:
       egressTLS: false
