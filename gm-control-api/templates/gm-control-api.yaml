@@ -26,41 +26,30 @@ spec:
           image: {{ tpl .Values.gmControlApi.image $ }}
           imagePullPolicy: {{ .Values.gmControlApi.imagePullPolicy }}
           env:
-            {{- include "envvars" (dict "envvar" .Values.gmControlApi.envvars "top" $) | indent 12 }}
+          {{- if .Values.gmControlApi.ssl.enabled  }}
+          - name: GM_CONTROL_API_USE_TLS
+            value: {{ .Values.gmControlApi.ssl.enabled | quote }}
+          - name: GM_CONTROL_API_CA_CERT_PATH
+            value: {{ .Values.gmControlApi.ssl.mountPoint}}/ca.crt
+          - name: GM_CONTROL_API_SERVER_CERT_PATH
+            value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.crt
+          - name: GM_CONTROL_API_SERVER_KEY_PATH
+            value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.key
+          {{- end }}
+            {{- include "envvars" (dict "envvar" .Values.gmControlApi.envvars "top" $) | indent 10 }}
           ports:
             - name: http
               containerPort: {{ .Values.gmControlApi.containerPort }}
               protocol: TCP
-          
-          # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
-          readinessProbe:
-            httpGet:
-              path: /v1.0/cluster
-              port: http
-              httpHeaders:
-                # For production we'll need a valid authentication credential here
-                # We may want to create a separate healthcheck endpoint to remove this issue
-                - name: Authorization
-                  value: Bearer xxx
-            # Pods are considered to be in a Failure state before the initialDelaySeconds has passed, meaning they won't be backends for a service
-            initialDelaySeconds: 5
-            periodSeconds: 2
-          # We want to restart the container if it's failed 3 requests spaced 3 seconds apart after we've given it quite enough time to start up and be initialized
-          # We give a full minute before we start health-checking for failures
-          livenessProbe:
-            httpGet:
-              path: /v1.0/cluster
-              port: http
-              httpHeaders:
-                - name: Authorization
-                  value: Bearer xxx
-            initialDelaySeconds: 60
-            periodSeconds: 3
           {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
           volumeMounts:
+            {{- if .Values.gmControlApi.ssl.enabled }}
+            - name: service-certs
+              mountPath: {{ .Values.gmControlApi.ssl.mountPoint }}
+            {{- end }}
             - name: gm-control-api-backup
               mountPath: {{ dir .Values.gmControlApi.pvcMountPoint }}
         - name: sidecar   
@@ -75,6 +64,28 @@ spec:
               containerPort: 8080
             - name: metrics
               containerPort: 8081
+
+
+          # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:5555/v1.0/cluster"
+            # Pods are considered to be in a Failure state before the initialDelaySeconds has passed, meaning they won't be backends for a service
+            initialDelaySeconds: 5
+            periodSeconds: 2
+          # We want to restart the container if it's failed 3 requests spaced 3 seconds apart after we've given it quite enough time to start up and be initialized
+          # We give a full minute before we start health-checking for failures
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:5555/v1.0/cluster"
+            initialDelaySeconds: 60
+            periodSeconds: 3
           env:
           {{- include "greymatter.envvars" . | indent 12 }}
         {{- if .Values.global.spire.enabled }}
@@ -91,6 +102,12 @@ spec:
       imagePullSecrets:
         - name: docker.secret
       volumes:
+      {{- if .Values.gmControlApi.ssl.enabled }}
+      - name: service-certs
+        secret:
+          secretName: {{ .Values.gmControlApi.ssl.name }}
+          defaultMode: 0600
+      {{- end }}
       {{- if .Values.global.consul.enabled }}
       - name: data-consul
         emptyDir: {}

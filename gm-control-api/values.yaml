@@ -47,7 +47,16 @@ gmControlApi:
         value: 'xxx'
         type: 'value'
       greymatter_api_ssl:
-        value: 'false'
+        value: 'true'
+        type: 'value'
+      greymatter_api_insecure:
+        value: 'true'
+        type: 'value'
+      greymatter_api_sslcert:
+        value: '/service-certs/server.crt'
+        type: 'value'
+      greymatter_api_sslkey:
+        value: '/service-certs/server.key'
         type: 'value'
       basic_object_path:
         value: '/tmp/mesh/basic_objects'

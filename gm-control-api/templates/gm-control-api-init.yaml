@@ -27,6 +27,10 @@ spec:
           env:
           {{- include "envvars" (dict "envvar" .Values.gmControlApi.init.envvars "top" $) | indent 12 }}
           volumeMounts:
+            {{- if .Values.gmControlApi.ssl.enabled }}
+            - name: service-certs
+              mountPath: {{ .Values.gmControlApi.ssl.mountPoint }}
+            {{- end }}
           {{- range $name, $service := .Values.global.services }}
           {{- if $service.controlEnabled }}
             - name: service-config-volume-{{$service.serviceName}}
@@ -40,6 +44,10 @@ spec:
             - name: bootstrap-script-volume
               mountPath: /tmp/bootstrap
       volumes:
+        - name: service-certs
+          secret:
+            secretName: {{ .Values.gmControlApi.ssl.name }}
+            defaultMode: 0600
         {{- range $name, $service := .Values.global.services }}
         {{- if $service.controlEnabled }}
         - name: service-config-volume-{{ $service.serviceName }}
