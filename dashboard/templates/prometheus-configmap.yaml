@@ -76,7 +76,7 @@ data:
 
   # Copied from https://github.com/DecipherNow/gm-dashboard/blob/master/docker/prometheus/recording_rules.yml
   recording_rules.yaml: |-
-    # Dashboard version: 3.1.0
+    # Dashboard version: 3.2.0
     # time intervals:
     # ["1h", "4h", "12h"]
 

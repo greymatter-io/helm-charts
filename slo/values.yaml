@@ -16,8 +16,8 @@ global:
     port: 8500
 
 slo:
-  version: 1.0.0
-  image: docker.production.deciphernow.com/deciphernow/gm-slo:1.0.0
+  version: 1.1.0
+  image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.0
   imagePullPolicy: IfNotPresent
   resources:
     limits:
@@ -26,6 +26,23 @@ slo:
     requests:
       cpu: 100m
       memory: 128Mi
+  ssl:
+    enabled: false
+    name: slo-certs
+    mountPoint: /service-certs
+    certificates:
+      ca: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: |-
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
 
 sidecar:
   version: '{{- $.Values.global.slo.sidecar.version | default $.Values.global.sidecar.version }}'
@@ -94,7 +111,7 @@ postgres:
   ssl:
     enabled: false
     name: postgres-ssl-certs
-    mountPoint: /certs
+    mountPoint: /postgresCerts
     certificates:
       # This sets a default file name for the Postgres CA.  Can be overridden to change the filename
       caName: ca.pem

@@ -20,7 +20,7 @@ global:
       version:
     data_prefix: /data
   dashboard:
-    version: 3.1.0
+    version: 3.2.0
     sidecar:
       version:
     prometheus_sidecar:
@@ -46,7 +46,7 @@ global:
     sidecar:
       version:
   slo:
-    version: 1.0.0
+    version: 1.1.0
     sidecar:
       version:
   control:
@@ -109,7 +109,7 @@ global:
       capability: 'Grey Matter'
       documentation: ''
       owner: 'Decipher'
-      version: 3.1.0
+      version: 3.2.0
       # egressTLS: 'false'
       routes:
         - '/services/dashboard/latest'
@@ -238,7 +238,7 @@ global:
       capability: 'Grey Matter'
       documentation:
       owner: 'Decipher'
-      version: '1.0.0'
+      version: '1.1.0'
       routes:
         - '/services/slo/{{ $.Values.global.slo.version }}'
         - '/services/slo/{{ $.Values.global.slo.version }}/'

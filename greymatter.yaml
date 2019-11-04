@@ -10,7 +10,7 @@ global:
   kafka:
     replicas: 3
   dashboard:
-    version: 3.1.0
+    version: 3.2.0
     sidecar:
       version: 1.0.0
   catalog:
@@ -452,7 +452,11 @@ catalog:
 
 dashboard:
   dashboard:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.1.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.2.0'
+    ssl:
+      enabled: true
+      mountPoint: /certs
+      name: dashboard-certs
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
@@ -465,10 +469,21 @@ dashboard:
   prometheus:
     serviceAccount:
       create: false
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "1"
+      limits:
+        memory: "1Gi"
+        cpu: "2"
 
 slo:
   slo:
-    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.0.0
+    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.0
+    ssl:
+      enabled: true
+      name: slo-certs
+      mountPoint: /service-certs
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
