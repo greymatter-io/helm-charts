@@ -37,6 +37,7 @@ gmControlApi:
   ssl:
     name: control-api-certs
     mountPoint: /service-certs
+    insecure: true
     certificates:
       ca: |-
         -----BEGIN CERTIFICATE-----

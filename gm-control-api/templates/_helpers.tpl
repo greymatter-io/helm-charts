@@ -18,5 +18,7 @@
       value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.key
     - name: GREYMATTER_API_SSL
       value: {{ .Values.global.control_api_tls | quote }}
+    - name: GREYMATTER_API_INSECURE
+      value: {{ .Values.gmControlApi.ssl.insecure | quote }}
     {{- end }}
 {{- end }}

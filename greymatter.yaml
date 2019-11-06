@@ -134,6 +134,7 @@ gm-control-api:
     ssl:
       name: control-api-certs
       mountPoint: /service-certs
+      insecure: true
     image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.0.2
     zone: zone-default-zone
     init:
