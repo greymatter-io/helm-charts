@@ -214,6 +214,26 @@ node('ubuntu-18.04'){
                     currentBuild.result = 'UNSTABLE'
                 }
             }
+            stage ('Publish Grey Matter to Staging') {
+                try{
+                    // Find all of the charts that were created, known by the *.tgz file extension.  Then upload them to Nexus
+                    withCredentials([usernamePassword(credentialsId: 'jenkins-nexus', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                            sh '''#!/bin/bash
+                                toPublish=($(ls greymatter*.tgz))
+                                for pubChart in ${toPublish[@]}; do
+                                    echo "Publishing $pubChart to Staging"
+                                    curl -u ${USERNAME}:${PASSWORD} https://nexus.production.deciphernow.com/repository/helm-staging/ -T $pubChart
+                                done
+                                rm -f *.tgz
+                            '''
+                    }
+                }
+                catch (e){
+                    errMessage = "WARN: failed to publish some or all sub charts [Stage- Publish Charts to Staging]"
+                    warnings.add(errMessage)
+                    currentBuild.result = 'UNSTABLE'
+                }
+            }
         }
         if (warnings.size() > 0) {
             String warnMessage = warnings.join("\n")

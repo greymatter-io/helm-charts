@@ -4,7 +4,6 @@ metadata:
   name: {{ .Values.mongo.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  clusterIP: None
   ports:
     - name: mongo
       port: 27017

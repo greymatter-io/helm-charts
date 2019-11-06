@@ -27,7 +27,7 @@ dashboard:
   config_server: '/services/gm-control-api/latest/v1.0'
   prometheus_server: '/services/prometheus/latest/api/v1/'
   base_url: '/services/dashboard/{{ $.Values.global.dashboard.version }}/'
-  version: 3.0.0
+  version: 3.2.0
   imagePullPolicy: IfNotPresent
   resources:
     limits:
@@ -36,6 +36,23 @@ dashboard:
     requests:
       cpu: 100m
       memory: 128Mi
+  ssl:
+    enabled: false
+    name: dashboard-certs
+    mountPoint: /certs
+    certificates:
+      ca: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: |-
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
 
 sidecar:
   version: '{{- $.Values.global.dashboard.sidecar.version | default $.Values.global.sidecar.version }}'

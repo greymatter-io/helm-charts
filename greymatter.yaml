@@ -12,7 +12,7 @@ global:
   kafka:
     replicas: 3
   dashboard:
-    version: 3.1.0
+    version: 3.2.0
     sidecar:
       version: 1.0.0
   catalog:
@@ -49,7 +49,7 @@ global:
       mTLS: true
       version: 1.0.2
     dashboard:
-      egressTLS: false
+      egressTLS: true
       mTLS: true
     prometheus:
       egressTLS: false
@@ -67,7 +67,7 @@ global:
       egressTLS: true
       mTLS: true
     slo:
-      egressTLS: false
+      egressTLS: true
       mTLS: true
     control:
       egressTLS: false
@@ -260,6 +260,17 @@ data:
     ssl:
       enabled: false
       name: mongo-ssl-certs
+    storage:
+      # The size, in Gi, that the Mongo PVC should be
+      size: 40
+      ## Mongo data Persistent Volume Storage Class
+      ## If defined, StorageClassName: <storageClass>
+      ## If set to "-", StorageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
     envvars:
       mongodb_admin_password:
         type: secret
@@ -335,6 +346,17 @@ internal-data:
     ssl:
       enabled: false
       name: internal-mongo-ssl-certs
+    storage:
+      # The size, in Gi, that the Mongo PVC should be
+      size: 10
+      ## Mongo data Persistent Volume Storage Class
+      ## If defined, StorageClassName: <storageClass>
+      ## If set to "-", StorageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: '-'
     envvars:
       mongodb_admin_password:
         type: secret
@@ -464,7 +486,11 @@ catalog:
 
 dashboard:
   dashboard:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.1.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.2.0'
+    ssl:
+      enabled: true
+      mountPoint: /certs
+      name: dashboard-certs
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
@@ -477,10 +503,21 @@ dashboard:
   prometheus:
     serviceAccount:
       create: false
+    resources:
+      requests:
+        memory: '1Gi'
+        cpu: '1'
+      limits:
+        memory: '1Gi'
+        cpu: '2'
 
 slo:
   slo:
-    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.0.0
+    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.0
+    ssl:
+      enabled: true
+      name: slo-certs
+      mountPoint: /service-certs
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
