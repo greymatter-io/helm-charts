@@ -41,6 +41,32 @@ spec:
             - name: http
               containerPort: {{ .Values.gmControlApi.containerPort }}
               protocol: TCP
+          {{- if not .Values.global.control_api_tls }}
+          # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
+          readinessProbe:
+            httpGet:
+              path: /v1.0/cluster
+              port: http
+              httpHeaders:
+                # For production we'll need a valid authentication credential here
+                # We may want to create a separate healthcheck endpoint to remove this issue
+                - name: Authorization
+                  value: Bearer xxx
+            # Pods are considered to be in a Failure state before the initialDelaySeconds has passed, meaning they won't be backends for a service
+            initialDelaySeconds: 5
+            periodSeconds: 2
+          # We want to restart the container if it's failed 3 requests spaced 3 seconds apart after we've given it quite enough time to start up and be initialized
+          # We give a full minute before we start health-checking for failures
+          livenessProbe:
+            httpGet:
+              path: /v1.0/cluster
+              port: http
+              httpHeaders:
+                - name: Authorization
+                  value: Bearer xxx
+            initialDelaySeconds: 60
+            periodSeconds: 3
+          {{- end }}
           {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
@@ -65,7 +91,7 @@ spec:
             - name: metrics
               containerPort: 8081
 
-
+          {{- if .Values.global.control_api_tls }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
           readinessProbe:
             exec:
@@ -86,6 +112,7 @@ spec:
                 - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:5555/v1.0/cluster"
             initialDelaySeconds: 60
             periodSeconds: 3
+          {{- end }}
           env:
           {{- include "greymatter.envvars" . | indent 12 }}
         {{- if .Values.global.spire.enabled }}
