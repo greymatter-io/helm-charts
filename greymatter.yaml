@@ -7,6 +7,8 @@ global:
   mesh_tls:
     enabled: true
     use_provided_certs: true
+  # turns on tls for control api and configures control to talk to it using tls
+  control_api_tls: true
   kafka:
     replicas: 3
   dashboard:
@@ -103,6 +105,11 @@ global:
 
 control:
   control:
+    # Configures certs for control to talk to control api via tls. Only used when global.control_api_tls=true.
+    controlApiTLS:
+      name: control-to-control-api-certs
+      mountPoint: /service-certs
+      insecure: true
     serviceAccount:
       create: true
     image: docker.production.deciphernow.com/deciphernow/gm-control:1.0.2
@@ -123,7 +130,6 @@ control:
 gm-control-api:
   gmControlApi:
     ssl:
-      enabled: true
       name: control-api-certs
       mountPoint: /service-certs
     image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.0.2

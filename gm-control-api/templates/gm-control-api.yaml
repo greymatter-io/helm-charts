@@ -26,9 +26,9 @@ spec:
           image: {{ tpl .Values.gmControlApi.image $ }}
           imagePullPolicy: {{ .Values.gmControlApi.imagePullPolicy }}
           env:
-          {{- if .Values.gmControlApi.ssl.enabled  }}
+          {{- if .Values.global.control_api_tls  }}
           - name: GM_CONTROL_API_USE_TLS
-            value: {{ .Values.gmControlApi.ssl.enabled | quote }}
+            value: {{ .Values.global.control_api_tls | quote }}
           - name: GM_CONTROL_API_CA_CERT_PATH
             value: {{ .Values.gmControlApi.ssl.mountPoint}}/ca.crt
           - name: GM_CONTROL_API_SERVER_CERT_PATH
@@ -46,7 +46,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
           volumeMounts:
-            {{- if .Values.gmControlApi.ssl.enabled }}
+            {{- if .Values.global.control_api_tls }}
             - name: service-certs
               mountPath: {{ .Values.gmControlApi.ssl.mountPoint }}
             {{- end }}
@@ -102,7 +102,7 @@ spec:
       imagePullSecrets:
         - name: docker.secret
       volumes:
-      {{- if .Values.gmControlApi.ssl.enabled }}
+      {{- if .Values.global.control_api_tls }}
       - name: service-certs
         secret:
           secretName: {{ .Values.gmControlApi.ssl.name }}
