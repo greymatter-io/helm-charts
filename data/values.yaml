@@ -119,11 +119,11 @@ data:
     mongo_initdb_root_username:
       type: secret
       secret: mongo-credentials
-      key: root_username
+      key: gmdata_username
     mongo_initdb_root_password:
       type: secret
       secret: mongo-credentials
-      key: root_password
+      key: gmdata_password
     mongodb:
       type: secret
       secret: mongo-credentials
@@ -207,14 +207,15 @@ mongo:
     mongodb_admin_password:
       type: secret
       secret: mongo-credentials
-      key: admin_password
+      key: gmdata_password
 
   credentials:
     secret_name: 'mongo-credentials'
     root_username: 'mongo'
     root_password: 'mongo'
     database: 'gmdata'
-    admin_password: 'mongopassword'
+    gmdata_username: 'gmdata-user'
+    gmdata_password: 'mongopassword'
 
   ssl:
     enabled: false

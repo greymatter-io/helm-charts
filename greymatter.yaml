@@ -10,7 +10,7 @@ global:
   kafka:
     replicas: 3
   dashboard:
-    version: 3.1.0
+    version: 3.2.0
     sidecar:
       version: 1.0.0
   catalog:
@@ -47,7 +47,7 @@ global:
       mTLS: true
       version: 1.0.2
     dashboard:
-      egressTLS: false
+      egressTLS: true
       mTLS: true
     prometheus:
       egressTLS: false
@@ -65,7 +65,7 @@ global:
       egressTLS: true
       mTLS: true
     slo:
-      egressTLS: false
+      egressTLS: true
       mTLS: true
     control:
       egressTLS: false
@@ -188,11 +188,11 @@ data:
       mongo_initdb_root_username:
         type: secret
         secret: '{{ .Values.mongo.credentials.secret_name }}'
-        key: root_username
+        key: gmdata_username
       mongo_initdb_root_password:
         type: secret
         secret: '{{ .Values.mongo.credentials.secret_name }}'
-        key: root_password
+        key: gmdata_password
       mongodb:
         type: secret
         secret: '{{ .Values.mongo.credentials.secret_name }}'
@@ -252,7 +252,7 @@ data:
       mongodb_admin_password:
         type: secret
         secret: mongo-credentials
-        key: root_username
+        key: gmdata_password
       mongodb_database:
         type: secret
         secret: mongo-credentials
@@ -327,7 +327,7 @@ internal-data:
       mongodb_admin_password:
         type: secret
         secret: internal-mongo-credentials
-        key: root_username
+        key: gmdata_password
       mongodb_database:
         type: secret
         secret: internal-mongo-credentials
@@ -452,7 +452,11 @@ catalog:
 
 dashboard:
   dashboard:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.1.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.2.0'
+    ssl:
+      enabled: true
+      mountPoint: /certs
+      name: dashboard-certs
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false
@@ -465,10 +469,21 @@ dashboard:
   prometheus:
     serviceAccount:
       create: false
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "1"
+      limits:
+        memory: "1Gi"
+        cpu: "2"
 
 slo:
   slo:
-    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.0.0
+    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.0
+    ssl:
+      enabled: true
+      name: slo-certs
+      mountPoint: /service-certs
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
     create_sidecar_secret: false

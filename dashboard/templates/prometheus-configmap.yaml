@@ -40,7 +40,7 @@ data:
           - role: pod
             namespaces:
               names:
-                - {{ .Release.Namespace | quote }}
+{{ include "greymatter.dashboard.prometheus_namespaces" . | indent 16 }}
         relabel_configs:
         # Drop all named ports that are not "metrics"
         - source_labels: ['__meta_kubernetes_pod_container_port_name']
@@ -60,7 +60,7 @@ data:
           - role: pod
             namespaces:
               names:
-                - {{ .Release.Namespace | quote }}
+{{ include "greymatter.dashboard.prometheus_namespaces" . | indent 16 }}
         relabel_configs:
         # Drop all named ports that are not "metrics"
         - source_labels: ['__meta_kubernetes_pod_container_port_name']
@@ -76,7 +76,7 @@ data:
 
   # Copied from https://github.com/DecipherNow/gm-dashboard/blob/master/docker/prometheus/recording_rules.yml
   recording_rules.yaml: |-
-    # Dashboard version: 3.1.0
+    # Dashboard version: 3.2.0
     # time intervals:
     # ["1h", "4h", "12h"]
 
