@@ -4,7 +4,6 @@ metadata:
   name: {{ .Values.redis.name | default "redis" }}
   namespace: {{ .Release.Namespace }}
 spec:
-  clusterIP: None
   ports:
     - name: server
       port: 6379

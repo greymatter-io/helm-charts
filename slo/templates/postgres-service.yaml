@@ -6,7 +6,6 @@ metadata:
   labels:
     app: postgres-slo
 spec:
-  clusterIP: None
   ports:
   - name: postgres
     port: 5432

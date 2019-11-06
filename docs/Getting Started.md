@@ -3,6 +3,7 @@
 - [Helm](#helm)
 - [OpenShift](#openshift)
 - [Configuration](#configuration)
+  - [Storage](#storage)
   - [Ingress](#ingress)
   - [Observables](#observables)
   - [Docker credentials](#docker-credentials)
@@ -69,6 +70,10 @@ global:
     # the Kafka server connection string
     kafkaServerConnection:
 ```
+
+### Storage
+
+The Grey Matter Helm chart assumes that your Kubernetes cluster has a default storage provider already defined.  The charts will attempt to create several PersistentVolumeClaims for data storage, and if a default storage provider has not been declared, the installation will fail.  Additionally, the Mongo StatefulSets declare a Persistent Volume Template that requires that a Storage Class be defined.  If there is no default StorageClass in your cluster, you must provide a StorageClass name for the Mongo chart.  This variable can be set at `.Values.data.mongo.storage.storageClass` and `.Values.internal-data.mongo.storage.storageName`
 
 ### Ingress
 

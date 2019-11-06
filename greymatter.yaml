@@ -248,6 +248,17 @@ data:
     ssl:
       enabled: false
       name: mongo-ssl-certs
+    storage:
+      # The size, in Gi, that the Mongo PVC should be
+      size: 40
+      ## Mongo data Persistent Volume Storage Class
+      ## If defined, StorageClassName: <storageClass>
+      ## If set to "-", StorageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: "-"
     envvars:
       mongodb_admin_password:
         type: secret
@@ -323,6 +334,17 @@ internal-data:
     ssl:
       enabled: false
       name: internal-mongo-ssl-certs
+    storage:
+      # The size, in Gi, that the Mongo PVC should be
+      size: 10
+      ## Mongo data Persistent Volume Storage Class
+      ## If defined, StorageClassName: <storageClass>
+      ## If set to "-", StorageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storageClass: '-'
     envvars:
       mongodb_admin_password:
         type: secret
@@ -471,11 +493,11 @@ dashboard:
       create: false
     resources:
       requests:
-        memory: "1Gi"
-        cpu: "1"
+        memory: '1Gi'
+        cpu: '1'
       limits:
-        memory: "1Gi"
-        cpu: "2"
+        memory: '1Gi'
+        cpu: '2'
 
 slo:
   slo:
