@@ -26,7 +26,16 @@ spec:
           command: ["/tmp/bootstrap/bootstrap.sh"]
           env:
           {{- include "envvars" (dict "envvar" .Values.gmControlApi.init.envvars "top" $) | indent 10 }}
-          {{- include "tlsconfig" . | indent 6 }}
+          {{- if .Values.global.control_api_tls  }}
+          - name: GREYMATTER_API_SSL
+            value: {{ .Values.global.control_api_tls | quote }}
+          - name: GREYMATTER_API_INSECURE
+            value: {{ .Values.gmControlApi.ssl.insecure | quote }}
+          - name: GREYMATTER_API_SSLCERT
+            value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.crt
+          - name: GREYMATTER_API_SSLKEY
+            value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.key
+          {{- end }}
           volumeMounts:
             {{- if .Values.global.control_api_tls }}
             - name: service-certs
