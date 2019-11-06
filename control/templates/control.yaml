@@ -29,9 +29,9 @@ spec:
           - name: gm_control_api_ssl
             value: 'true'
           - name: gm_control_api_sslCert
-            value: {{ .Values.control.controlApiTLS.mountPath }}/server.crt
+            value: {{ .Values.control.controlApiTLS.mountPoint }}/server.crt
           - name: gm_control_api_sslKey
-            value: {{ .Values.control.controlApiTLS.mountPath }}/server.key
+            value: {{ .Values.control.controlApiTLS.mountPoint }}/server.key
           {{- end }}
             {{- include "envvars" (dict "envvar" .Values.control.envvars "top" $) | indent 10 }}
           ports:
