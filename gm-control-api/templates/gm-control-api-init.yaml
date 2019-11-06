@@ -25,6 +25,7 @@ spec:
           imagePullPolicy: {{ .Values.gmControlApi.init.imagePullPolicy }}
           command: ["/tmp/bootstrap/bootstrap.sh"]
           env:
+          {{- include "tlsconfig" . | indent 6 }}
           {{- include "envvars" (dict "envvar" .Values.gmControlApi.init.envvars "top" $) | indent 12 }}
           volumeMounts:
             {{- if .Values.global.control_api_tls }}
