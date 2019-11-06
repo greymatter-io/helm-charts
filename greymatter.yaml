@@ -72,7 +72,9 @@ global:
     control:
       egressTLS: false
       mTLS: true
-
+    controlApi:
+      egressTLS: true
+      
   sidecar:
     version: 1.0.0
     envvars:
