@@ -7,7 +7,7 @@ global:
   mesh_tls:
     enabled: true
     use_provided_certs: true
-  # turns on tls for control api and configures control to talk to it using tls
+  # Turns on tls for control api and configures control to talk to it using tls
   control_api_tls: true
   kafka:
     replicas: 3

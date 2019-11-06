@@ -90,7 +90,7 @@ spec:
               containerPort: 8080
             - name: metrics
               containerPort: 8081
-
+          # If mTLS is enabled on the service, we can't use normal httpGet probes. Instead we add the probes to the sidecar so that we can exec in and call the service directly. The control-api service does not have the utilities (curl, wget with ssl) we need to do these probes there.
           {{- if .Values.global.control_api_tls }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
           readinessProbe:
