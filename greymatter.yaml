@@ -73,6 +73,7 @@ global:
       egressTLS: false
       mTLS: true
     controlApi:
+      # This value must match global.control_api_tls
       egressTLS: true
       
   sidecar:
