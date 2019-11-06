@@ -1,47 +1,47 @@
 dependencies:
   - name: catalog
-    version: '2.0.5'
+    version: '2.1.0'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: data
-    version: '2.0.7'
+    version: '2.1.0'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: data
-    version: '2.0.7'
+    version: '2.1.0'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
     alias: internal-data
 
   - name: dashboard
-    version: '2.0.7'
+    version: '2.1.0'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: edge
-    version: '2.0.4'
+    version: '2.1.0'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: jwt
-    version: '2.0.5'
+    version: '2.1.0'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: jwt
-    version: '2.0.5'
+    version: '2.1.0'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
     alias: internal-jwt
 
   - name: slo
-    version: '2.0.8'
+    version: '2.1.0'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: gm-control-api
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
-    version: '2.0.6'
+    version: '2.1.0'
 
   - name: control
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
-    version: '2.0.3'
+    version: '2.1.0'
 
   - name: spire
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
-    version: '2.0.1'
+    version: '2.1.0'
     condition: global.spire.enabled
