@@ -52,6 +52,9 @@ control:
     gm_control_api_zone_name:
       type: 'value'
       value: 'default-zone'
+    gm_control_api_ssl:
+      type: 'value'
+      value: 'false'
     gm_control_api_host:
       type: 'value'
       value: 'gm-control-api:5555'

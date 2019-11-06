@@ -26,8 +26,8 @@ spec:
           image: {{ tpl .Values.gmControlApi.image $ }}
           imagePullPolicy: {{ .Values.gmControlApi.imagePullPolicy }}
           env:
-            {{- include "tlsconfig" . | indent 6 }}
             {{- include "envvars" (dict "envvar" .Values.gmControlApi.envvars "top" $) | indent 10 }}
+            {{- include "tlsconfig" . | indent 6 }}
           ports:
             - name: http
               containerPort: {{ .Values.gmControlApi.containerPort }}

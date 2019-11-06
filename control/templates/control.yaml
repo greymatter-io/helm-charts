@@ -23,6 +23,7 @@ spec:
           image: {{ tpl .Values.control.image $ }}
           imagePullPolicy: {{ .Values.control.imagePullPolicy }}
           env:
+            {{- include "envvars" (dict "envvar" .Values.control.envvars "top" $) | indent 10 }}
           {{- if .Values.global.control_api_tls  }}
           - name: GM_CONTROL_API_INSECURE
             value: {{ .Values.control.controlApiTLS.insecure | quote }}
@@ -33,7 +34,6 @@ spec:
           - name: GM_CONTROL_API_SSLKEY
             value: {{ .Values.control.controlApiTLS.mountPoint }}/server.key
           {{- end }}
-            {{- include "envvars" (dict "envvar" .Values.control.envvars "top" $) | indent 10 }}
           ports:
             - name: grpc
               containerPort: 50000

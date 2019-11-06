@@ -16,5 +16,7 @@
       value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.crt
     - name: GM_CONTROL_API_SERVER_KEY_PATH
       value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.key
+    - name: GREYMATTER_API_SSL
+      value: {{ .Values.global.control_api_tls | quote }}
     {{- end }}
 {{- end }}
