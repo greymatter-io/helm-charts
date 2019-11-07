@@ -36,11 +36,13 @@ spec:
   rules:
   - tcp:
       port: '80'
+      nodePort: "30001"
       backend:
         serviceName: edge
         servicePort: 8080
   - tcp:
       port: '443'
+      nodePort: "30000"
       backend:
         serviceName: edge
         servicePort: 8080
