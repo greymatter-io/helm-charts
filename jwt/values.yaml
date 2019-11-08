@@ -18,7 +18,6 @@ global:
 jwt:
   version: '{{ .Values.global.jwt.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
-  #redis_host: redis.greymatter.svc.cluster.local
   command: ['/bin/sh']
   args:
     [

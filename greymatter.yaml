@@ -87,7 +87,7 @@ global:
         value: ''
       xds_host:
         type: 'value'
-        value: 'control.{{ .Release.Namespace }}.svc.cluster.local'
+        value: 'control.{{ .Release.Namespace }}.svc'
       xds_port:
         type: 'value'
         value: '{{ .Values.global.control.port }}'
@@ -278,7 +278,7 @@ data:
         key: root_password
       mongo_client_dn:
         type: value
-        value: CN=*.greymatter.svc.cluster.local, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
+        value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
 
 internal-data:
   sidecar:
@@ -364,7 +364,7 @@ internal-data:
         key: root_password
       mongo_client_dn:
         type: value
-        value: CN=*.greymatter.svc.cluster.local, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
+        value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
 
 catalog:
   catalog:
@@ -392,7 +392,7 @@ catalog:
         value: '9080'
       control_server_0_address:
         type: value
-        value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
+        value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}'
       control_server_0_zone_name:
         type: value
         value: '{{ .Values.global.zone }}'
@@ -538,7 +538,7 @@ slo:
         key: password
       - type: value
         name: POSTGRES_USER_CN
-        value: CN=*.greymatter.svc.cluster.local, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
+        value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
       - type: secret
         name: POSTGRESQL_DATABASE
         secret: postgres-credentials
@@ -586,7 +586,7 @@ jwt:
         key: jwt.key.pem
       - type: value
         name: JWT_AACHOST
-        value: aac.memecore.svc.cluster.local
+        value: aac.memecore.svc
       - type: value
         name: JWT_AACPORT
         value: 9080

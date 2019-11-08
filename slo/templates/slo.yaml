@@ -57,7 +57,7 @@ spec:
               name: {{ .Values.postgres.credentials.secret_name }}
               key: database 
         - name: DATABASE_URI
-          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc.cluster.local:5432/$(POSTGRESQL_DATABASE)
+          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc:5432/$(POSTGRESQL_DATABASE)
         - name: SERVICE_PORT
           value: "1337"
         {{- if .Values.postgres.ssl.enabled }}

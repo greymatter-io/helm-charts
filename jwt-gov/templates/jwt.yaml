@@ -46,7 +46,7 @@ spec:
         {{- end }}
       {{- end  }}   
         - name: REDIS_HOST
-          value: {{ .Values.redis.name }}.{{ .Release.Namespace }}.svc.cluster.local
+          value: {{ .Values.redis.name }}.{{ .Release.Namespace }}.svc
         - name:  REDIS_PORT
           value: "6379"
         - name: REDIS_DB

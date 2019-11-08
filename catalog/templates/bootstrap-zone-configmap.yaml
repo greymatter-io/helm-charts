@@ -6,7 +6,7 @@ metadata:
 data:
   zone.json: |-
     {
-      "serverAddress": "{{ .Values.global.control.name}}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}",
+      "serverAddress": "{{ .Values.global.control.name}}.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}",
       "zoneName": "{{ .Values.global.zone }}",
       "requestCluster": "edge"
     }

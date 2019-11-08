@@ -130,7 +130,7 @@ sidecar_prometheus:
       value: 'prometheus'
     xds_host:
       type: 'value'
-      value: 'control.{{ .Release.Namespace }}.svc.cluster.local'
+      value: 'control.{{ .Release.Namespace }}.svc'
     xds_port:
       type: 'value'
       value: '{{ .Values.global.control.port }}'
