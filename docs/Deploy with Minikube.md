@@ -349,7 +349,7 @@ $ minikube -p gm-deploy service --https=true voyager-edge
 🎉  Opening kubernetes service  default/voyager-edge in default browser...
 ```
 
-Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:30000> in the above example - the port number is probably different), then navigate to there in your browser.
+Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:30000> in the above example, then navigate to there in your browser.
 
 You should be prompted for your [Decipher localuser certificate](https://github.com/DecipherNow/grey-matter-quickstarts/tree/master/common/certificates/user) and be taken to the dashboard. Once there, make sure all services are "green" and then pat yourself on the back -- you deployed Grey Matter to Minikube!!
 

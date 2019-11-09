@@ -33,7 +33,7 @@ fresh: credentials
 	HOST=$(minikube ip -p gm-deploy) echo Grey Matter Dashboard is running at: https://"${HOST}":30000
 
 minikube:
-	minikube start -p gm-deploy --memory 6144 --cpus 6 --kubernetes-version='v1.15.2'
+	minikube start -p gm-deploy --memory 6144 --cpus 6
 	helm init --wait
 	./ci/scripts/install-voyager.sh
 	helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy
