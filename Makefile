@@ -30,14 +30,14 @@ fresh: credentials
 	helm init --wait
 	./ci/scripts/install-voyager.sh
 	helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy
-	HOST=$(minikube ip -p gm-deploy) echo Grey Matter Dashboard is running at: https://"${HOST}":30000
+	./ci/scripts/show-voyager.sh
 
 minikube:
 	minikube start -p gm-deploy --memory 6144 --cpus 6
 	helm init --wait
 	./ci/scripts/install-voyager.sh
 	helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy
-	HOST=$(minikube ip -p gm-deploy) echo Grey Matter Dashboard is running at: https://"${HOST}":30000
+	./ci/scripts/show-voyager.sh
 
 destroy:
 	minikube delete -p gm-deploy
