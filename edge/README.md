@@ -1,31 +1,31 @@
 # Edge
 
-## TL;DR;
+## TL;DR
 
-```console
-$ helm install edge
+```sh
+helm install edge
 ```
 
 ## Introduction
 
-This chart bootstraps an edge deployment on a [Kubernetes](http://kubernetes.io) or [OpenShift](https://www.openshift.com/) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an edge deployment on a [Kubernetes](http://kubernetes.io) or [OpenShift](https://www.openshift.com/) cluster via [Helm](https://helm.sh).
 
 ## Installing the Chart
 
-To install the chart with the release name `<my-release>`:
+To install the chart with the release name `<my-release>`, run the following command:
 
-```console
-$ helm install edge --name <my-release>
+```sh
+helm install edge --name <my-release>
 ```
 
 The command deploys edge on the cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 ## Uninstalling the Chart
 
-To uninstall/delete the `<my-release>` deployment:
+To delete the `<my-release>` deployment, run the following command:
 
-```console
-$ helm delete <my-release>
+```sh
+helm delete <my-release>
 ```
 
 The command removes all components associated with the chart and deletes the release.
@@ -34,18 +34,18 @@ The command removes all components associated with the chart and deletes the rel
 
 All configuration options and their default values are listed in [configuration.md](configuration.md).
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 - All the files listed under this variable will overwrite any existing files by the same name in the edge config directory.
 - Files not mentioned under this variable will remain unaffected.
 
-```console
-$ helm install edge --name <my-release> \
-  --set=jwt.version=v0.2.0, sidecar.ingress_use_tls='false'
+```sh
+helm install edge --name <my-release> \
+--set=jwt.version=v0.2.0, sidecar.ingress_use_tls='false'
 ```
 
-Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example :
+Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example:
 
-```console
-$ helm install edge --name <my-release> -f custom.yaml
+```sh
+helm install edge --name <my-release> -f custom.yaml
 ```

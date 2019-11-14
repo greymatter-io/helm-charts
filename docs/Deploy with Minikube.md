@@ -1,26 +1,25 @@
 # Minikube
 
-- [Minikube](#minikube)
-  - [Local Minikube Deployment](#local-minikube-deployment)
-    - [Prerequisites](#prerequisites)
-    - [Quick Start](#quick-start)
-      - [Pre-Requisite](#pre-requisite)
-    - [Start Minikube](#start-minikube)
-      - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
-      - [OS X](#os-x)
-  - [AWS EC2 Deployment](#aws-ec2-deployment)
-  - [Configuration](#configuration)
-    - [Copy Files to EC2](#copy-files-to-ec2)
-    - [Docker Credentials](#docker-credentials)
-  - [Setup Helm](#setup-helm)
-    - [Configure Voyager Ingress](#configure-voyager-ingress)
-  - [Install](#install)
-    - [Latest Helm charts release](#latest-helm-charts-release)
-    - [Local Helm charts](#local-helm-charts)
-    - [Verification](#verification)
-    - [Ingress](#ingress)
-      - [EC2](#ec2)
-    - [Debugging](#debugging)
+- [Local Minikube Deployment](#local-minikube-deployment)
+  - [Prerequisites](#prerequisites)
+  - [Quick Start](#quick-start)
+    - [Pre-Requisite](#pre-requisite)
+  - [Start Minikube](#start-minikube)
+    - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
+    - [OS X](#os-x)
+- [AWS EC2 Deployment](#aws-ec2-deployment)
+- [Configuration](#configuration)
+  - [Copy Files to EC2](#copy-files-to-ec2)
+  - [Docker Credentials](#docker-credentials)
+- [Setup Helm](#setup-helm)
+  - [Configure Voyager Ingress](#configure-voyager-ingress)
+- [Install](#install)
+  - [Latest Helm charts release](#latest-helm-charts-release)
+  - [Local Helm charts](#local-helm-charts)
+  - [Verification](#verification)
+  - [Ingress](#ingress)
+    - [EC2](#ec2)
+  - [Debugging](#debugging)
 
 Minikube allows us to quicky setup a Kubernetes cluster and test drive Grey Matter before deploying to a production environment. We've provided instructions for two scenarios, [Local Minikube Deployment](#local-minikube-deployment) or [AWS EC2 Deployment](#aws-ec2-deployment).
 
@@ -176,7 +175,6 @@ Our Helm charts can be overridden by custom YAML files that are chained together
 - [greymatter.yaml](../greymatter.yaml) provides a primary set of overrides
 - [greymatter-secrets.yaml](../greymatter-secrets.yaml) provides a separate set of overrides specifically for passwords, secrets, and other sensitive data
   
-
 Copy these files to `custom-greymatter.yaml` and  `custom-greymatter-secrets.yaml`.
 
 ### Copy Files to EC2
@@ -229,8 +227,7 @@ helm install appscode/voyager --name voyager-operator --version 10.0.0 \
   --set cloudProvider=$PROVIDER \
   --set enableAnalytics=false \
   --set apiserver.enableAdmissionWebhook=false
-```
-```sh
+
 NOTES:
 Set cloudProvider for installing Voyager
 
@@ -262,24 +259,12 @@ helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-
 helm repo update
 ```
 
-We also need to tell our helm chart to use `minikube` as its environment. In `custom-greymatter.yaml` change 
-
-```yaml
-  environment: openshift
-```
-
-to
-
-```yaml
-  environment: kubernetes
-```
-
 Once the repository has successfully been added to your `helm` CLI, and our environment has been changed to`minikube`, you can install Grey Matter from the latest charts.
 
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
 ```sh
-helm install decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --name gm
+helm install decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes --set global.k8s_use_voyager_ingress=true --name gm
 ```
 
 ### Local Helm charts
@@ -306,7 +291,7 @@ Then you can run the following commands to update the local charts and then inst
 ```sh
 rm -rf greymatter/charts
 helm dep up greymatter
-helm install greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --name gm
+helm install greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes --set global.k8s_use_voyager_ingress=true --name gm
 ```
 
 The `helm dep up greymatter` command will create a `./greymatter/charts` directory with tarballs of each sub-chart that the parent `greymatter` chart will use to install Grey Matter.
