@@ -29,14 +29,14 @@ fresh: credentials
 	minikube start -p gm-deploy --memory 6144 --cpus 6
 	helm init --wait
 	./ci/scripts/install-voyager.sh
-	helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy
+	helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes --set global.k8s_use_voyager_ingress=true -n gm-deploy
 	./ci/scripts/show-voyager.sh
 
 minikube:
 	minikube start -p gm-deploy --memory 6144 --cpus 6
 	helm init --wait
 	./ci/scripts/install-voyager.sh
-	helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy
+	helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes --set global.k8s_use_voyager_ingress=true -n gm-deploy
 	./ci/scripts/show-voyager.sh
 
 destroy:

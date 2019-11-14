@@ -17,7 +17,7 @@ spec:
     weight: 100
   wildcardPolicy: None
 
-{{- else }}
+{{- else if and (and .Values.global.environment (eq .Values.global.environment "kubernetes")) .Values.global.k8s_use_voyager_ingress }}
 
 apiVersion: voyager.appscode.com/v1beta1
 kind: Ingress

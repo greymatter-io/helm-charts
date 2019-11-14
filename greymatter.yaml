@@ -1,5 +1,7 @@
 global:
   environment: openshift
+  # If `environment: kubernetes`, set to true to install Voyager ingress 
+  k8s_use_voyager_ingress: false
   domain: staging.deciphernow.com
   route_url_name: greymatter
   remove_namespace_from_url: false
