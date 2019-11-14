@@ -1,0 +1,13 @@
+{
+  "zone_key": "zone-default-zone",
+  "shared_rules_key": "edge-deployer-ui-shared-rules",
+  "name": "deployer-ui",
+  "default": {
+    "light": [
+      {
+        "cluster_key": "edge-deployer-ui-cluster",
+        "weight": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "zone_key": "zone-default-zone",
+  "route_key": "edge-deployer-ui-route-slash",
+  "domain_key": "edge",
+  "path": "/services/deployer-ui/1.0",
+  "prefix_rewrite": "/services/deployer-ui/1.0/",
+  "shared_rules_key": "edge-deployer-ui-shared-rules"
+}

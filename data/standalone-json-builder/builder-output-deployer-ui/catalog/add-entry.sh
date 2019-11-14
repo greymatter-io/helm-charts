@@ -1,0 +1,8 @@
+#!/bin/bash
+set -xe 
+
+echo "GREYMATTER_API_HOST: $GREYMATTER_API_HOST"
+echo "GREYMATTER_API_SSLCERT: $GREYMATTER_API_SSLCERT"
+echo "GREYMATTER_API_SSLKEY: $GREYMATTER_API_SSLKEY"
+
+curl -XPOST https://$GREYMATTER_API_HOST/services/catalog/latest/clusters --cert $GREYMATTER_API_SSLCERT --key $GREYMATTER_API_SSLKEY -k -d "@catalog/catalog.json"

@@ -27,7 +27,6 @@ data:
   client_jwt_endpoint_use_tls: 'true'
   base_path: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
-  standalone_image:
   certs_mount_point: /certs
   imagePullPolicy: IfNotPresent
   use_tls: true
@@ -184,7 +183,6 @@ mongo:
   name: data-mongo
   replicas: 1
   image: 'deciphernow/mongo:4.0.3'
-  standalone_image:
   imagePullPolicy: IfNotPresent
   #private_image: false
   storage:
@@ -260,7 +258,6 @@ mongo:
 sidecar:
   version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  standalone_image:
   imagePullPolicy: IfNotPresent
   resources:
     limits:
