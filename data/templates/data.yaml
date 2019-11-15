@@ -1,10 +1,12 @@
-kind: Deployment
+kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: {{ .Values.data.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: 1
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ .Values.data.name }}
@@ -130,9 +132,12 @@ spec:
         secret:
           secretName: jwt-security
       {{- if  (eq .Values.data.envvars.uses3.value  "false") }}
-      - name: data-pvc
-        persistentVolumeClaim:
-          claimName: {{ .Values.data.name }}-pvc
+  volumeClaimTemplates:
+  - metadata:
+      name: data-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.data.pvc.size | default "40" }}Gi
       {{- end }}
-
-
