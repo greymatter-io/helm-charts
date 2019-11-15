@@ -20,7 +20,7 @@ By default, our Helm charts will deploy edge with an ingress URL of `<route_url_
 
 ### Kubernetes
 
-As of this writing, there is [an issue](https://github.com/appscode/voyager/issues/1415) specifying Voyager ingress as a dependency, so we need to manually configure it locally before launching our Grey Matter cluster. In the below commands, set PROVIDER to the appropriate [cluster provider](https://appscode.com/products/voyager/v11.0.1/setup/install/) for your environment before running. Then run the commands:
+As of this writing, there is [an issue](https://github.com/appscode/voyager/issues/1415) specifying Voyager ingress as a dependency, so we need to manually configure it locally before launching our Grey Matter cluster. In the below commands, set `PROVIDER` to the appropriate [cluster provider](https://appscode.com/products/voyager/v11.0.1/setup/install/) for your environment before running. Then run the commands:
 
 ```sh
 export PROVIDER=minikube
