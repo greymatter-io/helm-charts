@@ -2,7 +2,7 @@ apiCersion: v1
 appVersion: 3.0.0
 description: A Helm chart to deploy Grey Matter Documentation Site
 name: documentation
-version: 1.0.3
+version: 1.0.4
 icon: 
 maintainers:
     - name: Decipher Technology Studios Engineering

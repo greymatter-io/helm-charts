@@ -1,25 +1,26 @@
 # Minikube
 
-- [Local Minikube Deployment](#local-minikube-deployment)
-  - [Prerequisites](#prerequisites)
-  - [Quick Start](#quick-start)
-    - [Pre-Requisite](#pre-requisite)
-  - [Start Minikube](#start-minikube)
-    - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
-    - [OS X](#os-x)
-- [AWS EC2 Deployment](#aws-ec2-deployment)
-- [Configuration](#configuration)
-  - [Copy Files to EC2](#copy-files-to-ec2)
-  - [Docker Credentials](#docker-credentials)
-- [Setup Helm](#setup-helm)
-  - [Configure Voyager Ingress](#configure-voyager-ingress)
-- [Install](#install)
-  - [Latest Helm charts release](#latest-helm-charts-release)
-  - [Local Helm charts](#local-helm-charts)
-  - [Verification](#verification)
-  - [Ingress](#ingress)
-    - [EC2](#ec2)
-  - [Debugging](#debugging)
+- [Minikube](#minikube)
+  - [Local Minikube Deployment](#local-minikube-deployment)
+    - [Prerequisites](#prerequisites)
+    - [Quick Start](#quick-start)
+      - [Pre-Requisite](#pre-requisite)
+    - [Start Minikube](#start-minikube)
+      - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
+      - [OS X](#os-x)
+  - [AWS EC2 Deployment](#aws-ec2-deployment)
+  - [Configuration](#configuration)
+    - [Copy Files to EC2](#copy-files-to-ec2)
+    - [Docker Credentials](#docker-credentials)
+  - [Setup Helm](#setup-helm)
+    - [Configure Voyager Ingress](#configure-voyager-ingress)
+  - [Install](#install)
+    - [Latest Helm charts release](#latest-helm-charts-release)
+    - [Local Helm charts](#local-helm-charts)
+    - [Verification](#verification)
+    - [Ingress](#ingress)
+      - [EC2](#ec2)
+    - [Debugging](#debugging)
 
 Minikube allows us to quicky setup a Kubernetes cluster and test drive Grey Matter before deploying to a production environment. We've provided instructions for two scenarios, [Local Minikube Deployment](#local-minikube-deployment) or [AWS EC2 Deployment](#aws-ec2-deployment).
 
@@ -341,14 +342,14 @@ $ minikube -p gm-deploy service --https=true voyager-edge
 |-----------|--------------|--------------------------------|
 | NAMESPACE   | NAME           | URL                              |
 | ----------- | -------------- | -------------------------------- |
-| default     | voyager-edge   | http://192.168.99.102:31581      |
-|             |                | http://192.168.99.102:31975      |
+| default     | voyager-edge   | http://192.168.99.102:30001      |
+|             |                | http://192.168.99.102:30000      |
 | ----------- | -------------- | -------------------------------- |
 🎉  Opening kubernetes service  default/voyager-edge in default browser...
 🎉  Opening kubernetes service  default/voyager-edge in default browser...
 ```
 
-Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:31581> in the above example - the port number is probably different), then navigate to there in your browser.
+Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:30000> in the above example, then navigate to there in your browser.
 
 You should be prompted for your [Decipher localuser certificate](https://github.com/DecipherNow/grey-matter-quickstarts/tree/master/common/certificates/user) and be taken to the dashboard. Once there, make sure all services are "green" and then pat yourself on the back -- you deployed Grey Matter to Minikube!!
 
