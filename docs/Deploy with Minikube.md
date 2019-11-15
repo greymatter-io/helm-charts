@@ -3,6 +3,8 @@
 - [Minikube](#minikube)
   - [Local Minikube Deployment](#local-minikube-deployment)
     - [Prerequisites](#prerequisites)
+    - [Quick Start](#quick-start)
+      - [Pre-Requisite](#pre-requisite)
     - [Start Minikube](#start-minikube)
       - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
       - [OS X](#os-x)
@@ -28,10 +30,44 @@ Minikube allows us to quicky setup a Kubernetes cluster and test drive Grey Matt
 
 You will need the following tools installed (tested on both Mac OS and Linux Ubuntu):
 
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)@1.15.3
-- [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)@1.3.1
-- [helm](https://github.com/helm/helm/releases/tag/v2.14.3)@2.14.3
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)@1.16.0
+- [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)@1.4.0
+- [helm](https://github.com/helm/helm/releases/tag/v2.14.3)@2.15.0
 - [virtualbox](https://www.virtualbox.org/wiki/Downloads)@6.0.12
+
+### Quick Start
+
+A couple of Makefile targets provide a fast and easy way to standup Grey Matter on Minikube.
+
+#### Pre-Requisite
+
+- If you don't have the `envsubst` command you can get it with the `gettext` package on [Mac](https://stackoverflow.com/questions/23620827/envsubst-command-not-found-on-mac-os-x-10-8) or Linux. The command is required for using `make credentials`.
+
+Before starting via Minikube you need to supply your credentials for Decipher's Docker registry. These will be your Decipher LDAP credentials: email address and password.
+
+The `fresh` Makefile target runs `make credentials` and `make minikube`.
+
+```sh
+make fresh
+```
+
+You can interactively fillout your credentials with the `credentials` target. This will fillout your docker registry credentials and ask you if you want to setup S3 backing for gm-data. If you chose to have S3 backing you will need to enter a valid access key and secret key.
+
+```sh
+make credentials
+```
+
+After you have filled out your credentials, you can get Minikube up with Grey Matter deployed using:
+
+```sh
+make minikube
+```
+
+To spin down minikube.
+
+```sh
+make destroy
+```
 
 ### Start Minikube
 
@@ -113,7 +149,7 @@ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.3.1/miniku
 # Install Helm
 curl -LO https://git.io/get_helm.sh
 chmod 700 get_helm.sh
-./get_helm.sh --version v2.14.3
+./get_helm.sh --version v2.15.0
 
 # add helpful aliases
 alias minikube='sudo minikube'
@@ -135,20 +171,20 @@ sudo apt-get update && sudo apt-get install socat
 
 ## Configuration
 
-Our Helm charts can be overridden by custom YAML files that are chained together during install. We've provided three examples:
+Our Helm charts can be overridden by custom YAML files that are chained together during install. We've provided two templates:
 
 - [greymatter.yaml](../greymatter.yaml) provides a primary set of overrides
 - [greymatter-secrets.yaml](../greymatter-secrets.yaml) provides a separate set of overrides specifically for passwords, secrets, and other sensitive data
-- [greymatter-minikube.yaml](../greymatter-minikube.yaml) provides Minikube specific configurations but requires no changes
   
-Copy these files to `custom-greymatter.yaml`, `custom-greymatter-secrets.yaml` and `custom-greymatter-minikube.yaml`.
+
+Copy these files to `custom-greymatter.yaml` and  `custom-greymatter-secrets.yaml`.
 
 ### Copy Files to EC2
 
 If deploying to EC2, secure copy these files into the instance.
 
 ```sh
-scp -i <path-to-keyfile> custom-greymatter-secrets.yaml custom-greymatter.yaml custom-greymatter-minikube.yaml ubuntu@<public-dns>:/home/ubuntu
+scp -i <path-to-keyfile> custom-greymatter-secrets.yaml custom-greymatter.yaml ubuntu@<public-dns>:/home/ubuntu
 ```
 
 ### Docker Credentials
@@ -180,7 +216,7 @@ For more information on securing your installation see: https://docs.helm.sh/usi
 
 ### Configure Voyager Ingress
 
-For Kubernetes, we recommend the [Voyager Ingress Controller](https://appscode.com/products/voyager/), which automatically provisions a load balancer from a variety of supported cloud providers like EKS in AWS. This allows you to access the cluster at the provided load balancer URL.
+For Kubernetes, we use the [Voyager Ingress Controller](https://appscode.com/products/voyager/), which automatically provisions a load balancer from a variety of supported cloud providers like EKS in AWS. This allows you to access the cluster at the provided load balancer URL.
 
 At present, there's [an issue](https://github.com/appscode/voyager/issues/1415) specifying Voyager as a dependency so we need to manually configure Voyager ingress as a prerequisite. This can be done with following commands:
 
@@ -193,7 +229,8 @@ helm install appscode/voyager --name voyager-operator --version 10.0.0 \
   --set cloudProvider=$PROVIDER \
   --set enableAnalytics=false \
   --set apiserver.enableAdmissionWebhook=false
-...
+```
+```sh
 NOTES:
 Set cloudProvider for installing Voyager
 
@@ -225,12 +262,24 @@ helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-
 helm repo update
 ```
 
-Once the repository has successfully been added to your `helm` CLI, you can install Grey Matter from the latest charts.
+We also need to tell our helm chart to use `minikube` as its environment. In `custom-greymatter.yaml` change 
+
+```yaml
+  environment: openshift
+```
+
+to
+
+```yaml
+  environment: kubernetes
+```
+
+Once the repository has successfully been added to your `helm` CLI, and our environment has been changed to`minikube`, you can install Grey Matter from the latest charts.
 
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
 ```sh
-helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f greymatter-minikube.yaml --name gm-deploy
+helm install decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --name gm
 ```
 
 ### Local Helm charts
@@ -255,8 +304,9 @@ dependencies:
 Then you can run the following commands to update the local charts and then install them.
 
 ```sh
+rm -rf greymatter/charts
 helm dep up greymatter
-helm install greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml -f custom-reymatter-minikube.yaml --name gm
+helm install greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --name gm
 ```
 
 The `helm dep up greymatter` command will create a `./greymatter/charts` directory with tarballs of each sub-chart that the parent `greymatter` chart will use to install Grey Matter.
@@ -270,7 +320,7 @@ We also have the option to specify:
 - "--replace" will replace an existing deployment
 - "--dry-run" will print all Kubernetes configs to stdout
 
-We can run `helm ls` to see all our current deployments and `helm delete --purge $DEPLOYMENT` to delete deployments. If you need to make changes, you can run `helm upgrade gm deciperhnow/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml -f custom-greymatter-minikube.yaml` to update your release in place.
+We can run `helm ls` to see all our current deployments and `helm delete --purge $DEPLOYMENT` to delete deployments. If you need to make changes, you can run `helm upgrade gm deciperhnow/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml` to update your release in place.
 
 ```sh
 NAME                    REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE  
@@ -292,14 +342,14 @@ $ minikube -p gm-deploy service --https=true voyager-edge
 |-----------|--------------|--------------------------------|
 | NAMESPACE   | NAME           | URL                              |
 | ----------- | -------------- | -------------------------------- |
-| default     | voyager-edge   | http://192.168.99.102:31581      |
-|             |                | http://192.168.99.102:31975      |
+| default     | voyager-edge   | http://192.168.99.102:30001      |
+|             |                | http://192.168.99.102:30000      |
 | ----------- | -------------- | -------------------------------- |
 🎉  Opening kubernetes service  default/voyager-edge in default browser...
 🎉  Opening kubernetes service  default/voyager-edge in default browser...
 ```
 
-Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:31581> in the above example - the port number is probably different), then navigate to there in your browser.
+Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:30000> in the above example, then navigate to there in your browser.
 
 You should be prompted for your [Decipher localuser certificate](https://github.com/DecipherNow/grey-matter-quickstarts/tree/master/common/certificates/user) and be taken to the dashboard. Once there, make sure all services are "green" and then pat yourself on the back -- you deployed Grey Matter to Minikube!!
 

@@ -17,7 +17,7 @@
         \"name\":\"$(NAME)\",
         \"address\": \"$(POD_IP)\",
         \"port\": {{ .Values.global.services.edge.port }},
-        \"tags\": [\"tbn-cluster\"],
+        \"tags\": [\"gm-cluster\"],
         \"meta\": {
             \"metrics\": \"8081\"
             },

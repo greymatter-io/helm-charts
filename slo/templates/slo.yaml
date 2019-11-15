@@ -60,7 +60,7 @@ spec:
           value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc.cluster.local:5432/$(POSTGRESQL_DATABASE)
         - name: SERVICE_PORT
           value: "1337"
-        {{- if .Values.postgres.ssl.enabled  }}
+        {{- if .Values.postgres.ssl.enabled }}
         - name: SSL_ENABLED
           value: {{ .Values.postgres.ssl.enabled | quote }}
         - name: SSL_SERVER_CA
@@ -69,9 +69,27 @@ spec:
           value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.certName }}
         - name: SSL_SERVER_KEY
           value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.keyName }}
+        {{- end }}
+        {{- if .Values.slo.ssl.enabled }}
+        - name: SERVICE_SSL_ENABLED
+          value: {{ .Values.slo.ssl.enabled | quote }}
+        - name: SERVICE_SSL_CA
+          value: {{ .Values.slo.ssl.mountPoint}}/ca.crt
+        - name: SERVICE_SSL_CERT
+          value: {{ .Values.slo.ssl.mountPoint}}/server.crt
+        - name: SERVICE_SSL_KEY
+          value: {{ .Values.slo.ssl.mountPoint}}/server.key
+        {{- end }}
+        {{- if (.Values.postgres.ssl.enabled) or (.Values.slo.ssl.enabled) }}
         volumeMounts:
+        {{- if .Values.postgres.ssl.enabled }}
         - name: postgres-certs
-          mountPath: {{ .Values.postgres.ssl.mountPoint | quote }}
+          mountPath: {{ .Values.postgres.ssl.mountPoint }}
+        {{- end }}
+        {{- if .Values.slo.ssl.enabled }}
+        - name: service-certs
+          mountPath: {{ .Values.slo.ssl.mountPoint }}
+        {{- end }}
         {{- end }}
       - name: sidecar
         image: {{ tpl .Values.sidecar.image $ | quote }}
@@ -111,6 +129,12 @@ spec:
       - name: postgres-certs
         secret:
           secretName: {{ .Values.postgres.ssl.name }}
+          defaultMode: 0600
+      {{- end }}
+      {{- if .Values.slo.ssl.enabled }}
+      - name: service-certs
+        secret:
+          secretName: {{ .Values.slo.ssl.name }}
           defaultMode: 0600
       {{- end }}
       {{- if .Values.global.consul.enabled }}

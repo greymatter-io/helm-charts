@@ -34,6 +34,19 @@ spec:
           value: '{{ .Values.dashboard.prometheus_server }}'
         - name: BASE_URL
           value: '{{ tpl .Values.dashboard.base_url . }}'
+        {{- if .Values.dashboard.ssl.enabled  }}
+        - name: SERVER_SSL_ENABLED
+          value: {{ .Values.dashboard.ssl.enabled | quote }}
+        - name: SERVER_SSL_CA
+          value: {{ .Values.dashboard.ssl.mountPoint}}/ca.crt
+        - name: SERVER_SSL_CERT
+          value: {{ .Values.dashboard.ssl.mountPoint}}/server.crt
+        - name: SERVER_SSL_KEY
+          value: {{ .Values.dashboard.ssl.mountPoint}}/server.key
+        volumeMounts:
+        - name: service-certs
+          mountPath: {{ .Values.dashboard.ssl.mountPoint }}
+        {{- end }}
       - name: sidecar
         image: '{{ tpl .Values.sidecar.image $ }}'
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
@@ -70,6 +83,12 @@ spec:
       {{- include "sidecar_volumes" . | indent 6 }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
+      {{- end }}
+      {{- if .Values.dashboard.ssl.enabled }}
+      - name: service-certs
+        secret:
+          secretName: {{ .Values.dashboard.ssl.name }}
+          defaultMode: 0600
       {{- end }}
       imagePullSecrets:
         - name: docker.secret

@@ -17,6 +17,12 @@ spec:
       labels:
         app: {{ .Values.mongo.name }}
     spec:
+      {{- if and .Values.global.environment (eq .Values.global.environment "eks") }}
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+      {{- end }}
       containers:
       - env:
         {{- include "envvars" (dict "envvar" .Values.mongo.envvars "top" $) | indent 8 }}
@@ -66,4 +72,11 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: {{ .Values.mongo.pvc_size }}Gi
+          storage: {{ .Values.mongo.storage.size }}Gi
+    {{- if .Values.mongo.storage.storageClass }}
+    {{- if (eq "-" .Values.mongo.storage.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.mongo.storage.storageClass }}"
+    {{- end }}
+    {{- end }}

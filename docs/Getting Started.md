@@ -1,24 +1,24 @@
 # Getting Started
 
-- [Getting Started](#getting-started)
-  - [Helm](#helm)
-  - [OpenShift](#openshift)
-  - [Configuration](#configuration)
-    - [Ingress](#ingress)
-    - [Observables](#observables)
-    - [Docker credentials](#docker-credentials)
-    - [AWS credentials (optional)](#aws-credentials-optional)
-    - [Certificates](#certificates)
-    - [SPIRE](#spire)
-    - [TLS Options](#tls-options)
-    - [Single-service deployments](#single-service-deployments)
-  - [Install](#install)
-    - [Prepare Tiller](#prepare-tiller)
-    - [Prepare Service Accounts](#prepare-service-accounts)
-    - [Latest Helm charts release](#latest-helm-charts-release)
-    - [Local Helm charts](#local-helm-charts)
-    - [Additional Helm install flags](#additional-helm-install-flags)
-  - [Verification](#verification)
+- [Helm](#helm)
+- [OpenShift](#openshift)
+- [Configuration](#configuration)
+  - [Storage](#storage)
+  - [Ingress](#ingress)
+  - [Observables](#observables)
+  - [Docker credentials](#docker-credentials)
+  - [AWS credentials (optional)](#aws-credentials-optional)
+  - [Certificates](#certificates)
+  - [SPIRE](#spire)
+  - [TLS Options](#tls-options)
+  - [Single-service deployments](#single-service-deployments)
+- [Install](#install)
+  - [Prepare Tiller](#prepare-tiller)
+  - [Prepare Service Accounts](#prepare-service-accounts)
+  - [Latest Helm charts release](#latest-helm-charts-release)
+  - [Local Helm charts](#local-helm-charts)
+  - [Additional Helm install flags](#additional-helm-install-flags)
+- [Verification](#verification)
 
 This guide assumes that your target environment is a hosted Kubernetes based platform. If you want to test drive Grey Matter on your local machine, follow [Deploy with Minikube](./Deploy%20with%20Minikube.md).
 
@@ -68,8 +68,12 @@ global:
     # the Kafka topic that the observables should be written to
     topic: observables
     # the Kafka server connection string
-    kafkaServerConnection: 
+    kafkaServerConnection:
 ```
+
+### Storage
+
+The Grey Matter Helm chart assumes that your Kubernetes cluster has a default storage provider already defined.  The charts will attempt to create several PersistentVolumeClaims for data storage, and if a default storage provider has not been declared, the installation will fail.  Additionally, the Mongo StatefulSets declare a Persistent Volume Template that requires that a Storage Class be defined.  If there is no default StorageClass in your cluster, you must provide a StorageClass name for the Mongo chart.  This variable can be set at `.Values.data.mongo.storage.storageClass` and `.Values.internal-data.mongo.storage.storageName`
 
 ### Ingress
 
@@ -109,7 +113,7 @@ These are global settings for all observables:
 globals:
   observables:
     topic: observables
-    kafkaServerConnection: 
+    kafkaServerConnection:
 ```
 
 Observables can be enabled or disabled for each service.  You can enable observables by setting `.Values.global.services.<service>.observablesEnabled` to `true` or `false`
@@ -226,18 +230,20 @@ For a quick setup, giving Tiller full cluster-wide access, have an admin apply t
 to act and install across the entire Kubernetes cluster.
 
 For Openshift:
-```
+
+```sh
 oc apply -f ./helm-service-account.yaml
 ```
 
 For Kubernetes:
-```
+
+```sh
 kubectl apply -f ./helm-service-account.yaml
 ```
 
 You'll then be able to initialize Helm using this account:
 
-```
+```sh
 helm init --service-account tiller
 ```
 
