@@ -1,10 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ .Values.gmControlApi.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.gmControlApi.replicas }}
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ .Values.gmControlApi.name }}
@@ -102,6 +104,11 @@ spec:
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
-      - name: gm-control-api-backup
-        persistentVolumeClaim:
-          claimName: gm-control-api-pvc
+  volumeClaimTemplates:
+  - metadata:
+      name: gm-control-api-backup
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.gmControlApi.pvc.size | default "1Gi" }}
