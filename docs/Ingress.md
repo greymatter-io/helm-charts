@@ -5,10 +5,11 @@
   - [Kubernetes](#kubernetes)
   - [OpenShift](#openshift)
 - [Other ingress](#other-ingress)
+  - [Nginx](#nginx)
 
-By default, your cluster is not accessible from the outside world. Grey Matter supports two ingress configurations out of the box, Kubernetes with [Voyager](https://appscode.com/products/voyager/) and OpenShift [Routes](https://docs.openshift.com/container-platform/3.9/architecture/networking/routes.html). Both are configured as [TCP passthroughs](https://docs.openshift.com/container-platform/3.9/architecture/networking/routes.html#secured-routes) which send encrypted traffic straight to the Grey Matter ingress gateway to provide TLS termination. This ingress gateway is the same sidecar used throughout the mesh; it's role is to only handle edge traffic.
+By default, your cluster is not accessible from the outside world. Grey Matter supports two ingress configurations out of the box, Kubernetes with [Voyager](https://appscode.com/products/voyager/) and OpenShift [Routes](https://docs.openshift.com/container-platform/3.9/architecture/networking/routes.html). Both are configured as [TCP passthroughs](https://docs.openshift.com/container-platform/3.9/architecture/networking/routes.html#secured-routes) which send encrypted traffic straight to the Grey Matter ingress sidecar to provide TLS termination. This ingress sidecar is the same sidecar used throughout the mesh; it's role is to only handle edge traffic.
 
-Take a look at the [edge chart documentation](../edge/README.md) for implementation details on how the Grey Matter ingress gateway is exposed in both Kubernetes and OpenShift.
+Take a look at the [edge chart documentation](../edge/README.md) for implementation details on how the Grey Matter ingress sidecar is exposed in both Kubernetes and OpenShift.
 
 ## Set the ingress URL
 
@@ -48,4 +49,29 @@ In OpenShift, ingress is defined as a Route with the URL described above. No add
 
 ## Other ingress
 
-Another popular ingress controller is [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/). If you configure it as a passthrough it'll still handle TLS termination. In which case you will need to use the same certificates from the Grey Matter edge service. One thing to keep in mind, a proper Kubernetes [TLS secret](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls) will need to be created and leveraged by `ingress-nginx`.
+### Nginx
+
+Another popular ingress controller is [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/) which can also be configured as a passthrough to the Grey Matter ingress sidecar. You can setup Nginx ingress using the following YAML:
+
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gm-ingress-test
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    # nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+  namespace: greymatter
+spec:
+  rules:
+  - host: staging.deciphernow.com
+    http:
+      paths:
+      - backend:
+          serviceName: edge
+          servicePort: 8080
+        path: /
+```
+
+We weren't able to forward user credentials successfully to the edge ingress sidecar, which is why that annotation is currently commented out.
