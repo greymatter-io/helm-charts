@@ -74,4 +74,4 @@ spec:
         path: /
 ```
 
-We weren't able to forward user credentials successfully to the edge ingress sidecar, which is why that annotation is currently commented out.
+This configuration routes SSL traffic to the Grey Matter edge sidecar, indicated by the `edge` service name, running on port 8080. We weren't able to forward user credentials successfully to the edge ingress sidecar, which is why that annotation is currently commented out.
