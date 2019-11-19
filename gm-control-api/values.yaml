@@ -3,6 +3,7 @@ global:
   environment: kubernetes
   domain:
   route_url_name:
+  control_api_tls: true
   remove_namespace_from_url: ''
   exhibitor:
     replicas: 1
@@ -33,6 +34,23 @@ gmControlApi:
   zone: zone-default-zone
   proxyPort: 8080
   pvcMountPoint: '/app/control-api/data/backend.json'
+  ssl:
+    name: control-api-certs
+    mountPoint: /service-certs
+    insecure: true
+    certificates:
+      ca: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: |-
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
   init:
     image: 'docker.production.deciphernow.com/deciphernow/greymatter:{{ $.Values.global.gmControlApi.cli.version }}'
     imagePullPolicy: IfNotPresent

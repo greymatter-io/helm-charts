@@ -28,12 +28,22 @@ spec:
           image: {{ tpl .Values.gmControlApi.image $ }}
           imagePullPolicy: {{ .Values.gmControlApi.imagePullPolicy }}
           env:
-            {{- include "envvars" (dict "envvar" .Values.gmControlApi.envvars "top" $) | indent 12 }}
+            {{- include "envvars" (dict "envvar" .Values.gmControlApi.envvars "top" $) | indent 10 }}
+          {{- if .Values.global.control_api_tls  }}
+          - name: GM_CONTROL_API_USE_TLS
+            value: {{ .Values.global.control_api_tls | quote }}
+          - name: GM_CONTROL_API_CA_CERT_PATH
+            value: {{ .Values.gmControlApi.ssl.mountPoint}}/ca.crt
+          - name: GM_CONTROL_API_SERVER_CERT_PATH
+            value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.crt
+          - name: GM_CONTROL_API_SERVER_KEY_PATH
+            value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.key
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.gmControlApi.containerPort }}
               protocol: TCP
-          
+          {{- if not .Values.global.control_api_tls }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
           readinessProbe:
             httpGet:
@@ -58,11 +68,16 @@ spec:
                   value: Bearer xxx
             initialDelaySeconds: 60
             periodSeconds: 3
+          {{- end }}
           {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
           volumeMounts:
+            {{- if .Values.global.control_api_tls }}
+            - name: service-certs
+              mountPath: {{ .Values.gmControlApi.ssl.mountPoint }}
+            {{- end }}
             - name: gm-control-api-backup
               mountPath: {{ dir .Values.gmControlApi.pvcMountPoint }}
         - name: sidecar   
@@ -77,6 +92,29 @@ spec:
               containerPort: 8080
             - name: metrics
               containerPort: 8081
+          # If mTLS is enabled on the service, we can't use normal httpGet probes. Instead we add the probes to the sidecar so that we can exec in and call the service directly. The control-api service does not have the utilities (curl, wget with ssl) we need to do these probes there.
+          {{- if .Values.global.control_api_tls }}
+          # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:5555/v1.0/cluster"
+            # Pods are considered to be in a Failure state before the initialDelaySeconds has passed, meaning they won't be backends for a service
+            initialDelaySeconds: 5
+            periodSeconds: 2
+          # We want to restart the container if it's failed 3 requests spaced 3 seconds apart after we've given it quite enough time to start up and be initialized
+          # We give a full minute before we start health-checking for failures
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:5555/v1.0/cluster"
+            initialDelaySeconds: 60
+            periodSeconds: 3
+          {{- end }}
           env:
           {{- include "greymatter.envvars" . | indent 12 }}
         {{- if .Values.global.spire.enabled }}
@@ -93,6 +131,12 @@ spec:
       imagePullSecrets:
         - name: docker.secret
       volumes:
+      {{- if .Values.global.control_api_tls }}
+      - name: service-certs
+        secret:
+          secretName: {{ .Values.gmControlApi.ssl.name }}
+          defaultMode: 0600
+      {{- end }}
       {{- if .Values.global.consul.enabled }}
       - name: data-consul
         emptyDir: {}

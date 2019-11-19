@@ -3,6 +3,7 @@ global:
   domain:
   route_url_name:
   remove_namespace_from_url: false
+  control_api_tls: true
   zone: zone-default-zone
   # The observables section defines the common information points for
   # Grey Matter Observables.  Note that, if enabled, the kafkaServerConnection

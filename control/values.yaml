@@ -3,6 +3,7 @@ global:
   environment: kubernetes
   domain:
   route_url_name:
+  control_api_tls: true
   remove_namespace_from_url: ''
   exhibitor:
     replicas: 1
@@ -21,6 +22,23 @@ control:
   replicas: 1
   image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.global.control.version }}'
   imagePullPolicy: IfNotPresent
+  controlApiTLS:
+    name: control-to-control-api-certs
+    mountPoint: /service-certs
+    insecure: true
+    certificates:
+      ca: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: |-
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
   serviceAccount:
     create: true
     name: control-sa

@@ -23,7 +23,17 @@ spec:
           image: {{ tpl .Values.control.image $ }}
           imagePullPolicy: {{ .Values.control.imagePullPolicy }}
           env:
-            {{- include "envvars" (dict "envvar" .Values.control.envvars "top" $) | indent 12 }}
+            {{- include "envvars" (dict "envvar" .Values.control.envvars "top" $) | indent 10 }}
+          {{- if .Values.global.control_api_tls  }}
+          - name: GM_CONTROL_API_INSECURE
+            value: {{ .Values.control.controlApiTLS.insecure | quote }}
+          - name: GM_CONTROL_API_SSL
+            value: "true"
+          - name: GM_CONTROL_API_SSLCERT
+            value: {{ .Values.control.controlApiTLS.mountPoint }}/server.crt
+          - name: GM_CONTROL_API_SSLKEY
+            value: {{ .Values.control.controlApiTLS.mountPoint }}/server.key
+          {{- end }}
           ports:
             - name: grpc
               containerPort: 50000
@@ -32,8 +42,12 @@ spec:
             tcpSocket:
               port: grpc
             initialDelaySeconds: 2
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+        {{- if .Values.global.control_api_tls  }}
+          volumeMounts:
+            - name: control-api-certs
+              mountPath: {{ .Values.control.controlApiTLS.mountPoint }}
+        {{- end }}
       initContainers:
         - name: ensure-gm-control-api
           image: {{ .Values.global.waiter.image }}
@@ -43,6 +57,13 @@ spec:
             - name: SERVICE
               value: gm-control-api
             - name: POST_DELAY
-              value: "10"
+              value: '10'
       imagePullSecrets:
         - name: docker.secret
+      {{- if .Values.global.control_api_tls  }}
+      volumes:
+        - name: control-api-certs
+          secret:
+            secretName: {{ .Values.control.controlApiTLS.name }}
+            defaultMode: 0777
+      {{- end }}

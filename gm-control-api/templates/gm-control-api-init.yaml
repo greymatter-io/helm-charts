@@ -25,8 +25,22 @@ spec:
           imagePullPolicy: {{ .Values.gmControlApi.init.imagePullPolicy }}
           command: ["/tmp/bootstrap/bootstrap.sh"]
           env:
-          {{- include "envvars" (dict "envvar" .Values.gmControlApi.init.envvars "top" $) | indent 12 }}
+          {{- include "envvars" (dict "envvar" .Values.gmControlApi.init.envvars "top" $) | indent 10 }}
+          {{- if .Values.global.control_api_tls  }}
+          - name: GREYMATTER_API_SSL
+            value: {{ .Values.global.control_api_tls | quote }}
+          - name: GREYMATTER_API_INSECURE
+            value: {{ .Values.gmControlApi.ssl.insecure | quote }}
+          - name: GREYMATTER_API_SSLCERT
+            value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.crt
+          - name: GREYMATTER_API_SSLKEY
+            value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.key
+          {{- end }}
           volumeMounts:
+            {{- if .Values.global.control_api_tls }}
+            - name: service-certs
+              mountPath: {{ .Values.gmControlApi.ssl.mountPoint }}
+            {{- end }}
           {{- range $name, $service := .Values.global.services }}
           {{- if $service.controlEnabled }}
             - name: service-config-volume-{{$service.serviceName}}
@@ -40,6 +54,12 @@ spec:
             - name: bootstrap-script-volume
               mountPath: /tmp/bootstrap
       volumes:
+        {{- if .Values.global.control_api_tls }}
+        - name: service-certs
+          secret:
+            secretName: {{ .Values.gmControlApi.ssl.name }}
+            defaultMode: 0600
+        {{- end }}
         {{- range $name, $service := .Values.global.services }}
         {{- if $service.controlEnabled }}
         - name: service-config-volume-{{ $service.serviceName }}
