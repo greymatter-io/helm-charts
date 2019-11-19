@@ -7,12 +7,10 @@ dependencies:
     version: '2.1.2'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
     alias: internal-data
-
     
   - name: data
     version: '2.1.2'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
-
 
   - name: dashboard
     version: '2.1.1'
