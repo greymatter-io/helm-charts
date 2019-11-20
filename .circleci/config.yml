@@ -1,0 +1,160 @@
+# These are the expected environment variables
+#
+# The Nexus information is so that the build can push the packaged charts to the Decipher Helm repo
+# NEXUS_URL
+# NEXUS_PASSWORD
+# NEXUS_USER
+#
+version: 2
+
+jobs:
+  build-staging:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Set Environment Variable
+          command: |
+            echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-staging/" >> $BASH_ENV
+      - run:
+          name: Package and Publish Catalog
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/catalog
+      - run:
+          name: Package and Publish Control
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/control
+      - run:
+          name: Package and Publish Data
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/data
+      - run:
+          name: Package and Publish GM Control API
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/gm-control-api
+      - run:
+          name: Package and Publish Dashboard
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/dashboard
+      - run:
+          name: Package and Publish JWT
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/jwt
+      - run:
+          name: Package and Publish JWT Gov
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/jwt-gov
+      - run:
+          name: Package and Publish Edge
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/edge
+      - run:
+          name: Package and Publish SLO
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/slo
+      - run:
+          name: Package and Publish Spire
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/spire
+  package-and-publish-greymatter-staging:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Set Environment Variable
+          command: |
+            echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-staging/" >> $BASH_ENV
+      - run:
+          name: Change Grey Matter Requirements to staging
+          command: |
+            sed -i "s/hosted/staging/g" $(pwd)/greymatter/requirements.yaml
+      - run:
+          name: Print directory listing
+          command: |
+            ls -al $(pwd)
+      - run:
+          name: Package and Publish Grey Matter
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/greymatter
+  package-and-publish-core-hosted:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Set Environment Variable
+          command: |
+            echo "export INPUT_NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
+      - run:
+          name: Package and Publish Catalog
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/catalog
+      - run:
+          name: Package and Publish Control
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/control
+      - run:
+          name: Package and Publish Data
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/data
+      - run:
+          name: Package and Publish GM Control API
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/gm-control-api
+      - run:
+          name: Package and Publish Dashboard
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/dashboard
+      - run:
+          name: Package and Publish JWT
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/jwt
+      - run:
+          name: Package and Publish JWT Gov
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/jwt-gov
+      - run:
+          name: Package and Publish Edge
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/edge
+      - run:
+          name: Package and Publish SLO
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/slo
+      - run:
+          name: Package and Publish Spire
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/spire
+  package-and-publish-greymatter-hosted:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Set Environment Variable
+          command: |
+            echo "export INPUT_NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
+      - run:
+          name: Package and Publish Grey Matter
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/greymatter
+workflows:
+  version: 2
+  build-and-publish:
+    jobs:
+      - build-staging:
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              ignore: /release-.*/
+      - package-and-publish-greymatter-staging:
+          requires:
+            - build-staging
+      - package-and-publish-core-hosted:
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              only: /release-.*/
+      - package-and-publish-greymatter-hosted:
+          requires:
+            - package-and-publish-core-hosted
