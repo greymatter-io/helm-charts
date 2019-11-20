@@ -38,7 +38,7 @@ spec:
           mountPath: /run/spire/sockets
           readOnly: true
         {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-        {{- include "sidecar_volume_certs_mount" . | indent 8 }}
+        {{- include "edge_volume_certs_mount" . | indent 8 }}
         {{- end}}
       {{- if .Values.global.consul.enabled }}
       {{- $data := dict "Values" .Values "ServiceName" "edge" }}
@@ -55,12 +55,12 @@ spec:
       {{- end }}
       - name: edge
         secret:
-          secretName: edge
+          secretName: {{ .Values.edge.certificates.ingress.name}}
       {{- if .Values.global.spire.enabled }}
       - name: spire-agent-socket
         hostPath:
           path: /run/spire/sockets
           type: Directory
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-      {{- include "sidecar_certs_volumes" . | indent 6 }}
+      {{- include "edge_certs_volumes" . | indent 6 }}
       {{- end }}

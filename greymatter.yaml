@@ -9,6 +9,8 @@ global:
   mesh_tls:
     enabled: true
     use_provided_certs: true
+    # This i s the DN of the cert being used in the mesh.  The Helm charts will add whitelist the Dn throughout the mesh
+    dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local
   # Turns on tls for control api and configures control to talk to it using tls
   control_api_tls: true
   kafka:
@@ -29,6 +31,8 @@ global:
     port: 8500
   edge:
     enableTLS: true
+    # This is the DN of the new certificate issued to the edge for internal mesh communication. It needs to be whitelisted by the proxies
+    egressDn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=edge
     certPath: /etc/proxy/tls/edge
     version: 1.0.0
   spire:
@@ -77,7 +81,7 @@ global:
     controlApi:
       # This value must match global.control_api_tls
       egressTLS: true
-      
+
   sidecar:
     version: 1.0.0
     envvars:
@@ -468,10 +472,10 @@ catalog:
         value: 'world'
       client_identity:
         type: value
-        value: 'CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US'
+        value: 'C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local'
       client_email:
         type: value
-        value: 'gm-control@deciphernow.com'
+        value: 'engineering@deciphernow.com'
 
     init:
       image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
@@ -645,6 +649,7 @@ internal-jwt:
         key: jwt.key.pem
 
     users_cg_name: internal-jwt-users
+    # This is a list of authorized users for the JWT service.  It's preloaded with the DNs for GM Control, Catalog and the Mesh Cert
     users: |-
       {
         "users": [
@@ -664,6 +669,20 @@ internal-jwt:
         },
         {
           "label": "CN=gm-catalog,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+          "values": {
+            "email": [
+                "engineering@deciphernow.com"
+            ],
+            "org": [
+                "www.deciphernow.com"
+            ],
+            "privilege": [
+                "root"
+            ]
+          }
+        },
+        {
+          "label": "C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local",
           "values": {
             "email": [
                 "engineering@deciphernow.com"
