@@ -12,6 +12,7 @@ global:
   exhibitor:
     replicas: 1
   edge:
+    version: 1.0.0
     enableTLS: true
     certPath: /etc/proxy/tls/edge
     egressDn: cn=edge
@@ -19,6 +20,12 @@ global:
     enabled: false
     host: ''
     port: 8500
+  sidecar:
+    version: 1.0.0
+  spire:
+    enabled: false
+  mesh_tls:
+    use_provided_certs: true
 
 ingress_config:
   default_url: '{{ .Values.global.route_url_name }}.{{ .Release.Namespace }}.{{ .Values.global.domain }}'
@@ -32,7 +39,6 @@ edge:
   base_path: /services/edge/0.7.1
   acl_enabled: 'false'
   imagePullPolicy: IfNotPresent
-  ingress_use_tls: true
   resources:
     limits:
       cpu: 1
@@ -41,9 +47,51 @@ edge:
       cpu: 100m
       memory: 128Mi
 
-  # The edge requires two certifiates.  One for ingress traffic from the internet and another
-  # for egress traffic into the mesh.  The egress cert needs to be specific to the edge so 
-  # impersonation can be configured to all of the services from the edge service
+  ingress:
+    # There are a lot of options for ingress into a kubernetes cluster.  
+    # Change this if you don't want to use the default 
+    # apiVersion: voyager.appscode.com/v1beta1
+    apiVersion: extensions/v1beta1
+    
+    # Specific annotations for your deployment
+    annotations: 
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "https"
+
+    # Choosing the ingress.appscode.com/type is important and depends on your environment type.
+    #   - If using EKS, you need to configure the Type as LoadBalancder 
+    #   - If using voyager, you need to configure the type as NodePort
+    # voyager defaults
+      # kubernetes.io/ingress.class: "voyager"
+      # ingress.appscode.com/ssl-passthrough: "true"
+      # ingress.appscode.com/type: LoadBalancer
+      # ingress.appscode.com/type: NodePort
+
+    # Provide the rule set you want your ingress controller to use
+    rules:
+      - host: greymatter.development.deciphernow.com
+        http:
+          paths: 
+            - path: /
+              backend:
+                serviceName: edge
+                servicePort: 8080
+
+
+    # The default voyager rules
+    # - tcp:
+    #   port: '80'
+    #   backend:
+    #     serviceName: edge
+    #     servicePort: 8080
+    # - tcp:
+    #   port: '443'
+    #   backend:
+    #     serviceName: edge
+    #     servicePort: 8080
+
+  # These are the certs that the edge will use for ingress traffic into the mesh
   create_edge_secret: false
   certificates:
     ingress:
@@ -92,10 +140,10 @@ sidecar:
       type: value
       value: 'edge'
 
-  # Set this to true if you are attempting to deploy Catalog by itself.
-  # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
-  # sidecar secret, but if individual testing is being done, the sidecar secret will
-  # need to be created.
+#   # Set this to true if you are attempting to deploy Catalog by itself.
+#   # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
+#   # sidecar secret, but if individual testing is being done, the sidecar secret will
+#   # need to be created.
   create_sidecar_secret: false
   certificates:
     name: sidecar

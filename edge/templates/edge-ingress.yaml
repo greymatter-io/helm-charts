@@ -1,5 +1,4 @@
 {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
-
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
@@ -17,33 +16,18 @@ spec:
     weight: 100
   wildcardPolicy: None
 
-{{- else if and (and .Values.global.environment (eq .Values.global.environment "kubernetes")) .Values.global.k8s_use_voyager_ingress }}
+{{- else }}
+{{- with .Values.edge.ingress }}
 
-apiVersion: voyager.appscode.com/v1beta1
+apiVersion: {{ .apiVersion }}
 kind: Ingress
 metadata:
   name: edge
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
   annotations:
-    kubernetes.io/ingress.class: "voyager"
-    {{- if and .Values.global.environment (eq .Values.global.environment "eks") }}
-    ingress.appscode.com/type: LoadBalancer
-    {{- else }}
-    ingress.appscode.com/type: NodePort
-    {{- end }}
-    ingress.appscode.com/ssl-passthrough: "true"
+{{ toYaml .annotations | indent 4 }}
 spec:
   rules:
-  - tcp:
-      port: '80'
-      nodePort: "30001"
-      backend:
-        serviceName: edge
-        servicePort: 8080
-  - tcp:
-      port: '443'
-      nodePort: "30000"
-      backend:
-        serviceName: edge
-        servicePort: 8080
+{{ toYaml .rules | indent 4 }}
+{{- end }}
 {{- end }}
