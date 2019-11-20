@@ -83,7 +83,7 @@ jobs:
       - run:
           name: Set Environment Variable
           command: |
-            echo "export INPUT_NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
+            echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
       - run:
           name: Package and Publish Catalog
           command: |
@@ -131,7 +131,7 @@ jobs:
       - run:
           name: Set Environment Variable
           command: |
-            echo "export INPUT_NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
+            echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
       - run:
           name: Package and Publish Grey Matter
           command: |
