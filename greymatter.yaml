@@ -570,7 +570,6 @@ jwt:
         value: 'jwt-security'
 
   jwt:
-    use_aac: true
     users_mount_point: /gm-jwt-security/etc
     image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
@@ -598,24 +597,6 @@ jwt:
         key: jwt.cert.pem
       - type: secret
         name: SERVER_KEY
-        secret: jwt-certs
-        key: jwt.key.pem
-      - type: value
-        name: JWT_AACHOST
-        value: aac.memecore.svc
-      - type: value
-        name: JWT_AACPORT
-        value: 9080
-      - type: secret
-        name: AAC_TRUST
-        secret: jwt-certs
-        key: jwt.trust.pem
-      - type: secret
-        name: AAC_CERT
-        secret: jwt-certs
-        key: jwt.cert.pem
-      - type: secret
-        name: AAC_KEY
         secret: jwt-certs
         key: jwt.key.pem
 
