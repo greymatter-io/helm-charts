@@ -570,6 +570,7 @@ jwt:
         value: 'jwt-security'
 
   jwt:
+    use_aac: false
     users_mount_point: /gm-jwt-security/etc
     image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
