@@ -94,4 +94,3 @@ spec:
       {{- end }}
       imagePullSecrets:
         - name: docker.secret
-        - name: dev.docker.secret
