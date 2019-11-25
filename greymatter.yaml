@@ -18,7 +18,7 @@ global:
     sidecar:
       version: 1.0.0
   catalog:
-    version: 1.0.2
+    version: 1.0.1
     sidecar:
       version: 1.0.0
   sense:
@@ -49,7 +49,7 @@ global:
     catalog:
       egressTLS: true
       mTLS: true
-      version: 1.0.2
+      version: 1.0.1
     dashboard:
       egressTLS: true
       mTLS: true

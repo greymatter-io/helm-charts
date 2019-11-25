@@ -18,7 +18,7 @@ global:
     use_provided_certs: false
   catalog:
     name: catalog
-    version: 1.0.2
+    version: 1.0.1
     sidecar:
       version:
     data_prefix: /data
@@ -85,7 +85,7 @@ global:
       documentation: '/services/catalog/latest/'
       name: 'Grey Matter Catalog'
       owner: 'Decipher'
-      version: 1.0.2
+      version: 1.0.1
       minInstances: 1
       maxInstances: 1
       # egressTLS: 'false'
