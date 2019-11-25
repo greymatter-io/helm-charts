@@ -1,0 +1,11 @@
+{
+  "zone_key": "zone-default-zone",
+  "shared_rules_key": "data-standalone-shared-rules",
+  "name": "data-standalone",
+  "default": {
+    "light": [{
+      "cluster_key": "data-standalone-service",
+      "weight": 1
+    }]
+  }
+}

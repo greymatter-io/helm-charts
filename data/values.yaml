@@ -135,7 +135,7 @@ data:
       key: database
     gmdata_use_tls:
       type: value
-      value: 'false'
+      value: 'true'
     gmdata_cert:
       type: secret
       secret: jwt-certs

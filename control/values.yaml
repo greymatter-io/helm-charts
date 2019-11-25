@@ -8,8 +8,8 @@ global:
   exhibitor:
     replicas: 1
   control:
-    version: 1.1.0
-    additionalNamespacesToControl:
+    version: 1.0.2
+    additionalNamespacesToControl: data-only
   waiter:
     image: deciphernow/k8s-waiter:latest
 

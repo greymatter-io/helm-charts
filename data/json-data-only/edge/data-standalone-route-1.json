@@ -1,0 +1,8 @@
+{
+  "zone_key": "zone-default-zone",
+  "domain_key": "edge",
+  "shared_rules_key": "edge-data-standalone-shared-rules",
+  "route_key": "sidecar-data-standalone-route-slash",
+  "path": "/services/data-standalone/1.0/",
+  "prefix_rewrite": "/"
+}
