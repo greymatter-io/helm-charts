@@ -13,7 +13,10 @@
   {{- if (.service.observablesEnabled) }}
     "gm.observables",
   {{- end }}
-    "gm.metrics" 
+  {{- if .Values.global.mesh_tls.enabled }}
+    "gm.impersonation",
+  {{- end }}
+    "gm.metrics"
   ],
   "proxy_filters": {
     {{-  if (.service.observablesEnabled) }}
@@ -22,6 +25,11 @@
       "topic": "{{.service.serviceName}}",
       "eventTopic": "{{ .Values.global.observables.topic }}",
       "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"
+    },
+    {{- end }}
+    {{- if .Values.global.mesh_tls.enabled }}
+    "gm_impersonation": {
+      "servers": "{{ .Values.global.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{ .Values.global.mesh_tls.dn }}{{- end -}}"
     },
     {{- end }}
     "gm_metrics": {
