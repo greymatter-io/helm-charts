@@ -15,12 +15,6 @@ spec:
       labels:
         app: {{ .Values.data.name }}
     spec:
-      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
-      securityContext:
-        runAsUser: 2000
-        runAsGroup: 1000
-        fsGroup: 2000
-      {{- end }}
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
         - name: ensure-{{ .Values.data.name }}
@@ -42,6 +36,12 @@ spec:
         {{- if .Values.data.resources }}
         resources:
 {{ toYaml .Values.data.resources | indent 10 }}
+        {{- end }}
+        {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+        securityContext:
+          runAsUser: 666
+          runAsGroup: 666
+          fsGroup: 666
         {{- end }}
         env:
           {{- include "data.envvars" (dict "envvar" .Values.data.envvars "top" $) | indent 8 }}
