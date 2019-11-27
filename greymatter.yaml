@@ -157,6 +157,8 @@ data:
   data:
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
+    securityContext:
+      enabled: true
     envvars:
       uses3:
         type: value
@@ -305,13 +307,14 @@ internal-data:
         type: value
         value: 'data-internal'
   data:
-    image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
-    certs_mount_point: /app/certs
     version: 1.0.0
     name: data-internal
+    image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
+    certs_mount_point: /app/certs
+    securityContext:
+      enabled: true
     pvc:
       mountPath: /buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
-
     envvars:
       gmdata_namespace:
         type: value
