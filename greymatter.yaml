@@ -1,6 +1,6 @@
 global:
   environment: openshift
-  # If `environment: kubernetes`, set to true to install Voyager ingress 
+  # If `environment: kubernetes`, set to true to install Voyager ingress
   k8s_use_voyager_ingress: false
   domain: staging.deciphernow.com
   route_url_name: greymatter
@@ -392,6 +392,9 @@ catalog:
       config_source:
         type: value
         value: 'gmdata'
+      config_polling_interval:
+        type: value
+        value: '30s'
       instance_polling_interval:
         type: value
         value: '5s'
