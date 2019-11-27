@@ -9,7 +9,6 @@
     "aliases": null{{ if .Values.global.edge.enableTLS }},
     "force_https": true,
     "ssl_config": {
-        "cipher_filter": "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH",
         "protocols": ["SSLv3", "SSLv2", "TLSv1", "TLSv1.1", "TLSv1.2"],
         "require_client_certs": true,
         "trust_file": "{{ .Values.global.edge.certPath }}/ca.crt",

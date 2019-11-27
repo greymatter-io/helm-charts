@@ -9,7 +9,6 @@
   "require_tls": true,
   {{- if .Values.global.mesh_tls.use_provided_certs }}
   "ssl_config": {
-    "cipher_filter": "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH",
     "protocols": [
       "SSLv3",
       "SSLv2",
