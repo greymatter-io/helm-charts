@@ -53,14 +53,14 @@ global:
     sidecar:
       version:
   control:
-    version: 1.0.2
+    version: 1.1.0
     # This specifies the service name that all XDS clients will try to connect to
     name: control
     port: 50000
   gmControlApi:
-    version: 1.0.2
+    version: 1.1.0
     cli:
-      version: 1.0.2
+      version: 1.1.0
   sidecar:
     version: 1.0.0
   spire:
@@ -207,10 +207,10 @@ global:
       capability: 'Grey Matter'
       documentation:
       owner: 'Decipher'
-      version: '1.0.2'
+      version: 1.1.0'
       routes:
-        - '/services/control-api/{{ $.Values.global.control.version }}'
-        - '/services/control-api/{{ $.Values.global.control.version }}/'
+        - '/services/control-api/{{ $.Values.global.gmControlApi.version }}'
+        - '/services/control-api/{{ $.Values.global.gmControlApi.version }}/'
 
     edge:
       catalogEnabled: true

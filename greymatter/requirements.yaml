@@ -35,11 +35,11 @@ dependencies:
 
   - name: gm-control-api
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
-    version: '2.1.4'
+    version: '2.1.5'
 
   - name: control
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
-    version: '2.1.2'
+    version: '2.1.3'
 
   - name: spire
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'

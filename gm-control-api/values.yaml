@@ -12,9 +12,9 @@ global:
     port: 18000
     cluster: greymatter
   gmControlApi:
-    version: 1.0.2
+    version: 1.1.0
     cli:
-      version: 1.0.2
+      version: 1.1.0
   data:
     jwt_prefix:
   waiter:
