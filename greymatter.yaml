@@ -44,7 +44,7 @@ global:
     # This specifies the service name that all XDS clients will try to connect to
     name: control
     port: 50000
-    version: 1.0.2
+    version: 1.1.0
   data:
     jwt_prefix: '/jwt'
   internal-data:
@@ -121,7 +121,7 @@ control:
       insecure: true
     serviceAccount:
       create: true
-    image: docker.production.deciphernow.com/deciphernow/gm-control:1.0.2
+    image: docker.production.deciphernow.com/deciphernow/gm-control:1.1.0
     envvars:
       gm_control_console_level:
         type: 'value'
@@ -142,10 +142,10 @@ gm-control-api:
       name: control-api-certs
       mountPoint: /service-certs
       insecure: true
-    image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.0.2
+    image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.1.0
     zone: zone-default-zone
     init:
-      image: docker.production.deciphernow.com/deciphernow/greymatter:1.0.2
+      image: docker.production.deciphernow.com/deciphernow/greymatter:1.1.0
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
 
