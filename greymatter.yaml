@@ -9,7 +9,7 @@ global:
   mesh_tls:
     enabled: true
     use_provided_certs: true
-    # This i s the DN of the cert being used in the mesh.  The Helm charts will add whitelist the Dn throughout the mesh
+    # This is the DN of the cert being used in the mesh. The Helm charts will add whitelist the DN throughout the mesh
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local
   # Turns on tls for control api and configures control to talk to it using tls
   control_api_tls: true
@@ -296,9 +296,6 @@ data:
         type: secret
         secret: mongo-credentials
         key: root_password
-      mongo_client_dn:
-        type: value
-        value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
 
 internal-data:
   sidecar:
@@ -382,9 +379,6 @@ internal-data:
         type: secret
         secret: internal-mongo-credentials
         key: root_password
-      mongo_client_dn:
-        type: value
-        value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
 
 catalog:
   catalog:
@@ -443,9 +437,6 @@ catalog:
       client_use_tls:
         type: value
         value: 'true'
-      client_cn:
-        type: value
-        value: '*.greymatter.svc.cluster.local'
       client_cert:
         type: secret
         secret: sidecar-certs
@@ -649,7 +640,7 @@ internal-jwt:
         key: jwt.key.pem
 
     users_cg_name: internal-jwt-users
-    # This is a list of authorized users for the JWT service.  It's preloaded with the DNs for GM Control, Catalog and the Mesh Cert
+    # This is a list of authorized users for the JWT service. It's preloaded with the DNs for GM Control, GM Catalog and the Mesh Cert.
     users: |-
       {
         "users": [

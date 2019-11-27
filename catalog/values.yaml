@@ -97,9 +97,6 @@ catalog:
     client_use_tls:
       type: value
       value: 'true'
-    client_cn:
-      type: value
-      value: '*.greymatter.svc.cluster.local'
     client_cert:
       type: secret
       secret: sidecar-certs
