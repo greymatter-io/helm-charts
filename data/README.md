@@ -49,3 +49,14 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```console
 $ helm install data --name <my-release> -f custom.yaml
 ```
+
+
+## Data Standalone
+
+To deploy data as a standalone service in its own namespace, change the `.Values.data.name` to `data-standalone` (it is important that this name matches the proxy name in the json configuration).  Set `.Values.data.deploy.standalone` to `true` to make sure all the secrets get created.  Also make sure that the image names and other provided configs are the ones you wish to use.
+
+You can install the chart as described above, making sure the tiller namespace is set to the namespace set aside to only contain data.
+
+`helm install data --name data-only --tiller-namespace=data-only`
+
+To configure this standalone data into the mesh, go into the `json-data-only` folder and run `./populate` to apply the json configs.

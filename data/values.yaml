@@ -11,13 +11,23 @@ global:
     enabled: false
     host: ''
     port: 8500
+    
+  mesh_tls:
+    use_provided_certs: true
+
+  spire:
+    enabled: false
 
   data:
     # This value is used to data where to find jwt and also used to configure the mesh to enable routes from data to jwt
     jwt_prefix: /jwt
+    sidecar:
+      version: 1.0.0
 
   waiter:
     image: deciphernow/k8s-waiter:latest
+    serviceAccount:
+      name: waiter-sa
 
 data:
   # The name of this installation of GM Data.  Used in the zookeeper address.  Allow to be unique to support multiple installations of Data
@@ -256,7 +266,7 @@ mongo:
           -----END RSA PRIVATE KEY-----
 
 sidecar:
-  version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.sidecar.version }}'
+  version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.data.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
@@ -269,7 +279,22 @@ sidecar:
   envvars:
     xds_cluster:
       type: value
-      value: 'data'
+      value: '{{ $.Values.data.name }}'
+    envoy_admin_log_path:
+      type: value
+      value: '/dev/stdout'
+    proxy_dynamic:
+      type: value
+      value: 'true'
+    xds_host:
+      type: value
+      value: 'control.greymatter3.svc.cluster.local'
+    xds_node_id:
+      type: value
+      value: 'default'
+    xds_port:
+      type: value
+      value: '50000'
 
   # Set this to true if you are attempting to deploy Catalog by itself.
   # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
