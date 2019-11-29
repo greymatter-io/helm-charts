@@ -41,6 +41,7 @@ spec:
             - name: certs
               mountPath: /etc/pki
           {{- end }}
+
         - name: sidecar
           image: {{ tpl $.Values.sidecar.image $ }}
           imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
@@ -66,6 +67,15 @@ spec:
         {{- $data := dict "Values" .Values "ServiceName" "catalog" }}
         {{- include "consul.agent" $data | nindent 8 }}
         {{- end }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:9080/summary"
+            initialDelaySeconds: 20
+            periodSeconds: 5
+
       volumes:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

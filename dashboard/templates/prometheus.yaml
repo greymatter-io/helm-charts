@@ -15,7 +15,7 @@ spec:
         app: prometheus
         deployment: prometheus
     spec:
-      serviceAccountName: control-sa
+      serviceAccountName: prometheus-sa
       {{- if ((.Values.global.spire.enabled) or (ne .Values.global.environment "openshift")) }}
       # Pod security contexts are propagated to their children volumes to allow r/w permissions
       # We only do this in openshift when spire is enabled because then it is running with a more relaxed security context constraint

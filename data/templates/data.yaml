@@ -72,6 +72,15 @@ spec:
         {{- else }} 
         image: {{ tpl .Values.sidecar.image $ | quote }}
         {{- end }}
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:8181/list/1/"
+          initialDelaySeconds: 20
+          periodSeconds: 5
+
         env:
            {{- include "greymatter.envvars" . | indent 8 }}
 

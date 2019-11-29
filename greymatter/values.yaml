@@ -1,5 +1,7 @@
 global:
   environment: openshift
+  # If `environment: kubernetes`, set to true to install Voyager ingress.  If left `false`, then no ingress will be automatically installed by Helm and you will need to manually add an ingress configuration to your Kubernetes ingress controller.
+  k8s_use_voyager_ingress: false
   domain:
   route_url_name:
   remove_namespace_from_url: false
@@ -16,7 +18,7 @@ global:
     use_provided_certs: false
   catalog:
     name: catalog
-    version: 1.0.2
+    version: 1.0.1
     sidecar:
       version:
     data_prefix: /data
@@ -83,7 +85,7 @@ global:
       documentation: '/services/catalog/latest/'
       name: 'Grey Matter Catalog'
       owner: 'Decipher'
-      version: 1.0.2
+      version: 1.0.1
       minInstances: 1
       maxInstances: 1
       # egressTLS: 'false'

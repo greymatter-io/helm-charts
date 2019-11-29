@@ -14,6 +14,7 @@ global:
   edge:
     enableTLS: true
     certPath: /etc/proxy/tls/edge
+    egressDn: cn=edge
   consul:
     enabled: false
     host: ''
@@ -40,22 +41,39 @@ edge:
       cpu: 100m
       memory: 128Mi
 
-  # These are the certs that the edge will use for ingress traffic into the mesh
+  # The edge requires two certifiates.  One for ingress traffic from the internet and another
+  # for egress traffic into the mesh.  The egress cert needs to be specific to the edge so 
+  # impersonation can be configured to all of the services from the edge service
   create_edge_secret: false
   certificates:
-    name: edge
-    ca: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    cert: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    key: |-
-      -----BEGIN RSA PRIVATE KEY-----
-      ...
-      -----END RSA PRIVATE KEY-----
+    ingress:
+      name: greymatter-edge-ingress
+      ca: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: |-
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
+    egress:
+      name: greymatter-edge-egress
+      ca: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: |-
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
 
 sidecar:
   version: '{{- $.Values.global.edge.version | default $.Values.global.sidecar.version }}'

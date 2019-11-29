@@ -1,24 +1,24 @@
 dependencies:
   - name: catalog
     repository: 'file://../catalog'
-    version: '2.1.1'
+    version: '2.1.4'
 
   - name: data
     repository: 'file://../data'
-    version: '2.1.2'
+    version: '2.1.4'
 
   - name: data
     repository: 'file://../data'
-    version: '2.1.2'
+    version: '2.1.4'
     alias: internal-data
 
   - name: dashboard
     repository: 'file://../dashboard'
-    version: '2.1.1'
+    version: '2.1.2'
 
   - name: edge
     repository: 'file://../edge'
-    version: '2.1.1'
+    version: '2.1.2'
 
   - name: jwt
     repository: 'file://../jwt'
@@ -35,7 +35,7 @@ dependencies:
 
   - name: gm-control-api
     repository: 'file://../gm-control-api'
-    version: '2.1.2'
+    version: '2.1.4'
 
   - name: control
     repository: 'file://../control'
