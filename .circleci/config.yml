@@ -152,7 +152,7 @@ workflows:
       - package-and-publish-core-hosted:
           filters:
             tags:
-              only: /release-.*/
+              only: /.*/
             branches:
               ignore: /.*/
       - package-and-publish-greymatter-hosted:
