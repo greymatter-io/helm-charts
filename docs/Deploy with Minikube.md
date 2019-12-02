@@ -307,6 +307,9 @@ We also have the option to specify:
 
 We can run `helm ls` to see all our current deployments and `helm delete --purge $DEPLOYMENT` to delete deployments. If you need to make changes, you can run `helm upgrade gm deciperhnow/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml` to update your release in place.
 
+You should also load the appropriate user p12 file according to the certs you configured when deploying Greymatter. The default certs correspond to the quickstart certificates and the `quickstart.p12` file can be found at `certs/quickstart.p12`. You will want to follow your browser specific instructions to load in this user pki. 
+[Firefox](https://www.sslsupportdesk.com/how-to-import-a-certificate-into-firefox/) and [Chrome](https://support.globalsign.com/customer/en/portal/articles/1211541-install-client-digital-certificate---windows-using-chrome) instructions.
+
 ```sh
 NAME                    REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE  
 gm                      1               Thu Sep 12 11:25:43 2019        DEPLOYED        greymatter-2.1.0-dev    1.0.2-dev       default

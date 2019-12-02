@@ -307,6 +307,9 @@ Here are some additional parameters we often use when running `helm install`:
 
 Once all pods, containers, and services start successfully you can confirm that the Grey Matter service mesh is running by navigating to its dashboard. You'll need to construct the URL from your global values in `custom-greymatter.yaml`.
 
+You should also load the appropriate user p12 file according to the certs you configured when deploying Greymatter. The default certs correspond to the quickstart certificates and the `quickstart.p12` file can be found at `certs/quickstart.p12`. You will want to follow your browser specific instructions to load in this user pki. 
+[Firefox](https://www.sslsupportdesk.com/how-to-import-a-certificate-into-firefox/) and [Chrome](https://support.globalsign.com/customer/en/portal/articles/1211541-install-client-digital-certificate---windows-using-chrome) instructions.
+
 For example, with the following configuration:
 
 ```yaml
