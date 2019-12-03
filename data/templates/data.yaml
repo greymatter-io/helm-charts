@@ -37,6 +37,18 @@ spec:
         resources:
 {{ toYaml .Values.data.resources | indent 10 }}
         {{- end }}
+        {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+        {{- if .Values.data.securityContext.enabled }}
+        securityContext:
+          runAsUser: {{ .Values.data.securityContext.runAsUser }}
+          runAsGroup: {{ .Values.data.securityContext.runAsGroup }}
+          fsGroup: {{ .Values.data.securityContext.fsGroup }}
+        {{- end }}
+        securityContext:
+          runAsUser: 666
+          runAsGroup: 666
+          fsGroup: 666
+        {{- end }}
         env:
           {{- include "data.envvars" (dict "envvar" .Values.data.envvars "top" $) | indent 8 }}
         - name: MONGOHOST

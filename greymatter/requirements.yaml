@@ -1,13 +1,13 @@
 dependencies:
   - name: catalog
-    version: '2.1.4'
+    version: '2.1.5'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: data
     version: '2.1.4'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
     alias: internal-data
-    
+
   - name: data
     version: '2.1.4'
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'

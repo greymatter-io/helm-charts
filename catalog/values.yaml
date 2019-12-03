@@ -61,6 +61,9 @@ catalog:
     config_source:
       type: value
       value: 'gmdata'
+    config_polling_interval:
+      type: value
+      value: '30s'
     port:
       type: value
       value: '9080'

@@ -35,6 +35,12 @@ data:
   pvc:
     #size:
     mountPath: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
+  # Allows operators to change the user and group to match the process running inside the gm-data container.
+  securityContext:
+    enabled: false
+    runAsUser: 666
+    runAsGroup: 666
+    fsGroup: 666
 
   # If Grey Matter Data is being deployed as a standalone instance, these values need to be provided
   deploy:

@@ -1,6 +1,6 @@
 global:
   environment: openshift
-  # If `environment: kubernetes`, set to true to install Voyager ingress 
+  # If `environment: kubernetes`, set to true to install Voyager ingress
   k8s_use_voyager_ingress: false
   domain: staging.deciphernow.com
   route_url_name: greymatter
@@ -161,6 +161,8 @@ data:
   data:
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
+    securityContext:
+      enabled: true
     envvars:
       uses3:
         type: value
@@ -309,13 +311,14 @@ internal-data:
         type: value
         value: 'data-internal'
   data:
-    image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
-    certs_mount_point: /app/certs
     version: 1.0.0
     name: data-internal
+    image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
+    certs_mount_point: /app/certs
+    securityContext:
+      enabled: true
     pvc:
       mountPath: /buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
-
     envvars:
       gmdata_namespace:
         type: value
@@ -392,6 +395,9 @@ catalog:
       config_source:
         type: value
         value: 'gmdata'
+      config_polling_interval:
+        type: value
+        value: '30s'
       instance_polling_interval:
         type: value
         value: '5s'
