@@ -26,7 +26,7 @@ Define the sidecar certs volume.  Required here to support a standalone Grey Mat
 {{- define "sidecar_certs_volumes" }}
 - name: sidecar-certs
   secret:
-    secretName: sidecar-certs
+    secretName: {{ .Values.sidecar.certs.secret_name }}
 {{- end }}
 
 {{/*

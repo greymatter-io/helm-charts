@@ -157,6 +157,7 @@ data:
         value: 'data'
 
   data:
+    name: data
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
     securityContext:

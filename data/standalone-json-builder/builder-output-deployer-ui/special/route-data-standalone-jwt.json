@@ -1,9 +1,0 @@
-{
-  "route_key": "deployer-ui-jwt-route",
-  "domain_key": "deployer-ui",
-  "zone_key": "zone-default-zone",
-  "path": "/jwt/",
-  "prefix_rewrite": "/",
-  "shared_rules_key": "edge-jwt-security-shared-rules",
-  "response_data": {}
-}

@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.data.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.data.replicas | default 1 }}
   updateStrategy:
     type: RollingUpdate
   selector:
@@ -104,7 +104,7 @@ spec:
       {{- end }}
 
       imagePullSecrets:
-      - name: docker.secret
+      - name: {{ .Values.data.imagePullSecret | default "docker.secret" }}
       volumes:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

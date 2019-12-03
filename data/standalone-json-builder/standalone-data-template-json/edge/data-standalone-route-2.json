@@ -1,0 +1,8 @@
+{
+  "zone_key": "zone-default-zone",
+  "route_key": "edge-REPLACESTRING-route-slash",
+  "domain_key": "edge",
+  "path": "/services/REPLACESTRING/1.0",
+  "prefix_rewrite": "/services/REPLACESTRING/1.0/",
+  "shared_rules_key": "edge-REPLACESTRING-shared-rules"
+}
