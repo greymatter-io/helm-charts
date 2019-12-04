@@ -3,11 +3,36 @@
 - [Set the ingress URL](#set-the-ingress-url)
 - [Set up ingress](#set-up-ingress)
   - [Kubernetes](#kubernetes)
+    - [With Voyager](#with-voyager)
+    - [With another Ingress Controller](#with-another-ingress-controller)
   - [OpenShift](#openshift)
-- [Other ingress](#other-ingress)
-  - [Nginx](#nginx)
 
-By default, your cluster is not accessible from the outside world. Grey Matter supports two ingress configurations out of the box, Kubernetes with [Voyager](https://appscode.com/products/voyager/) and OpenShift [Routes](https://docs.openshift.com/container-platform/3.9/architecture/networking/routes.html). Both are configured as [TCP passthroughs](https://docs.openshift.com/container-platform/3.9/architecture/networking/routes.html#secured-routes) which send encrypted traffic straight to the Grey Matter ingress sidecar to provide TLS termination. This ingress sidecar is the same sidecar used throughout the mesh; it's role is to only handle edge traffic.
+>Grey Matter requires that the Edge service perform TLS termination.  Therefore, any ingress options need to be configured for TLS passthrough.
+
+By default, your cluster is not accessible from the outside world. However, the Charts offer ingress options for both Kubernetes and OpenShift.  When deploying to an OpenShift cluster, the charts will use the native OpenShift [Routes](https://docs.openshift.com/container-platform/3.9/architecture/networking/routes.html)
+
+For Kubernetes, your options are a little more plentiful.  By default, the Grey Matter Helm Charts will expect to use a [Voyager](https://appscode.com/products/voyager/) ingress.  However, these options can be easily updated to support other ingress controllers.  These values can be updated at `.edge.ingress`.  Below is an example configuration that uses an [NGINX ingress](https://kubernetes.github.io/ingress-nginx/).
+
+```yaml
+edge:
+  ingress:
+    apiVersion: extensions/v1beta1
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "https"
+
+    rules:
+      - host: greymatter.development.deciphernow.com
+        http:
+          paths:
+            - path: /
+              backend:
+                serviceName: edge
+                servicePort: 8080
+```
+
+This configuration routes SSL traffic to the Grey Matter Edge sidecar, indicated by the `edge` service name, running on port 8080.
 
 Take a look at the [edge chart documentation](../edge/README.md) for implementation details on how the Grey Matter ingress sidecar is exposed in both Kubernetes and OpenShift.
 
@@ -20,6 +45,8 @@ By default, our Helm charts will deploy edge with an ingress URL of `<route_url_
 ## Set up ingress
 
 ### Kubernetes
+
+#### With Voyager
 
 As of this writing, there is [an issue](https://github.com/appscode/voyager/issues/1415) specifying Voyager ingress as a dependency, so we need to manually configure it locally before launching our Grey Matter cluster. In the below commands, set `PROVIDER` to the appropriate [cluster provider](https://appscode.com/products/voyager/v11.0.1/setup/install/) for your environment before running. Then run the commands:
 
@@ -43,35 +70,10 @@ To verify that Voyager has started, run:
 
 Now you're all set. When you deploy the Edge service, the voyager-operator will create a custom `Ingress` resource. For Kubernetes, a [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) service type will be deployed, which exposes the service on the edge node's IP and static port. For, the EKS cloud provider, a [LoadBalancer](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer) service type will expose the service using EKS's load balancer. You can run `kubectl get svc voyager-edge` to see the cluster IP and port.
 
+#### With another Ingress Controller
+
+If you choose to use a different ingress controller, you need to make sure that all of the prerequesites are in place before deploying the Grey Matter Helm Charts.  For instance, if you choose to use the NGINX controller, it must be installed prior to the deploying these charts.
+
 ### OpenShift
 
 In OpenShift, ingress is defined as a Route with the URL described above. No additional steps are required as the OpenShift router will automatically handle all traffic for you.
-
-## Other ingress
-
-### Nginx
-
-Another popular ingress controller is [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/) which can also be configured as a passthrough to the Grey Matter ingress sidecar. You can setup Nginx ingress using the following YAML:
-
-```yaml
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: gm-ingress-test
-  annotations:
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    # nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
-  namespace: greymatter
-spec:
-  rules:
-  - host: staging.deciphernow.com
-    http:
-      paths:
-      - backend:
-          serviceName: edge
-          servicePort: 8080
-        path: /
-```
-
-This configuration routes SSL traffic to the Grey Matter edge sidecar, indicated by the `edge` service name, running on port 8080. We weren't able to forward user credentials successfully to the edge ingress sidecar, which is why that annotation is currently commented out.
