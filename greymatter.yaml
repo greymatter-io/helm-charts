@@ -125,7 +125,7 @@ control:
     envvars:
       gm_control_console_level:
         type: 'value'
-        value: 'debug'
+        value: 'info'
       #gm_control_cmd:
       #  type: 'value'
       #  value: 'consul'
