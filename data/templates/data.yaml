@@ -44,10 +44,6 @@ spec:
           runAsGroup: {{ .Values.data.securityContext.runAsGroup }}
           fsGroup: {{ .Values.data.securityContext.fsGroup }}
         {{- end }}
-        securityContext:
-          runAsUser: 666
-          runAsGroup: 666
-          fsGroup: 666
         {{- end }}
         env:
           {{- include "data.envvars" (dict "envvar" .Values.data.envvars "top" $) | indent 8 }}
