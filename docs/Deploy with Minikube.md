@@ -123,6 +123,8 @@ minikube version
 
 ## AWS EC2 Deployment
 
+An alternative way to deploy in EC2 is to use the [devinabox](https://github.com/DecipherNow/devinabox) repo which will automate the deployment and configuration of your EC2 instance.
+
 To run the Grey Matter Minikube setup in AWS you will need to spin up a ubuntu18 `t2.xlarge` EC2 instance.
 
 SSH into your EC2 instance:
