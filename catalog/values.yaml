@@ -44,7 +44,7 @@ global:
 
 catalog:
   name: catalog
-  version: 1.0.1
+  version: 1.0.3
   image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.global.catalog.version }}
   debug: 'true'
   imagePullPolicy: IfNotPresent
