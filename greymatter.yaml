@@ -507,7 +507,7 @@ dashboard:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
   prometheus:
     serviceAccount:
-      create: false
+      create: true
     resources:
       requests:
         memory: '1Gi'
