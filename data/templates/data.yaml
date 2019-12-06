@@ -15,8 +15,10 @@ spec:
       labels:
         app: {{ .Values.data.name }}
     spec:
+      {{- if .Values.data.securityContext.enabled }}
       securityContext:
-        fsGroup: 666
+        fsGroup: {{ .Values.data.securityContext.fsGroup }}
+      {{- end }}
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
         - name: ensure-{{ .Values.data.name }}
