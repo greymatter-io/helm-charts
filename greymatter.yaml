@@ -45,7 +45,6 @@ global:
     name: control
     port: 50000
     version: 1.1.0
-    zone: "zone-default-zone"
   data:
     jwt_prefix: '/jwt'
   internal-data:
@@ -96,7 +95,7 @@ global:
         value: 'true'
       xds_zone:
         type: 'value'
-        value: '{{ .Values.global.control.zone }}'
+        value: '{{ .Values.global.zone }}'
       xds_cluster:
         type: 'value'
         value: ''
