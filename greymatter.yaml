@@ -146,7 +146,7 @@ gm-control-api:
       mountPoint: /service-certs
       insecure: true
     image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.1.0
-    zone: zone-default-zone
+    zone: {{ .Values.global.zone }}
     init:
       image: docker.production.deciphernow.com/deciphernow/greymatter:1.1.0
   sidecar:

@@ -3,7 +3,7 @@ global:
   domain:
   route_url_name:
   remove_namespace_from_url: false
-  zone: zone-default-zone
+  zone: {{ .Values.global.zone }}
   catalog:
     name: catalog
     version: 1.0.1
