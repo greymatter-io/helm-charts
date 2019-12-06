@@ -6,7 +6,7 @@ global:
   zone: zone-default-zone
   catalog:
     name: catalog
-    version: 1.0.1
+    version: 1.0.3
     data_prefix: /data
   dashboard:
     version: 3.1.0
