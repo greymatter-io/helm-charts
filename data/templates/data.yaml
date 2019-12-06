@@ -46,7 +46,6 @@ spec:
         securityContext:
           runAsUser: {{ .Values.data.securityContext.runAsUser }}
           runAsGroup: {{ .Values.data.securityContext.runAsGroup }}
-          fsGroup: {{ .Values.data.securityContext.fsGroup }}
         {{- end }}
         {{- end }}
         env:
