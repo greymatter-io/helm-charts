@@ -266,7 +266,7 @@ Once the repository has successfully been added to your `helm` CLI, and our envi
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
 ```sh
-helm install decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes --set global.k8s_use_voyager_ingress=true --name gm
+helm install decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes --name gm
 ```
 
 ### Local Helm charts
@@ -293,7 +293,7 @@ Then you can run the following commands to update the local charts and then inst
 ```sh
 rm -rf greymatter/charts
 helm dep up greymatter
-helm install greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes --set global.k8s_use_voyager_ingress=true --name gm
+helm install greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes --name gm
 ```
 
 The `helm dep up greymatter` command will create a `./greymatter/charts` directory with tarballs of each sub-chart that the parent `greymatter` chart will use to install Grey Matter.
