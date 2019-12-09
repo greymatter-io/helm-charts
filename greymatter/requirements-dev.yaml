@@ -18,7 +18,7 @@ dependencies:
 
   - name: edge
     repository: 'file://../edge'
-    version: '2.1.2'
+    version: '2.1.4'
 
   - name: jwt
     repository: 'file://../jwt'
