@@ -82,17 +82,17 @@ edge:
     # Provide the rule set you want your ingress controller to use
     rules:
       - tcp:
-        port: '80'
-        nodePort: "30001"
-        backend:
-          serviceName: edge
-          servicePort: 8080
+          port: '80'
+          nodePort: "30001"
+          backend:
+            serviceName: edge
+            servicePort: 8080
       - tcp:
-        port: '443'
-        nodePort: "30000"
-        backend:
-          serviceName: edge
-          servicePort: 8080
+          port: '443'
+          nodePort: "30000"
+          backend:
+            serviceName: edge
+            servicePort: 8080
 
   # These are the certs that the edge will use for ingress traffic into the mesh
   create_edge_secret: false
