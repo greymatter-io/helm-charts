@@ -41,7 +41,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```sh
 helm install edge --name <my-release> \
---set=jwt.version=v0.2.0, sidecar.ingress_use_tls='false'
+--set=jwt.version=v0.2.0
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example:
