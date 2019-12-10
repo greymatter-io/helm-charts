@@ -1,7 +1,7 @@
 dependencies:
   - name: catalog
     version: '2.1.6'
-    repository: 'file://../catalog'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: data
     version: '2.1.4'
@@ -34,11 +34,11 @@ dependencies:
     repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
 
   - name: gm-control-api
-    repository: 'file://../gm-control-api'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
     version: '2.1.6'
 
   - name: control
-    repository: 'file://../control'
+    repository: 'https://nexus.production.deciphernow.com/repository/helm-hosted'
     version: '2.1.4'
 
   - name: spire
