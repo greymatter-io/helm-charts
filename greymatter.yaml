@@ -162,7 +162,7 @@ data:
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
     securityContext:
-      enabled: true
+      enabled: false
     envvars:
       uses3:
         type: value

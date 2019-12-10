@@ -15,9 +15,11 @@ spec:
       labels:
         app: {{ .Values.data.name }}
     spec:
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       {{- if .Values.data.securityContext.enabled }}
       securityContext:
         fsGroup: {{ .Values.data.securityContext.fsGroup }}
+      {{- end }}
       {{- end }}
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
