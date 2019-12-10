@@ -54,9 +54,6 @@ global:
   # used in our subcharts to apply platform specific settings, values can be `openshift` or `kubernetes` only
   environment: openshift
 
-  # used to deploy Voyager ingress with Kubernetes, not used with OpenShift
-  k8s_use_voyager_ingress: false
-
   # the domain you're deploying to
   domain: development.deciphernow.com
 
