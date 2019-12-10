@@ -92,9 +92,9 @@ global:
       proxy_dynamic:
         type: 'value'
         value: 'true'
-      # xds_zone:
-      #   type: 'value'
-      #   value: '{{ .Values.global.zone }}'
+      xds_zone:
+        type: 'value'
+        value: 'zone-default-zone'
       xds_cluster:
         type: 'value'
         value: ''
@@ -145,7 +145,7 @@ gm-control-api:
       mountPoint: /service-certs
       insecure: true
     image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.1.0
-    zone: '{{ .Values.global.zone }}'
+    zone: 'zone-default-zone'
     init:
       image: docker.production.deciphernow.com/deciphernow/greymatter:1.1.0
   sidecar:
@@ -417,7 +417,7 @@ catalog:
         value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}'
       control_server_0_zone_name:
         type: value
-        value: '{{ .Values.global.zone }}'
+        value: 'zone-default-zone'
       control_server_0_request_cluster_name:
         type: value
         value: 'edge'
