@@ -51,7 +51,7 @@ control:
       value: 'xxx'
     gm_control_api_zone_name:
       type: 'value'
-      value: 'default-zone'
+      value: 'zone-default-zone'
     gm_control_api_ssl:
       type: 'value'
       value: 'false'
