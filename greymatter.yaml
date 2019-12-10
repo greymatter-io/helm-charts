@@ -94,7 +94,7 @@ global:
         value: 'true'
       xds_zone:
         type: 'value'
-        value: 'zone-default-zone'
+        value: '{{ $.Values.global.zone }}'
       xds_cluster:
         type: 'value'
         value: ''
@@ -145,7 +145,7 @@ gm-control-api:
       mountPoint: /service-certs
       insecure: true
     image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.1.0
-    zone: 'zone-default-zone'
+    zone: '{{ $.Values.global.zone }}'
     init:
       image: docker.production.deciphernow.com/deciphernow/greymatter:1.1.0
   sidecar:
@@ -417,7 +417,7 @@ catalog:
         value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}'
       control_server_0_zone_name:
         type: value
-        value: 'zone-default-zone'
+        value: '{{ $.Values.global.zone }}'
       control_server_0_request_cluster_name:
         type: value
         value: 'edge'
