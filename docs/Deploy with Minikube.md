@@ -1,25 +1,26 @@
 # Minikube
 
-- [Local Minikube Deployment](#local-minikube-deployment)
-  - [Prerequisites](#prerequisites)
-  - [Quick Start](#quick-start)
-    - [Pre-Requisite](#pre-requisite)
-  - [Start Minikube](#start-minikube)
-    - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
-    - [OS X](#os-x)
-- [AWS EC2 Deployment](#aws-ec2-deployment)
-- [Configuration](#configuration)
-  - [Copy Files to EC2](#copy-files-to-ec2)
-  - [Docker Credentials](#docker-credentials)
-- [Setup Helm](#setup-helm)
-  - [Configure Voyager Ingress](#configure-voyager-ingress)
-- [Install](#install)
-  - [Latest Helm charts release](#latest-helm-charts-release)
-  - [Local Helm charts](#local-helm-charts)
-  - [Verification](#verification)
-  - [Ingress](#ingress)
-    - [EC2](#ec2)
-  - [Debugging](#debugging)
+- [Minikube](#minikube)
+  - [Local Minikube Deployment](#local-minikube-deployment)
+    - [Prerequisites](#prerequisites)
+    - [Quick Start](#quick-start)
+      - [Pre-Requisite](#pre-requisite)
+    - [Start Minikube](#start-minikube)
+      - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
+      - [OS X](#os-x)
+  - [AWS EC2 Deployment](#aws-ec2-deployment)
+  - [Configuration](#configuration)
+    - [Copy Files to EC2](#copy-files-to-ec2)
+    - [Docker Credentials](#docker-credentials)
+  - [Setup Helm](#setup-helm)
+    - [Configure Voyager Ingress](#configure-voyager-ingress)
+  - [Install](#install)
+    - [Latest Helm charts release](#latest-helm-charts-release)
+    - [Local Helm charts](#local-helm-charts)
+    - [Verification](#verification)
+    - [Ingress](#ingress)
+      - [EC2](#ec2)
+    - [Debugging](#debugging)
 
 Minikube allows us to quicky setup a Kubernetes cluster and test drive Grey Matter before deploying to a production environment. We've provided instructions for two scenarios, [Local Minikube Deployment](#local-minikube-deployment) or [AWS EC2 Deployment](#aws-ec2-deployment).
 
@@ -44,7 +45,7 @@ A couple of Makefile targets provide a fast and easy way to standup Grey Matter 
 
 Before starting via Minikube you need to supply your credentials for Decipher's Docker registry. These will be your Decipher LDAP credentials: email address and password.
 
-The `fresh` Makefile target runs `make credentials` and `make minikube`.
+The `fresh` Makefile target runs `make credentials` and `make dev`.
 
 ```sh
 make fresh
@@ -56,10 +57,16 @@ You can interactively fillout your credentials with the `credentials` target. Th
 make credentials
 ```
 
-After you have filled out your credentials, you can get Minikube up with Grey Matter deployed using:
+After you have filled out your credentials, you can bring up Minikube and install local Helm charts by running the following:
 
 ```sh
-make minikube
+make dev
+```
+
+You can also install production charts from Decipher's hosted Helm repo by running:
+
+```sh
+make prod
 ```
 
 To spin down minikube.
