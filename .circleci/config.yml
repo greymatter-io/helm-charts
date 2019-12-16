@@ -67,7 +67,7 @@ jobs:
       - run:
           name: Change Grey Matter Requirements from local to staging
           command: |
-            mv $(pwd)/greymatter/requirements-prod.yaml $(pwd)/greymatter/requirements.yaml \
+            mv $(pwd)/greymatter/requirements-prod.yaml $(pwd)/greymatter/requirements.yaml
             sed -i "s/hosted/staging/g" $(pwd)/greymatter/requirements.yaml
       - run:
           name: Print directory listing
