@@ -149,16 +149,16 @@ workflows:
             tags:
               ignore: /.*/
             branches:
-              ignore: /release-.*/
+              only: /release-.*/
       - package-and-publish-greymatter-staging:
-          requires:
-            - build-staging
+        requires:
+          - build-staging
       - package-and-publish-core-hosted:
           filters:
             tags:
               ignore: /.*/
             branches:
-              only: /release-.*/
+              ignore: /release-.*/
       - package-and-publish-greymatter-hosted:
           requires:
             - package-and-publish-core-hosted
