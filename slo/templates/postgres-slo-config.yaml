@@ -1,3 +1,4 @@
+{{- if not .Values.postgres.rds.enabled }}
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -15,3 +16,4 @@ data:
 
     # IPv4 remote connections for authenticated users
     hostssl {{ .Values.postgres.credentials.database }} {{ .Values.postgres.credentials.username }} 0.0.0.0/0 md5
+{{- end }}

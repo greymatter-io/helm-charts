@@ -22,6 +22,7 @@ spec:
         fsGroup: 2000
       {{- end }}
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
+      {{- if not .Values.postgres.rds.enabled }}
       initContainers:
         - name: ensure-postgres
           image: {{ .Values.global.waiter.image }}
@@ -32,6 +33,7 @@ spec:
               value: postgres-slo
             - name: POST_DELAY
               value: "3"
+      {{- end }}
       containers:
       - name: slo
         image: {{ .Values.slo.image | quote }}
@@ -40,6 +42,15 @@ spec:
         resources:
 {{ toYaml .Values.slo.resources | indent 10 }}
         {{- end }}
+        volumeMounts:
+          {{- if .Values.postgres.ssl.enabled }}
+        - name: postgres-certs
+          mountPath: {{ .Values.postgres.ssl.mountPoint }}
+          {{- end}}
+          {{- if .Values.slo.ssl.enabled }}
+        - name: service-certs
+          mountPath: {{ .Values.slo.ssl.mountPoint }}
+          {{- end }}
         env:
         - name: POSTGRESQL_USERNAME
           valueFrom:
@@ -55,9 +66,11 @@ spec:
           valueFrom:
             secretKeyRef:
               name: {{ .Values.postgres.credentials.secret_name }}
-              key: database 
+              key: database
+        - name: POSTGRESQL_ENDPOINT
+          value: {{ .Values.postgres.rds.endpoint }}
         - name: DATABASE_URI
-          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc:5432/$(POSTGRESQL_DATABASE)
+          value: {{ ternary "postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@$(POSTGRESQL_ENDPOINT):5432/$(POSTGRESQL_DATABASE)"  "postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc:5432/$(POSTGRESQL_DATABASE)" .Values.postgres.rds.enabled }}
         - name: SERVICE_PORT
           value: "1337"
         {{- if .Values.postgres.ssl.enabled }}
@@ -70,7 +83,7 @@ spec:
         - name: SSL_SERVER_KEY
           value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.keyName }}
         {{- end }}
-        {{- if .Values.slo.ssl.enabled }}
+        {{- if and .Values.slo.ssl.enabled (not .Values.postgres.rds.enabled) }}
         - name: SERVICE_SSL_ENABLED
           value: {{ .Values.slo.ssl.enabled | quote }}
         - name: SERVICE_SSL_CA
@@ -80,16 +93,11 @@ spec:
         - name: SERVICE_SSL_KEY
           value: {{ .Values.slo.ssl.mountPoint}}/server.key
         {{- end }}
-        {{- if (.Values.postgres.ssl.enabled) or (.Values.slo.ssl.enabled) }}
-        volumeMounts:
-        {{- if .Values.postgres.ssl.enabled }}
-        - name: postgres-certs
-          mountPath: {{ .Values.postgres.ssl.mountPoint }}
-        {{- end }}
-        {{- if .Values.slo.ssl.enabled }}
-        - name: service-certs
-          mountPath: {{ .Values.slo.ssl.mountPoint }}
-        {{- end }}
+        {{- if .Values.postgres.rds.enabled }}
+        - name: DROP_SCHEMA
+          value: "false"
+        - name: SSL_1_WAY_SSL
+          value: "true"
         {{- end }}
       - name: sidecar
         image: {{ tpl .Values.sidecar.image $ | quote }}
