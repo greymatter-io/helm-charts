@@ -133,6 +133,10 @@ jobs:
           command: |
             echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
       - run:
+        name: Change Grey Matter Requirements from local to hosted
+        command: |
+          sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/greymatter/requirements.yaml
+      - run:
           name: Package and Publish Grey Matter
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/greymatter
