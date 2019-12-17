@@ -22,8 +22,8 @@ global:
     port: 8500
 
 slo:
-  version: 1.1.0
-  image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.1
+  version: 1.1.1
+  image: docker.production.deciphernow.com/deciphernow/gm-slo:{{ .Values.slo.version }}
   imagePullPolicy: IfNotPresent
   resources:
     limits:
