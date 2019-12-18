@@ -2,21 +2,18 @@
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: edge
+  name: edge-oauth
   namespace: {{ .Release.Namespace }}
 spec:
-  {{- if .Values.global.edge.enableOAuth }}
-  host: "pki."{{ include "greymatter.domain" . }}
-  {{- else }}
   host: {{ include "greymatter.domain" . }}
-  {{- end }}
   port: 
     targetPort: proxy
   tls:
-    termination: passthrough
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
   to:
     kind: Service
-    name: edge
+    name: edge-oauth
     weight: 100
   wildcardPolicy: None
 
@@ -26,7 +23,7 @@ spec:
 apiVersion: {{ .apiVersion }}
 kind: Ingress
 metadata:
-  name: edge
+  name: edge-oauth
   namespace: {{ $.Release.Namespace }}
   annotations:
 {{ toYaml .annotations | indent 4 }}

@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: edge-oauth
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: edge-oauth
+spec:
+  ports:
+    - name: proxy
+      port: 9080
+    - name: metrics
+      port: 8081
+  selector:
+    app: edge-oauth

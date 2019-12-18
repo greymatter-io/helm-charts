@@ -1,0 +1,66 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: edge-oauth
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edge-oauth
+      deployment: edge-oauth
+  template:
+    metadata:
+      labels:
+        app: edge-oauth
+        deployment: edge-oauth
+    spec:
+      containers:
+      - name: edge-oauth
+        image: {{ tpl .Values.sidecar.image $ | quote }}
+        imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+        {{- if .Values.edge.resources }}
+        resources:
+{{ toYaml .Values.edge.resources | indent 10 }}
+        {{- end }}
+        env:
+        {{- include "greymatter.envvars" . | indent 8 }}
+        ports:
+        - name: proxy
+          containerPort: 9080
+        - name: metrics
+          containerPort: 8081
+        volumeMounts:
+        - name: edge-oauth
+          mountPath: {{ .Values.global.edge.certPath }}
+        {{- if .Values.global.spire.enabled }}
+        - name: spire-agent-socket
+          mountPath: /run/spire/sockets
+          readOnly: true
+        {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+        {{- include "edge_volume_certs_mount" . | indent 8 }}
+        {{- end}}
+      {{- if .Values.global.consul.enabled }}
+      {{- $data := dict "Values" .Values "ServiceName" "edge-oauth" }}
+      {{- include "consul.agent" $data | nindent 6 }}
+      {{- end }}      
+      imagePullSecrets:
+      - name: docker.secret
+      volumes:
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      - name: config-consul
+        emptyDir: {}
+      {{- end }}
+      - name: edge-oauth
+        secret:
+          secretName: {{ .Values.edge.certificates.ingress.name}}
+      {{- if .Values.global.spire.enabled }}
+      - name: spire-agent-socket
+        hostPath:
+          path: /run/spire/sockets
+          type: Directory
+      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      {{- include "edge_certs_volumes" . | indent 6 }}
+      {{- end }}

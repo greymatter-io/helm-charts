@@ -14,6 +14,7 @@ global:
   edge:
     version: 1.0.0
     enableTLS: true
+    enableOAuth: false
     certPath: /etc/proxy/tls/edge
     egressDn: cn=edge
   consul:
@@ -48,7 +49,7 @@ edge:
       memory: 128Mi
 
   ingress:
-    # For ingress, you can specify which API verison  to use
+    # For ingress, you can specify which API verison to use
     apiVersion: extension/v1beta1
   
     # Specific annotations for your deployment
@@ -91,6 +92,12 @@ edge:
         -----BEGIN RSA PRIVATE KEY-----
         ...
         -----END RSA PRIVATE KEY-----
+
+edgeOAuth:
+  ingress:
+    apiVersion: extension/v1beta1
+    annotations: {}
+    rules: []
 
 sidecar:
   version: '{{- $.Values.global.edge.version | default $.Values.global.sidecar.version }}'
