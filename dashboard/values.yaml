@@ -128,6 +128,9 @@ sidecar_prometheus:
     xds_cluster:
       type: 'value'
       value: 'prometheus'
+    xds_zone:
+      type: 'value'
+      value: 'zone-default-zone'
     xds_host:
       type: 'value'
       value: 'control.{{ .Release.Namespace }}.svc'

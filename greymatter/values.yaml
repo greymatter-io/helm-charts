@@ -123,6 +123,7 @@ global:
       serviceName: 'prometheus'
       observablesEnabled: false
       port: 9090
+      zone: 'zone-default-zone'
       # egressTLS: 'false'
 
     data:
