@@ -3,7 +3,7 @@
 cd $(dirname "${BASH_SOURCE[0]}")/../..
 
 MINI=minikube
-#Determine if we are on AWS or not
+# Determine if we are on AWS or not
 LC=$(curl -s -m 2 169.254.169.254/latest/meta-data | wc -l )
 if [ $LC -ge 4 ]; then
     minikube config set vm-driver none
@@ -19,6 +19,17 @@ fi
 
 helm init --wait
 ./ci/scripts/install-voyager.sh
-helm install decipher/greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy
+
+if [ "$1" == "--prod" ]; then
+    echo "Installing production charts"
+    REPO=decipher/greymatter
+else
+    # Default to installing local charts
+    echo "Installing local charts"
+    REPO=greymatter
+    helm dep up greymatter
+fi
+
+helm install $REPO -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy
 ./ci/scripts/show-voyager.sh
 

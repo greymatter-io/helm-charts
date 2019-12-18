@@ -44,7 +44,7 @@ A couple of Makefile targets provide a fast and easy way to standup Grey Matter 
 
 Before starting via Minikube you need to supply your credentials for Decipher's Docker registry. These will be your Decipher LDAP credentials: email address and password.
 
-The `fresh` Makefile target runs `make credentials` and `make minikube`.
+The `fresh` Makefile target runs `make credentials` and `make dev`.
 
 ```sh
 make fresh
@@ -56,10 +56,16 @@ You can interactively fillout your credentials with the `credentials` target. Th
 make credentials
 ```
 
-After you have filled out your credentials, you can get Minikube up with Grey Matter deployed using:
+After you have filled out your credentials, you can bring up Minikube and install local Helm charts by running the following:
 
 ```sh
-make minikube
+make dev
+```
+
+You can also install production charts from Decipher's hosted Helm repo by running:
+
+```sh
+make prod
 ```
 
 To spin down minikube.
