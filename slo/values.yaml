@@ -74,7 +74,7 @@ sidecar:
       value: 'true'
     xds_host:
       type: value
-      value: 'control.greymatter3.svc.cluster.local'
+      value: 'control.default.svc.cluster.local'
     xds_node_id:
       type: value
       value: 'default'
