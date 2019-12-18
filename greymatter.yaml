@@ -1,5 +1,6 @@
 global:
   environment: openshift
+  provider: none
   domain: staging.deciphernow.com
   route_url_name: greymatter
   remove_namespace_from_url: false

@@ -5,11 +5,11 @@ dependencies:
 
   - name: data
     repository: file://../data
-    version: '2.1.4'
+    version: '2.1.5'
 
   - name: data
     repository: file://../data
-    version: '2.1.4'
+    version: '2.1.5'
     alias: internal-data
 
   - name: dashboard
