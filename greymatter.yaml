@@ -741,7 +741,7 @@ edge:
 
       # Specific annotations for your deployment
       # Choosing the ingress.appscode.com/type is important and depends on your environment type.
-      #   - If using EKS, you need to configure the Type as LoadBalancder
+      #   - If using EKS, you need to configure the Type as LoadBalancer
       #   - If using voyager, you need to configure the type as NodePort
       annotations:
         kubernetes.io/ingress.class: 'voyager'
