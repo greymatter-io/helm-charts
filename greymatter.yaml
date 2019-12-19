@@ -517,7 +517,8 @@ dashboard:
 
 slo:
   slo:
-    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.1
+    version: 1.1.1
+    image: docker.production.deciphernow.com/deciphernow/gm-slo:{{ .Values.slo.slo.version }}
     ssl:
       enabled: true
       name: slo-certs
