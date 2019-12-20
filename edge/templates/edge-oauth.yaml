@@ -19,9 +19,9 @@ spec:
       - name: edge-oauth
         image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
-        {{- if .Values.edge.resources }}
+        {{- if .Values.edgeOAuth.resources }}
         resources:
-{{ toYaml .Values.edge.resources | indent 10 }}
+{{ toYaml .Values.edgeOAuth.resources | indent 10 }}
         {{- end }}
         env:
         {{- include "greymatter.envvars" . | indent 8 }}

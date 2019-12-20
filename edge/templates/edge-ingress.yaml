@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   {{- if .Values.global.edge.enableOAuth }}
-  host: "pki."{{ include "greymatter.domain" . }}
+  host: {{ include "greymatter.domain" . }}
   {{- else }}
   host: {{ include "greymatter.domain" . }}
   {{- end }}

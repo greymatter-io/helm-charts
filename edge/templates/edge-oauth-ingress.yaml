@@ -18,7 +18,7 @@ spec:
   wildcardPolicy: None
 
 {{- else }}
-{{- with .Values.edge.ingress }}
+{{- with .Values.edgeOAuth.ingress }}
 
 apiVersion: {{ .apiVersion }}
 kind: Ingress
