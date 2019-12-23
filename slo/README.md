@@ -55,3 +55,5 @@ $ helm install slo --name <my-release> -f custom.yaml
 You can optionally configure slo to run with an Amazon RDS instance of postgres.  This involves setting `{{ .Values.postgres.rds.enabled }}` to true and setting `{{ .Values.postgres.rds.endpoint }}` to your database endpoint.  `SSL_ENABLED` should be true, but `SERVICE_SSL_ENABLED` should be false.  Since we're using one way SSL, you only need to set the ca.pem to the appropriate AWS ca.
 
 Your RDS should be publically accessible, with a new db parameter group that has `rds.force_ssl` set to `1`.  Make sure the security group you're using allows for ingress traffic from your IP.
+
+For testing, `slo-db.c2bdxmcv8gbh.us-east-1.rds.amazonaws.com` will be an available temporarily as an RDS endpoint.
