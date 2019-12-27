@@ -1,0 +1,13 @@
+{
+  "route_key": "edge-oauth-{{.service.serviceName}}-route-slash",
+  "domain_key": "edge-oauth",
+  "zone_key": "{{.service.zone}}",
+  "path": "/services/{{.service.serviceName}}/latest",
+  "prefix_rewrite": "/services/{{.service.serviceName}}/latest/",
+  "redirects": null,
+  "shared_rules_key": "edge-oauth-{{.service.serviceName}}-shared-rules",
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "retry_policy": null
+}

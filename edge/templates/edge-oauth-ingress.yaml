@@ -1,3 +1,4 @@
+{{- if .Values.global.edgeOAuth.enabled }}
 {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
 kind: Route
 apiVersion: route.openshift.io/v1
@@ -30,5 +31,8 @@ metadata:
 spec:
   rules:
 {{ toYaml .rules | indent 4 }}
+  tls:
+{{ toYaml .tls | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}

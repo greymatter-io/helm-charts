@@ -5,12 +5,8 @@ metadata:
   name: edge
   namespace: {{ .Release.Namespace }}
 spec:
-  {{- if .Values.global.edge.enableOAuth }}
   host: {{ include "greymatter.domain" . }}
-  {{- else }}
-  host: {{ include "greymatter.domain" . }}
-  {{- end }}
-  port: 
+  port:
     targetPort: proxy
   tls:
     termination: passthrough
@@ -33,5 +29,7 @@ metadata:
 spec:
   rules:
 {{ toYaml .rules | indent 4 }}
+  tls:
+{{ toYaml .tls | indent 4 }}
 {{- end }}
 {{- end }}

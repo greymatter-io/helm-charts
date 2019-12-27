@@ -1,0 +1,10 @@
+{
+  "zone_key": "{{ .Values.gmControlApi.zone }}",
+  "listener_key": "edge-oauth-listener",
+  "domain_keys": ["edge-oauth"],
+  "name": "edge-oauth",
+  "ip": "0.0.0.0",
+  "port": 9080,
+  "protocol": "http_auto",
+  "tracing_config": null
+}

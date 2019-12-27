@@ -1,3 +1,4 @@
+{{- if .Values.global.edgeOAuth.enabled }}
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -64,3 +65,4 @@ spec:
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
       {{- include "edge_certs_volumes" . | indent 6 }}
       {{- end }}
+{{- end }}

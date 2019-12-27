@@ -14,9 +14,10 @@ global:
   edge:
     version: 1.0.0
     enableTLS: true
-    enableOAuth: false
     certPath: /etc/proxy/tls/edge
     egressDn: cn=edge
+  edgeOAuth:
+    enabled: false
   consul:
     enabled: false
     host: ''

@@ -1,0 +1,12 @@
+{
+    "domain_key": "edge-oauth",
+    "zone_key": "{{ .Values.gmControlApi.zone }}",
+    "name": "*",
+    "port": 9080,
+    "redirects": null,
+    "gzip_enabled": false,
+    "cors_config": null,
+    "aliases": null{{ if .Values.global.edge.enableTLS }},
+    "force_https": true
+   {{- end }}
+}

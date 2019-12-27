@@ -1,0 +1,14 @@
+{
+  "cluster_key": "cluster-edge-oauth",
+  "zone_key": "{{ .Values.gmControlApi.zone }}",
+  "name": "edge-oauth",
+  "instances": [
+    {
+      "host": "localhost",
+      "port": 9080
+    }
+  ],
+  "circuit_breakers": null,
+  "outlier_detection": null,
+  "health_checks": []
+}

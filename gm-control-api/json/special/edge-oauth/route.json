@@ -1,0 +1,13 @@
+{
+  "route_key": "route-edge-oauth",
+  "domain_key": "edge-oauth",
+  "zone_key": "{{ .Values.gmControlApi.zone }}",
+  "path": "/services/edge/latest/",
+  "prefix_rewrite": null,
+  "redirects": null,
+  "shared_rules_key": "shared-rules-edge-oauth",
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "retry_policy": null
+}
