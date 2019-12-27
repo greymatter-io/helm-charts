@@ -16,7 +16,7 @@ cd $(dirname "${BASH_SOURCE[0]}")
 echo decipher email: 
 read EMAIL
 echo password:
-read PASSWORD
+read -s PASSWORD
 read -p "Do you wish to configure S3 credentials for gm-data backing [yn] " -n 1 yn
 TEMPLATE=credentials.template
 case $yn in
