@@ -82,10 +82,6 @@ global:
     controlApi:
       # This value must match global.control_api_tls
       egressTLS: true
-    # Ucomment this configuration to create mesh objects for edge-oauth.
-    # edgeOAuth:
-    #   egressTLS: false
-    #   mTLS: true
 
   sidecar:
     version: 1.0.0

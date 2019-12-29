@@ -49,9 +49,7 @@ done
 # The edge services are created last as they link to the clusters of every other service.
 # The edge services domains must be created before they can be referenced.
 
-OAUTH_ENABLED=false
-if [ -d "/etc/config/mesh/services/edgeOAuth" ]; then
-    OAUTH_ENABLED=true
+if [ $EDGE_OAUTH_ENABLED = "true" ]; then
     cd $MESH_CONFIG_DIR/special/edge-oauth
     echo "Creating edge-oauth special configuration objects (domain, edge listener + proxy)"
     greymatter create domain <domain.json
@@ -73,7 +71,7 @@ greymatter create shared_rules <shared_rules.json
 greymatter create route <route.json
 
 EDGE_CONFIG_DIR=$MESH_CONFIG_DIR/edge
-if [ $OAUTH_ENABLED  ]; then
+if [ $EDGE_OAUTH_ENABLED = "true" ]; then
     EDGE_CONFIG_DIR=$MESH_CONFIG_DIR/edge-oauth
 
     # In the case of edge-oauth, the only service accessible from the other edge is control-api.
@@ -111,8 +109,13 @@ for d in */; do
     cd $EDGE_CONFIG_DIR
 done
 
-cd $MESH_CONFIG_DIR/special
-echo "Adding additional Special Routes"
+SPECIAL_CONFIG_DIR=$MESH_CONFIG_DIR/special/edge
+if [ $EDGE_OAUTH_ENABLED = "true" ]; then
+    SPECIAL_CONFIG_DIR=$MESH_CONFIG_DIR/special/edge-oauth
+fi
+
+cd $SPECIAL_CONFIG_DIR/routes
+echo "Adding additional Special Edge Routes"
 for rte in $(ls route-*.json); do
     greymatter create route <$rte
 done

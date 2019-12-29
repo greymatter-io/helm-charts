@@ -36,21 +36,42 @@ spec:
           - name: GREYMATTER_API_SSLKEY
             value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.key
           {{- end }}
+          - name: EDGE_OAUTH_ENABLED
+          {{- if .Values.global.edgeOAuth.enabled }}
+            value: "true"
+          {{- else }}
+            value: "false"
+          {{- end }}
           volumeMounts:
             {{- if .Values.global.control_api_tls }}
             - name: service-certs
               mountPath: {{ .Values.gmControlApi.ssl.mountPoint }}
             {{- end }}
-          {{- range $name, $service := .Values.global.services }}
+          {{- $top := . }}
+          {{- range $service := .Values.global.services }}
           {{- if $service.controlEnabled }}
             - name: service-config-volume-{{$service.serviceName}}
               mountPath: /etc/config/mesh/services/{{$service.serviceName}}
+          # Create configs for all services for one edge only.
+          {{- if $top.Values.global.edgeOAuth.enabled }}
+            - name: edge-oauth-config-volume-{{$service.serviceName}}
+              mountPath: /etc/config/mesh/edge-oauth/{{$service.serviceName}}
+          {{- else }}
             - name: edge-config-volume-{{$service.serviceName}}
               mountPath: /etc/config/mesh/edge/{{$service.serviceName}}
           {{- end }}
           {{- end }}
+          {{- end }}
+          # If edgeOAuth is enabled then the only service accessible from the other edge is controlApi.
+          {{- if .Values.global.edgeOAuth.enabled }}
+            - name: edge-config-volume-control-api
+              mountPath: /etc/config/mesh/edge/control-api
             - name: special-config-volume
-              mountPath: /etc/config/mesh/special
+              mountPath: /etc/config/mesh/special/edge-oauth
+          {{- else }}
+            - name: special-config-volume
+              mountPath: /etc/config/mesh/special/edge
+          {{- end }}
             - name: bootstrap-script-volume
               mountPath: /tmp/bootstrap
       volumes:
@@ -60,15 +81,28 @@ spec:
             secretName: {{ .Values.gmControlApi.ssl.name }}
             defaultMode: 0600
         {{- end }}
-        {{- range $name, $service := .Values.global.services }}
+        {{- $top := . }}
+        {{- range $service := .Values.global.services }}
         {{- if $service.controlEnabled }}
         - name: service-config-volume-{{ $service.serviceName }}
           configMap:
             name: service-{{ $service.serviceName }}-mesh-config
+        {{- if $top.Values.global.edgeOAuth.enabled }}
+        - name: edge-oauth-config-volume-{{ $service.serviceName }}
+          configMap:
+            name: edge-oauth-{{ $service.serviceName }}-mesh-config
+        {{- else }}
         - name: edge-config-volume-{{ $service.serviceName }}
           configMap:
             name: edge-{{ $service.serviceName }}-mesh-config
         {{- end }}
+        {{- end }}
+        {{- end }}
+        # If edgeOAuth is enabled then the only service accessible from the other edge is controlApi.
+        {{- if .Values.global.edgeOAuth.enabled }}
+        - name: edge-config-volume-control-api
+          configMap:
+            name: edge-control-api-mesh-config
         {{- end }}
         - name: bootstrap-script-volume
           configMap:
