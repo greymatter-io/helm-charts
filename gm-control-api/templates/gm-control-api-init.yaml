@@ -52,7 +52,6 @@ spec:
           {{- if $service.controlEnabled }}
             - name: service-config-volume-{{$service.serviceName}}
               mountPath: /etc/config/mesh/services/{{$service.serviceName}}
-          # Create configs for all services for one edge only.
           {{- if $top.Values.global.edgeOAuth.enabled }}
             - name: edge-oauth-config-volume-{{$service.serviceName}}
               mountPath: /etc/config/mesh/edge-oauth/{{$service.serviceName}}
@@ -65,7 +64,7 @@ spec:
           # If edgeOAuth is enabled then the only service accessible from the other edge is controlApi.
           {{- if .Values.global.edgeOAuth.enabled }}
             - name: edge-config-volume-control-api
-              mountPath: /etc/config/mesh/edge/control-api
+              mountPath: /etc/config/mesh/edge/controlApi
             - name: special-config-volume
               mountPath: /etc/config/mesh/special/edge-oauth
           {{- else }}

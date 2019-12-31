@@ -1,18 +1,18 @@
 {{- $top := . }}
 {{- $svidList := list }}
 {{- range $name, $service := .Values.global.services }}
-    {{- $svidList = append $svidList (print "spiffe://" $top.Values.global.spire.trustDomain "/" $service.serviceName "/mTLS") }}
+  {{- $svidList = append $svidList (print "spiffe://" $top.Values.global.spire.trustDomain "/" $service.serviceName "/mTLS") }}
 {{- end }}
 {{- $svidList = append $svidList (print "spiffe://" $top.Values.global.spire.trustDomain "/edge/mTLS") }}
 {{- $svidList = append $svidList (print "spiffe://" $top.Values.global.spire.trustDomain "/spire-client/mTLS") }}
 {{- /* We loop over all the services to create the individual service objects */}}
 {{- range $name, $service := .Values.global.services }}
 {{- if $service.controlEnabled }}
----
 {{/* {{- $lSecret := (default $service.removeListenerSecret false) }} */}}
 {{- $serviceExtras := (dict "top" $top "authorizedSvids" $svidList "mTLS" $top.Values.global.spire.enabled "zone" $top.Values.gmControlApi.zone "svidList" (toJson $svidList)) }}
 {{- $svc := merge $service $serviceExtras }}
 {{- $scope := set $top "service" $svc }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -23,26 +23,14 @@ data:
   {{ base $path }}: |-
 {{ tpl ($top.Files.Get $path) $scope | indent 4 }}
 {{- end }}
-...
-{{- end}}
+{{- end }}
 {{- end }}
 {{- /* Then we loop over the services again in order to create the edge objects */}}
-{{- range $name, $service := .Values.global.services }}
+{{- range $name, $service := $top.Values.global.services }}
 {{- if $service.controlEnabled }}
----
 {{- $scope := set $top "service" $service }}
 {{- $scope = set $scope "zone" $top.Values.gmControlApi.zone }}
 {{- $scope = set $scope "mTLS" $top.Values.global.spire.enabled }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: edge-{{.serviceName}}-mesh-config
-  namespace: {{ $.Release.Namespace }}
-data:
-{{- range $path, $bytes := $top.Files.Glob "json/edge/**.json" }}
-  {{ base $path }}: |-
-{{ tpl ($top.Files.Get $path) $scope | indent 4 }}
-{{- end }}
 {{- if $top.Values.global.edgeOAuth.enabled }}
 ---
 apiVersion: v1
@@ -55,7 +43,34 @@ data:
   {{ base $path }}: |-
 {{ tpl ($top.Files.Get $path) $scope | indent 4 }}
 {{- end }}
+{{- else }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: edge-{{.serviceName}}-mesh-config
+  namespace: {{ $.Release.Namespace }}
+data:
+{{- range $path, $bytes := $top.Files.Glob "json/edge/**.json" }}
+  {{ base $path }}: |-
+{{ tpl ($top.Files.Get $path) $scope | indent 4 }}
 {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.global.edgeOAuth.enabled }}
+{{- $scope := set $top "service" .Values.global.services.controlApi }}
+{{- $scope = set $scope "zone" .Values.gmControlApi.zone }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: edge-control-api-mesh-config
+  namespace: {{ $.Release.Namespace }}
+data:
+{{- range $path, $bytes := (list "cluster.json" "domain.json" "listener.json" "proxy.json" "route.json" "shared_rules.json" ) }}
+  {{ base $path }}: |-
+{{ tpl ($top.Files.Get $path) $scope | indent 4 }}
 {{- end }}
 {{- end }}
 ---
@@ -65,7 +80,12 @@ metadata:
   name: special-mesh-config
   namespace: {{ $.Release.Namespace }}
 data:
-{{- range $path, $bytes := $top.Files.Glob "json/special/*/**.json" }}
+{{- if .Values.global.edgeOAuth.enabled }}
+{{- $specialPath := "json/special/edge-oauth/**.json"}}
+{{- else }}
+{{- $specialPath := "json/special/edge/**.json"}}
+{{- end}}
+{{- range $path, $bytes := $top.Files.Glob $specialPath }}
   {{ base $path }}: |-
 {{ tpl ($top.Files.Get $path) $top | indent 4 }}
 {{- end }}
