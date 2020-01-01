@@ -94,45 +94,80 @@ edge:
         ...
         -----END RSA PRIVATE KEY-----
 
+  sidecar:
+    version: '{{- $.Values.global.edge.version | default $.Values.global.sidecar.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.edge.sidecar.version $ }}'
+    metrics_key_function: depth
+    imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    envvars:
+      xds_cluster:
+        type: value
+        value: 'edge'
+    # Set this to true if you are attempting to deploy Catalog by itself.
+    # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
+    # sidecar secret, but if individual testing is being done, the sidecar secret will
+    # need to be created.
+    create_sidecar_secret: false
+    certificates:
+      name: sidecar
+      ca: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: |-
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
+
 edgeOAuth:
   ingress:
     apiVersion: extension/v1beta1
     annotations: {}
     rules: []
+  sidecar:
+    version: '{{- $.Values.global.edge.version | default $.Values.global.sidecar.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.edgeOAuth.sidecar.version $ }}'
+    metrics_key_function: depth
+    imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    envvars:
+      xds_cluster:
+        type: value
+        value: 'edge-oauth'
 
-sidecar:
-  version: '{{- $.Values.global.edge.version | default $.Values.global.sidecar.version }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  metrics_key_function: depth
-  imagePullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 200m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  envvars:
-    xds_cluster:
-      type: value
-      value: 'edge'
-
-  # Set this to true if you are attempting to deploy Catalog by itself.
-  # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
-  # sidecar secret, but if individual testing is being done, the sidecar secret will
-  # need to be created.
-  create_sidecar_secret: false
-  certificates:
-    name: sidecar
-    ca: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    cert: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    key: |-
-      -----BEGIN RSA PRIVATE KEY-----
-      ...
-      -----END RSA PRIVATE KEY-----
+    # Set this to true if you are attempting to deploy Catalog by itself.
+    # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
+    # sidecar secret, but if individual testing is being done, the sidecar secret will
+    # need to be created.
+    create_sidecar_secret: false
+    certificates:
+      name: sidecar
+      ca: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: |-
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----

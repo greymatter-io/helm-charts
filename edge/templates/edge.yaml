@@ -17,14 +17,14 @@ spec:
     spec:
       containers:
       - name: edge
-        image: {{ tpl .Values.sidecar.image $ | quote }}
-        imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+        image: {{ tpl .Values.edge.sidecar.image $ | quote }}
+        imagePullPolicy: {{ .Values.edge.sidecar.imagePullPolicy }}
         {{- if .Values.edge.resources }}
         resources:
 {{ toYaml .Values.edge.resources | indent 10 }}
         {{- end }}
         env:
-        {{- include "greymatter.envvars" . | indent 8 }}
+        {{- include "edge.envvars" . | indent 8 }}
         ports:
         - name: proxy
           containerPort: 8080

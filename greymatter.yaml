@@ -704,14 +704,14 @@ sidecar:
   create_sidecar_secret: true
 
 edge:
-  sidecar:
-    version: 1.0.0
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'edge'
   edge:
+    sidecar:
+      version: 1.0.0
+      image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+      envvars:
+        xds_cluster:
+          type: value
+          value: 'edge'
     create_edge_secret: true
     ingress:
       #################
@@ -757,6 +757,13 @@ edge:
       #         servicePort: 8080
 
   edgeOAuth:
+    sidecar:
+      version: 1.0.0
+      image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+      envvars:
+        xds_cluster:
+          type: value
+          value: 'edge-oauth'
     ingress:
       #################
       # NGINX INGRESS #

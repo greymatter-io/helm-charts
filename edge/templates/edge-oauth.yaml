@@ -18,14 +18,14 @@ spec:
     spec:
       containers:
       - name: edge-oauth
-        image: {{ tpl .Values.sidecar.image $ | quote }}
-        imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+        image: {{ tpl .Values.edgeOAuth.sidecar.image $ | quote }}
+        imagePullPolicy: {{ .Values.edgeOAuth.sidecar.imagePullPolicy }}
         {{- if .Values.edgeOAuth.resources }}
         resources:
 {{ toYaml .Values.edgeOAuth.resources | indent 10 }}
         {{- end }}
         env:
-        {{- include "greymatter.envvars" . | indent 8 }}
+        {{- include "edge-oauth.envvars" . | indent 8 }}
         ports:
         - name: proxy
           containerPort: 9080
