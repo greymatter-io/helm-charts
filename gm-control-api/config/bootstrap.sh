@@ -73,10 +73,10 @@ greymatter create route <route.json
 EDGE_CONFIG_DIR=$MESH_CONFIG_DIR/edge
 if [ $EDGE_OAUTH_ENABLED = "true" ]; then
     EDGE_CONFIG_DIR=$MESH_CONFIG_DIR/edge-oauth
-
     # In the case of edge-oauth, the only service accessible from the other edge is control-api.
     if [ -d $MESH_CONFIG_DIR/edge/gm-control-api ]; then
         cd $MESH_CONFIG_DIR/edge/gm-control-api
+        echo "Creating edge configuration for gm-control-api"
         greymatter create cluster <cluster.json
         greymatter create shared_rules <shared_rules.json
         greymatter create route <route-1.json
