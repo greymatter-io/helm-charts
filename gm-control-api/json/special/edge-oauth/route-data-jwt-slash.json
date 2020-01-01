@@ -5,7 +5,7 @@
   "path": "{{ .Values.global.data.jwt_prefix }}",
   "prefix_rewrite": "{{ .Values.global.data.jwt_prefix }}/",
   "redirects": null,
-  "shared_rules_key": "edge-oAuth-jwt-security-shared-rules",
+  "shared_rules_key": "edge-oauth-jwt-security-shared-rules",
   "rules": null,
   "response_data": {},
   "cohort_seed": null,

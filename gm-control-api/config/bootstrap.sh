@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-MESH_CONFIG_DIR="/etc/config/mesh/"
+MESH_CONFIG_DIR="/etc/config/mesh"
 
 echo "Configuring mesh from config directory: $MESH_CONFIG_DIR"
 
@@ -75,20 +75,19 @@ if [ $EDGE_OAUTH_ENABLED = "true" ]; then
     EDGE_CONFIG_DIR=$MESH_CONFIG_DIR/edge-oauth
 
     # In the case of edge-oauth, the only service accessible from the other edge is control-api.
-    cd $MESH_CONFIG_DIR/edge
-    if [ "/etc/config/mesh/services/controlApi" ]; then
-        cd "/etc/config/mesh/services/controlApi"
+    if [ -d $MESH_CONFIG_DIR/edge/gm-control-api ]; then
+        cd $MESH_CONFIG_DIR/edge/gm-control-api
         greymatter create cluster <cluster.json
         greymatter create shared_rules <shared_rules.json
-        greymatter create route-1 <route-1.json
-        greymatter create route-2 <route-2.json
+        greymatter create route <route-1.json
+        greymatter create route <route-2.json
     fi
 fi
 
 cd $EDGE_CONFIG_DIR
 echo "Creating edge configuration objects"
 
-# All the following services reference the `edge` domain key
+# All the following services reference either `edge` or `edge-oauth` domain key.
 for d in */; do
     echo "Found service: $d"
     cd $d
@@ -109,13 +108,16 @@ for d in */; do
     cd $EDGE_CONFIG_DIR
 done
 
-SPECIAL_CONFIG_DIR=$MESH_CONFIG_DIR/special/edge
 if [ $EDGE_OAUTH_ENABLED = "true" ]; then
-    SPECIAL_CONFIG_DIR=$MESH_CONFIG_DIR/special/edge-oauth
+    cd $MESH_CONFIG_DIR/special/edge-oauth
+    echo "Adding additional Special Edge oAuth Routes"
+    for rte in $(ls route-*.json); do
+        greymatter create route <$rte
+    done
+else
+    cd $MESH_CONFIG_DIR/special/edge
+    echo "Adding additional Special Edge Routes"
+    for rte in $(ls route-*.json); do
+        greymatter create route <$rte
+    done
 fi
-
-cd $SPECIAL_CONFIG_DIR/routes
-echo "Adding additional Special Edge Routes"
-for rte in $(ls route-*.json); do
-    greymatter create route <$rte
-done

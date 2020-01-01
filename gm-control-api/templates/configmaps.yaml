@@ -68,24 +68,30 @@ metadata:
   name: edge-control-api-mesh-config
   namespace: {{ $.Release.Namespace }}
 data:
-{{- range $path, $bytes := (list "cluster.json" "domain.json" "listener.json" "proxy.json" "route.json" "shared_rules.json" ) }}
+{{- range $path, $bytes := $top.Files.Glob "json/edge/**.json" }}
   {{ base $path }}: |-
 {{ tpl ($top.Files.Get $path) $scope | indent 4 }}
+{{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: edge-oauth-mesh-config
+  namespace: {{ $.Release.Namespace }}
+data:
+{{- range $path, $bytes := $top.Files.Glob "json/special/edge-oauth/**.json" }}
+  {{ base $path }}: |-
+{{ tpl ($top.Files.Get $path) $top | indent 4 }}
 {{- end }}
 {{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: special-mesh-config
+  name: edge-mesh-config
   namespace: {{ $.Release.Namespace }}
 data:
-{{- if .Values.global.edgeOAuth.enabled }}
-{{- $specialPath := "json/special/edge-oauth/**.json"}}
-{{- else }}
-{{- $specialPath := "json/special/edge/**.json"}}
-{{- end}}
-{{- range $path, $bytes := $top.Files.Glob $specialPath }}
+{{- range $path, $bytes := $top.Files.Glob "json/special/edge/**.json" }}
   {{ base $path }}: |-
 {{ tpl ($top.Files.Get $path) $top | indent 4 }}
 {{- end }}

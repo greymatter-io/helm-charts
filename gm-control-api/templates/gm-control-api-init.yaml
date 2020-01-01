@@ -61,16 +61,15 @@ spec:
           {{- end }}
           {{- end }}
           {{- end }}
-          # If edgeOAuth is enabled then the only service accessible from the other edge is controlApi.
+          # If edgeOAuth is enabled then the only service accessible from the other edge is gmControlApi.
           {{- if .Values.global.edgeOAuth.enabled }}
             - name: edge-config-volume-control-api
-              mountPath: /etc/config/mesh/edge/controlApi
-            - name: special-config-volume
+              mountPath: /etc/config/mesh/edge/gm-control-api
+            - name: edge-oauth-config-volume
               mountPath: /etc/config/mesh/special/edge-oauth
-          {{- else }}
-            - name: special-config-volume
-              mountPath: /etc/config/mesh/special/edge
           {{- end }}
+            - name: edge-config-volume
+              mountPath: /etc/config/mesh/special/edge
             - name: bootstrap-script-volume
               mountPath: /tmp/bootstrap
       volumes:
@@ -102,13 +101,16 @@ spec:
         - name: edge-config-volume-control-api
           configMap:
             name: edge-control-api-mesh-config
+        - name: edge-oauth-config-volume
+          configMap:
+            name: edge-oauth-mesh-config
         {{- end }}
+        - name: edge-config-volume
+          configMap:
+            name: edge-mesh-config
         - name: bootstrap-script-volume
           configMap:
             name: bootstrap-script
             defaultMode: 0777
-        - name: special-config-volume
-          configMap:
-            name: special-mesh-config
       imagePullSecrets:
         - name: docker.secret

@@ -5,7 +5,7 @@
   "path": "{{ .Values.global.catalog.data_prefix }}",
   "prefix_rewrite": "{{ .Values.global.catalog.data_prefix }}/",
   "redirects": null,
-  "shared_rules_key": "edge-oAuth-data-internal-shared-rules",
+  "shared_rules_key": "edge-oauth-data-internal-shared-rules",
   "rules": null,
   "response_data": {},
   "cohort_seed": null,
