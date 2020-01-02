@@ -1,0 +1,9 @@
+{
+  "route_key": "REPLACESTRING-jwt-route-slash",
+  "domain_key": "REPLACESTRING",
+  "zone_key": "zone-default-zone",
+  "path": "/jwt",
+  "prefix_rewrite": "/jwt/",
+  "shared_rules_key": "edge-jwt-security-shared-rules",
+  "response_data": {}
+}

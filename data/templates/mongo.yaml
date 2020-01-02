@@ -25,13 +25,8 @@ spec:
       {{- end }}
       containers:
       - env:
-        {{- include "envvars" (dict "envvar" .Values.mongo.envvars "top" $) | indent 8 }}
-
-        {{- if .Values.data.deploy.standalone }}
-        image: {{ tpl .Values.mongo.standalone_image $ | quote }}
-        {{- else }} 
+        {{- include "data.envvars" (dict "envvar" .Values.mongo.envvars "top" $) | indent 8 }}
         image: {{ tpl .Values.mongo.image $ | quote }}
-        {{- end }}
         imagePullPolicy: {{ .Values.mongo.imagePullPolicy }}
         {{- if .Values.mongo.resources }}
         resources:
