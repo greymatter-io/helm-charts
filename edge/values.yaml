@@ -108,9 +108,6 @@ sidecar:
     xds_cluster:
       type: value
       value: 'edge'
-    xds_zone:
-      type: 'value'
-      value: 'zone-default-zone'
 
 
   # Set this to true if you are attempting to deploy Catalog by itself.
