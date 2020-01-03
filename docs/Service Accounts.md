@@ -10,6 +10,8 @@ Various services in the mesh require Kubernetes Service Accounts to function. Th
   - `gm-control` - waits for `gm-control-api` to be up - see above, also needs access to pods, so make sure you create one service account for this.
   - `gm-control-api-init` - waits for `gm-control-api` to be up to bootstrap the mesh configuration
 
+## Using Helm to Create the Service Accounts
+
 The waiter service account can be created automatically with `.Values.global.waiter.serviceAccount.create` set to `true`. Otherwise, all services that need access to a waiter service account will use the one specified by `.Values.global.waiter.serviceAccount.name`
 
 All of the service accounts needed for Grey Matter can either be created automatically by Helm (if it has the appropriate permissions), or be created manually by a cluster admin. This is configured in the `serviceAccount` map that is found at different locations for various service accounts, which always looks like this:
@@ -29,6 +31,8 @@ The following list gives the service that needs a service account along with the
 - `waiter` - greymatter chart - `.Values.global.waiter.serviceAccount`
 - `spire-agent` - spire subchart - `.Values.spire.agent.serviceAccount`
 - `spire-server` - spire subchart - `.Values.spire.server.serviceAccount`
+
+## Manually Creating the Service Accounts
 
 If you're deploying into an environment where Tiller doesn't have sufficient permissions to create service accounts, you'll need to apply the [greymatter-service-accounts.yaml](../greymatter-service-accounts.yaml) file.
 
@@ -54,5 +58,56 @@ If you're deploying into an environment where Tiller doesn't have sufficient per
     ```sh
     oc apply -f greymatter-service-accounts.yaml
     ```
+
+## Creating Service Accounts for Other Namespaces
+
+Grey Matter has the ability to monitor services deployed in any namespace in Kubernetes, but the service accounts need access to the namespace.  In order to enable a service account to have access to another namespace, a new `Role` and `RoleBinding` need to be created.  This is a manual step that must be done for each namespace that you will be deploying Grey Matter monitored services.
+
+Here is an example of a new `Role` and `RoleBinding` for the `waiter-sa` service account.  It assumes that the new namespace is called `services`.
+
+```yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: waiter-sa-role
+  namespace: services
+rules:
+  - apiGroups: ['']
+    resources: ['endpoints']
+    verbs: ['get', 'list', 'watch']
+```
+
+```yaml
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: waiter-sa-rolebinding
+  namespace: services
+subjects:
+  - kind: ServiceAccount
+    name: waiter-sa
+    namespace: greymatter
+roleRef:
+  kind: Role
+  name: waiter-sa-role
+  apiGroup: rbac.authorization.k8s.io
+```
+
+Notice that only the `metadata.namespace` field needs to be updated for both files.  The `waiter-sa` service account has already been created in the `greymatter` namespace and a new `Role` and `RoleBinding` can leverage the existing service account.  
+
+If you manually created the service accounts using the `greymatter-service-accounts.yaml` file referenced above, you will only need to perform this action for the `waiter-sa` account. If `control-sa` and `prometheus-sa` were created as non-Cluster roles (ie: not `ClusterRole` and `ClusterRoleBinding`), you will need to perform the same steps for those accounts as well.
+
+Permissions can be verified using the following command
+
+```sh
+> kubectl auth can-i list endpoints -n services --as system:serviceaccount:greymatter:waiter-sa
+yes
+```
+
+## Setting up the Tiller Service Account- [Using Helm to Create the Service Accounts](#using-helm-to-create-the-service-accounts)
+- [Using Helm to Create the Service Accounts](#using-helm-to-create-the-service-accounts)
+- [Manually Creating the Service Accounts](#manually-creating-the-service-accounts)
+- [Creating Service Accounts for Other Namespaces](#creating-service-accounts-for-other-namespaces)
+- [Setting up the Tiller Service Account- Using Helm to Create the Service Accounts](#setting-up-the-tiller-service-account--using-helm-to-create-the-service-accounts)
 
 [Multi-tenant Helm guide](./Multi-tenant%20Helm.md) provides further details on deploying Tiller securely.
