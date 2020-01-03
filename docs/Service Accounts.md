@@ -61,7 +61,7 @@ If you're deploying into an environment where Tiller doesn't have sufficient per
 
 ## Creating Service Accounts for Other Namespaces
 
-Grey Matter has the ability to monitor services deployed in any namespace in Kubernetes, but the service accounts need access to the namespace.  In order to enable a service account to have access to another namespace, a new `Role` and `RoleBinding` need to be created.  This is a manual step that mnuch be done for each namespace that you will be deploying Grey Matter monitored services.
+Grey Matter has the ability to monitor services deployed in any namespace in Kubernetes, but the service accounts need access to the namespace.  In order to enable a service account to have access to another namespace, a new `Role` and `RoleBinding` need to be created.  This is a manual step that must be done for each namespace that you will be deploying Grey Matter monitored services.
 
 Here is an example of a new `Role` and `RoleBinding` for the `waiter-sa` service account.  It assumes that the new namespace is called `services`.
 
@@ -95,7 +95,7 @@ roleRef:
 
 Notice that only the `metadata.namespace` field needs to be updated for both files.  The `waiter-sa` service account has already been created in the `greymatter` namespace and a new `Role` and `RoleBinding` can leverage the existing service account.  
 
-If you manually created the service accounts using the `greymatter-service-accounts.yaml` file referenced above, you will only need to perform this action for the `waiter-sa` account. If you `control-sa` and `prometheus-sa` were created as non-Cluster roles (ie: not `ClusterRole` and `ClusterRoleBinding`), you will need to perform the same steps for those accounts as well.
+If you manually created the service accounts using the `greymatter-service-accounts.yaml` file referenced above, you will only need to perform this action for the `waiter-sa` account. If `control-sa` and `prometheus-sa` were created as non-Cluster roles (ie: not `ClusterRole` and `ClusterRoleBinding`), you will need to perform the same steps for those accounts as well.
 
 Permissions can be verified using the following command
 
