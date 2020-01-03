@@ -122,9 +122,6 @@ sidecar_prometheus:
       cpu: 100m
       memory: 128Mi
   envvars:
-    spire_path:
-      type: 'value'
-      value: '/run/spire/sockets/agent.sock'
     xds_cluster:
       type: value
       value: 'prometheus'
