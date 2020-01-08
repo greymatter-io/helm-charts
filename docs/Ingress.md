@@ -54,7 +54,7 @@ Now you're all set. When you deploy the Edge service, the voyager-operator will 
 
 If you choose to use the Nginx Ingress Controller, you need to ensure it is installed to allow SSL passthrough. The default installation of the Nginx Ingress Controller does not deploy nginx with SSL passthrough enabled. The Nginx Ingress [documentation](https://kubernetes.github.io/ingress-nginx/user-guide/tls/#ssl-passthrough) provides instructions for enabling SSL passthrough.
 
-If using AWS, we recommend using an NLB for external traffic managmenet to the Nginx Controller. The NLB is a simple appliance and requires less configuration for Grey Matter and ELBs or ALBs.  AWS has [documentation](https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/) for this setup that is extremely helpful, but don't be nervous that they use AWS EKS; the same configuration can work in any Kubernetes deployed in AWS.
+If using AWS, we recommend using an NLB for external traffic managmenet to the Nginx Controller. The NLB is a simple appliance and requires less configuration for Grey Matter than ELBs or ALBs.  AWS has [documentation](https://aws.amazon.com/blogs/opensource/network-load-balancer-nginx-ingress-controller-eks/) for this setup that is extremely helpful, but don't be nervous that they use AWS EKS; the same configuration can work in any Kubernetes deployed in AWS.
 
 Updates will be needed to the `greymatter.yaml` file to provide a new configuration for the edge ingress.  Below is an Nginx Ingress example that can be used
 
@@ -85,7 +85,7 @@ This configuration routes SSL traffic to the Grey Matter Edge sidecar, indicated
 
 If you choose to use a different ingress controller, you need to make sure that all of the prerequesites are in place before deploying the Grey Matter Helm Charts.  For instance, if you choose to use the NGINX controller, it must be installed prior to the deploying these charts.
 
-Whichever ingress controller you choose, it needs to be allow for SSL passthrough.  
+Whichever ingress controller you choose, it needs to allow for SSL passthrough.  
 
 ### OpenShift
 
