@@ -1,0 +1,38 @@
+{{- if and .Values.data.deploy.standalone ( .Values.data.deploy.waiterSA ) }}
+
+# Grey Matter Waiter service account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: waiter-sa
+  namespace: {{ .Release.Namespace }}
+
+---
+# Grey Matter Waiter Role
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: waiter-sa-role
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: ['']
+    resources: ['endpoints']
+    verbs: ['get', 'list', 'watch']
+---
+# Grey Matter Waiter Cluster Role Binding
+
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: waiter-sa-rolebinding
+  namespace: {{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: waiter-sa
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: waiter-sa-role
+  apiGroup: rbac.authorization.k8s.io
+---
+{{- end -}}

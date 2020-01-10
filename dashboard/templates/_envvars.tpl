@@ -43,3 +43,26 @@ Most users should use the `indent` or `nindent` functions to automatically inden
     {{- end }}
   {{- end }}
 {{- end }}
+
+{{- /* merged envvars for prometheus sidecar*/}}
+{{- define "greymatter.envvars-prometheus" }}
+  {{- $top := . }}
+  {{- if .Values.global.sidecar }}
+    {{- range $name, $envvar := .Values.global.sidecar.envvars }}
+          {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+          {{- $l := "" }}
+          {{- if $top.Values.sidecar_prometheus.envvars }}
+            {{- $l = index $top.Values.sidecar_prometheus.envvars $name }}
+          {{- end}}
+          {{- $e := $l | default $envvar }}
+          {{- $args := dict "name" $envName "value" $e "top" $top }}
+          {{- include "envvar" $args }}
+    {{- end }}
+  {{- else }}
+    {{- range $name, $envvar := .Values.sidecar_prometheus.envvars }}
+          {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+          {{- $args := dict "name" $envName "value" $envvar "top" $top }}
+          {{- include "envvar" $args }}
+    {{- end }}
+  {{- end }}
+{{- end }}

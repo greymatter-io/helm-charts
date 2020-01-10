@@ -122,27 +122,9 @@ sidecar_prometheus:
       cpu: 100m
       memory: 128Mi
   envvars:
-    proxy_dynamic:
-      type: 'value'
-      value: 'true'
     xds_cluster:
-      type: 'value'
+      type: value
       value: 'prometheus'
-    xds_host:
-      type: 'value'
-      value: 'control.{{ .Release.Namespace }}.svc'
-    xds_port:
-      type: 'value'
-      value: '{{ .Values.global.control.port }}'
-    xds_node_id:
-      type: 'value'
-      value: 'default'
-    spire_path:
-      type: 'value'
-      value: '/run/spire/sockets/agent.sock'
-    envoy_admin_log_path:
-      type: 'value'
-      value: '/dev/stdout'
   # Set this to true if you are attempting to deploy xDS by itself.
   # Ideally, xDS is deployed as a dependency to Grey Matter, which creates the
   # sidecar secret, but if individual testing is being done, the sidecar secret will

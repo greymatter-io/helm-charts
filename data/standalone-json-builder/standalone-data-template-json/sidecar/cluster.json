@@ -1,0 +1,23 @@
+{
+  "cluster_key": "REPLACESTRING-service",
+  "zone_key": "zone-default-zone",
+  "name": "service",
+  "require_tls": true,
+  "ssl_config": {
+    "protocols": ["SSLv3", "SSLv2", "TLSv1", "TLSv1.1", "TLSv1.2"],
+    "require_client_certs": true,
+    "trust_file": "/etc/proxy/tls/sidecar/ca.crt",
+    "cert_key_pairs": [
+      {
+        "certificate_path": "/etc/proxy/tls/sidecar/server.crt",
+        "key_path": "/etc/proxy/tls/sidecar/server.key"
+      }
+    ]
+  },
+  "instances": [
+    {
+      "host": "0.0.0.0",
+      "port": 8181
+    }
+  ]
+}

@@ -3,10 +3,10 @@ global:
   domain:
   route_url_name:
   remove_namespace_from_url: false
-  zone: zone-default-zone
+  zone: 'zone-default-zone'
   catalog:
     name: catalog
-    version: 1.0.1
+    version: 1.0.3
     data_prefix: /data
   dashboard:
     version: 3.1.0
@@ -44,7 +44,7 @@ global:
 
 catalog:
   name: catalog
-  version: 1.0.1
+  version: 1.0.3
   image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.global.catalog.version }}
   debug: 'true'
   imagePullPolicy: IfNotPresent
@@ -63,7 +63,7 @@ catalog:
       value: 'gmdata'
     config_polling_interval:
       type: value
-      value: '30s'
+      value: '300s'
     port:
       type: value
       value: '9080'
@@ -72,7 +72,7 @@ catalog:
       value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
     control_server_0_zone_name:
       type: value
-      value: '{{ .Values.global.zone }}'
+      value: 'zone-default-zone'
     control_server_0_request_cluster_name:
       type: value
       value: 'edge'

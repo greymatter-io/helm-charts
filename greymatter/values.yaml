@@ -4,7 +4,7 @@ global:
   route_url_name:
   remove_namespace_from_url: false
   control_api_tls: true
-  zone: zone-default-zone
+  zone: 'zone-default-zone'
   # The observables section defines the common information points for
   # Grey Matter Observables.  Note that, if enabled, the kafkaServerConnection
   # MUST be enabled
@@ -60,7 +60,7 @@ global:
     cli:
       version: 1.1.0
   sidecar:
-    version: 1.0.0
+    version: 1.1.1
   spire:
     enabled: false
     trustDomain: deciphernow.com
@@ -104,7 +104,7 @@ global:
       name: 'Grey Matter Dashboard'
       serviceName: 'dashboard'
       observablesEnabled: false
-      zone: zone-default-zone
+      zone: 'zone-default-zone'
       port: 1337
       enableInstanceMetrics: 'true'
       capability: 'Grey Matter'
@@ -123,13 +123,14 @@ global:
       serviceName: 'prometheus'
       observablesEnabled: false
       port: 9090
+      zone: 'zone-default-zone'
       # egressTLS: 'false'
 
     data:
       catalogEnabled: true
       controlEnabled: true
       name: 'Grey Matter Data'
-      zone: zone-default-zone
+      zone: 'zone-default-zone'
       serviceName: 'data'
       observablesEnabled: false
       port: 8181
@@ -148,7 +149,7 @@ global:
       catalogEnabled: false
       controlEnabled: true
       name: 'Grey Matter Internal Data'
-      zone: zone-default-zone
+      zone: 'zone-default-zone'
       serviceName: 'data-internal'
       observablesEnabled: false
       port: 8181
@@ -166,7 +167,7 @@ global:
       name: 'Grey Matter JWT Security'
       serviceName: 'jwt-security'
       observablesEnabled: false
-      zone: zone-default-zone
+      zone: 'zone-default-zone'
       port: 3000
       # egressTLS: 'true'
       enableInstanceMetrics: 'true'
@@ -184,7 +185,7 @@ global:
       name: 'Grey Matter JWT Security Internal'
       serviceName: 'internal-jwt-security'
       observablesEnabled: false
-      zone: zone-default-zone
+      zone: 'zone-default-zone'
       port: 3000
       # egressTLS: 'true'
       enableInstanceMetrics: 'true'
@@ -199,7 +200,7 @@ global:
       name: 'Grey Matter Control API'
       serviceName: 'gm-control-api'
       observablesEnabled: false
-      zone: zone-default-zone
+      zone: 'zone-default-zone'
       port: 5555
       enableInstanceMetrics: 'true'
       capability: 'Grey Matter'
@@ -216,7 +217,7 @@ global:
       name: 'Grey Matter Edge'
       serviceName: 'edge'
       observablesEnabled: false
-      zone: zone-default-zone
+      zone: 'zone-default-zone'
       port: 8080
       # We use a static cert on the edge listener
       removeListenerSecret: true
@@ -232,7 +233,7 @@ global:
       name: 'Grey Matter Service Level Objectives'
       serviceName: 'slo'
       observablesEnabled: false
-      zone: zone-default-zone
+      zone: 'zone-default-zone'
       port: 1337
       # egressTLS: 'false'
       enableInstanceMetrics: 'true'

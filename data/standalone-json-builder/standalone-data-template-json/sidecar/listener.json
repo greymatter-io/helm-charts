@@ -1,0 +1,9 @@
+{
+  "zone_key": "zone-default-zone",
+  "listener_key": "REPLACESTRING-listener",
+  "domain_keys": ["REPLACESTRING"],
+  "name": "REPLACESTRING",
+  "ip": "0.0.0.0",
+  "port": 8080,
+  "protocol": "http_auto"
+}

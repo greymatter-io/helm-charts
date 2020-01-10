@@ -63,10 +63,6 @@ spec:
           volumeMounts:
           {{- include "sidecar_volume_certs_mount" . | indent 10 }}
           {{- end }}
-        {{- if .Values.global.consul.enabled }}
-        {{- $data := dict "Values" .Values "ServiceName" "catalog" }}
-        {{- include "consul.agent" $data | nindent 8 }}
-        {{- end }}
           readinessProbe:
             exec:
               command:
@@ -75,6 +71,10 @@ spec:
                 - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:9080/summary"
             initialDelaySeconds: 20
             periodSeconds: 5
+        {{- if .Values.global.consul.enabled }}
+        {{- $data := dict "Values" .Values "ServiceName" "catalog" }}
+        {{- include "consul.agent" $data | nindent 8 }}
+        {{- end }}
 
       volumes:
       {{- if .Values.global.consul.enabled }}
