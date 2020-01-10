@@ -70,7 +70,11 @@ spec:
         - name: POSTGRESQL_ENDPOINT
           value: {{ .Values.postgres.rds.endpoint }}
         - name: DATABASE_URI
-          value: {{ ternary "postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@$(POSTGRESQL_ENDPOINT):5432/$(POSTGRESQL_DATABASE)"  "postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc:5432/$(POSTGRESQL_DATABASE)" .Values.postgres.rds.enabled }}
+          {{- if .Values.postgres.rds.enabled }}
+          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@$(POSTGRESQL_ENDPOINT):5432/$(POSTGRESQL_DATABASE)
+          {{- else}}
+          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc:5432/$(POSTGRESQL_DATABASE)
+          {{- end }}
         - name: SERVICE_PORT
           value: "1337"
         {{- if .Values.postgres.ssl.enabled }}
