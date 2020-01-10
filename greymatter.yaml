@@ -7,7 +7,7 @@ global:
   mesh_tls:
     enabled: true
     use_provided_certs: true
-    # This is the DN of the cert being used in the mesh. The Helm charts will add whitelist the DN throughout the mesh
+    # This is the DN of the cert being used in the mesh. The Helm charts will whitelist the DN throughout the mesh
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local
   # Turns on tls for control api and configures control to talk to it using tls
   control_api_tls: true
@@ -714,47 +714,49 @@ edge:
           value: 'edge'
     create_edge_secret: true
     ingress:
-      #################
-      # NGINX INGRESS #
-      #################
-      apiVersion: extensions/v1beta1
-      annotations:
-        kubernetes.io/ingress.class: "nginx"
-        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-      rules:
-        - host: pki.dtillery-ingress.com
-          http:
-            paths:
-              - path: /
-                backend:
-                  serviceName: edge
-                  servicePort: 8080
-      tls:
-      - hosts:
-        - pki.dtillery-ingress.com
-        secretName: tls-secret
+      # There are a lot of options for ingress into a kubernetes cluster.
+      # Change the values below if you want to use an ingress controller other than Voyager
 
-      ###################
-      # VOYAGER INGRESS #
-      ###################
-      # apiVersion: voyager.appscode.com/v1beta1
+      # For instance, these values will work for nginx ingress
+
+      # apiVersion: extensions/v1beta1
       # annotations:
-      #   kubernetes.io/ingress.class: 'voyager'
-      #   ingress.appscode.com/ssl-passthrough: 'true'
-      #   ingress.appscode.com/type: NodePort
+      #   nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      #   nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      #   nginx.ingress.kubernetes.io/backend-protocol: "https"
+
       # rules:
-      #   - tcp:
-      #       port: '80'
-      #       nodePort: '30001'
-      #       backend:
-      #         serviceName: edge
-      #         servicePort: 8080
-      #   - tcp:
-      #       port: '443'
-      #       nodePort: '30000'
-      #       backend:
-      #         serviceName: edge
-      #         servicePort: 8080
+      #   - host: greymatter.development.deciphernow.com
+      #     http:
+      #       paths:
+      #         - path: /
+      #           backend:
+      #             serviceName: edge
+      #             servicePort: 8080
+
+      # Specific annotations for your deployment
+      # Choosing the ingress.appscode.com/type is important and depends on your environment type.
+      #   - If using EKS, you need to configure the Type as LoadBalancer
+      #   - If using voyager, you need to configure the type as NodePort
+
+      apiVersion: voyager.appscode.com/v1beta1
+      annotations:
+        kubernetes.io/ingress.class: 'voyager'
+        ingress.appscode.com/ssl-passthrough: 'true'
+        ingress.appscode.com/type: LoadBalancer
+      rules:
+        - tcp:
+            port: '80'
+            nodePort: '30001'
+            backend:
+              serviceName: edge
+              servicePort: 8080
+        - tcp:
+            port: '443'
+            nodePort: '30000'
+            backend:
+              serviceName: edge
+              servicePort: 8080
 
   edgeOAuth:
     sidecar:
@@ -765,43 +767,21 @@ edge:
           type: value
           value: 'edge-oauth'
     ingress:
-      #################
-      # NGINX INGRESS #
-      #################
-      apiVersion: extensions/v1beta1
+      apiVersion: voyager.appscode.com/v1beta1
       annotations:
-        kubernetes.io/ingress.class: "nginx"
+        kubernetes.io/ingress.class: 'voyager'
+        ingress.appscode.com/ssl-passthrough: 'true'
+        ingress.appscode.com/type: LoadBalancer
       rules:
-        - host: oauth.dtillery-ingress.com
-          http:
-            paths:
-              - path: /
-                backend:
-                  serviceName: edge-oauth
-                  servicePort: 9080
-      tls:
-        - hosts:
-          - oauth.dtillery-ingress.com
-          secretName: oauth-tls-secret
-
-      ###################
-      # VOYAGER INGRESS #
-      ###################
-      # apiVersion: voyager.appscode.com/v1beta1
-      # annotations:
-      #   kubernetes.io/ingress.class: 'voyager'
-      #   ingress.appscode.com/ssl-passthrough: 'true'
-      #   ingress.appscode.com/type: NodePort
-      # rules:
-      #   - tcp:
-      #       port: '80'
-      #       nodePort: '30001'
-      #       backend:
-      #         serviceName: edge
-      #         servicePort: 8080
-      #   - tcp:
-      #       port: '443'
-      #       nodePort: '30000'
-      #       backend:
-      #         serviceName: edge
-      #         servicePort: 8080
+        - tcp:
+            port: '80'
+            nodePort: '30003'
+            backend:
+              serviceName: edge-oauth
+              servicePort: 9080
+        - tcp:
+            port: '443'
+            nodePort: '30002'
+            backend:
+              serviceName: edge-oauth
+              servicePort: 9080

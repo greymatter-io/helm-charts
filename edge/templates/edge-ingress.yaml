@@ -29,7 +29,5 @@ metadata:
 spec:
   rules:
 {{ toYaml .rules | indent 4 }}
-  tls:
-{{ toYaml .tls | indent 4 }}
 {{- end }}
 {{- end }}
