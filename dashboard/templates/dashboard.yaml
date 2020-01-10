@@ -21,6 +21,20 @@ spec:
         resources:
 {{ toYaml .Values.dashboard.resources | indent 10 }}
         {{- end }}
+        readinessProbe:
+          httpGet:
+            path: "/#/?ascending=true"
+            port: {{ .Values.global.services.dashboard.port | default 1337 }}
+            scheme: HTTPS
+          initialDelaySeconds: 20
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: "/#/?ascending=true"
+            port: {{ .Values.global.services.dashboard.port | default 1337 }}
+            scheme: HTTPS
+          initialDelaySeconds: 20
+          periodSeconds: 5
         env:
         - name: FABRIC_SERVER
           value: '{{ tpl .Values.dashboard.fabric_server . }}'

@@ -1,0 +1,15 @@
+{
+  "zoneName": "zone-default-zone",
+  "clusterName": "REPLACESTRING",
+  "name": "Grey Matter Data Standalone",
+  "version": "1.0",
+  "owner": "Decipher",
+  "capability": "service",
+  "documentation": "/services/REPLACESTRING/1.0/static/ui/index.html",
+  "maxInstances": 1,
+  "minInstances": 1,
+  "authorized": true,
+  "enableInstanceMetrics": true,
+  "enableHistoricalMetrics": true,
+  "metricsPort": 8081
+}

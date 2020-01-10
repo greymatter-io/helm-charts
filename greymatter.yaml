@@ -1,10 +1,8 @@
 global:
   environment: openshift
-  # If `environment: kubernetes`, set to true to install Voyager ingress
   domain: staging.deciphernow.com
   route_url_name: greymatter
   remove_namespace_from_url: false
-  zone: zone-default-zone
   mesh_tls:
     enabled: true
     use_provided_certs: true
@@ -17,11 +15,11 @@ global:
   dashboard:
     version: 3.2.0
     sidecar:
-      version: 1.0.0
+      version: 1.1.1
   catalog:
-    version: 1.0.1
+    version: 1.0.3
     sidecar:
-      version: 1.0.0
+      version: 1.1.1
   sense:
     enabled: false
   consul:
@@ -33,7 +31,7 @@ global:
     # This is the DN of the new certificate issued to the edge for internal mesh communication. It needs to be whitelisted by the proxies
     egressDn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=edge
     certPath: /etc/proxy/tls/edge
-    version: 1.0.0
+    version: 1.1.1
   spire:
     enabled: false
   waiter:
@@ -52,7 +50,7 @@ global:
     catalog:
       egressTLS: true
       mTLS: true
-      version: 1.0.1
+      version: 1.0.3
     dashboard:
       egressTLS: true
       mTLS: true
@@ -82,7 +80,7 @@ global:
       egressTLS: true
 
   sidecar:
-    version: 1.0.0
+    version: 1.1.1
     envvars:
       # You can customize the sidecar environment variables mesh-wide to enable features in the mesh
       # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services `configuration.md` files.
@@ -92,6 +90,9 @@ global:
       proxy_dynamic:
         type: 'value'
         value: 'true'
+      xds_zone:
+        type: 'value'
+        value: 'zone-default-zone'
       xds_cluster:
         type: 'value'
         value: ''
@@ -142,15 +143,15 @@ gm-control-api:
       mountPoint: /service-certs
       insecure: true
     image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.1.0
-    zone: zone-default-zone
+    zone: 'zone-default-zone'
     init:
       image: docker.production.deciphernow.com/deciphernow/greymatter:1.1.0
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
 
 data:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -158,6 +159,7 @@ data:
         value: 'data'
 
   data:
+    name: data
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
     securityContext:
@@ -300,7 +302,7 @@ data:
 
 internal-data:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -414,7 +416,7 @@ catalog:
         value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}'
       control_server_0_zone_name:
         type: value
-        value: '{{ .Values.global.zone }}'
+        value: 'zone-default-zone'
       control_server_0_request_cluster_name:
         type: value
         value: 'edge'
@@ -474,14 +476,14 @@ catalog:
         value: 'engineering@deciphernow.com'
 
     init:
-      image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+      image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
       envvars:
         debug:
           type: value
           value: 'true'
 
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -496,14 +498,14 @@ dashboard:
       mountPoint: /certs
       name: dashboard-certs
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
         type: value
         value: 'dashboard'
   sidecar_prometheus:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
   prometheus:
     serviceAccount:
       create: true
@@ -523,7 +525,7 @@ slo:
       name: slo-certs
       mountPoint: /service-certs
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -562,7 +564,7 @@ slo:
 
 jwt:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -606,7 +608,7 @@ jwt:
 
 internal-jwt:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -698,19 +700,19 @@ internal-jwt:
     password: 'internalRedis'
 
 sidecar:
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
   create_sidecar_secret: true
 
 edge:
   sidecar:
-    version: 1.0.0
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.0.0'
+    version: 1.1.1
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
     envvars:
       xds_cluster:
         type: value
         value: 'edge'
   edge:
-    base_path: /services/edge/1.0.0
+    base_path: /services/edge/1.1.1
     create_edge_secret: true
 
     ingress:
@@ -738,7 +740,7 @@ edge:
 
       # Specific annotations for your deployment
       # Choosing the ingress.appscode.com/type is important and depends on your environment type.
-      #   - If using EKS, you need to configure the Type as LoadBalancder
+      #   - If using EKS, you need to configure the Type as LoadBalancer
       #   - If using voyager, you need to configure the type as NodePort
       annotations:
         kubernetes.io/ingress.class: 'voyager'

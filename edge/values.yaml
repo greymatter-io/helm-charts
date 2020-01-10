@@ -109,6 +109,7 @@ sidecar:
       type: value
       value: 'edge'
 
+
   # Set this to true if you are attempting to deploy Catalog by itself.
   # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
   # sidecar secret, but if individual testing is being done, the sidecar secret will

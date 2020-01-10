@@ -65,9 +65,9 @@ jobs:
           command: |
             echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-staging/" >> $BASH_ENV
       - run:
-          name: Change Grey Matter Requirements to staging
+          name: Change Grey Matter Requirements from local to helm-staging
           command: |
-            sed -i "s/hosted/staging/g" $(pwd)/greymatter/requirements.yaml
+            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/greymatter/requirements.yaml
       - run:
           name: Print directory listing
           command: |
@@ -132,6 +132,10 @@ jobs:
           name: Set Environment Variable
           command: |
             echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
+      - run:
+          name: Change Grey Matter Requirements from local to helm-hosted
+          command: |
+            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/greymatter/requirements.yaml
       - run:
           name: Package and Publish Grey Matter
           command: |

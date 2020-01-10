@@ -11,23 +11,38 @@ global:
     enabled: false
     host: ''
     port: 8500
+  control:
+    port: 50000
+  mesh_tls:
+    use_provided_certs: true
+
+  spire:
+    enabled: false
 
   data:
     # This value is used to data where to find jwt and also used to configure the mesh to enable routes from data to jwt
     jwt_prefix: /jwt
+    sidecar:
+      version: 1.0.0
 
   waiter:
     image: deciphernow/k8s-waiter:latest
+    serviceAccount:
+      name: waiter-sa
+
+# if this is false then you will need to change values.data.imagePullSecret to refrence a secret already in your namespace.
+createDockerSecret: true
 
 data:
   # The name of this installation of GM Data.  Used in the zookeeper address.  Allow to be unique to support multiple installations of Data
   name: data
   version: 1.0.0
+  replicas: 1
   client_jwt_endpoint_address: localhost
   client_jwt_endpoint_use_tls: 'true'
-  base_path: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
+  base_path: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version | trunc 3 }}
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
-  standalone_image:
+  imagePullSecret: docker.secret
   certs_mount_point: /certs
   imagePullPolicy: IfNotPresent
   use_tls: true
@@ -45,11 +60,10 @@ data:
   # If Grey Matter Data is being deployed as a standalone instance, these values need to be provided
   deploy:
     standalone: false
+    # deploy waiterSA automatically (true if tiller service account has ability to make roles in cluster)
+    waiterSA: false
     exhibitor_address:
     base_path: /services/{{ .Release.Namespace | lower }}-{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
-    control:
-      cluster:
-      address:
     secrets:
       - name: jwt-security
         jwt.key:
@@ -124,19 +138,19 @@ data:
       key: master_key
     mongo_initdb_root_username:
       type: secret
-      secret: mongo-credentials
+      secret: '{{ $.Values.mongo.credentials.secret_name }}'
       key: gmdata_username
     mongo_initdb_root_password:
       type: secret
-      secret: mongo-credentials
+      secret: '{{ $.Values.mongo.credentials.secret_name }}'
       key: gmdata_password
     mongodb:
       type: secret
-      secret: mongo-credentials
+      secret: '{{ $.Values.mongo.credentials.secret_name }}'
       key: database
     gmdata_use_tls:
       type: value
-      value: 'false'
+      value: 'true'
     gmdata_cert:
       type: secret
       secret: jwt-certs
@@ -184,7 +198,6 @@ mongo:
   name: data-mongo
   replicas: 1
   image: 'deciphernow/mongo:4.0.3'
-  standalone_image:
   imagePullPolicy: IfNotPresent
   #private_image: false
   storage:
@@ -208,19 +221,19 @@ mongo:
   envvars:
     mongo_initdb_database:
       type: secret
-      secret: mongo-credentials
+      secret: '{{ $.Values.mongo.credentials.secret_name }}'
       key: database
     mongo_initdb_root_username:
       type: secret
-      secret: mongo-credentials
+      secret: '{{ $.Values.mongo.credentials.secret_name }}'
       key: root_username
     mongo_initdb_root_password:
       type: secret
-      secret: mongo-credentials
+      secret: '{{ $.Values.mongo.credentials.secret_name }}'
       key: root_password
     mongodb_admin_password:
       type: secret
-      secret: mongo-credentials
+      secret: '{{ $.Values.mongo.credentials.secret_name }}'
       key: gmdata_password
 
   credentials:
@@ -258,9 +271,8 @@ mongo:
           -----END RSA PRIVATE KEY-----
 
 sidecar:
-  version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.sidecar.version }}'
+  version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.data.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  standalone_image:
   imagePullPolicy: IfNotPresent
   resources:
     limits:
@@ -272,24 +284,22 @@ sidecar:
   envvars:
     xds_cluster:
       type: value
-      value: 'data'
+      value: '{{ $.Values.data.name }}'
+    envoy_admin_log_path:
+      type: value
+      value: '/dev/stdout'
+    proxy_dynamic:
+      type: value
+      value: 'true'
+    xds_host:
+      type: value
+      value: 'control.default.svc.cluster.local'
+    xds_node_id:
+      type: value
+      value: 'default'
+    xds_port:
+      type: value
+      value: '50000'
 
-  # Set this to true if you are attempting to deploy Catalog by itself.
-  # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
-  # sidecar secret, but if individual testing is being done, the sidecar secret will
-  # need to be created.
-  create_sidecar_secret: false
-  certificates:
-    name: sidecar
-    ca: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    cert: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    key: |-
-      -----BEGIN RSA PRIVATE KEY-----
-      ...
-      -----END RSA PRIVATE KEY-----
+  certs:
+    secret_name: "sidecar-certs"

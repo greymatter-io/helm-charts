@@ -78,8 +78,8 @@ spec:
           containerPort: 8080
         - name: metrics
           containerPort: 8081
-        env:
-{{- include "generic.envvars" (dict "envvars" .Values.sidecar_prometheus.envvars "top" .) | indent 10 }}
+        env:   
+        {{- include "greymatter.envvars-prometheus" . | indent 8 }}
       imagePullSecrets:
       - name: docker.secret
       volumes:
