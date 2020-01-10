@@ -141,9 +141,9 @@ postgres:
       # This sets a default file name for the Postgres CA.  Can be overridden to change the filename
       caName: ca.pem
       ca: |-
-       -----BEGIN CERTIFICATE-----
-       ...
-       -----END CERTIFICATE-----
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
       # This sets a default file name for the Postgres SSL Cert.  Can be overridden to change the filename
       certName: server.crt
       cert: |-
