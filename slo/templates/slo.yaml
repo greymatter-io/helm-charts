@@ -67,8 +67,10 @@ spec:
             secretKeyRef:
               name: {{ .Values.postgres.credentials.secret_name }}
               key: database
+        {{- if .Values.postgres.rds.enabled }}
         - name: POSTGRESQL_ENDPOINT
           value: {{ .Values.postgres.rds.endpoint }}
+        {{- end }}
         - name: DATABASE_URI
           {{- if .Values.postgres.rds.enabled }}
           value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@$(POSTGRESQL_ENDPOINT):5432/$(POSTGRESQL_DATABASE)
