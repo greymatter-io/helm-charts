@@ -5,14 +5,14 @@
   "listener_keys": ["edge-oauth-listener"],
   "name": "edge-oauth",
   "listeners": null,
-  "active_proxy_filters": ["gm.metrics", "gm.oauth"],
+  "active_proxy_filters": ["gm.metrics", "gm.oauth", "gm.inheaders"],
   "proxy_filters": {
     "gm_oauth": {
-      "provider": "https://deciphernow-davidtillery.okta.com",
-      "client_id": "0oa28nhtmfWgx0hTu357",
-      "client_secret": "H5auM3alfXsZqYa76Jk5aDrNLF_KMElfHwnudPqO",
-      "server_name": "*.greymatter.svc.cluster.local",
-      "session_secret": "sgkppofgpdnp4r5nezxzc2wme3z8qwn8",
+      "provider": "{{ .Values.global.edgeOAuth.provider }}",
+      "client_id": "{{ .Values.global.edgeOAuth.client_id }}",
+      "client_secret": "{{ .Values.global.edgeOAuth.client_secret }}",
+      "server_name": "{{ .Values.global.edgeOAuth.server_name }}",
+      "session_secret": "{{ .Values.global.edgeOAuth.server_secret }}",
       "domain": ".*"
     },
     "gm_metrics": {

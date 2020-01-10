@@ -23,6 +23,13 @@ global:
     enabled: false
     host: ''
     port: 8500
+  edgeOAuth:
+    provider:
+    client_id:
+    client_secret:
+    server_name:
+    session_secret:
+    domain: ".*"
 
 gmControlApi:
   name: gm-control-api
