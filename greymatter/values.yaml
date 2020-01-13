@@ -26,7 +26,7 @@ global:
     prometheus_sidecar:
       version: 1.0.0
   data:
-    data_prefix: /data
+    data_prefix: '/data'
     version: 1.0.0
     sidecar:
       version:
