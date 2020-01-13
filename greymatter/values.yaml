@@ -19,7 +19,6 @@ global:
     version: 1.0.1
     sidecar:
       version:
-    data_prefix: /data
   dashboard:
     version: 3.2.0
     sidecar:
@@ -27,6 +26,7 @@ global:
     prometheus_sidecar:
       version: 1.0.0
   data:
+    data_prefix: /data
     version: 1.0.0
     sidecar:
       version:

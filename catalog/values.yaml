@@ -7,10 +7,10 @@ global:
   catalog:
     name: catalog
     version: 1.0.3
-    data_prefix: /data
   dashboard:
     version: 3.1.0
   data:
+    data_prefix: '/data'
     version: 1.0.0
   documentation:
     version: 3.0.0
@@ -96,7 +96,7 @@ catalog:
       value: '8080'
     client_prefix:
       type: value
-      value: '/data'
+      value: '{{ .Values.global.data.data_prefix }}'
     client_use_tls:
       type: value
       value: 'true'
