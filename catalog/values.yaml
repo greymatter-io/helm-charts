@@ -63,13 +63,13 @@ catalog:
       value: 'gmdata'
     config_polling_interval:
       type: value
-      value: '300s'
+      value: '30s'
     port:
       type: value
       value: '9080'
     control_server_0_address:
       type: value
-      value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
+      value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}'
     control_server_0_zone_name:
       type: value
       value: 'zone-default-zone'
@@ -126,10 +126,10 @@ catalog:
       value: 'world'
     client_identity:
       type: value
-      value: 'CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US'
+      value: 'C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local'
     client_email:
       type: value
-      value: 'gm-control@deciphernow.com'
+      value: 'engineering@deciphernow.com'
 
   init:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
