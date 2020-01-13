@@ -404,19 +404,10 @@ catalog:
         value: '15s'
 
     init:
-      image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
       envvars:
         debug:
           type: value
           value: 'true'
-
-  sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
-    create_sidecar_secret: false
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'catalog'
 
 dashboard:
   dashboard:
