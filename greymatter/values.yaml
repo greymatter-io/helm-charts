@@ -171,7 +171,7 @@ global:
       port: 3000
       # egressTLS: 'true'
       enableInstanceMetrics: 'true'
-      capability: 'Grey Matter'
+      capability: 'Security'
       documentation: ''
       owner: 'Decipher'
       version: '0.2.0'
