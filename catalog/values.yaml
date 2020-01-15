@@ -126,7 +126,7 @@ catalog:
       value: 'world'
     client_identity:
       type: value
-      value: 'C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local'
+      value: 'CN=gm-catalog,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US'
     client_email:
       type: value
       value: 'engineering@deciphernow.com'
