@@ -1,7 +1,7 @@
 {
   "route_key": "route-{{.service.serviceName}}",
   "domain_key": "domain-{{.service.serviceName}}",
-  "zone_key": "{{.service.zone}}",
+  "zone_key": "{{.Values.global.zone}}",
   "path": "/",
   "prefix_rewrite": null,
   "redirects": null,

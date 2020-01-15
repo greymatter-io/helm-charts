@@ -7,6 +7,6 @@ data:
   zone.json: |-
     {
       "serverAddress": "{{ .Values.global.control.name}}.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}",
-      "zoneName": "zone-default-zone",
+      "zoneName": "{{ .Values.global.zone }}",
       "requestCluster": "edge"
     }

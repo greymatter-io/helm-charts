@@ -10,7 +10,7 @@
 {{- if $service.controlEnabled }}
 ---
 {{/* {{- $lSecret := (default $service.removeListenerSecret false) }} */}}
-{{- $serviceExtras := (dict "top" $top "authorizedSvids" $svidList "mTLS" $top.Values.global.spire.enabled "zone" $top.Values.gmControlApi.zone "svidList" (toJson $svidList)) }}
+{{- $serviceExtras := (dict "top" $top "authorizedSvids" $svidList "mTLS" $top.Values.global.spire.enabled "svidList" (toJson $svidList)) }}
 {{- $svc := merge $service $serviceExtras }}
 {{- $scope := set $top "service" $svc }}
 apiVersion: v1
@@ -31,7 +31,6 @@ data:
 {{- if $service.controlEnabled }}
 ---
 {{- $scope := set $top "service" $service }}
-{{- $scope = set $scope "zone" $top.Values.gmControlApi.zone }}
 {{- $scope = set $scope "mTLS" $top.Values.global.spire.enabled }}
 apiVersion: v1
 kind: ConfigMap

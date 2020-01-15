@@ -1,6 +1,6 @@
 {
   "proxy_key": "proxy-{{.service.serviceName}}",
-  "zone_key": "{{.service.zone}}",
+  "zone_key": "{{.Values.global.zone}}",
   "name": "{{.service.serviceName}}",
   "domain_keys": [
     "domain-{{.service.serviceName}}"

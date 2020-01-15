@@ -1,6 +1,6 @@
 {
   "clusterName": "{{.service.serviceName}}",
-  "zoneName": "{{.service.zone}}",
+  "zoneName": "{{ .Values.global.zone }}",
   "name": "{{.service.name}}",
   "version": "{{.service.version}}",
   "owner": "{{.service.owner}}",
