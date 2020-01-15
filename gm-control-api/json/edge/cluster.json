@@ -1,5 +1,5 @@
 {
-  "zone_key": "{{.service.zone}}",
+  "zone_key": "{{.Values.global.zone}}",
   "cluster_key": "edge-to-{{.service.serviceName}}-cluster",
   "name": "{{.service.serviceName}}",
   "instances": [],

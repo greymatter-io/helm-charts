@@ -31,7 +31,6 @@ gmControlApi:
   image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.global.gmControlApi.version }}'
   imagePullPolicy: IfNotPresent
   containerPort: 5555
-  zone: 'zone-default-zone'
   proxyPort: 8080
   pvcMountPoint: '/app/control-api/data/backend.json'
   ssl:
@@ -82,10 +81,10 @@ gmControlApi:
       value: 'deciphernow'
     gm_control_api_zone_key:
       type: 'value'
-      value: 'zone-default-zone'
+      value: '{{ .Values.global.zone }}'
     gm_control_api_zone_name:
       type: 'value'
-      value: 'zone-default-zone'
+      value: '{{ .Values.global.zone }}'
     gm_control_api_persister_type:
       type: value
       value: 'file'

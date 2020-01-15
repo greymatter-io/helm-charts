@@ -3,6 +3,7 @@ global:
   domain: staging.deciphernow.com
   route_url_name: greymatter
   remove_namespace_from_url: false
+  zone: zone-default-zone
   mesh_tls:
     enabled: true
     use_provided_certs: true
@@ -11,6 +12,7 @@ global:
   # Turns on tls for control api and configures control to talk to it using tls
   control_api_tls: true
   kafka:
+
     replicas: 3
   dashboard:
     version: 3.2.0
@@ -92,7 +94,7 @@ global:
         value: 'true'
       xds_zone:
         type: 'value'
-        value: 'zone-default-zone'
+        value: '{{ .Values.global.zone }}'
       xds_cluster:
         type: 'value'
         value: ''
@@ -143,7 +145,7 @@ gm-control-api:
       mountPoint: /service-certs
       insecure: true
     image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.1.0
-    zone: 'zone-default-zone'
+    zone: '{{ .Values.global.zone }}'
     init:
       image: docker.production.deciphernow.com/deciphernow/greymatter:1.1.0
   sidecar:
@@ -416,7 +418,7 @@ catalog:
         value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}'
       control_server_0_zone_name:
         type: value
-        value: 'zone-default-zone'
+        value: '{{ .Values.global.zone }}'
       control_server_0_request_cluster_name:
         type: value
         value: 'edge'
