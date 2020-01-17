@@ -56,7 +56,7 @@ spec:
       {{- end }}
       - name: edge-oauth
         secret:
-          secretName: {{ .Values.edge.certificates.ingress.name}}
+          secretName: {{ .Values.edgeOAuth.certificates.ingress.name}}
       {{- if .Values.global.spire.enabled }}
       - name: spire-agent-socket
         hostPath:

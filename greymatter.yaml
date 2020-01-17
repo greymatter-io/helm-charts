@@ -770,6 +770,7 @@ edge:
         xds_cluster:
           type: value
           value: 'edge-oauth'
+    create_edge_secret: true
     ingress:
       apiVersion: voyager.appscode.com/v1beta1
       annotations:

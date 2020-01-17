@@ -10,7 +10,7 @@
     "require_tls": true,
     "ssl_config": {
         "protocols": ["SSLv3", "SSLv2", "TLSv1", "TLSv1.1", "TLSv1.2"],
-        "require_client_certs": true,
+        "require_client_certs": false,
         "trust_file": "{{ .Values.global.edge.certPath }}/ca.crt",
         "cert_key_pairs": [
             {

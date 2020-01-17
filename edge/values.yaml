@@ -135,6 +135,21 @@ edgeOAuth:
     apiVersion: extension/v1beta1
     annotations: {}
     rules: []
+  certificates:
+    ingress:
+      name: greymatter-edge-oauth-ingress
+      ca: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      cert: |-
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+      key: |-
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
   sidecar:
     version: '{{- $.Values.global.edge.version | default $.Values.global.sidecar.version }}'
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.edgeOAuth.sidecar.version $ }}'
