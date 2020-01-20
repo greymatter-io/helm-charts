@@ -84,12 +84,14 @@ spec:
           value: {{ .Values.postgres.ssl.enabled | quote }}
         - name: SSL_SERVER_CA
           value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.caName }}
+	{{- if not .Values.postgres.rds.enabled }}
         - name: SSL_SERVER_CERT
           value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.certName }}
         - name: SSL_SERVER_KEY
           value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.keyName }}
-        {{- end }}
-        {{- if and .Values.slo.ssl.enabled (not .Values.postgres.rds.enabled) }}
+	{{- end }}
+	{{- end }}
+        {{- if and .Values.slo.ssl.enabled }}
         - name: SERVICE_SSL_ENABLED
           value: {{ .Values.slo.ssl.enabled | quote }}
         - name: SERVICE_SSL_CA
