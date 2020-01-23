@@ -15,7 +15,7 @@ global:
 
     replicas: 3
   dashboard:
-    version: 3.2.0
+    version: 3.3.1
     sidecar:
       version: 1.1.1
   catalog:
@@ -494,7 +494,7 @@ catalog:
 
 dashboard:
   dashboard:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.2.0'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.3.1'
     ssl:
       enabled: true
       mountPoint: /certs
