@@ -57,6 +57,8 @@ spec:
           value: {{ .Values.dashboard.ssl.mountPoint}}/server.crt
         - name: SERVER_SSL_KEY
           value: {{ .Values.dashboard.ssl.mountPoint}}/server.key
+        - name: RREQUEST_TIMEOUT
+          value: '{{ .Values.dashboard.requestTimeout }}'
         volumeMounts:
         - name: service-certs
           mountPath: {{ .Values.dashboard.ssl.mountPoint }}
