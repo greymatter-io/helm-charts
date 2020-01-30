@@ -38,7 +38,7 @@ spec:
           name: mongo
           protocol: TCP
         volumeMounts:
-        - mountPath: /data/db
+        - mountPath: {{ .Values.mongo.storage.mount_path }}
           name: data
         - mountPath: /docker-entrypoint-initdb.d/
           name: mongo-init
