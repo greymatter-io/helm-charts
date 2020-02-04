@@ -27,7 +27,8 @@ dashboard:
   config_server: '/services/gm-control-api/latest/v1.0'
   prometheus_server: '/services/prometheus/latest/api/v1/'
   base_url: '/services/dashboard/{{ $.Values.global.dashboard.version }}/'
-  version: 3.2.0
+  requestTimeout: '15000'
+  version: 3.3.1
   imagePullPolicy: IfNotPresent
   resources:
     limits:
