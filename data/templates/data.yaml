@@ -102,6 +102,14 @@ spec:
       {{- $data := dict "Values" .Values "ServiceName" .Values.data.name }}
       {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:8181/list/1/"
+          initialDelaySeconds: 20
+          periodSeconds: 5
 
       imagePullSecrets:
       - name: {{ .Values.data.imagePullSecret | default "docker.secret" }}

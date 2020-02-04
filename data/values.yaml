@@ -285,21 +285,6 @@ sidecar:
     xds_cluster:
       type: value
       value: '{{ $.Values.data.name }}'
-    envoy_admin_log_path:
-      type: value
-      value: '/dev/stdout'
-    proxy_dynamic:
-      type: value
-      value: 'true'
-    xds_host:
-      type: value
-      value: 'control.default.svc.cluster.local'
-    xds_node_id:
-      type: value
-      value: 'default'
-    xds_port:
-      type: value
-      value: '50000'
 
   certs:
     secret_name: "sidecar-certs"

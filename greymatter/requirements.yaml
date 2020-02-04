@@ -5,11 +5,11 @@ dependencies:
 
   - name: data
     repository: file://../data
-    version: '2.1.5'
+    version: '2.1.6'
 
   - name: data
     repository: file://../data
-    version: '2.1.5'
+    version: '2.1.6'
     alias: internal-data
 
   - name: dashboard
@@ -31,7 +31,7 @@ dependencies:
 
   - name: slo
     repository: file://../slo
-    version: '2.1.1'
+    version: '2.1.2'
 
   - name: gm-control-api
     repository: file://../gm-control-api
