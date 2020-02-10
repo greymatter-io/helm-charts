@@ -1,7 +1,7 @@
 {
   "route_key": "route-edge-oauth",
   "domain_key": "edge-oauth",
-  "zone_key": "{{ .Values.gmControlApi.zone }}",
+  "zone_key": "{{.Values.global.zone}}",
   "path": "/services/edge-oauth/latest/",
   "prefix_rewrite": null,
   "redirects": null,

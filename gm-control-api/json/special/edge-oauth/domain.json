@@ -1,6 +1,6 @@
 {
     "domain_key": "edge-oauth",
-    "zone_key": "{{ .Values.gmControlApi.zone }}",
+    "zone_key": "{{.Values.global.zone}}",
     "name": "*",
     "port": 9080,
     "redirects": null,

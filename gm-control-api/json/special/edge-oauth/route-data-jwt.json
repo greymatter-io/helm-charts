@@ -1,7 +1,7 @@
 {
   "route_key": "data-jwt-route",
   "domain_key": "domain-data",
-  "zone_key": "{{ .Values.gmControlApi.zone }}",
+  "zone_key": "{{.Values.global.zone}}",
   "path": "{{ .Values.global.data.jwt_prefix }}/",
   "prefix_rewrite": "/",
   "redirects": null,
