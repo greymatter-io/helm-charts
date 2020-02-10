@@ -48,6 +48,8 @@ spec:
           value: '{{ .Values.dashboard.prometheus_server }}'
         - name: BASE_URL
           value: '{{ tpl .Values.dashboard.base_url . }}'
+        - name: REQUEST_TIMEOUT
+          value: '{{ .Values.dashboard.requestTimeout }}'
         {{- if .Values.dashboard.ssl.enabled  }}
         - name: SERVER_SSL_ENABLED
           value: {{ .Values.dashboard.ssl.enabled | quote }}

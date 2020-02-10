@@ -1,5 +1,5 @@
 {
-  "zone_key": "{{ .Values.gmControlApi.zone }}",
+  "zone_key": "{{.Values.global.zone}}",
   "proxy_key": "edge-proxy",
   "domain_keys": ["edge"],
   "listener_keys": ["edge-listener"],

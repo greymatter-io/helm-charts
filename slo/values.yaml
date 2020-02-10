@@ -8,16 +8,22 @@ global:
   xds:
     port: 18000
     cluster: greymatter
+  spire:
+    enabled: false
+  mesh_tls:
+    use_provided_certs: false
   waiter:
     image: deciphernow/k8s-waiter:latest
+    serviceAccount:
+      name: waiter-sa
   consul:
     enabled: false
     host: ''
     port: 8500
 
 slo:
-  version: 1.1.0
-  image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.0
+  version: 1.1.1
+  image: docker.production.deciphernow.com/deciphernow/gm-slo:{{ .Values.slo.version }}
   imagePullPolicy: IfNotPresent
   resources:
     limits:
@@ -27,7 +33,7 @@ slo:
       cpu: 100m
       memory: 128Mi
   ssl:
-    enabled: false
+    enabled: true
     name: slo-certs
     mountPoint: /service-certs
     certificates:
@@ -82,6 +88,9 @@ sidecar:
     #   -----END RSA PRIVATE KEY-----
 
 postgres:
+  rds:
+    enabled: false
+    endpoint:
   data_mount_point: /var/lib/pgsql/data
   openshift:
     image: 'docker.io/centos/postgresql-10-centos7'
@@ -109,9 +118,9 @@ postgres:
     database: greymatter
 
   ssl:
-    enabled: false
+    enabled: true
     name: postgres-ssl-certs
-    mountPoint: /postgresCerts
+    mountPoint: /postgrescerts
     certificates:
       # This sets a default file name for the Postgres CA.  Can be overridden to change the filename
       caName: ca.pem

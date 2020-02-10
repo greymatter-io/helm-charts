@@ -3,7 +3,7 @@ global:
   domain:
   route_url_name:
   remove_namespace_from_url: false
-  zone: 'zone-default-zone'
+  zone: zone-default-zone
   catalog:
     name: catalog
     version: 1.0.3
@@ -72,7 +72,7 @@ catalog:
       value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
     control_server_0_zone_name:
       type: value
-      value: 'zone-default-zone'
+      value: '{{ .Values.global.zone }}'
     control_server_0_request_cluster_name:
       type: value
       value: 'edge'

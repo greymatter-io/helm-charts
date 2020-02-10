@@ -1,7 +1,7 @@
 {
   "shared_rules_key": "shared-rules-{{.service.serviceName}}",
   "name": "{{.service.serviceName}}",
-  "zone_key": "{{.service.zone}}",
+  "zone_key": "{{.Values.global.zone}}",
   "default": {
     "light": [
       {
