@@ -5,7 +5,7 @@ dependencies:
 
   - name: data
     repository: file://../data
-    version: '2.1.6'
+    version: '2.1.7'
 
   - name: data
     repository: file://../data
