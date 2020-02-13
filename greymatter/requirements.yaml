@@ -9,7 +9,7 @@ dependencies:
 
   - name: data
     repository: file://../data
-    version: '2.1.6'
+    version: '2.1.7'
     alias: internal-data
 
   - name: dashboard
