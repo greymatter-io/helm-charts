@@ -201,7 +201,8 @@ mongo:
   imagePullPolicy: IfNotPresent
   #private_image: false
   storage:
-    mount_path: /data/db
+    #This mountPath should match where your mongo's image will place its data
+    mountPath: /data/db
     # The size, in Gi, that the Mongo PVC should be
     size: 40
     ## Mongo data Persistent Volume Storage Class
