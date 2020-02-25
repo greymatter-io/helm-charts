@@ -104,4 +104,4 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 40Gi
+          storage: {{ .Values.prometheus.pvcSize | default "40" }}Gi

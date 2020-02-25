@@ -91,6 +91,8 @@ sidecar:
       -----END RSA PRIVATE KEY-----
 
 prometheus:
+  #Size is in GB
+  pvcSize: 40
   image: 'prom/prometheus:v2.7.1'
   imagePullPolicy: IfNotPresent
   zk_announce_path: '/services/prometheus/2.7.1'
