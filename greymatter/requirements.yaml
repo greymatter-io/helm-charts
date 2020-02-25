@@ -14,7 +14,7 @@ dependencies:
 
   - name: dashboard
     repository: file://../dashboard
-    version: '2.1.4'
+    version: '2.1.5'
 
   - name: edge
     repository: file://../edge

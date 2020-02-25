@@ -509,6 +509,7 @@ dashboard:
   sidecar_prometheus:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
   prometheus:
+    pvcSize: 80
     serviceAccount:
       create: true
     resources:
