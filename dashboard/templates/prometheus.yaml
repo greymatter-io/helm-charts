@@ -1,4 +1,4 @@
-kind: Deployment
+kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   name: prometheus
@@ -53,7 +53,7 @@ spec:
         volumeMounts:
         - name: prometheus-configuration
           mountPath: {{ .Values.prometheus.config_mount_point }}
-        - name: prometheus-data
+        - name: prometheus-pvc
           mountPath: {{ .Values.prometheus.data_mount_point }}
       {{- if .Values.global.consul.enabled }}
       {{- $data := dict "Values" .Values "ServiceName" "prometheus" }}
@@ -97,6 +97,11 @@ spec:
       - name: prometheus-configuration
         configMap:
           name: prometheus
-      - name: prometheus-data
-        persistentVolumeClaim:
-          claimName: prometheus
+  volumeClaimTemplates:
+  - metadata:
+      name: prometheus-pvc
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 40Gi
