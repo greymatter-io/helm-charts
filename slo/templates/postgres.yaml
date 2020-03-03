@@ -53,7 +53,7 @@ spec:
         {{- end }}
       {{- end  }}
         volumeMounts:
-          - name: postgres-slo
+          - name: data
             mountPath: {{ .Values.postgres.data_mount_point }}
         {{- if .Values.postgres.ssl.enabled }}
           - name: certificates
@@ -74,9 +74,6 @@ spec:
       - name: docker.secret
       {{- end }} 
       volumes:
-      - name: postgres-slo
-        persistentVolumeClaim:
-          claimName: postgres-slo
       - name: postgres-slo-config
         configMap:
           name: postgres-slo-config
@@ -89,4 +86,12 @@ spec:
           secretName: {{ .Values.postgres.ssl.name }}
           defaultMode: 0400
       {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 8Gi
 {{- end }}
