@@ -605,6 +605,10 @@ jwt:
         name: SERVER_KEY
         secret: jwt-certs
         key: jwt.key.pem
+      - type: value
+        name: TOKEN_EXP_TIME
+        value: '300'
+
 
   redis:
     private_image: true
@@ -648,6 +652,9 @@ internal-jwt:
         name: SERVER_KEY
         secret: internal-jwt-certs
         key: jwt.key.pem
+      - type: value
+        name: TOKEN_EXP_TIME
+        value: '300'
 
     users_cg_name: internal-jwt-users
     # This is a list of authorized users for the JWT service. It's preloaded with the DNs for GM Control, GM Catalog and the Mesh Cert.
