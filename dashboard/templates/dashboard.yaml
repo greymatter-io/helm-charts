@@ -70,6 +70,14 @@ spec:
         resources:
 {{ toYaml .Values.sidecar.resources | indent 10 }}
         {{- end }}
+        livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - curl localhost:8001/clusters | grep 'xds_cluster.*healthy'
+            initialDelaySeconds: 30
+            periodSeconds: 30
         ports:
         - name: proxy
           containerPort: 8080
