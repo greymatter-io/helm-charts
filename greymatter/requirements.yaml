@@ -22,11 +22,11 @@ dependencies:
 
   - name: jwt
     repository: file://../jwt
-    version: '2.1.1'
+    version: '2.1.2'
 
   - name: jwt
     repository: file://../jwt
-    version: '2.1.1'
+    version: '2.1.2'
     alias: internal-jwt
 
   - name: slo

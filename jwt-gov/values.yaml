@@ -66,6 +66,9 @@ jwt:
     - type: value
       name: ZEROLOG_LEVEL
       value: info
+    - type: value
+      name: TOKEN_EXP_TIME
+      value: '300'
 
   secrets:
     - name: jwt-certs
