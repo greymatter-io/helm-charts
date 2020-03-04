@@ -110,6 +110,14 @@ spec:
               - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:8181/list/1/"
           initialDelaySeconds: 20
           periodSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - curl localhost:8001/clusters | grep 'xds_cluster.*healthy'
+          initialDelaySeconds: 10
+          periodSeconds: 10
 
       imagePullSecrets:
       - name: {{ .Values.data.imagePullSecret | default "docker.secret" }}
