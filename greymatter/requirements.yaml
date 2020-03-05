@@ -31,7 +31,7 @@ dependencies:
 
   - name: slo
     repository: file://../slo
-    version: '2.1.2'
+    version: '2.1.3'
 
   - name: gm-control-api
     repository: file://../gm-control-api
