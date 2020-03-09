@@ -39,7 +39,7 @@ global:
   edge:
     # This enables mTLS on the edge proxy (ingress mTLS)
     enableTLS: true
-    version: 1.0.0
+    version: latest
     sidecar:
       version:
   jwt:
@@ -51,7 +51,7 @@ global:
     sidecar:
       version:
   control:
-    version: 1.1.0
+    version: latest
     # This specifies the service name that all XDS clients will try to connect to
     name: control
     port: 50000
@@ -60,7 +60,7 @@ global:
     cli:
       version: latest
   sidecar:
-    version: 1.1.1
+    version: latest
   spire:
     enabled: false
     trustDomain: deciphernow.com
@@ -216,7 +216,7 @@ global:
       capability: 'Mesh'
       documentatio: ''
       owner: 'Decipher'
-      version: '1.0.0'
+      version: 'latest'
 
     slo:
       catalogEnabled: true
