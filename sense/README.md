@@ -3,7 +3,7 @@
 ## TL;DR
 
 ```sh
-helm install greymatter
+helm install sense
 ```
 
 ## Introduction
@@ -15,7 +15,7 @@ This chart bootstraps a Grey Matter deployment on a [Kubernetes](http://kubernet
 To install the chart with the release name `<my-release>`:
 
 ```sh
-helm install greymatter --name <my-release>
+helm install sense --name <my-release>
 ```
 
 The command deploys Grey Matter on the cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -40,12 +40,12 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 - Files not mentioned under this variable will remain unaffected.
 
 ```sh
-helm install greymatter --name <my-release> \
+helm install sense --name <my-release> \
   --set=jwt.version=v0.2.0, sidecar.ingress_use_tls='false'
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example:
 
 ```sh
-helm install greymatter --name <my-release> -f custom.yaml
+helm install sense --name <my-release> -f custom.yaml
 ```
