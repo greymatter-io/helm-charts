@@ -16,11 +16,11 @@ global:
   dashboard:
     version: 3.3.1
     sidecar:
-      version: 1.1.1
+      version: latest
   catalog:
     version: 1.0.3
     sidecar:
-      version: 1.1.1
+      version: latest
   sense:
     enabled: false
   consul:
@@ -42,7 +42,7 @@ global:
     # This specifies the service name that all XDS clients will try to connect to
     name: control
     port: 50000
-    version: 1.1.0
+    version: latest
   data:
     jwt_prefix: '/jwt'
   internal-data:
@@ -81,7 +81,7 @@ global:
       egressTLS: true
 
   sidecar:
-    version: 1.1.1
+    version: latest
     envvars:
       # You can customize the sidecar environment variables mesh-wide to enable features in the mesh
       # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services `configuration.md` files.
@@ -122,7 +122,7 @@ control:
       insecure: true
     serviceAccount:
       create: true
-    image: docker.production.deciphernow.com/deciphernow/gm-control:1.1.0
+    image: docker-dev.production.deciphernow.com/deciphernow/gm-control:latest
     envvars:
       gm_control_console_level:
         type: 'value'
@@ -148,11 +148,11 @@ gm-control-api:
     init:
       image: docker-dev.production.deciphernow.com/deciphernow/greymatter:latest
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
 
 data:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -303,7 +303,7 @@ data:
 
 internal-data:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -477,14 +477,14 @@ catalog:
         value: 'engineering@deciphernow.com'
 
     init:
-      image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+      image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
       envvars:
         debug:
           type: value
           value: 'true'
 
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -499,14 +499,14 @@ dashboard:
       mountPoint: /certs
       name: dashboard-certs
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
         type: value
         value: 'dashboard'
   sidecar_prometheus:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
   prometheus:
     pvcSize: 80
     serviceAccount:
@@ -527,7 +527,7 @@ slo:
       name: slo-certs
       mountPoint: /service-certs
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -566,7 +566,7 @@ slo:
 
 jwt:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -614,7 +614,7 @@ jwt:
 
 internal-jwt:
   sidecar:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     create_sidecar_secret: false
     envvars:
       xds_cluster:
@@ -709,13 +709,13 @@ internal-jwt:
     password: 'internalRedis'
 
 sidecar:
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
   create_sidecar_secret: true
 
 edge:
   sidecar:
     version: 1.1.1
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     envvars:
       xds_cluster:
         type: value

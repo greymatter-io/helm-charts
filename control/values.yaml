@@ -8,7 +8,7 @@ global:
   exhibitor:
     replicas: 1
   control:
-    version: 1.0.2
+    version: latest #release latest
     additionalNamespacesToControl: data-only
   waiter:
     image: deciphernow/k8s-waiter:latest
@@ -20,7 +20,7 @@ control:
   # The namespace used for the deployment will be include by default For example, "projecta,projectb"
   displayName: 'Control'
   replicas: 1
-  image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.global.control.version }}'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.global.control.version }}'
   imagePullPolicy: IfNotPresent
   controlApiTLS:
     name: control-to-control-api-certs
