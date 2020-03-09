@@ -10,7 +10,7 @@ global:
     # This is the DN of the cert being used in the mesh. The Helm charts will add whitelist the DN throughout the mesh
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local
   # Turns on tls for control api and configures control to talk to it using tls
-  control_api_tls: true
+  control_api_tls: false
   kafka:
     replicas: 3
   dashboard:
@@ -50,36 +50,178 @@ global:
     jwt_prefix: '/jwt'
   services:
     catalog:
-      egressTLS: true
-      mTLS: true
-      version: 1.0.3
+      catalogEnabled: true
+      controlEnabled: true
+      serviceName: 'catalog'
+      observablesEnabled: false
+      port: 9080
+      enableInstanceMetrics: 'true'
+      capability: 'Mesh'
+      documentation: '/services/catalog/latest/'
+      name: 'Grey Matter Catalog'
+      owner: 'Decipher'
+      version: 1.0.1
+      minInstances: 1
+      maxInstances: 1
+      # egressTLS: 'false'
+      routes:
+        - '/services/catalog/{{ $.Values.global.catalog.version }}'
+        - '/services/catalog/{{ $.Values.global.catalog.version }}/'
+
+    # control:
+    #   name: 'Grey Matter Control'
+    #   serviceName: 'control'
+    #   routes:
+    # - '/services/xds/{{ $.Values.global.xds.version }}'
+    # - '/services/xds/{{ $.Values.global.xds.version }}'
+
     dashboard:
-      egressTLS: true
-      mTLS: true
+      catalogEnabled: true
+      controlEnabled: true
+      name: 'Grey Matter Dashboard'
+      serviceName: 'dashboard'
+      observablesEnabled: false
+      port: 1337
+      enableInstanceMetrics: 'true'
+      capability: 'Apps'
+      documentation: ''
+      owner: 'Decipher'
+      version: 3.3.1
+      # egressTLS: 'false'
+      routes:
+        - '/services/dashboard/latest'
+        - '/services/dashboard/latest/'
+
     prometheus:
-      egressTLS: false
-      mTLS: true
+      catalogEnabled: false
+      controlEnabled: true
+      name: 'Prometheus'
+      serviceName: 'prometheus'
+      observablesEnabled: false
+      port: 9090
+      # egressTLS: 'false'
+
     data:
-      egressTLS: true
-      mTLS: true
+      catalogEnabled: true
+      controlEnabled: true
+      name: 'Grey Matter Data'
+      serviceName: 'data'
+      observablesEnabled: false
+      port: 8181
+      enableInstanceMetrics: 'true'
+      capability: 'Data'
+      documentation: '/services/data/latest/static/ui/index.html'
+      owner: 'Decipher'
+      version: 1.0.0
+      # egressTLS: 'true'
+      routes:
+        - '/services/data/{{ $.Values.global.data.version }}'
+        - '/services/data/{{ $.Values.global.data.version }}/'
+
+
     internal-data:
-      egressTLS: true
-      mTLS: true
+      catalogEnabled: false
+      controlEnabled: true
+      name: 'Grey Matter Internal Data'
+      serviceName: 'data-internal'
+      observablesEnabled: false
+      port: 8181
+      enableInstanceMetrics: "true" 
+      capability: 'Data'
+      documentation: '/services/data/latest/static/ui/index.html'
+      name: 'Grey Matter Internal Data'
+      owner: 'Decipher'
+      version: 1.0.0   
+      # egressTLS: 'true'
+
     jwt:
-      egressTLS: true
-      mTLS: true
+      catalogEnabled: true
+      controlEnabled: true
+      name: 'Grey Matter JWT Security'
+      serviceName: 'jwt-security'
+      observablesEnabled: false
+      port: 3000
+      # egressTLS: 'true'
+      enableInstanceMetrics: 'true'
+      capability: 'Security'
+      documentation: ''
+      owner: 'Decipher'
+      version: '0.2.0'
+      routes:
+        - '/services/jwt-security/{{ $.Values.global.jwt.version }}'
+        - '/services/jwt-security/{{ $.Values.global.jwt.version }}/'
+
     internal-jwt:
-      egressTLS: true
-      mTLS: true
-    slo:
-      egressTLS: true
-      mTLS: true
-    control:
-      egressTLS: false
-      mTLS: true
+      catalogEnabled: false
+      controlEnabled: true
+      name: 'Grey Matter JWT Security Internal'
+      serviceName: 'internal-jwt-security'
+      observablesEnabled: false
+      port: 3000
+      # egressTLS: 'true'
+      enableInstanceMetrics: 'true'
+      capability: 'Grey Matter'
+      documentation: ''
+      owner: 'Decipher'
+      version: '0.2.0'
+
     controlApi:
-      # This value must match global.control_api_tls
-      egressTLS: true
+      catalogEnabled: true
+      controlEnabled: true
+      name: 'Grey Matter Control API'
+      serviceName: 'gm-control-api'
+      observablesEnabled: false
+      port: 5555
+      enableInstanceMetrics: 'true'
+      capability: 'Mesh'
+      documentation:
+      owner: 'Decipher'
+      version: '1.1.0'
+      routes:
+        - '/services/control-api/{{ $.Values.global.gmControlApi.version }}'
+        - '/services/control-api/{{ $.Values.global.gmControlApi.version }}/'
+
+    edge:
+      catalogEnabled: true
+      controlEnabled: false
+      name: 'Grey Matter Edge'
+      serviceName: 'edge'
+      observablesEnabled: false
+      port: 8080
+      # We use a static cert on the edge listener
+      removeListenerSecret: true
+      enableInstanceMetrics: 'true'
+      capability: 'Mesh'
+      documentatio: ''
+      owner: 'Decipher'
+      version: '1.0.0'
+
+    slo:
+      catalogEnabled: true
+      controlEnabled: true
+      name: 'Grey Matter Service Level Objectives'
+      serviceName: 'slo'
+      observablesEnabled: false
+      port: 1337
+      # egressTLS: 'false'
+      enableInstanceMetrics: 'true'
+      capability: 'Sense'
+      documentation:
+      owner: 'Decipher'
+      version: '1.1.1'
+      routes:
+        - '/services/slo/{{ $.Values.global.slo.version }}'
+        - '/services/slo/{{ $.Values.global.slo.version }}/'
+
+    # documentation:
+    #   name: 'Grey Matter Documentation'
+    #   serviceName: 'documentation'
+    #   port: 8090
+    #   routes:
+    #     - '/services/documentation/{{ $.Values.global.documentation.version }}'
+    #     - '/services/documentation/{{ $.Values.global.documentation.version }}/'
+
+  # All of the mesh-wide environment variables should be set in your `custom.yaml` file
 
   sidecar:
     version: latest
