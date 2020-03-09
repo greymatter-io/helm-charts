@@ -12,7 +12,6 @@ global:
   # Turns on tls for control api and configures control to talk to it using tls
   control_api_tls: true
   kafka:
-
     replicas: 3
   dashboard:
     version: 3.3.1
@@ -144,10 +143,10 @@ gm-control-api:
       name: control-api-certs
       mountPoint: /service-certs
       insecure: true
-    image: docker.production.deciphernow.com/deciphernow/gm-control-api:1.1.0
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:latest'
     zone: '{{ .Values.global.zone }}'
     init:
-      image: docker.production.deciphernow.com/deciphernow/greymatter:1.1.0
+      image: docker-dev.production.deciphernow.com/deciphernow/greymatter:latest
   sidecar:
     image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:1.1.1'
 

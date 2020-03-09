@@ -12,9 +12,9 @@ global:
     port: 18000
     cluster: greymatter
   gmControlApi:
-    version: 1.1.0
+    version: latest
     cli:
-      version: 1.1.0
+      version: latest
   data:
     jwt_prefix:
   waiter:
@@ -28,7 +28,7 @@ gmControlApi:
   name: gm-control-api
   displayName: gm-control-api
   replicas: 1
-  image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.global.gmControlApi.version }}'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.global.gmControlApi.version }}'
   imagePullPolicy: IfNotPresent
   containerPort: 5555
   proxyPort: 8080
@@ -51,7 +51,7 @@ gmControlApi:
         ...
         -----END RSA PRIVATE KEY-----
   init:
-    image: 'docker.production.deciphernow.com/deciphernow/greymatter:{{ $.Values.global.gmControlApi.cli.version }}'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:{{ $.Values.global.gmControlApi.cli.version }}'
     imagePullPolicy: IfNotPresent
     envvars:
       greymatter_console_level:

@@ -56,9 +56,9 @@ global:
     name: control
     port: 50000
   gmControlApi:
-    version: 1.1.0
+    version: latest
     cli:
-      version: 1.1.0
+      version: latest
   sidecar:
     version: 1.1.1
   spire:
@@ -198,7 +198,7 @@ global:
       capability: 'Mesh'
       documentation:
       owner: 'Decipher'
-      version: '1.1.0'
+      version: 'latest'
       routes:
         - '/services/control-api/{{ $.Values.global.gmControlApi.version }}'
         - '/services/control-api/{{ $.Values.global.gmControlApi.version }}/'
