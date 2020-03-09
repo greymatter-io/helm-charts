@@ -38,6 +38,7 @@ global:
   waiter:
     serviceAccount:
       create: true
+      name: waiter-sa
   control:
     # This specifies the service name that all XDS clients will try to connect to
     name: control
@@ -711,6 +712,20 @@ internal-jwt:
 sidecar:
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
   create_sidecar_secret: true
+  certificates:
+    name: sidecar
+    ca: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    cert: |-
+      -----BEGIN CERTIFICATE-----
+      ...
+      -----END CERTIFICATE-----
+    key: |-
+      -----BEGIN RSA PRIVATE KEY-----
+      ...
+      -----END RSA PRIVATE KEY-----
 
 edge:
   sidecar:
