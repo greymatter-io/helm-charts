@@ -18,7 +18,7 @@ global:
     sidecar:
       version: latest
   catalog:
-    version: 1.0.3
+    version: latest
     sidecar:
       version: latest
   sense:

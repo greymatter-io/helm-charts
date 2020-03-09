@@ -6,7 +6,7 @@ global:
   zone: zone-default-zone
   catalog:
     name: catalog
-    version: 1.0.3
+    version: latest
     data_prefix: /data
   dashboard:
     version: 3.1.0
@@ -44,8 +44,8 @@ global:
 
 catalog:
   name: catalog
-  version: 1.0.3
-  image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.global.catalog.version }}
+  version: latest
+  image: docker-dev.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.global.catalog.version }}
   debug: 'true'
   imagePullPolicy: IfNotPresent
   resources:
@@ -132,7 +132,7 @@ catalog:
       value: 'gm-control@deciphernow.com'
 
   init:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
     imagePullPolicy: IfNotPresent
     envvars:
       debug:
@@ -147,7 +147,7 @@ catalog:
 
 sidecar:
   version: '{{- $.Values.global.catalog.sidecar.version | default $.Values.global.sidecar.version }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
     limits:
