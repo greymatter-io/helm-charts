@@ -8,7 +8,7 @@ global:
   exhibitor:
     replicas: 1
   control:
-    version: latest #release latest
+    version: latest
     additionalNamespacesToControl: data-only
   waiter:
     image: deciphernow/k8s-waiter:latest
