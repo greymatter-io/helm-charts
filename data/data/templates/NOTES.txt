@@ -1,7 +1,4 @@
-Grey Matter {{ .Chart.Version }} has been installed.
-
-{{ .Release.Name }} deployed to namespace {{ quote .Release.Namespace }} at {{now | date "03:04:05 on 01/02/03"}}
-
+Grey Matter Data {{ .Chart.AppVersion }} has been installed.
 
 NOTE: It may take a few minutes for the installation to become stable.
     {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
@@ -9,5 +6,3 @@ NOTE: It may take a few minutes for the installation to become stable.
     {{- else }}
     You can watch the status of the pods by running 'kubectl get pods -w -n {{ .Release.Namespace }}'
     {{- end }}
-
-        
