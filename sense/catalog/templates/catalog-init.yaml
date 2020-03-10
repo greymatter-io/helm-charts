@@ -68,4 +68,4 @@ spec:
             secretName: sidecar-certs
         {{- end }}
       imagePullSecrets:
-        - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}

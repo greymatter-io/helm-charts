@@ -1,6 +1,9 @@
 # Edge Values File
 
 global:
+
+  imagePullSecret: docker.secret
+  
   environment: kubernetes
   domain: development.deciphernow.com
   # Edge access is typically determine by <route_url_name>.<namespace>.<domain>

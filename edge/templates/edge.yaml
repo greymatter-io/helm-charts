@@ -45,7 +45,7 @@ spec:
       {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}      
       imagePullSecrets:
-      - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}
       volumes:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

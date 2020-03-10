@@ -56,9 +56,9 @@ spec:
         volumeMounts:
           - name: data
             mountPath: {{ .Values.postgres.data_mount_point }}
-        {{- if .Values.postgres.ssl.enabled }}
+        {{- if .Values.postgres.secret }}
           - name: certificates
-            mountPath: {{ .Values.postgres.ssl.mountPoint }}
+            mountPath: {{ .Values.postgres.secret.mountPoint }}
           - name: postgres-slo-config
             mountPath: {{ .Values.postgres.confMountPoint }}
           - name: postgres-slo-overrides
@@ -72,7 +72,7 @@ spec:
           periodSeconds: 2
       {{- if .Values.postgres.private_image }}
       imagePullSecrets:
-      - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}
       {{- end }} 
       volumes:
       - name: postgres-slo-config
@@ -81,10 +81,10 @@ spec:
       - name: postgres-slo-overrides
         configMap:
           name: postgres-slo-overrides
-      {{- if .Values.postgres.ssl.enabled }}
+      {{- if .Values.postgres.secret }}
       - name: certificates
         secret:
-          secretName: {{ .Values.postgres.ssl.name }}
+          secretName: {{ .Values.postgres.secret.secret_name }}
           defaultMode: 0400
       {{- end }}
   volumeClaimTemplates:

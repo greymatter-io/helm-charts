@@ -82,7 +82,7 @@ spec:
         env:   
         {{- include "greymatter.envvars-prometheus" . | indent 8 }}
       imagePullSecrets:
-      - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}
       volumes:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

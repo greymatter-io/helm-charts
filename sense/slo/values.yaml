@@ -1,5 +1,8 @@
 global:
-  environment: kubernetes
+
+  imagePullSecret: docker.secret
+
+  environment: openshift
   domain:
   route_url_name:
   remove_namespace_from_url: ''
@@ -23,6 +26,9 @@ global:
     enabled: false
     host: ''
     port: 8500
+  slo: 
+    sidecar:
+      version: latest
 
 slo:
   version: 1.1.1
@@ -35,29 +41,26 @@ slo:
     requests:
       cpu: 100m
       memory: 128Mi
-  ssl:
-    enabled: true
-    name: slo-certs
+  secret:
+    secret_name: slo-certs
     mountPoint: /service-certs
-    certificates:
-      ca: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      cert: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      key: |-
-        -----BEGIN RSA PRIVATE KEY-----
-        ...
-        -----END RSA PRIVATE KEY-----
+    secretKeys:
+      ca: ca.crt
+      cert: service.crt
+      key: service.key
 
 sidecar:
   version: '{{- $.Values.global.slo.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   metrics_key_function: depth
   imagePullPolicy: IfNotPresent
+  secret:
+    secret_name: sidecar-secret
+    mountPoint: /etc/proxy/tls/sidecar
+    secretKeys:
+      ca: ca.crt
+      cert: service.crt
+      key: service.key
   resources:
     limits:
       cpu: 200m
@@ -70,27 +73,10 @@ sidecar:
       type: value
       value: 'slo'
 
-  # Set this to true if you are attempting to deploy SLO by itself.
-  # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
-  # sidecar secret, but if individual testing is being done, the sidecar secret will
-  # need to be created.
-  create_sidecar_secret: false
-  certificates:
-    # name: sidecar
-    # ca: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # cert: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # key: |-
-    #   -----BEGIN RSA PRIVATE KEY-----
-    #   ...
-    #   -----END RSA PRIVATE KEY-----
-
 postgres:
+  credentials:
+    username: greymatter
+    database: greymatter
   rds:
     enabled: false
     endpoint:
@@ -113,37 +99,13 @@ postgres:
   # This override is unique to OpenShift's postgresql container
   # https://github.com/sclorg/postgresql-container/tree/master/examples/custom-config
   overridesMountPoint: /opt/app-root/src/postgresql-cfg
-
-  credentials:
-    secret_name: postgres-credentials
-    username: greymatter
-    password: greymatter
-    database: greymatter
-
-  ssl:
-    enabled: true
-    name: postgres-ssl-certs
+  secret:
+    secret_name: postgres-ssl-certs
     mountPoint: /postgrescerts
-    certificates:
-      # This sets a default file name for the Postgres CA.  Can be overridden to change the filename
-      caName: ca.pem
-      ca: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      # This sets a default file name for the Postgres SSL Cert.  Can be overridden to change the filename
-      certName: server.crt
-      cert: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      # This sets a default file name for the Postgres SSL Key.  Can be overridden to change the filename
-      keyName: server.key
-      key: |-
-        -----BEGIN RSA PRIVATE KEY-----
-        ...
-        -----END RSA PRIVATE KEY-----
-
+    secretKeys:
+      ca: ca.pem
+      cert: server.crt
+      key: server.key
   envvars:
     # Any environments listed here will be populated in the postgres yaml. Use the
     # correct variables for the version of Postgres you are deploying

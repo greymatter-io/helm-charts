@@ -130,7 +130,7 @@ spec:
         {{- include "consul.agent" $data | nindent 8 }}
         {{- end }}
       imagePullSecrets:
-        - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}
       volumes:
       {{- if .Values.global.control_api_tls }}
       - name: service-certs

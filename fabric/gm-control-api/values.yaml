@@ -1,5 +1,8 @@
 # Default values for gm-control-api.
 global:
+
+  imagePullSecret: docker.secret
+  
   environment: kubernetes
   domain:
   route_url_name:

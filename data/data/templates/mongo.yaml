@@ -58,7 +58,7 @@ spec:
         {{- end }}
       {{- if .Values.mongo.private_image }}
       imagePullSecrets:
-      - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}
       {{- end }}
   volumeClaimTemplates:
   - metadata:

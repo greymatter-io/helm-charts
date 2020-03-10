@@ -107,4 +107,4 @@ spec:
           defaultMode: 0600
       {{- end }}
       imagePullSecrets:
-        - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}

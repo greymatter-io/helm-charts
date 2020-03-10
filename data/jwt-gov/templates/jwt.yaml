@@ -87,7 +87,7 @@ spec:
         {{- include "sidecar_volume_certs_mount" . | indent 10 }}
         {{- end }}
       imagePullSecrets:
-        - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}
       {{- if .Values.global.spire.enabled }}
       volumes:
       {{- include "sidecar_volumes" . | indent 8 }}
