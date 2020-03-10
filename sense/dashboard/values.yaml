@@ -1,4 +1,7 @@
 global:
+  
+  imagePullSecret: docker.secret
+
   environment: kubernetes
   domain:
   route_url_name:

@@ -1,4 +1,7 @@
 global:
+
+  imagePullSecret: docker.secret
+  
   environment: openshift
   domain: staging.deciphernow.com
   route_url_name: greymatter

@@ -1,5 +1,8 @@
 global:
-  environment: kubernetes
+
+  imagePullSecret: docker.secret
+
+  environment: openshift
   domain:
   route_url_name:
   remove_namespace_from_url: ''
