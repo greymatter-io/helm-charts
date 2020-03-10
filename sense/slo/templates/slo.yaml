@@ -43,30 +43,15 @@ spec:
 {{ toYaml .Values.slo.resources | indent 10 }}
         {{- end }}
         volumeMounts:
-          {{- if .Values.postgres.ssl.enabled }}
+          {{- if .Values.postgres.secret }}
         - name: postgres-certs
-          mountPath: {{ .Values.postgres.ssl.mountPoint }}
+          mountPath: {{ .Values.postgres.secret.mountPoint }}
           {{- end}}
-          {{- if .Values.slo.ssl.enabled }}
+          {{- if .Values.slo.secret }}
         - name: service-certs
-          mountPath: {{ .Values.slo.ssl.mountPoint }}
+          mountPath: {{ .Values.slo.secret.mountPoint }}
           {{- end }}
         env:
-        - name: POSTGRESQL_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgres.credentials.secret_name }}
-              key: username
-        - name: POSTGRESQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgres.credentials.secret_name }}
-              key: password
-        - name: POSTGRESQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgres.credentials.secret_name }}
-              key: database
         {{- if .Values.postgres.rds.enabled }}
         - name: POSTGRESQL_ENDPOINT
           value: {{ .Values.postgres.rds.endpoint }}
@@ -79,27 +64,27 @@ spec:
           {{- end }}
         - name: SERVICE_PORT
           value: "1337"
-        {{- if .Values.postgres.ssl.enabled }}
+        {{- if .Values.postgres.secret }}
         - name: SSL_ENABLED
-          value: {{ .Values.postgres.ssl.enabled | quote }}
+          value: "true"
         - name: SSL_SERVER_CA
-          value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.caName }}
+          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secretKeys.ca }}
         {{- if not .Values.postgres.rds.enabled }}
         - name: SSL_SERVER_CERT
-          value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.certName }}
+          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secretKeys.cert }}
         - name: SSL_SERVER_KEY
-          value: {{ .Values.postgres.ssl.mountPoint}}/{{ .Values.postgres.ssl.certificates.keyName }}
+          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secretKeys.key }}
         {{- end }}
         {{- end }}
-        {{- if and .Values.slo.ssl.enabled }}
+        {{- if and .Values.slo.secret }}
         - name: SERVICE_SSL_ENABLED
-          value: {{ .Values.slo.ssl.enabled | quote }}
+          value: "true"
         - name: SERVICE_SSL_CA
-          value: {{ .Values.slo.ssl.mountPoint}}/ca.crt
+          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secretKeys.ca }}
         - name: SERVICE_SSL_CERT
-          value: {{ .Values.slo.ssl.mountPoint}}/server.crt
+          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secretKeys.cert }}
         - name: SERVICE_SSL_KEY
-          value: {{ .Values.slo.ssl.mountPoint}}/server.key
+          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secretKeys.key }}
         {{- end }}
         {{- if .Values.postgres.rds.enabled }}
         - name: DROP_SCHEMA
@@ -141,16 +126,16 @@ spec:
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
-      {{- if .Values.postgres.ssl.enabled }}
+      {{- if .Values.postgres.secret}}
       - name: postgres-certs
         secret:
-          secretName: {{ .Values.postgres.ssl.name }}
+          secretName: {{ .Values.postgres.secret.secret_name }}
           defaultMode: 0600
       {{- end }}
-      {{- if .Values.slo.ssl.enabled }}
+      {{- if .Values.slo.secret}}
       - name: service-certs
         secret:
-          secretName: {{ .Values.slo.ssl.name }}
+          secretName: {{ .Values.slo.secret.secret_name }}
           defaultMode: 0600
       {{- end }}
       {{- if .Values.global.consul.enabled }}

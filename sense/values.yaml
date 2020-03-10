@@ -1,5 +1,4 @@
 global:
-
   imagePullSecret: docker.secret
 
   environment: openshift
@@ -51,6 +50,8 @@ global:
     jwt_prefix: '/jwt'
   internal-data:
     jwt_prefix: '/jwt'
+  sidecar:
+    version: latest
   services:
     catalog:
       egressTLS: true
@@ -116,7 +117,6 @@ global:
       # There may be more sidecar environment variables, but we haven't added them here yet.
       # However, to use an env var with the sidecar, even if it doesn't have a global default,
       # it needs to be set globally as either a value or a secret
-
 
 catalog:
   catalog:
@@ -255,31 +255,26 @@ dashboard:
 slo:
   slo:
     image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.1
-    ssl:
-      enabled: true
-      name: slo-certs
+    secret:
+      secret_name: slo-certs
       mountPoint: /service-certs
-  sidecar:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-    create_sidecar_secret: false
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'slo'
-
+      secretKeys:
+        ca: ca.crt
+        cert: service.crt
+        key: service.key
   postgres:
+    rds:
+      enabled: false
+      endpoint:
+    secret:
+      secret_name: postgres-ssl-certs
+      mountPoint: /postgrescerts
+      secretKeys:
+        ca: ca.pem
+        cert: server.crt
+        key: server.key
     private_image: true
     data_mount_point: /var/lib/pgsql/data
-    ssl:
-      enabled: true
-      name: postgres-ssl-certs
-      mountPoint: /certs
-    credentials:
-      secret_name: postgres-credentials
-      username: greymatter
-      password: greymatter
-      database: greymatter
-
     envvars:
       - type: secret
         name: postgresql_user
@@ -296,21 +291,3 @@ slo:
         name: POSTGRESQL_DATABASE
         secret: postgres-credentials
         key: database
-
-sidecar:
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-  create_sidecar_secret: true
-  certificates:
-    name: sidecar
-    ca: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    cert: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    key: |-
-      -----BEGIN RSA PRIVATE KEY-----
-      ...
-      -----END RSA PRIVATE KEY-----
