@@ -17,6 +17,8 @@ global:
     version: latest
     cli:
       version: latest
+    sidecar:
+      version: latest
   data:
     jwt_prefix:
   waiter:
@@ -114,7 +116,7 @@ gmControlApi:
     size:
 
 sidecar:
-  version: 'latest'
+  version: '{{- $.Values.global.gmControlApi.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:

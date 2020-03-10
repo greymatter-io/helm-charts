@@ -23,7 +23,7 @@ global:
     # This value is used to data where to find jwt and also used to configure the mesh to enable routes from data to jwt
     jwt_prefix: /jwt
     sidecar:
-      version: 1.0.0
+      version: latest
 
   waiter:
     image: deciphernow/k8s-waiter:latest
@@ -273,8 +273,8 @@ mongo:
           -----END RSA PRIVATE KEY-----
 
 sidecar:
-  version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.data.sidecar.version }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.sidecar.version }}'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
     limits:

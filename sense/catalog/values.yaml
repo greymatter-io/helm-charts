@@ -8,6 +8,8 @@ global:
     name: catalog
     version: latest
     data_prefix: /data
+    sidecar:
+      version: latest
   dashboard:
     version: 3.1.0
   # data:
@@ -41,8 +43,6 @@ global:
     enabled: false
     host: ''
     port: 8500
-  sidecar:
-    version: latest
   spire:
     enabled: false
   mesh_tls:
@@ -152,7 +152,7 @@ catalog:
         value: '{{ $.Values.global.services.catalog.egressTLS | default false }}'
 
 sidecar:
-  version: '{{- $.Values.global.sidecar.version | default $.Values.global.sidecar.version }}'
+  version: '{{- $.Values.global.catalog.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
