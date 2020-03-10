@@ -49,7 +49,7 @@ edge:
 
   ingress:
     # For ingress, you can specify which API verison  to use
-    apiVersion: extension/v1beta1
+    apiVersion: voyager.appscode.com/v1beta1
   
     # Specific annotations for your deployment
     # Choosing the ingress.appscode.com/type is important and depends on your environment type.
