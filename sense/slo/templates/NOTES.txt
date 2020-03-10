@@ -1,4 +1,4 @@
-Grey Matter Catalog {{ .Chart.AppVersion }} has been installed.
+Grey Matter SLO {{ .Chart.AppVersion }} has been installed.
 
 NOTE: It may take a few minutes for the installation to become stable.
     {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
