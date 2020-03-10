@@ -268,7 +268,7 @@ slo:
       endpoint:
     secret:
       secret_name: postgres-ssl-certs
-      mountPoint: /postgrescerts
+      mountPoint: /certs
       secretKeys:
         ca: ca.pem
         cert: server.crt
