@@ -78,4 +78,4 @@ spec:
           configMap:
             name: special-mesh-config
       imagePullSecrets:
-        - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}

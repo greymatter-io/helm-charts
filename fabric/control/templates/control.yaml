@@ -59,7 +59,7 @@ spec:
             - name: POST_DELAY
               value: '10'
       imagePullSecrets:
-        - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}
       {{- if .Values.global.control_api_tls  }}
       volumes:
         - name: control-api-certs

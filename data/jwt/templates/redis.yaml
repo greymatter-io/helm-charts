@@ -54,7 +54,7 @@ spec:
         {{- end }}
       {{- if .Values.redis.private_image }}
       imagePullSecrets:
-      - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always

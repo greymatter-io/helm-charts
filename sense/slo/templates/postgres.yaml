@@ -71,7 +71,7 @@ spec:
           periodSeconds: 2
       {{- if .Values.postgres.private_image }}
       imagePullSecrets:
-      - name: docker.secret
+      - name: {{ .Values.global.imagePullSecret }}
       {{- end }} 
       volumes:
       - name: postgres-slo-config
