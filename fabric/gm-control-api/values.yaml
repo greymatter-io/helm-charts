@@ -5,6 +5,8 @@ global:
   route_url_name:
   control_api_tls: true
   remove_namespace_from_url: ''
+  mesh_tls:
+    use_provided_certs: true
   exhibitor:
     replicas: 1
   # XDS will be replaced with gm-control
@@ -19,10 +21,15 @@ global:
     jwt_prefix:
   waiter:
     image: deciphernow/k8s-waiter:latest
+    serviceAccount:
+      create: true
+      name: waiter-sa
   consul:
     enabled: false
     host: ''
     port: 8500
+  spire:
+    enabled: false
 
 gmControlApi:
   name: gm-control-api
@@ -107,8 +114,8 @@ gmControlApi:
     size:
 
 sidecar:
-  version: '{{- $.Values.global.catalog.sidecar.version | default "1.0.0" }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  version: 'latest'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
     limits:

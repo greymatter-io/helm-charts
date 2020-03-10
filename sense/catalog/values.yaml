@@ -41,6 +41,12 @@ global:
     enabled: false
     host: ''
     port: 8500
+  sidecar:
+    version: latest
+  spire:
+    enabled: false
+  mesh_tls:
+    use_provided_certs: true
 
 catalog:
   name: catalog
@@ -146,7 +152,7 @@ catalog:
         value: '{{ $.Values.global.services.catalog.egressTLS | default false }}'
 
 sidecar:
-  version: '{{- $.Values.global.catalog.sidecar.version | default $.Values.global.sidecar.version }}'
+  version: '{{- $.Values.global.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:

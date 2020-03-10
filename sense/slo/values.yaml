@@ -20,6 +20,8 @@ global:
     enabled: false
     host: ''
     port: 8500
+  sidecar:
+    version: latest
 
 slo:
   version: 1.1.1
@@ -51,7 +53,7 @@ slo:
         -----END RSA PRIVATE KEY-----
 
 sidecar:
-  version: '{{- $.Values.global.slo.sidecar.version | default $.Values.global.sidecar.version }}'
+  version: '{{- $.Values.global.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   metrics_key_function: depth
   imagePullPolicy: IfNotPresent
