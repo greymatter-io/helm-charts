@@ -1,7 +1,8 @@
 global:
 
   imagePullSecret: docker.secret
-  
+  mesh_tls:
+    use_provided_certs: true
   environment: kubernetes
   domain:
   route_url_name:
@@ -15,8 +16,6 @@ global:
       version: latest
   dashboard:
     version: 3.1.0
-  # data:
-  #   version: 1.0.0
   documentation:
     version: 3.0.0
   edge:
@@ -28,13 +27,15 @@ global:
     version: 1.0.0
   slo:
     version: 1.0.0
+  spire: 
+    enabled: false
   xds:
     cluster: greymatter
     port: 18000
     version: 0.2.6
   waiter:
     serviceAccount:
-      Name: waiter
+      name: waiter-sa
     image: deciphernow/k8s-waiter:latest
   control:
     name: control
@@ -50,6 +51,8 @@ global:
     enabled: false
   mesh_tls:
     use_provided_certs: true
+  sidecar: 
+    version: latest
 
 catalog:
   name: catalog
@@ -139,7 +142,14 @@ catalog:
     client_email:
       type: value
       value: 'gm-control@deciphernow.com'
-
+  secret:
+    secret_name: sidecar-secret
+    mountPoint: /etc/pki
+    secretKeys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key
+      
   init:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
     imagePullPolicy: IfNotPresent
@@ -172,23 +182,10 @@ sidecar:
     kafka_topic:
       type: value
       value: 'gm-catalog'
-
-  # Set this to true if you are attempting to deploy Catalog by itself.
-  # Ideally, catalog is deployed as a dependency to Grey Matter, which creates the
-  # sidecar secret, but if individual testing is being done, the sidecar secret will
-  # need to be created.
-  create_sidecar_secret: false
-  certificates:
-    name: sidecar
-    ca: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    cert: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    key: |-
-      -----BEGIN RSA PRIVATE KEY-----
-      ...
-      -----END RSA PRIVATE KEY-----
+  secret:
+    secret_name: sidecar-secret
+    mountPoint: /etc/proxy/tls/sidecar
+    secretKeys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key

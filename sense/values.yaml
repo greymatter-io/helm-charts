@@ -18,6 +18,8 @@ global:
     version: 3.3.1
     sidecar:
       version: latest
+    sidecar_prometheus:
+       version: latest
   catalog:
     version: latest
     sidecar:
@@ -51,6 +53,7 @@ global:
     jwt_prefix: '/jwt'
   sidecar:
     version: latest
+  
   services:
     catalog:
       egressTLS: true
@@ -84,38 +87,6 @@ global:
       # This value must match global.control_api_tls
       egressTLS: true
 
-  sidecar:
-    version: latest
-    envvars:
-      # You can customize the sidecar environment variables mesh-wide to enable features in the mesh
-      # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services `configuration.md` files.
-      # These are sorted by how different the values are for the sidecars running on different services. The options are "all the same", "all except XDS". and "different"
-      # TODO: update each service to use default global values and only set the ones that are different.
-      # All the same
-      proxy_dynamic:
-        type: 'value'
-        value: 'true'
-      xds_zone:
-        type: 'value'
-        value: '{{ .Values.global.zone }}'
-      xds_cluster:
-        type: 'value'
-        value: ''
-      xds_host:
-        type: 'value'
-        value: 'control.{{ .Release.Namespace }}.svc'
-      xds_port:
-        type: 'value'
-        value: '{{ .Values.global.control.port }}'
-      xds_node_id:
-        type: 'value'
-        value: 'default'
-      envoy_admin_log_path:
-        type: 'value'
-        value: '/dev/stdout'
-      # There may be more sidecar environment variables, but we haven't added them here yet.
-      # However, to use an env var with the sidecar, even if it doesn't have a global default,
-      # it needs to be set globally as either a value or a secret
 
 catalog:
   catalog:
@@ -221,7 +192,15 @@ catalog:
     envvars:
       xds_cluster:
         type: value
-        value: 'catalog'
+        value: 'catalog'      
+    secret:
+      secret_name: sidecar-secret
+      mountPoint: /etc/proxy/tls/sidecar
+      secretKeys:
+        ca: ca.crt
+        cert: server.crt
+        key: server.key
+
 
 dashboard:
   dashboard:
@@ -237,16 +216,6 @@ dashboard:
     requestTimeout: '15000'
     version: 3.3.1
     imagePullPolicy: IfNotPresent
-    pvcSize: 80
-    serviceAccount:
-      create: true
-    resources:
-      requests:
-        memory: '8Gi'
-        cpu: '1'
-      limits:
-        memory: '12Gi'
-        cpu: '2'
     secret:
       secret_name: dashboard-certs
       mountPoint: /certs
@@ -279,8 +248,6 @@ dashboard:
         key: server.key
 
   prometheus:
-    #Size is in GB
-    pvcSize: 80
     image: 'prom/prometheus:v2.7.1'
     imagePullPolicy: IfNotPresent
     zk_announce_path: '/services/prometheus/2.7.1'
@@ -288,18 +255,21 @@ dashboard:
     replica_count: 1
     data_mount_point: /var/lib/prometheus/data
     config_mount_point: /etc/prometheus
-    #private_image: false
     start_cmd: /bin/prometheus
     serviceAccount:
       create: false
       name: prometheus-sa
+    #Size is in GB
+    pvcSize: 80
+    serviceAccount:
+      create: false
     resources:
       requests:
-        memory: "20Gi"
-        cpu: "1"
+        memory: '8Gi'
+        cpu: '1'
       limits:
-        memory: "40Gi"
-        cpu: "2"
+        memory: '12Gi'
+        cpu: '2'
 
   sidecar_prometheus:
     version: '{{- $.Values.global.dashboard.sidecar_prometheus.version | default $.Values.global.sidecar.version }}'

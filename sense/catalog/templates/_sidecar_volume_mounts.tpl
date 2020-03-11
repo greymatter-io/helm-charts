@@ -6,6 +6,6 @@
 
 {{- define "sidecar_volume_certs_mount" }}
 - name: sidecar-certs
-  mountPath: /etc/proxy/tls/sidecar/
+  mountPath: {{ .Values.sidecar.secret.mountPoint }}
   readOnly: true
 {{- end }}
