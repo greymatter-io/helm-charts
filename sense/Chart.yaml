@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: v2
 appVersion: 1.2
 description: A Helm chart to deploy Grey Matter Sense
 name: sense
@@ -12,3 +12,15 @@ keywords:
   - Grey Matter
   - service mesh
   - sense
+dependencies:
+  - name: catalog
+    repository: file://./catalog
+    version: '2.1.6'
+
+  - name: dashboard
+    repository: file://./dashboard
+    version: '2.1.5'
+
+  - name: slo
+    repository: file://./slo
+    version: '2.1.3'

@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: v2
 appVersion: 1.2
 description: A Helm chart to deploy Grey Matter Data
 name: data
@@ -12,3 +12,21 @@ keywords:
   - Grey Matter
   - service mesh
   - data
+dependencies:
+  - name: gm-data
+    repository: file://./gm-data
+    version: '2.1.7'
+
+  - name: gm-data
+    repository: file://./gm-data
+    version: '2.1.7'
+    alias: internal-data
+
+  - name: jwt
+    repository: file://./jwt
+    version: '2.1.2'
+
+  - name: jwt
+    repository: file://./jwt
+    version: '2.1.2'
+    alias: internal-jwt

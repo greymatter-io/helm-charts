@@ -1,25 +1,26 @@
 # Minikube
 
-- [Local Minikube Deployment](#local-minikube-deployment)
-  - [Prerequisites](#prerequisites)
-  - [Quick Start](#quick-start)
-    - [Pre-Requisite](#pre-requisite)
-  - [Start Minikube](#start-minikube)
-    - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
-    - [OS X](#os-x)
-- [AWS EC2 Deployment](#aws-ec2-deployment)
-- [Configuration](#configuration)
-  - [Copy Files to EC2](#copy-files-to-ec2)
-  - [Docker Credentials](#docker-credentials)
-- [Setup Helm](#setup-helm)
-  - [Configure Voyager Ingress](#configure-voyager-ingress)
-- [Install](#install)
-  - [Latest Helm charts release](#latest-helm-charts-release)
-  - [Local Helm charts](#local-helm-charts)
-  - [Verification](#verification)
-  - [Ingress](#ingress)
-    - [EC2](#ec2)
-  - [Debugging](#debugging)
+- [Minikube](#minikube)
+  - [Local Minikube Deployment](#local-minikube-deployment)
+    - [Prerequisites](#prerequisites)
+    - [Quick Start](#quick-start)
+      - [Pre-Requisite](#pre-requisite)
+    - [Start Minikube](#start-minikube)
+      - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
+      - [OS X](#os-x)
+  - [AWS EC2 Deployment](#aws-ec2-deployment)
+  - [Configuration](#configuration)
+    - [Copy Files to EC2](#copy-files-to-ec2)
+    - [Docker Credentials](#docker-credentials)
+  - [Setup Helm](#setup-helm)
+    - [Configure Voyager Ingress](#configure-voyager-ingress)
+  - [Install](#install)
+    - [Latest Helm charts release](#latest-helm-charts-release)
+    - [Local Helm charts](#local-helm-charts)
+    - [Verification](#verification)
+    - [Ingress](#ingress)
+      - [EC2](#ec2)
+    - [Debugging](#debugging)
 
 Minikube allows us to quicky setup a Kubernetes cluster and test drive Grey Matter before deploying to a production environment. We've provided instructions for two scenarios, [Local Minikube Deployment](#local-minikube-deployment) or [AWS EC2 Deployment](#aws-ec2-deployment).
 
@@ -207,17 +208,12 @@ dockerCredentials:
 
 ## Setup Helm
 
-Before running Helm commands, we need to configure Tiller. This is the Helm server running in the Kubernetes cluster and acts as a endpoint for `helm cli` commands.
+To install helm:
 
-```sh
-$ helm init
-$HELM_HOME has been configured at /home/$USER/.helm.
-
-Tiller (the Helm server-side component) has been installed into your Kubernetes Cluster.
-
-Please note: by default, Tiller is deployed with an insecure 'allow unauthenticated users' policy.
-To prevent this, run `helm init` with the --tiller-tls-verify flag.
-For more information on securing your installation see: https://docs.helm.sh/using_helm/#securing-your-helm-installation
+```bash
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
 ```
 
 ### Configure Voyager Ingress
@@ -230,11 +226,11 @@ At present, there's [an issue](https://github.com/appscode/voyager/issues/1415) 
 export PROVIDER=minikube
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm install appscode/voyager --name voyager-operator --version 10.0.0 \
-  --namespace kube-system \
-  --set cloudProvider=$PROVIDER \
-  --set enableAnalytics=false \
-  --set apiserver.enableAdmissionWebhook=false
+helm install voyager-operator appscode/voyager --version 10.0.0 \
+   --namespace kube-system \
+   --set cloudProvider=minikube \
+   --set enableAnalytics=false \
+   --set apiserver.enableAdmissionWebhook=false
 
 NOTES:
 Set cloudProvider for installing Voyager
@@ -272,7 +268,7 @@ Once the repository has successfully been added to your `helm` CLI, and our envi
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
 ```sh
-helm install decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes --name gm
+helm install gm decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes
 ```
 
 ### Local Helm charts

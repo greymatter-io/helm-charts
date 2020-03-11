@@ -3,7 +3,7 @@
 ## TL;DR;
 
 ```console
-$ helm install data
+$ helm install gm-data
 ```
 
 ## Introduction
@@ -15,7 +15,7 @@ This chart bootstraps a data deployment on a [Kubernetes](http://kubernetes.io) 
 To install the chart with the release name `<my-release>`:
 
 ```console
-$ helm install data --name <my-release>
+$ helm install gm-data --name <my-release>
 ```
 
 The command deploys data on the cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -40,14 +40,14 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 - Files not mentioned under this variable will remain unaffected.
 
 ```console
-$ helm install data --name <my-release> \
+$ helm install gm-data --name <my-release> \
   --set=jwt.version=v0.2.0, sidecar.ingress_use_tls='false'
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example :
 
 ```console
-$ helm install data --name <my-release> -f custom.yaml
+$ helm install gm-data --name <my-release> -f custom.yaml
 ```
 
 
@@ -59,7 +59,7 @@ If Data is being deployed into its own namespace of a namespace separate from th
 
 You can install the chart as described above, making sure the tiller namespace is set to the namespace set aside to only contain data.
 
-`helm install data --name data-only --tiller-namespace=data-only`
+`helm install gm-data --name data-only --tiller-namespace=data-only`
 
 To configure this standalone data into the mesh, follow the [Grey Matter Configuration Builder](#Grey-Matter-Configuration-Builder) section.
 

@@ -5,7 +5,7 @@
     {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
       {{- if eq $envvar.type "secret" }}
 - name: {{ $envName }}
-    valueFrom:
+  valueFrom:
     secretKeyRef:
       name: {{ $envvar.secret }}
       key: {{ $envvar.key }}

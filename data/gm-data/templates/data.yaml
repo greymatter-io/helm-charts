@@ -4,6 +4,7 @@ metadata:
   name: {{ .Values.data.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  serviceName: {{ .Values.data.name }}
   replicas: {{ .Values.data.replicas | default 1 }}
   updateStrategy:
     type: RollingUpdate

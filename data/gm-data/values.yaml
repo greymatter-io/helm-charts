@@ -26,7 +26,7 @@ global:
     # This value is used to data where to find jwt and also used to configure the mesh to enable routes from data to jwt
     jwt_prefix: /jwt
     sidecar:
-      version: 1.0.0
+      version: latest
 
   waiter:
     image: deciphernow/k8s-waiter:latest
@@ -83,10 +83,10 @@ data:
   # These are the AWS settings that Data requires if configured to use S3
   #  - bucket: The name of the bucket where Data will write it's shared config, if configured
   aws:
-    access_key:
-    secret_key:
-    region:
-    bucket:
+    access_key: xxx
+    secret_key: xxx
+    region: us-east-1
+    bucket: decipher-quickstart-helm
 
   resources:
     limits:
@@ -276,8 +276,8 @@ mongo:
           -----END RSA PRIVATE KEY-----
 
 sidecar:
-  version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.data.sidecar.version }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.sidecar.version }}'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
     limits:

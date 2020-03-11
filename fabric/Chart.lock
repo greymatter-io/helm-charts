@@ -1,0 +1,9 @@
+dependencies:
+- name: gm-control-api
+  repository: file://./gm-control-api
+  version: 2.1.6
+- name: control
+  repository: file://./control
+  version: 2.1.4
+digest: sha256:374ee3442dcb0d62170d2dec088ce79da2a8a4005e9cb036a14972c6d8198e0b
+generated: "2020-03-10T17:45:54.114076037Z"

@@ -4,6 +4,7 @@ metadata:
   name: {{ .Values.gmControlApi.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  serviceName: {{ .Values.gmControlApi.name }}
   replicas: {{ .Values.gmControlApi.replicas }}
   updateStrategy:
     type: RollingUpdate

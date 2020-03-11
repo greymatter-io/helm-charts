@@ -6,6 +6,7 @@ metadata:
   name: {{ .Values.mongo.name }}
   namespace: {{ .Release.Namespace }}
 spec:
+  serviceName:  {{ .Values.mongo.name }}
   podManagementPolicy: Parallel
   replicas: {{ .Values.mongo.replicas }}
   selector:

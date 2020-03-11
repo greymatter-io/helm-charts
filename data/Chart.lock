@@ -1,0 +1,15 @@
+dependencies:
+- name: gm-data
+  repository: file://./gm-data
+  version: 2.1.7
+- name: gm-data
+  repository: file://./gm-data
+  version: 2.1.7
+- name: jwt
+  repository: file://./jwt
+  version: 2.1.2
+- name: jwt
+  repository: file://./jwt
+  version: 2.1.2
+digest: sha256:345e2aabab49dd6e9efadc02ead2c275bf49e5a4b74564776007919aea5155cb
+generated: "2020-03-11T17:29:47.494884804Z"

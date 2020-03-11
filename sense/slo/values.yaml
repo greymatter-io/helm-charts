@@ -11,6 +11,9 @@ global:
   xds:
     port: 18000
     cluster: greymatter
+  slo:
+    sidecar:
+      version: latest
   spire:
     enabled: false
   mesh_tls:
@@ -49,7 +52,7 @@ slo:
 
 sidecar:
   version: '{{- $.Values.global.slo.sidecar.version | default $.Values.global.sidecar.version }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   metrics_key_function: depth
   imagePullPolicy: IfNotPresent
   secret:

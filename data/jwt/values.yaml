@@ -13,10 +13,16 @@ global:
     cluster: greymatter
   jwt:
     version: 1.0.0
+    sidecar:
+      version: latest
   consul:
     enabled: false
     host: ''
     port: 8500
+  spire:
+    enabled: false
+  mesh_tls:
+    use_provided_certs: true
 
 jwt:
   version: '{{ .Values.global.jwt.version }}'
@@ -157,7 +163,7 @@ redis:
 
 sidecar:
   version: '{{- $.Values.global.jwt.sidecar.version | default $.Values.global.sidecar.version }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
     limits:
