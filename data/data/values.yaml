@@ -242,38 +242,20 @@ mongo:
       key: gmdata_password
 
   credentials:
-    secret_name: 'mongo-credentials'
+    secret_name: 'mongopassword'
     root_username: 'mongo'
     root_password: 'mongo'
     database: 'gmdata'
     gmdata_username: 'gmdata-user'
     gmdata_password: 'mongopassword'
 
-  ssl:
-    enabled: false
-    name: mongo-ssl-certs
-    mount_path: /secret/cert
-    certificates:
-      - name: mongo-ssl-certs
-        ca: |-
-          -----BEGIN CERTIFICATE-----
-          ...
-          -----END CERTIFICATE-----
-        cert: |-
-          -----BEGIN CERTIFICATE-----
-          ...
-          -----END CERTIFICATE-----
-        key: |-
-          -----BEGIN RSA PRIVATE KEY-----
-          ...
-          -----END RSA PRIVATE KEY-----
-        cert_key: |-
-          -----BEGIN CERTIFICATE-----
-          ...
-          -----END CERTIFICATE-----
-          -----BEGIN RSA PRIVATE KEY-----
-          ...
-          -----END RSA PRIVATE KEY-----
+  secret:
+    secret_name: mongo-certs
+    mountPoint: /secret/cert
+    secretKeys:
+      ca: ca_b64
+      cert: cert_b64
+      key: key_b64
 
 sidecar:
   version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.sidecar.version }}'

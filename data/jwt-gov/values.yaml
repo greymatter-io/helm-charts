@@ -221,6 +221,13 @@ sidecar:
       type: value
       value: 'jwt-security'
 
+  secret:
+    secret_name: sidecar-secret
+    mountPoint: /etc/proxy/tls/sidecar
+    secretKeys:
+      ca: ca.crt
+      cert: service.crt
+      key: service.key
   # Set this to true if you are attempting to deploy xDS by itself.
   # Ideally, xDS is deployed as a dependency to Grey Matter, which creates the
   # sidecar secret, but if individual testing is being done, the sidecar secret will

@@ -236,9 +236,9 @@ data:
 
   mongo:
     private_image: true
-    ssl:
-      enabled: false
-      name: mongo-ssl-certs
+    # set secret here to turn on ssl
+    # secret:
+    #   secret_name: mongo-certs
     storage:
       # The size, in Gi, that the Mongo PVC should be
       size: 40
@@ -253,19 +253,19 @@ data:
     envvars:
       mongodb_admin_password:
         type: secret
-        secret: mongo-credentials
+        secret: mongopassword
         key: gmdata_password
       mongodb_database:
         type: secret
-        secret: mongo-credentials
+        secret: mongopassword
         key: database
       mongodb_user:
         type: secret
-        secret: mongo-credentials
+        secret: mongopassword
         key: root_username
       mongodb_password:
         type: secret
-        secret: mongo-credentials
+        secret: mongopassword
         key: root_password
 
 internal-data:
@@ -318,11 +318,9 @@ internal-data:
   mongo:
     private_image: true
     name: internal-data-mongo
-    credentials:
-      secret_name: 'internal-mongo-credentials'
-    ssl:
-      enabled: false
-      name: internal-mongo-ssl-certs
+    # set secret here to turn on ssl
+    # secret:
+    #   secret_name: mongo-certs
     storage:
       # The size, in Gi, that the Mongo PVC should be
       size: 10
@@ -337,19 +335,19 @@ internal-data:
     envvars:
       mongodb_admin_password:
         type: secret
-        secret: internal-mongo-credentials
+        secret: mongopassword
         key: gmdata_password
       mongodb_database:
         type: secret
-        secret: internal-mongo-credentials
+        secret: mongopassword
         key: database
       mongodb_user:
         type: secret
-        secret: internal-mongo-credentials
+        secret: mongopassword
         key: root_username
       mongodb_password:
         type: secret
-        secret: internal-mongo-credentials
+        secret: mongopassword
         key: root_password
 
 
