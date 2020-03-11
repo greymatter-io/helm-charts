@@ -35,7 +35,7 @@ global:
     version: 0.2.6
   waiter:
     serviceAccount:
-      Name: waiter
+      name: waiter-sa
     image: deciphernow/k8s-waiter:latest
   control:
     name: control
