@@ -216,6 +216,8 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 ```
 
+> Note: when using `helm install`, if an install fails the resources deployed may not properly be removed with a `helm uninstall`. Be sure to check for and remove configmaps, secrets, and pvc's manually if an install fails.
+
 ### Configure Voyager Ingress
 
 For Kubernetes, we use the [Voyager Ingress Controller](https://appscode.com/products/voyager/), which automatically provisions a load balancer from a variety of supported cloud providers like EKS in AWS. This allows you to access the cluster at the provided load balancer URL.
