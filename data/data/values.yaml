@@ -279,6 +279,13 @@ sidecar:
   version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.sidecar.version }}'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
+  secret:
+    secret_name: sidecar-secret
+    mountPoint: /etc/proxy/tls/sidecar
+    secretKeys:
+      ca: ca.crt
+      cert: service.crt
+      key: service.key
   resources:
     limits:
       cpu: 200m
@@ -291,5 +298,3 @@ sidecar:
       type: value
       value: '{{ $.Values.data.name }}'
 
-  certs:
-    secret_name: "sidecar-certs"

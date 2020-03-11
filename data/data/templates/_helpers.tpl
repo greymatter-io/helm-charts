@@ -26,7 +26,7 @@ Define the sidecar certs volume.  Required here to support a standalone Grey Mat
 {{- define "sidecar_certs_volumes" }}
 - name: sidecar-certs
   secret:
-    secretName: {{ .Values.sidecar.certs.secret_name }}
+    secretName: {{ .Values.sidecar.secret.secret_name }}
 {{- end }}
 
 {{/*
@@ -34,6 +34,6 @@ Define where to mount the sidecar certs.  Required here to support a standalone 
 */}}
 {{- define "sidecar_volume_certs_mount" }}
 - name: sidecar-certs
-  mountPath: /etc/proxy/tls/sidecar/
+  mountPath: {{ .Values.sidecar.secret.mountPoint }}
   readOnly: true
 {{- end }}
