@@ -51,7 +51,22 @@ spec:
         - name: service-certs
           mountPath: {{ .Values.slo.secret.mountPoint }}
           {{- end }}
-        env:
+        env:        
+        - name: POSTGRESQL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgres.credentials.secret_name }}
+              key: username
+        - name: POSTGRESQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgres.credentials.secret_name }}
+              key: password
+        - name: POSTGRESQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgres.credentials.secret_name }}
+              key: database
         {{- if .Values.postgres.rds.enabled }}
         - name: POSTGRESQL_ENDPOINT
           value: {{ .Values.postgres.rds.endpoint }}
