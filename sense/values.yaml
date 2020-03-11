@@ -40,7 +40,7 @@ global:
     enabled: false
   waiter:
     serviceAccount:
-      create: true
+      create: false
       name: waiter-sa
   control:
     # This specifies the service name that all XDS clients will try to connect to
@@ -194,7 +194,7 @@ catalog:
         type: value
         value: 'catalog'      
     secret:
-      secret_name: sidecar-secret
+      secret_name: sidecar-certs
       mountPoint: /etc/proxy/tls/sidecar
       secretKeys:
         ca: ca.crt
@@ -240,7 +240,7 @@ dashboard:
         type: value
         value: 'dashboard'
     secret:
-      secret_name: sidecar-secret
+      secret_name: sidecar-certs
       mountPoint: /etc/proxy/tls/sidecar
       secretKeys:
         ca: ca.crt
@@ -287,7 +287,7 @@ dashboard:
         type: value
         value: 'prometheus'
     secret:
-      secret_name: sidecar-secret
+      secret_name: sidecar-certs
       mountPoint: /etc/proxy/tls/sidecar
       secretKeys:
         ca: ca.crt
@@ -320,7 +320,7 @@ slo:
     metrics_key_function: depth
     imagePullPolicy: IfNotPresent
     secret:
-      secret_name: sidecar-secret
+      secret_name: sidecar-certs
       mountPoint: /etc/proxy/tls/sidecar
       secretKeys:
         ca: ca.crt

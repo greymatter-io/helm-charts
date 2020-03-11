@@ -50,7 +50,7 @@ spec:
           value: '{{ tpl .Values.dashboard.base_url . }}'
         - name: REQUEST_TIMEOUT
           value: '{{ .Values.dashboard.requestTimeout }}'
-        {{- if .Values.dashboard.secret  }}
+        {{- if .Values.dashboard.secret }}
         - name: SERVER_SSL_ENABLED
           value: "true"
         - name: SERVER_SSL_CA

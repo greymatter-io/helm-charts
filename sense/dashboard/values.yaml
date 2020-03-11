@@ -77,7 +77,7 @@ sidecar:
       type: value
       value: 'dashboard'
   secret:
-    secret_name: sidecar-secret
+    secret_name: sidecar-certs
     mountPoint: /etc/proxy/tls/sidecar
     secretKeys:
       ca: ca.crt
@@ -123,7 +123,7 @@ sidecar_prometheus:
       type: value
       value: 'prometheus'
   secret:
-    secret_name: sidecar-secret
+    secret_name: sidecar-certs
     mountPoint: /etc/proxy/tls/sidecar
     secretKeys:
       ca: ca.crt

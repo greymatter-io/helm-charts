@@ -139,7 +139,7 @@ catalog:
       type: value
       value: 'gm-control@deciphernow.com'
   secret:
-    secret_name: sidecar-secret
+    secret_name: sidecar-certs
     mountPoint: /etc/pki
     secretKeys:
       ca: ca.crt
@@ -179,7 +179,7 @@ sidecar:
       type: value
       value: 'gm-catalog'
   secret:
-    secret_name: sidecar-secret
+    secret_name: sidecar-certs
     mountPoint: /etc/proxy/tls/sidecar
     secretKeys:
       ca: ca.crt

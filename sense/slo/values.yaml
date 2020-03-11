@@ -53,7 +53,7 @@ sidecar:
   metrics_key_function: depth
   imagePullPolicy: IfNotPresent
   secret:
-    secret_name: sidecar-secret
+    secret_name: sidecar-certs
     mountPoint: /etc/proxy/tls/sidecar
     secretKeys:
       ca: ca.crt
