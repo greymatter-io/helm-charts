@@ -1,7 +1,7 @@
 global:
-  
   imagePullSecret: docker.secret
-
+  mesh_tls:
+    use_provided_certs: true
   environment: kubernetes
   domain:
   route_url_name:
@@ -22,10 +22,20 @@ global:
     enabled: false
     host: ''
     port: 8500
+  spire:
+    enabled: false
+  sidecar:
+    version: latest
+  dashboard:
+    sidecar: 
+      version: latest
+    sidecar_prometheus:
+      version: latest
+    version: 3.3.1
 
 dashboard:
   image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.global.dashboard.version }}'
-  
+  port: 1337
   # TODO: make these URLs dynamic based on the globally specified version
   fabric_server: '/services/catalog/latest/'
   use_prometheus: 'true'
@@ -36,30 +46,23 @@ dashboard:
   requestTimeout: '15000'
   version: 3.3.1
   imagePullPolicy: IfNotPresent
+  pvcSize: 80
+  serviceAccount:
+    create: true
   resources:
-    limits:
-      cpu: 200m
-      memory: 1Gi
     requests:
-      cpu: 100m
-      memory: 128Mi
-  ssl:
-    enabled: false
-    name: dashboard-certs
+      memory: '8Gi'
+      cpu: '1'
+    limits:
+      memory: '12Gi'
+      cpu: '2'
+  secret:
+    secret_name: dashboard-certs
     mountPoint: /certs
-    certificates:
-      ca: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      cert: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      key: |-
-        -----BEGIN RSA PRIVATE KEY-----
-        ...
-        -----END RSA PRIVATE KEY-----
+    secretKeys:
+      ca: ca.crt
+      cert: service.crt
+      key: service.key
 
 sidecar:
   version: '{{- $.Values.global.dashboard.sidecar.version | default $.Values.global.sidecar.version }}'
@@ -76,29 +79,17 @@ sidecar:
     xds_cluster:
       type: value
       value: 'dashboard'
-  # Set this to true if you are attempting to deploy xDS by itself.
-  # Ideally, xDS is deployed as a dependency to Grey Matter, which creates the
-  # sidecar secret, but if individual testing is being done, the sidecar secret will
-  # need to be created.
-  create_sidecar_secret: false
-  certificates:
-    name: sidecar
-    ca: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    cert: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    key: |-
-      -----BEGIN RSA PRIVATE KEY-----
-      ...
-      -----END RSA PRIVATE KEY-----
+  secret:
+    secret_name: sidecar-secret
+    mountPoint: /etc/proxy/tls/sidecar
+    secretKeys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key
 
 prometheus:
   #Size is in GB
-  pvcSize: 40
+  pvcSize: 80
   image: 'prom/prometheus:v2.7.1'
   imagePullPolicy: IfNotPresent
   zk_announce_path: '/services/prometheus/2.7.1'
@@ -109,18 +100,18 @@ prometheus:
   #private_image: false
   start_cmd: /bin/prometheus
   serviceAccount:
-    create: true
+    create: false
     name: prometheus-sa
   resources:
     requests:
-      memory: "8Gi"
+      memory: "20Gi"
       cpu: "1"
     limits:
-      memory: "12Gi"
+      memory: "40Gi"
       cpu: "2"
 
 sidecar_prometheus:
-  version: '{{- $.Values.global.dashboard.prometheus_sidecar.version | default $.Values.global.sidecar.version }}'
+  version: '{{- $.Values.global.dashboard.sidecar_prometheus.version | default $.Values.global.sidecar.version }}'
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
@@ -134,22 +125,10 @@ sidecar_prometheus:
     xds_cluster:
       type: value
       value: 'prometheus'
-  # Set this to true if you are attempting to deploy xDS by itself.
-  # Ideally, xDS is deployed as a dependency to Grey Matter, which creates the
-  # sidecar secret, but if individual testing is being done, the sidecar secret will
-  # need to be created.
-  create_sidecar_secret: false
-  certificates:
-    name: sidecar
-    ca: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    cert: |-
-      -----BEGIN CERTIFICATE-----
-      ...
-      -----END CERTIFICATE-----
-    key: |-
-      -----BEGIN RSA PRIVATE KEY-----
-      ...
-      -----END RSA PRIVATE KEY-----
+  secret:
+    secret_name: sidecar-secret
+    mountPoint: /etc/proxy/tls/sidecar
+    secretKeys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key

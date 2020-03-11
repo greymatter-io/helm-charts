@@ -29,10 +29,11 @@ global:
   slo: 
     sidecar:
       version: latest
-
+  sidecar:
+    version: latest
 slo:
   version: 1.1.1
-  image: docker.production.deciphernow.com/deciphernow/gm-slo:{{ .Values.slo.version }}
+  image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.1
   imagePullPolicy: IfNotPresent
   resources:
     limits:
@@ -108,27 +109,18 @@ postgres:
       cert: server.crt
       key: server.key
   envvars:
-    # Any environments listed here will be populated in the postgres yaml. Use the
-    # correct variables for the version of Postgres you are deploying
-    #
-    # Formerly, when .Values.global.environment was set to "openshift", these environment variables were used:
-    #   - POSTGRESQL_USER
-    #   - POSTGRESQL_PASSWORD
-    #   - POSTGRESQL_DATABASE
-    # When .Values.global.environment was set to "kubernetes", these were used:
-    #   - POSTGRES_USER
-    #   - POSTGRES_PASSWORD
-    #   - POSTGRES_DB
-    # Now, helm automatically chooses the correct environment variable based on the environment value.
     - type: secret
-      name: '{{ ternary "POSTGRESQL_USER" "POSTGRES_USER" (eq .Values.global.environment "openshift") }}'
+      name: postgresql_user
       secret: postgres-credentials
       key: username
     - type: secret
-      name:  '{{ ternary "POSTGRESQL_PASSWORD" "POSTGRES_PASSWORD" (eq .Values.global.environment "openshift") }}'
+      name: POSTGRESQL_PASSWORD
       secret: postgres-credentials
       key: password
+    - type: value
+      name: POSTGRES_USER_CN
+      value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
     - type: secret
-      name: '{{ ternary "POSTGRESQL_DATABASE" "POSTGRES_DB" (eq .Values.global.environment "openshift") }}'
+      name: POSTGRESQL_DATABASE
       secret: postgres-credentials
       key: database
