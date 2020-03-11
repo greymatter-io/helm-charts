@@ -1,0 +1,12 @@
+dependencies:
+  - name: catalog
+    repository: file://./catalog
+    version: '2.1.6'
+
+  - name: dashboard
+    repository: file://./dashboard
+    version: '2.1.5'
+
+  - name: slo
+    repository: file://./slo
+    version: '2.1.3'
