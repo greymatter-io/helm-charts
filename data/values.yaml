@@ -132,6 +132,8 @@ data:
     certs_mount_point: /app/certs
     securityContext:
       enabled: false
+    secret:
+      secret_name: data-secrets
     envvars:
       uses3:
         type: value
@@ -253,19 +255,19 @@ data:
     envvars:
       mongodb_admin_password:
         type: secret
-        secret: mongopassword
+        secret: mongo-password
         key: gmdata_password
       mongodb_database:
         type: secret
-        secret: mongopassword
+        secret: mongo-password
         key: database
       mongodb_user:
         type: secret
-        secret: mongopassword
+        secret: mongo-password
         key: root_username
       mongodb_password:
         type: secret
-        secret: mongopassword
+        secret: mongo-password
         key: root_password
 
 internal-data:
@@ -277,6 +279,8 @@ internal-data:
         type: value
         value: 'data-internal'
   data:
+    secret:
+      secret_name: internal-data-secrets
     version: 1.0.0
     name: data-internal
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
@@ -335,19 +339,19 @@ internal-data:
     envvars:
       mongodb_admin_password:
         type: secret
-        secret: mongopassword
+        secret: internal-mongo-password
         key: gmdata_password
       mongodb_database:
         type: secret
-        secret: mongopassword
+        secret: internal-mongo-password
         key: database
       mongodb_user:
         type: secret
-        secret: mongopassword
+        secret: internal-mongo-password
         key: root_username
       mongodb_password:
         type: secret
-        secret: mongopassword
+        secret: internal-mongo-password
         key: root_password
 
 

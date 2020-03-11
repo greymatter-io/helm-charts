@@ -128,7 +128,7 @@ spec:
       {{- end }}
       - name: data
         secret:
-          secretName: {{ .Values.data.name }}-secrets
+          secretName: {{ .Values.data.secret.secret_name }}
       - name: jwt-security
         secret:
           secretName: jwt-security

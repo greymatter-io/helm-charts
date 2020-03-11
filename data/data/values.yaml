@@ -41,6 +41,8 @@ data:
   name: data
   version: 1.0.0
   replicas: 1
+  secret:
+    secret_name: data-secrets
   client_jwt_endpoint_address: localhost
   client_jwt_endpoint_use_tls: 'true'
   base_path: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version | trunc 3 }}
@@ -80,13 +82,6 @@ data:
         server.key.pem:
         server.trust.pem:
 
-  # These are the AWS settings that Data requires if configured to use S3
-  #  - bucket: The name of the bucket where Data will write it's shared config, if configured
-  aws:
-    access_key: xxx
-    secret_key: xxx
-    region: us-east-1
-    bucket: decipher-quickstart-helm
 
   resources:
     limits:
@@ -101,19 +96,19 @@ data:
       value: 'true'
     aws_access_key_id:
       type: secret
-      secret: '{{ $.Values.data.name | lower }}-secrets'
+      secret: '{{ $.Values.data.secret.secret_name | lower }}'
       key: aws_access_key_id
     aws_secret_access_key:
       type: secret
-      secret: '{{ $.Values.data.name | lower }}-secrets'
+      secret: '{{ $.Values.data.secret.secret_name | lower }}'
       key: aws_secret_access_key
     aws_region:
       type: secret
-      secret: '{{ $.Values.data.name | lower }}-secrets'
+      secret: '{{ $.Values.data.secret.secret_name | lower }}'
       key: aws_region
     aws_s3_bucket:
       type: secret
-      secret: '{{ $.Values.data.name | lower }}-secrets'
+      secret: '{{ $.Values.data.secret.secret_name | lower }}'
       key: aws_s3_bucket
     aws_s3_partition:
       type: value
@@ -137,7 +132,7 @@ data:
       value: 'false'
     masterkey:
       type: secret
-      secret: '{{ .Values.data.name }}-secrets'
+      secret: '{{ .Values.data.secret.secret_name }}'
       key: master_key
     mongo_initdb_root_username:
       type: secret
@@ -197,6 +192,12 @@ data:
       secret: jwt-certs
       key: jwt.trust.pem
 
+  aws:
+    access_key: xxx
+    secret_key: xxx
+    region: us-east-1
+    bucket: decipher-quickstart-helm
+
 mongo:
   name: data-mongo
   replicas: 1
@@ -242,20 +243,16 @@ mongo:
       key: gmdata_password
 
   credentials:
-    secret_name: 'mongopassword'
-    root_username: 'mongo'
-    root_password: 'mongo'
-    database: 'gmdata'
-    gmdata_username: 'gmdata-user'
-    gmdata_password: 'mongopassword'
+    secret_name: 'mongo-password'
 
-  secret:
-    secret_name: mongo-certs
-    mountPoint: /secret/cert
-    secretKeys:
-      ca: ca_b64
-      cert: cert_b64
-      key: key_b64
+  # set secret to enable MONGO_TLS
+    #secret:
+    #secret_name: mongo-certs
+    #mountPoint: /secret/cert
+    #secretKeys:
+    #  ca: ca_b64
+    #  cert: cert_b64
+    #  key: key_b64
 
 sidecar:
   version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.sidecar.version }}'
