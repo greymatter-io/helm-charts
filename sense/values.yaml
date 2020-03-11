@@ -251,42 +251,43 @@ dashboard:
       limits:
         memory: '1Gi'
         cpu: '2'
-
-slo:
-  image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.1
-  secret:
-    secret_name: slo-certs
-    mountPoint: /service-certs
-    secretKeys:
-      ca: ca.crt
-      cert: service.crt
-      key: service.key
-postgres:
-  rds:
-    enabled: false
-    endpoint:
-  secret:
-    secret_name: postgres-ssl-certs
-    mountPoint: /certs
-    secretKeys:
-      ca: ca.pem
-      cert: server.crt
-      key: server.key
-  private_image: true
-  data_mount_point: /var/lib/pgsql/data
-  envvars:
-    - type: secret
-      name: postgresql_user
-      secret: postgres-credentials
-      key: username
-    - type: secret
-      name: POSTGRESQL_PASSWORD
-      secret: postgres-credentials
-      key: password
-    - type: value
-      name: POSTGRES_USER_CN
-      value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
-    - type: secret
-      name: POSTGRESQL_DATABASE
-      secret: postgres-credentials
-      key: database
+        
+slo: 
+  slo:
+    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.1
+    secret:
+      secret_name: slo-certs
+      mountPoint: /service-certs
+      secretKeys:
+        ca: ca.crt
+        cert: service.crt
+        key: service.key
+  postgres:
+    rds:
+      enabled: false
+      endpoint:
+    secret:
+      secret_name: postgres-ssl-certs
+      mountPoint: /certs
+      secretKeys:
+        ca: ca.pem
+        cert: server.crt
+        key: server.key
+    private_image: true
+    data_mount_point: /var/lib/pgsql/data
+    envvars:
+      - type: secret
+        name: postgresql_user
+        secret: postgres-credentials
+        key: username
+      - type: secret
+        name: POSTGRESQL_PASSWORD
+        secret: postgres-credentials
+        key: password
+      - type: value
+        name: POSTGRES_USER_CN
+        value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
+      - type: secret
+        name: POSTGRESQL_DATABASE
+        secret: postgres-credentials
+        key: database
