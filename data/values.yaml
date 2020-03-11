@@ -252,6 +252,8 @@ data:
       ##   GKE, AWS & OpenStack)
       ##
       # storageClass: "-"
+    credentials:
+      secret_name: mongo-password
     envvars:
       mongodb_admin_password:
         type: secret
@@ -268,6 +270,18 @@ data:
       mongodb_password:
         type: secret
         secret: mongo-password
+        key: root_password
+      mongo_initdb_database:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: database
+      mongo_initdb_root_username:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: root_username
+      mongo_initdb_root_password:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: root_password
 
 internal-data:
@@ -336,6 +350,8 @@ internal-data:
       ##   GKE, AWS & OpenStack)
       ##
       # storageClass: '-'
+    credentials:
+      secret_name: internal-mongo-password
     envvars:
       mongodb_admin_password:
         type: secret
@@ -352,6 +368,18 @@ internal-data:
       mongodb_password:
         type: secret
         secret: internal-mongo-password
+        key: root_password
+      mongo_initdb_database:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: database
+      mongo_initdb_root_username:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: root_username
+      mongo_initdb_root_password:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: root_password
 
 
