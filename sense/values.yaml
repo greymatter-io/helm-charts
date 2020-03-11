@@ -1,6 +1,5 @@
 global:
   imagePullSecret: docker.secret
-
   environment: openshift
   domain: staging.deciphernow.com
   route_url_name: greymatter
@@ -226,35 +225,117 @@ catalog:
 
 dashboard:
   dashboard:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:3.3.1'
-    ssl:
-      enabled: true
-      mountPoint: /certs
-      name: dashboard-certs
-  sidecar:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-    create_sidecar_secret: false
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'dashboard'
-  sidecar_prometheus:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-  prometheus:
+    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.global.dashboard.version }}'
+    port: 1337
+    # TODO: make these URLs dynamic based on the globally specified version
+    fabric_server: '/services/catalog/latest/'
+    use_prometheus: 'true'
+    objectives_server: '/services/slo/latest/'
+    config_server: '/services/gm-control-api/latest/v1.0'
+    prometheus_server: '/services/prometheus/latest/api/v1/'
+    base_url: '/services/dashboard/{{ $.Values.global.dashboard.version }}/'
+    requestTimeout: '15000'
+    version: 3.3.1
+    imagePullPolicy: IfNotPresent
     pvcSize: 80
     serviceAccount:
       create: true
     resources:
       requests:
-        memory: '1Gi'
+        memory: '8Gi'
         cpu: '1'
       limits:
-        memory: '1Gi'
+        memory: '12Gi'
         cpu: '2'
-        
+    secret:
+      secret_name: dashboard-certs
+      mountPoint: /certs
+      secretKeys:
+        ca: ca.crt
+        cert: service.crt
+        key: service.key
+
+  sidecar:
+    version: '{{- $.Values.global.dashboard.sidecar.version | default $.Values.global.sidecar.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+    imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    envvars:
+      xds_cluster:
+        type: value
+        value: 'dashboard'
+    secret:
+      secret_name: sidecar-secret
+      mountPoint: /etc/proxy/tls/sidecar
+      secretKeys:
+        ca: ca.crt
+        cert: server.crt
+        key: server.key
+
+  prometheus:
+    #Size is in GB
+    pvcSize: 80
+    image: 'prom/prometheus:v2.7.1'
+    imagePullPolicy: IfNotPresent
+    zk_announce_path: '/services/prometheus/2.7.1'
+    version: '2.7.1'
+    replica_count: 1
+    data_mount_point: /var/lib/prometheus/data
+    config_mount_point: /etc/prometheus
+    #private_image: false
+    start_cmd: /bin/prometheus
+    serviceAccount:
+      create: false
+      name: prometheus-sa
+    resources:
+      requests:
+        memory: "20Gi"
+        cpu: "1"
+      limits:
+        memory: "40Gi"
+        cpu: "2"
+
+  sidecar_prometheus:
+    version: '{{- $.Values.global.dashboard.sidecar_prometheus.version | default $.Values.global.sidecar.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
+    imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    envvars:
+      xds_cluster:
+        type: value
+        value: 'prometheus'
+    secret:
+      secret_name: sidecar-secret
+      mountPoint: /etc/proxy/tls/sidecar
+      secretKeys:
+        ca: ca.crt
+        cert: server.crt
+        key: server.key
+          
 slo: 
   slo:
+    version: 1.1.1
     image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.1
+    imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 250m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
     secret:
       secret_name: slo-certs
       mountPoint: /service-certs
@@ -262,10 +343,58 @@ slo:
         ca: ca.crt
         cert: service.crt
         key: service.key
+
+  sidecar:
+    version: '{{- $.Values.global.slo.sidecar.version | default $.Values.global.sidecar.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+    metrics_key_function: depth
+    imagePullPolicy: IfNotPresent
+    secret:
+      secret_name: sidecar-secret
+      mountPoint: /etc/proxy/tls/sidecar
+      secretKeys:
+        ca: ca.crt
+        cert: service.crt
+        key: service.key
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    envvars:
+      xds_cluster:
+        type: value
+        value: 'slo'
+
   postgres:
+    credentials:
+      secret_name: postgres-credentials
+      username: greymatter
+      database: greymatter
     rds:
       enabled: false
       endpoint:
+    data_mount_point: /var/lib/pgsql/data
+    openshift:
+      image: 'docker.io/centos/postgresql-10-centos7'
+    k8s:
+      image: 'docker.io/centos/postgresql-10-centos7'
+    imagePullPolicy: IfNotPresent
+    replica_count: 1
+    private_image: false
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    confMountPoint: /conf
+    # This override is unique to OpenShift's postgresql container
+    # https://github.com/sclorg/postgresql-container/tree/master/examples/custom-config
+    overridesMountPoint: /opt/app-root/src/postgresql-cfg
     secret:
       secret_name: postgres-ssl-certs
       mountPoint: /certs
@@ -273,8 +402,6 @@ slo:
         ca: ca.pem
         cert: server.crt
         key: server.key
-    private_image: true
-    data_mount_point: /var/lib/pgsql/data
     envvars:
       - type: secret
         name: postgresql_user
