@@ -402,7 +402,6 @@ jwt:
 internal-jwt:
   sidecar:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-    create_sidecar_secret: false
     envvars:
       xds_cluster:
         type: value
