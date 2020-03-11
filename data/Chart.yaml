@@ -13,12 +13,12 @@ keywords:
   - service mesh
   - data
 dependencies:
-  - name: data
-    repository: file://./data
+  - name: gm-data
+    repository: file://./gm-data
     version: '2.1.7'
 
-  - name: data
-    repository: file://./data
+  - name: gm-data
+    repository: file://./gm-data
     version: '2.1.7'
     alias: internal-data
 
