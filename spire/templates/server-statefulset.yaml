@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  serviceName:  {{ .Values.spire.server.name }}
   name:  {{ .Values.spire.server.name }}
   namespace: {{ .Release.Namespace }}
   labels:
