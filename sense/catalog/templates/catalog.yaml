@@ -36,12 +36,11 @@ spec:
           {{- end }}
           env:
           {{- include "envvars" (dict "envvar" .Values.catalog.envvars "top" $) | indent 10 }}
-          {{- if and $.Values.global.services.catalog.egressTLS }}
+          {{- if .Values.catalog.secret  }}
           volumeMounts:
             - name: certs
-              mountPath: /etc/pki
+              mountPath: {{ .Values.catalog.secret.mountPoint }}
           {{- end }}
-
         - name: sidecar
           image: {{ tpl $.Values.sidecar.image $ }}
           imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
@@ -85,22 +84,13 @@ spec:
       {{- end }}
       {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
-        {{- if and $.Values.global.services.catalog.egressTLS }}
-      - name: certs
-        secret:
-          secretName: sidecar-certs
-        {{- end }}
       {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
-        {{- if and $.Values.global.services.catalog.egressTLS }}
+      {{- end }}
+      {{- if .Values.catalog.secret }}
       - name: certs
         secret:
-          secretName: sidecar-certs
-        {{- end }}
-      {{- else if and $.Values.global.services.catalog.egressTLS }}
-        - name: certs
-          secret:
-            secretName: sidecar-certs
+          secretName: {{ .Values.catalog.secret.secret_name }}
       {{- end }}
       imagePullSecrets:
       - name: {{ .Values.global.imagePullSecret }}
