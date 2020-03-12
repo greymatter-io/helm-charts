@@ -54,7 +54,7 @@ spec:
         - name: REDIS_PASS
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.redis.secret_name }}
+              name: {{ .Values.redis.secret.secret_name }}
               key: password
         - name: DEMO_MODE
           value: {{ not .Values.jwt.use_aac | default false | quote }}

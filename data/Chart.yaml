@@ -16,6 +16,7 @@ dependencies:
   - name: gm-data
     repository: file://./gm-data
     version: '2.1.7'
+    alias: data
 
   - name: gm-data
     repository: file://./gm-data

@@ -52,24 +52,24 @@ spec:
         - name: MONGOHOST
           value: {{ template "greymatter.mongo.address" . }}
         
-        {{- if .Values.mongo.ssl.enabled }}
+        {{- if .Values.mongo.secret }}
         - name: MONGO_USE_TLS
           value: "true"
         - name: MONGO_CERT
           valueFrom: 
             secretKeyRef: 
-              name: {{ .Values.mongo.ssl.name }}
-              key: cert_b64
+              name: {{ .Values.mongo.secret.secret_name }}
+              key: {{ .Values.mongo.secret.secretKeys.cert }}
         - name: MONGO_KEY
           valueFrom: 
             secretKeyRef: 
-              name: {{ .Values.mongo.ssl.name }}
-              key: key_b64
+              name: {{ .Values.mongo.secret.secret_name }}
+              key: {{ .Values.mongo.secret.secretKeys.key }}
         - name: MONGO_TRUST
           valueFrom: 
             secretKeyRef: 
-              name: {{ .Values.mongo.ssl.name }}
-              key: ca_b64
+              name: {{ .Values.mongo.secret.secret_name }}
+              key: {{ .Values.mongo.secret.secretKeys.ca }}
         {{- end }}
         {{- if  (eq .Values.data.envvars.uses3.value  "false") }}
         volumeMounts:
@@ -128,7 +128,7 @@ spec:
       {{- end }}
       - name: data
         secret:
-          secretName: {{ .Values.data.name }}-secrets
+          secretName: {{ .Values.data.secret.secret_name }}
       - name: jwt-security
         secret:
           secretName: jwt-security

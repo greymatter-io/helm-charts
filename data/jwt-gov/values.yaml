@@ -81,41 +81,6 @@ jwt:
       name: TOKEN_EXP_TIME
       value: '300'
 
-  secrets:
-    - name: jwt-certs
-      jwt.cert.pem: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      jwt.key.pem: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      jwt.trust.pem: |-
-        -----BEGIN RSA PRIVATE KEY-----
-        ...
-        -----END RSA PRIVATE KEY-----
-      server.cert.pem: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      server.key.pem: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      server.trust.pem: |-
-        -----BEGIN RSA PRIVATE KEY-----
-        ...
-        -----END RSA PRIVATE KEY-----
-    - name: jwt-security
-      jwt.key: |-
-        -----BEGIN EC PRIVATE KEY-----
-        ...
-        -----END EC PRIVATE KEY-----
-      jwt.pub: -----BEGIN PUBLIC KEY-----
-        ...
-        -----END PUBLIC KEY-----
-      jwt.api_key: c2tpcGphY2stc2x1bmstc3VzcGVjdC1pc3JhZWwtc2NyYXA=
 
   # A JSON list of users and their AOs that will be permited access to JWT
   users: |-
@@ -202,7 +167,8 @@ jwt:
 
 redis:
   name: redis
-  secret_name: redis-password
+  secret:
+    secret_name: redis-password
   password: 'redis'
   openshift:
     image: 'centos/redis-32-centos7'
@@ -221,22 +187,10 @@ sidecar:
       type: value
       value: 'jwt-security'
 
-  # Set this to true if you are attempting to deploy xDS by itself.
-  # Ideally, xDS is deployed as a dependency to Grey Matter, which creates the
-  # sidecar secret, but if individual testing is being done, the sidecar secret will
-  # need to be created.
-  create_sidecar_secret: false
-  secrets:
-    # name: sidecar
-    # ca: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # cert: |-
-    #   -----BEGIN CERTIFICATE-----
-    #   ...
-    #   -----END CERTIFICATE-----
-    # key: |-
-    #   -----BEGIN RSA PRIVATE KEY-----
-    #   ...
-    #   -----END RSA PRIVATE KEY-----
+  secret:
+    secret_name: sidecar-secret
+    mountPoint: /etc/proxy/tls/sidecar
+    secretKeys:
+      ca: ca.crt
+      cert: service.crt
+      key: service.key
