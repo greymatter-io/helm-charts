@@ -151,7 +151,7 @@ catalog:
       client_cert:
         type: secret
         secret: sidecar-certs
-        key: server_b64
+        key: cert_b64
       client_key:
         type: secret
         secret: sidecar-certs
