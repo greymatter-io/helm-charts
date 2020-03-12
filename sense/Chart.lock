@@ -9,4 +9,4 @@ dependencies:
   repository: file://./slo
   version: 2.1.3
 digest: sha256:f378a2bcedeb7cb2fb8b9680f816e820ae92ad797068155871d195ffdfc7c4dc
-generated: "2020-03-12T09:07:16.970228-04:00"
+generated: "2020-03-12T11:24:41.756781-04:00"
