@@ -40,7 +40,7 @@ global:
     enabled: false
   waiter:
     serviceAccount:
-      create: false
+      create: true
       name: waiter-sa
   control:
     # This specifies the service name that all XDS clients will try to connect to
