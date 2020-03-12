@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.gmControlApi.name }}
+  name: {{ .Values.controlApi.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  serviceName: {{ .Values.gmControlApi.name }}
-  replicas: {{ .Values.gmControlApi.replicas }}
+  serviceName: {{ .Values.controlApi.name }}
+  replicas: {{ .Values.controlApi.replicas }}
   updateStrategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: {{ .Values.gmControlApi.name }}
-      deployment: {{ .Values.gmControlApi.name }}
+      app: {{ .Values.controlApi.name }}
+      deployment: {{ .Values.controlApi.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.gmControlApi.name }}
-        deployment: {{ .Values.gmControlApi.name }}
+        app: {{ .Values.controlApi.name }}
+        deployment: {{ .Values.controlApi.name }}
     spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       securityContext:
@@ -25,26 +25,26 @@ spec:
         fsGroup: 2000
       {{- end }}
       containers:
-        - name: {{ .Values.gmControlApi.name }}
-          image: {{ tpl .Values.gmControlApi.image $ }}
-          imagePullPolicy: {{ .Values.gmControlApi.imagePullPolicy }}
+        - name: {{ .Values.controlApi.name }}
+          image: {{ tpl .Values.controlApi.image $ }}
+          imagePullPolicy: {{ .Values.controlApi.imagePullPolicy }}
           env:
-            {{- include "envvars" (dict "envvar" .Values.gmControlApi.envvars "top" $) | indent 10 }}
-          {{- if .Values.gmControlApi.secret }}
+            {{- include "envvars" (dict "envvar" .Values.controlApi.envvars "top" $) | indent 10 }}
+          {{- if .Values.controlApi.secret }}
           - name: GM_CONTROL_API_USE_TLS
             value: "true"
           - name: GM_CONTROL_API_CA_CERT_PATH
-            value: {{ .Values.gmControlApi.secret.mountPoint}}/{{ .Values.gmControlApi.secret.secretKeys.ca }}
+            value: {{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.ca }}
           - name: GM_CONTROL_API_SERVER_CERT_PATH
-            value: {{ .Values.gmControlApi.secret.mountPoint}}/{{ .Values.gmControlApi.secret.secretKeys.cert }}
+            value: {{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.cert }}
           - name: GM_CONTROL_API_SERVER_KEY_PATH
-            value: {{ .Values.gmControlApi.secret.mountPoint}}/{{ .Values.gmControlApi.secret.secretKeys.key }}
+            value: {{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.key }}
           {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.gmControlApi.containerPort }}
+              containerPort: {{ .Values.controlApi.containerPort }}
               protocol: TCP
-          {{- if not .Values.gmControlApi.secret }}
+          {{- if not .Values.controlApi.secret }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
           readinessProbe:
             httpGet:
@@ -75,12 +75,12 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
           volumeMounts:
-            {{- if .Values.gmControlApi.secret }}
+            {{- if .Values.controlApi.secret }}
             - name: service-certs
-              mountPath: {{ .Values.gmControlApi.secret.mountPoint }}
+              mountPath: {{ .Values.controlApi.secret.mountPoint }}
             {{- end }}
-            - name: gm-control-api-backup
-              mountPath: {{ dir .Values.gmControlApi.pvcMountPoint }}
+            - name: control-api-backup
+              mountPath: {{ dir .Values.controlApi.pvcMountPoint }}
         - name: sidecar   
           image: {{ tpl .Values.sidecar.image $ | quote }}
           imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
@@ -94,7 +94,7 @@ spec:
             - name: metrics
               containerPort: 8081
           # If mTLS is enabled on the service, we can't use normal httpGet probes. Instead we add the probes to the sidecar so that we can exec in and call the service directly. The control-api service does not have the utilities (curl, wget with ssl) we need to do these probes there.
-          {{- if .Values.gmControlApi.secret }}
+          {{- if .Values.controlApi.secret }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
           readinessProbe:
             exec:
@@ -126,16 +126,16 @@ spec:
           {{- include "sidecar_volume_certs_mount" . | indent 12 }}
           {{- end }}
         {{- if .Values.global.consul.enabled }}
-        {{- $data := dict "Values" .Values "ServiceName" .Values.gmControlApi.name }}
+        {{- $data := dict "Values" .Values "ServiceName" .Values.controlApi.name }}
         {{- include "consul.agent" $data | nindent 8 }}
         {{- end }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}
       volumes:
-      {{- if .Values.gmControlApi.secret }}
+      {{- if .Values.controlApi.secret }}
       - name: service-certs
         secret:
-          secretName: {{ .Values.gmControlApi.secret.secret_name }}
+          secretName: {{ .Values.controlApi.secret.secret_name }}
           defaultMode: 0600
       {{- end }}
       {{- if .Values.global.consul.enabled }}
@@ -151,9 +151,9 @@ spec:
       {{- end }}
   volumeClaimTemplates:
   - metadata:
-      name: gm-control-api-backup
+      name: control-api-backup
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{ .Values.gmControlApi.pvc.size | default "1Gi" }}
+          storage: {{ .Values.controlApi.pvc.size | default "1Gi" }}

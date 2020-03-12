@@ -7,8 +7,8 @@ Various services in the mesh require Kubernetes Service Accounts to function. Th
 - `waiter` - various services use the `deciphernow/k8s-waiter` image as an InitContainer, which waits for a given service to have "ready" endpoints using the Kubernetes Endpoints API. This allows you to use readiness checks to define service dependencies in an idiomatic way. Requires read access to Kubernetes Endpoints. The services which use this InitContainer are:
   - `gm-catalog` - waits for `gm-control` to be up
   - `gm-slo` - waits for Postgres to be up
-  - `gm-control` - waits for `gm-control-api` to be up - see above, also needs access to pods, so make sure you create one service account for this.
-  - `gm-control-api-init` - waits for `gm-control-api` to be up to bootstrap the mesh configuration
+  - `gm-control` - waits for `control-api` to be up - see above, also needs access to pods, so make sure you create one service account for this.
+  - `control-api-init` - waits for `control-api` to be up to bootstrap the mesh configuration
 
 ## Using Helm to Create the Service Accounts
 

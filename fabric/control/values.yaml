@@ -1,7 +1,7 @@
 # Default values for gm-control
 global:
 
-  imagePullSecret: docker.secret
+  image_pull_secret: docker.secret
 
   environment: kubernetes
   domain:
@@ -50,7 +50,7 @@ control:
       value: 'false'
     gm_control_api_host:
       type: 'value'
-      value: 'gm-control-api:5555'
+      value: 'control-api:5555'
     gm_control_cmd:
       type: 'value'
       value: 'kubernetes'

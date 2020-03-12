@@ -16,7 +16,7 @@ spec:
         deployment: {{ .Values.control.name }}
         run: {{ .Values.control.name }}
     spec:
-      # This serviceaccount must have read access to both pods and endpoints, because gm-control uses the kubernetes API to do service discovery, and the waiter init container needs access to service endpoints to wait on gm-control-api
+      # This serviceaccount must have read access to both pods and endpoints, because gm-control uses the kubernetes API to do service discovery, and the waiter init container needs access to service endpoints to wait on control-api
       serviceAccountName: {{ .Values.control.serviceAccount.name }}
       containers:
         - name: {{ .Values.control.name }}
@@ -49,17 +49,17 @@ spec:
               mountPath: {{ .Values.control.secret.mountPoint }}
         {{- end }}
       initContainers:
-        - name: ensure-gm-control-api
+        - name: ensure-control-api
           image: {{ .Values.global.waiter.image }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
             - name: SERVICE
-              value: gm-control-api
+              value: control-api
             - name: POST_DELAY
               value: '10'
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}
       {{- if .Values.control.secret }}
       volumes:
         - name: control-api-certs
