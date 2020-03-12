@@ -32,7 +32,7 @@ spec:
             {{- include "envvars" (dict "envvar" .Values.gmControlApi.envvars "top" $) | indent 10 }}
           {{- if .Values.gmControlApi.secret }}
           - name: GM_CONTROL_API_USE_TLS
-            value: {{ .Values.global.control_api_tls | quote }}
+            value: "true"
           - name: GM_CONTROL_API_CA_CERT_PATH
             value: {{ .Values.gmControlApi.secret.mountPoint}}/{{ .Values.gmControlApi.secret.secretKeys.ca }}
           - name: GM_CONTROL_API_SERVER_CERT_PATH
@@ -44,7 +44,7 @@ spec:
             - name: http
               containerPort: {{ .Values.gmControlApi.containerPort }}
               protocol: TCP
-          {{- if not .Values.global.control_api_tls }}
+          {{- if not .Values.gmControlApi.secret }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
           readinessProbe:
             httpGet:

@@ -47,7 +47,7 @@ gmControlApi:
   proxyPort: 8080
   pvcMountPoint: '/app/control-api/data/backend.json'
   secret:
-    secret_name: gmcontrolapi-certs
+    secret_name: controlapitls
     mountPoint: /service-certs
     secretKeys:
       ca: ca.crt

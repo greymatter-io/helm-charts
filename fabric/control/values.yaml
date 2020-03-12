@@ -25,23 +25,13 @@ control:
   replicas: 1
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.global.control.version }}'
   imagePullPolicy: IfNotPresent
-  controlApiTLS:
-    name: control-to-control-api-certs
+  secret:
+    secret_name: controlapitls
     mountPoint: /service-certs
     insecure: true
-    certificates:
-      ca: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      cert: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      key: |-
-        -----BEGIN RSA PRIVATE KEY-----
-        ...
-        -----END RSA PRIVATE KEY-----
+    secretKeys:
+      cert: server.crt
+      key: server.key
   serviceAccount:
     create: true
     name: control-sa
