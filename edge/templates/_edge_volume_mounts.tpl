@@ -6,6 +6,6 @@
 
 {{- define "edge_volume_certs_mount" }}
 - name: edge-egress
-  mountPath: /etc/proxy/tls/sidecar/
+  mountPath: {{ .Values.edge.certificates.egress.mountPoint }}
   readOnly: true
 {{- end }}
