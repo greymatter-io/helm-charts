@@ -237,6 +237,7 @@ data:
         key: jwt.trust.pem
 
   mongo:
+    name: data-mongo
     private_image: true
     # set secret here to turn on ssl
     # secret:
@@ -253,7 +254,12 @@ data:
       ##
       # storageClass: "-"
     credentials:
-      secret_name: mongo-password
+      secret_name: 'mongo-password'
+      root_username: 'mongo'
+      root_password: 'mongo'
+      database: 'gmdata'
+      gmdata_username: 'gmdata-user'
+      gmdata_password: 'mongopassword'
     envvars:
       mongodb_admin_password:
         type: secret
@@ -351,7 +357,12 @@ internal-data:
       ##
       # storageClass: '-'
     credentials:
-      secret_name: internal-mongo-password
+      secret_name: 'internal-mongo-password'
+      root_username: 'mongo'
+      root_password: 'mongo'
+      database: 'gmdata'
+      gmdata_username: 'gmdata-user'
+      gmdata_password: 'mongopassword'
     envvars:
       mongodb_admin_password:
         type: secret
