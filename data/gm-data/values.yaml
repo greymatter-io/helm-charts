@@ -259,7 +259,7 @@ sidecar:
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   secret:
-    secret_name: sidecar-secret
+    secret_name: sidecar-certs
     mountPoint: /etc/proxy/tls/sidecar
     secretKeys:
       ca: ca.crt

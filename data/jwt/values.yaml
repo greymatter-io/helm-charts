@@ -143,7 +143,7 @@ sidecar:
       type: value
       value: 'jwt-security'
   secret:
-    secret_name: sidecar-secret
+    secret_name: sidecar-certs
     mountPoint: /etc/proxy/tls/sidecar
     secretKeys:
       ca: ca.crt
