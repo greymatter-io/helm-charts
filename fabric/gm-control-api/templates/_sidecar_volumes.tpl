@@ -8,5 +8,5 @@
 {{- define "sidecar_certs_volumes" }}
 - name: sidecar-certs
   secret:
-    secretName: sidecar-certs
+    secretName: {{ .Values.sidecar.secret.secret_name }}
 {{- end }}

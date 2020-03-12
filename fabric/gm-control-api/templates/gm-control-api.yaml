@@ -30,15 +30,15 @@ spec:
           imagePullPolicy: {{ .Values.gmControlApi.imagePullPolicy }}
           env:
             {{- include "envvars" (dict "envvar" .Values.gmControlApi.envvars "top" $) | indent 10 }}
-          {{- if .Values.global.control_api_tls  }}
+          {{- if .Values.gmControlApi.secret }}
           - name: GM_CONTROL_API_USE_TLS
             value: {{ .Values.global.control_api_tls | quote }}
           - name: GM_CONTROL_API_CA_CERT_PATH
-            value: {{ .Values.gmControlApi.ssl.mountPoint}}/ca.crt
+            value: {{ .Values.gmControlApi.secret.mountPoint}}/{{ .Values.gmControlApi.secret.secretKeys.ca }}
           - name: GM_CONTROL_API_SERVER_CERT_PATH
-            value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.crt
+            value: {{ .Values.gmControlApi.secret.mountPoint}}/{{ .Values.gmControlApi.secret.secretKeys.cert }}
           - name: GM_CONTROL_API_SERVER_KEY_PATH
-            value: {{ .Values.gmControlApi.ssl.mountPoint}}/server.key
+            value: {{ .Values.gmControlApi.secret.mountPoint}}/{{ .Values.gmControlApi.secret.secretKeys.key }}
           {{- end }}
           ports:
             - name: http
@@ -75,9 +75,9 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
           volumeMounts:
-            {{- if .Values.global.control_api_tls }}
+            {{- if .Values.gmControlApi.secret }}
             - name: service-certs
-              mountPath: {{ .Values.gmControlApi.ssl.mountPoint }}
+              mountPath: {{ .Values.gmControlApi.secret.mountPoint }}
             {{- end }}
             - name: gm-control-api-backup
               mountPath: {{ dir .Values.gmControlApi.pvcMountPoint }}
@@ -94,7 +94,7 @@ spec:
             - name: metrics
               containerPort: 8081
           # If mTLS is enabled on the service, we can't use normal httpGet probes. Instead we add the probes to the sidecar so that we can exec in and call the service directly. The control-api service does not have the utilities (curl, wget with ssl) we need to do these probes there.
-          {{- if .Values.global.control_api_tls }}
+          {{- if .Values.gmControlApi.secret }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
           readinessProbe:
             exec:
@@ -132,10 +132,10 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.global.imagePullSecret }}
       volumes:
-      {{- if .Values.global.control_api_tls }}
+      {{- if .Values.gmControlApi.secret }}
       - name: service-certs
         secret:
-          secretName: {{ .Values.gmControlApi.ssl.name }}
+          secretName: {{ .Values.gmControlApi.secret.secret_name }}
           defaultMode: 0600
       {{- end }}
       {{- if .Values.global.consul.enabled }}
