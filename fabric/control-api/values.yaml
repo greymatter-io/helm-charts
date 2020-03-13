@@ -33,7 +33,6 @@ controlApi:
       cert: server.crt
       key: server.key
   envvars:
-    # Defaults to true if the secret block is present, false otherwise
     gm_control_api_use_tls:
       type: 'value'
       value: "{{ .Values.controlApi.secret.enabled }}"

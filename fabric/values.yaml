@@ -62,12 +62,6 @@ control:
       gm_control_cmd:
         type: 'value'
         value: 'kubernetes'
-      # gm_control_file_format:
-      #   type: 'value'
-      #   value: 'yaml'
-      # gm_control_file_filename:
-      #   type: 'value'
-      #   value: '/app/routes.yaml'
       gm_control_xds_resolve_dns:
         type: 'value'
         value: 'true'
@@ -83,9 +77,16 @@ control:
       gm_control_kubernetes_namespaces:
         type: 'value'
         value: '{{ include "control.namespaces" . }}'
-      # gm_control_diff_dry_run:
-      #   type: 'value'
-      #   value: 'true'
+      # The following values are not applied. Change the type to 'value' to use these variables.
+      gm_control_diff_dry_run:
+        type: 'null'
+        value: 'true'
+      gm_control_file_format:
+        type: 'null'
+        value: 'yaml'
+      gm_control_file_filename:
+        type: 'null'
+        value: '/app/routes.yaml'
     resources:
       {}
       # We usually recommend not to specify default resources and to leave this as a conscious
@@ -119,7 +120,6 @@ control-api:
         cert: server.crt
         key: server.key
     envvars:
-      # Defaults to true if the secret block is present, false otherwise
       gm_control_api_use_tls:
         type: 'value'
         value: "{{ .Values.controlApi.secret.enabled }}"
