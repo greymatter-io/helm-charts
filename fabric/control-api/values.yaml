@@ -1,52 +1,31 @@
-# Default values for control-api.
-global:
+# Grey Matter Control API Defaults
 
-  image_pull_secret: docker.secret
-  
-  environment: kubernetes
-  domain:
-  route_url_name:
-  control_api_tls: true
-  remove_namespace_from_url: ''
-  mesh_tls:
-    use_provided_certs: true
-  exhibitor:
-    replicas: 1
-  # XDS will be replaced with gm-control
-  xds:
-    port: 18000
-    cluster: greymatter
-  controlApi:
-    version: latest
-    cli:
-      version: latest
-    sidecar:
-      version: latest
-  data:
-    jwt_prefix:
-  waiter:
-    image: deciphernow/k8s-waiter:latest
-    serviceAccount:
-      create: true
-      name: waiter-sa
-  consul:
+global:
+  image_pull_secret: docker.secret    # Used as imagePullSecrets value for each subchart
+  environment: openshift              # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  zone: zone-default-zone             # Used to configure control and control-api environment variables
+  consul:                             # Whether to use consul for service discovery
     enabled: false
     host: ''
     port: 8500
-  spire:
-    enabled: false
-  sidecar:
-    version: latest
+  waiter:                             # Configures the init container used to wait on various deployments to be ready
+    image: deciphernow/k8s-waiter:latest
+    serviceAccount: 
+      create: true
+      name: waiter-sa
+      
 controlApi:
-  name: control-api
-  displayName: control-api
-  replicas: 1
-  image: 'docker-dev.production.deciphernow.com/deciphernow/control-api:{{ $.Values.global.controlApi.version }}'
-  imagePullPolicy: IfNotPresent
-  containerPort: 5555
-  proxyPort: 8080
-  pvcMountPoint: '/app/control-api/data/backend.json'
+  name: control-api                   # Name used for the deployment and service resources
+  displayName: control-api            # Display name used for NOTES.txt
+  replicas: 1                         # Number of replicas for the deployment
+  version: latest
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
+  imagePullPolicy: IfNotPresent       # When to pull images, used in the deployment
+  containerPort: 5555                 # Port exposed by the control-api container
+  proxyPort: 8080                     # Port expose by the GM sidecar container
+  pvcMountPoint: '/app/control-api/data/backend.json' # Location for the control-api's configuration store
   secret:
+    enabled: true
     secret_name: controlapitls
     mountPoint: /service-certs
     secretKeys:
@@ -54,6 +33,19 @@ controlApi:
       cert: server.crt
       key: server.key
   envvars:
+    # Defaults to true if the secret block is present, false otherwise
+    gm_control_api_use_tls:
+      type: 'value'
+      value: "{{ .Values.controlApi.secret.enabled }}"
+    gm_control_api_ca_cert_path:
+      type: 'value'
+      value: "{{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.ca }}"
+    gm_control_api_server_cert_path:
+      type: 'value'
+      value: "{{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.cert }}"
+    gm_control_api_server_key_path:
+      type: 'value'
+      value: "{{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.key }}"
     gm_control_api_log_level:
       type: 'value'
       value: 'debug'
@@ -79,7 +71,7 @@ controlApi:
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # lines, and adjust them as necessary.
     # limits:
     #   cpu: 500m
     #   memory: 1Gi
@@ -87,11 +79,10 @@ controlApi:
     #   cpu: 250m
     #   memory: 256Mi
   pvc:
-    #  We  default the PVC to 1Gi, but if more is desired, uncomment this line and update the size
-    size:
+    size: 1Gi
 
 sidecar:
-  version: '{{- $.Values.global.controlApi.sidecar.version | default $.Values.global.sidecar.version }}'
+  version: latest
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
@@ -102,9 +93,27 @@ sidecar:
       cpu: 100m
       memory: 128Mi
   envvars:
-    xds_cluster:
-      type: value
-      value: 'control-api'
+    # xds_cluster:
+    #   type: value
+    #   value: 'control-api'
+    # proxy_dynamic:
+    #   type: 'value'
+    #   value: 'true'
+    # xds_zone:
+    #   type: 'value'
+    #   value: '{{ .Values.global.zone }}'
+    # xds_host:
+    #   type: 'value'
+    #   value: 'control.{{ .Release.Namespace }}.svc'
+    # xds_port:
+    #   type: 'value'
+    #   value: '50000'
+    # xds_node_id:
+    #   type: 'value'
+    #   value: 'default'
+    # envoy_admin_log_path:
+    #   type: 'value'
+    #   value: '/dev/stdout'
   secret:
     secret_name: sidecar-certs
     mountPoint: /etc/proxy/tls/sidecar

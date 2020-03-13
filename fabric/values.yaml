@@ -4,10 +4,26 @@ global:
   image_pull_secret: docker.secret    # Used as imagePullSecrets value for each subchart
   environment: openshift              # Deployment environment, one of "eks", "kuberenetes", or "openshift"
   zone: zone-default-zone             # Used to configure control and control-api environment variables
+  consul:                             # Whether to use consul for service discovery
+    enabled: false
+    host: ''
+    port: 8500
+  waiter:                             # Configures the init container used to wait on various deployments to be ready
+    image: deciphernow/k8s-waiter:latest
+    serviceAccount: 
+      create: true
+      name: waiter-sa
 
 control:
   control:
-    secret:                           # Configures the secret for control to talk to control api via tls
+    name: 'control'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
+    port: 50000
+    displayName: 'Control'
+    replicas: 1
+    imagePullPolicy: IfNotPresent
+    additionalNamespacesToControl:  # Comma delimited string of namespaces for control to monitor
+    secret:                         # Secret used to talk to control-api
       secret_name: controlapitls
       mountPoint: /service-certs
       insecure: true
@@ -16,30 +32,178 @@ control:
         key: server.key
     serviceAccount:
       create: true
-    image: docker-dev.production.deciphernow.com/deciphernow/gm-control:latest
+      name: control-sa
     envvars:
       gm_control_console_level:
         type: 'value'
         value: 'info'
-      #gm_control_cmd:
-      #  type: 'value'
-      #  value: 'consul'
-      #gm_control_consul_dc:
-      #  type: 'value'
-      #  value: 'dc1'
-      #gm_control_consul_hostport:
-      #  type: 'value'
-      #  value: '{{ .Values.global.consul.host }}:{{ .Values.global.consul.port }}'
+      gm_control_api_key:
+        type: 'value'
+        value: 'xxx'
+      gm_control_api_zone_name:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      gm_control_api_insecure:
+        type: 'value'
+        value: "{{ .Values.control.secret.insecure }}"
+      gm_control_api_ssl:
+        type: 'value'
+        value: "{{ .Values.control.secret.enabled }}"
+      gm_control_api_sslcert:
+        type: 'value'
+        value: "{{ .Values.control.secret.mountPoint }}/{{ .Values.control.secret.secretKeys.cert }}"
+      gm_control_api_sslkey:
+        type: 'value'
+        value: "{{ .Values.control.secret.mountPoint }}/{{ .Values.control.secret.secretKeys.key }}"
+      gm_control_api_host:
+        type: 'value'
+        value: 'control-api:5555'
+      gm_control_cmd:
+        type: 'value'
+        value: 'kubernetes'
+      # gm_control_file_format:
+      #   type: 'value'
+      #   value: 'yaml'
+      # gm_control_file_filename:
+      #   type: 'value'
+      #   value: '/app/routes.yaml'
+      gm_control_xds_resolve_dns:
+        type: 'value'
+        value: 'true'
+      gm_control_xds_ads_enabled:
+        type: 'value'
+        value: 'true'
+      gm_control_kubernetes_cluster_label:
+        type: 'value'
+        value: 'app'
+      gm_control_kubernetes_port_name:
+        type: 'value'
+        value: 'proxy'
+      gm_control_kubernetes_namespaces:
+        type: 'value'
+        value: '{{ include "control.namespaces" . }}'
+      # gm_control_diff_dry_run:
+      #   type: 'value'
+      #   value: 'true'
+    resources:
+      {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
 
 control-api:
   controlApi:
-    secret:
+    name: control-api                   # Name used for the deployment and service resources
+    displayName: control-api            # Display name used for NOTES.txt
+    replicas: 1                         # Number of replicas for the deployment
+    version: latest                     # Gm Control API version
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
+    imagePullPolicy: IfNotPresent       # When to pull images, used in the deployment
+    containerPort: 5555                 # Port exposed by the control-api container
+    proxyPort: 8080                     # Port expose by the GM sidecar container
+    pvcMountPoint: '/app/control-api/data/backend.json' # Location for the control-api's configuration store
+    secret:                             
+      enabled: true
       secret_name: controlapitls
       mountPoint: /service-certs
-      insecure: true
-    image: 'docker-dev.production.deciphernow.com/deciphernow/control-api:latest'
-    zone: '{{ .Values.global.zone }}'
-    init:
-      image: docker-dev.production.deciphernow.com/deciphernow/greymatter:latest
-  sidecar:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
+      secretKeys:
+        ca: ca.crt
+        cert: server.crt
+        key: server.key
+    envvars:
+      # Defaults to true if the secret block is present, false otherwise
+      gm_control_api_use_tls:
+        type: 'value'
+        value: "{{ .Values.controlApi.secret.enabled }}"
+      gm_control_api_ca_cert_path:
+        type: 'value'
+        value: "{{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.ca }}"
+      gm_control_api_server_cert_path:
+        type: 'value'
+        value: "{{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.cert }}"
+      gm_control_api_server_key_path:
+        type: 'value'
+        value: "{{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.key }}"
+      gm_control_api_log_level:
+        type: 'value'
+        value: 'debug'
+      gm_control_api_address:
+        type: 'value'
+        value: '0.0.0.0:5555'
+      gm_control_api_org_key:
+        type: 'value'
+        value: 'deciphernow'
+      gm_control_api_zone_key:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      gm_control_api_zone_name:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      gm_control_api_persister_type:
+        type: value
+        value: 'file'
+      gm_control_api_persister_path:
+        type: value
+        value: '{{ .Values.controlApi.pvcMountPoint }}'
+    resources:
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, and adjust them as necessary.
+      # limits:
+      #   cpu: 500m
+      #   memory: 1Gi
+      # requests:
+      #   cpu: 250m
+      #   memory: 256Mi
+    pvc:
+      size: 1Gi
+  
+# Sidecar configuration (Control-api is the only service in this chart with a proxy)
+sidecar:
+  version: latest
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  imagePullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  envvars:
+    xds_cluster:
+      type: value
+      value: 'control-api'
+    proxy_dynamic:
+      type: 'value'
+      value: 'true'
+    xds_zone:
+      type: 'value'
+      value: '{{ .Values.global.zone }}'
+    xds_host:
+      type: 'value'
+      value: 'control.{{ .Release.Namespace }}.svc'
+    xds_port:
+      type: 'value'
+      value: '{{ .Values.control.port | quote }}'
+    xds_node_id:
+      type: 'value'
+      value: 'default'
+    envoy_admin_log_path:
+      type: 'value'
+      value: '/dev/stdout'
+  secret:
+    secret_name: sidecar-certs
+    mountPoint: /etc/proxy/tls/sidecar
+    secretKeys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key    

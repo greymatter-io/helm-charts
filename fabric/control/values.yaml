@@ -1,31 +1,30 @@
 # Default values for gm-control
+
 global:
-
-  image_pull_secret: docker.secret
-
-  environment: kubernetes
-  domain:
-  route_url_name:
-  control_api_tls: true
-  remove_namespace_from_url: ''
-  exhibitor:
-    replicas: 1
-  control:
-    version: latest
-    additionalNamespacesToControl: data-only
-  waiter:
+  image_pull_secret: docker.secret    # Used as imagePullSecrets value for each subchart
+  environment: openshift              # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  zone: zone-default-zone             # Used to configure control and control-api environment variables
+  consul:                             # Whether to use consul for service discovery
+    enabled: false
+    host: ''
+    port: 8500
+  waiter:                             # Configures the init container used to wait on various deployments to be ready
     image: deciphernow/k8s-waiter:latest
+    serviceAccount: 
+      create: true
+      name: waiter-sa
 
 control:
   name: 'control'
   port: 50000
-  # This represents the namespaces that the control server will be aware of and able to monitor.  It should be a comma delimited list.
-  # The namespace used for the deployment will be include by default For example, "projecta,projectb"
   displayName: 'Control'
   replicas: 1
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.global.control.version }}'
+  version: latest
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
   imagePullPolicy: IfNotPresent
+  additionalNamespacesToControl: 
   secret:
+    enabled: true
     secret_name: controlapitls
     mountPoint: /service-certs
     insecure: true
@@ -36,6 +35,18 @@ control:
     create: true
     name: control-sa
   envvars:
+    gm_control_api_insecure:
+      type: 'value'
+      value: "{{ .Values.control.secret.insecure }}"
+    gm_control_api_ssl:
+      type: 'value'
+      value: "{{ .Values.control.secret.enabled }}"
+    gm_control_api_sslcert:
+      type: 'value'
+      value: "{{ .Values.control.secret.mountPoint }}/{{ .Values.control.secret.secretKeys.cert }}"
+    gm_control_api_sslkey:
+      type: 'value'
+      value: "{{ .Values.control.secret.mountPoint }}/{{ .Values.control.secret.secretKeys.key }}"
     gm_control_console_level:
       type: 'value'
       value: 'info'
@@ -45,9 +56,6 @@ control:
     gm_control_api_zone_name:
       type: 'value'
       value: '{{ .Values.global.zone }}'
-    gm_control_api_ssl:
-      type: 'value'
-      value: 'false'
     gm_control_api_host:
       type: 'value'
       value: 'control-api:5555'
@@ -90,3 +98,44 @@ control:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
+
+sidecar:
+  version: latest
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  imagePullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  envvars:
+    xds_cluster:
+      type: value
+      value: 'control'
+    proxy_dynamic:
+      type: 'value'
+      value: 'true'
+    xds_zone:
+      type: 'value'
+      value: '{{ .Values.global.zone }}'
+    xds_host:
+      type: 'value'
+      value: 'control.{{ .Release.Namespace }}.svc'
+    xds_port:
+      type: 'value'
+      value: '{{ .Values.global.control.port }}'
+    xds_node_id:
+      type: 'value'
+      value: 'default'
+    envoy_admin_log_path:
+      type: 'value'
+      value: '/dev/stdout'
+  secret:
+    secret_name: sidecar-certs
+    mountPoint: /etc/proxy/tls/sidecar
+    secretKeys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key    

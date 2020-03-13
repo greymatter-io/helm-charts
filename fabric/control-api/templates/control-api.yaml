@@ -30,16 +30,6 @@ spec:
           imagePullPolicy: {{ .Values.controlApi.imagePullPolicy }}
           env:
             {{- include "envvars" (dict "envvar" .Values.controlApi.envvars "top" $) | indent 10 }}
-          {{- if .Values.controlApi.secret }}
-          - name: GM_CONTROL_API_USE_TLS
-            value: "true"
-          - name: GM_CONTROL_API_CA_CERT_PATH
-            value: {{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.ca }}
-          - name: GM_CONTROL_API_SERVER_CERT_PATH
-            value: {{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.cert }}
-          - name: GM_CONTROL_API_SERVER_KEY_PATH
-            value: {{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.key }}
-          {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.controlApi.containerPort }}
@@ -117,14 +107,11 @@ spec:
             periodSeconds: 3
           {{- end }}
           env:
-          {{- include "greymatter.envvars" . | indent 12 }}
-        {{- if .Values.global.spire.enabled }}
-          volumeMounts:
-          {{- include "sidecar_volume_mounts" . | indent 12 }}
-          {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+          {{- include "envvars" . | indent 12 }}
+        {{- if .Values.controlApi.secret }}
           volumeMounts:
           {{- include "sidecar_volume_certs_mount" . | indent 12 }}
-          {{- end }}
+        {{- end }}
         {{- if .Values.global.consul.enabled }}
         {{- $data := dict "Values" .Values "ServiceName" .Values.controlApi.name }}
         {{- include "consul.agent" $data | nindent 8 }}
@@ -144,9 +131,7 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.global.spire.enabled }}
-      {{- include "sidecar_volumes" . | indent 6 }}
-      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      {{- if .Values.controlApi.secret }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
   volumeClaimTemplates:
