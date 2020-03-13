@@ -10,12 +10,12 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: {{ .Values.controlApi.name }}
+      gm.proxy: {{ .Values.controlApi.name }}
       deployment: {{ .Values.controlApi.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.controlApi.name }}
+        gm.proxy: {{ .Values.controlApi.name }}
         deployment: {{ .Values.controlApi.name }}
     spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}

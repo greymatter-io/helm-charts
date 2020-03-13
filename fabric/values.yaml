@@ -24,6 +24,7 @@ control:
     imagePullPolicy: IfNotPresent
     additionalNamespacesToControl:  # Comma delimited string of namespaces for control to monitor
     secret:                         # Secret used to talk to control-api
+      enabled: true
       secret_name: controlapitls
       mountPoint: /service-certs
       insecure: true
@@ -75,7 +76,7 @@ control:
         value: 'true'
       gm_control_kubernetes_cluster_label:
         type: 'value'
-        value: 'app'
+        value: 'gm.proxy'
       gm_control_kubernetes_port_name:
         type: 'value'
         value: 'proxy'

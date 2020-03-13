@@ -76,7 +76,7 @@ control:
       value: 'true'
     gm_control_kubernetes_cluster_label:
       type: 'value'
-      value: 'app'
+      value: 'gm.proxy'
     gm_control_kubernetes_port_name:
       type: 'value'
       value: 'proxy'
