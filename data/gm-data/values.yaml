@@ -2,7 +2,7 @@
 
 global:
 
-  imagePullSecret: docker.secret
+  image_pull_secret: docker.secret
   
   environment: kubernetes
   zone: zone-default-zone
@@ -22,12 +22,6 @@ global:
 
   spire:
     enabled: false
-
-  data:
-    # This value is used to data where to find jwt and also used to configure the mesh to enable routes from data to jwt
-    jwt_prefix: /jwt
-    sidecar:
-      version: latest
 
   waiter:
     image: deciphernow/k8s-waiter:latest
@@ -76,18 +70,17 @@ data:
     secret_name: data-secrets
   client_jwt_endpoint_address: localhost
   client_jwt_endpoint_use_tls: 'true'
-  base_path: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version | trunc 3 }}
+  jwt_prefix: /jwt
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
-  imagePullSecret: docker.secret
-  certs_mount_point: /certs
-  imagePullPolicy: IfNotPresent
+  image_pull_secret: docker.secret
+  image_pull_policy: IfNotPresent
   use_tls: true
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
   pvc:
     #size:
     mountPath: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
   # Allows operators to change the user and group to match the process running inside the gm-data container.
-  securityContext:
+  security_context:
     enabled: false
     runAsUser: 666
     runAsGroup: 666
@@ -98,21 +91,6 @@ data:
     standalone: false
     # deploy waiterSA automatically (true if tiller service account has ability to make roles in cluster)
     waiterSA: false
-    exhibitor_address:
-    base_path: /services/{{ .Release.Namespace | lower }}-{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
-    secrets:
-      - name: jwt-security
-        jwt.key:
-        jwt.pub:
-        jwt.api_key:
-      - name: jwt-certs
-        jwt.cert.pem:
-        jwt.key.pem:
-        jwt.trust.pem:
-        server.cert.pem:
-        server.key.pem:
-        server.trust.pem:
-
 
   resources:
     limits:
@@ -197,7 +175,7 @@ data:
       value: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
     client_jwt_prefix:
       type: value
-      value: '{{ .Values.global.data.jwt_prefix }}'
+      value: '{{ .Values.data.jwt_prefix }}'
     client_jwt_endpoint_address:
       type: value
       value: localhost
@@ -206,7 +184,7 @@ data:
       value: '8080'
     client_jwt_endpoint_prefix:
       type: value
-      value: '{{ .Values.global.data.jwt_prefix }}'
+      value: '{{ .Values.data.jwt_prefix }}'
     client_jwt_endpoint_use_tls:
       type: value
       value: 'true'
@@ -300,7 +278,7 @@ mongo:
     #  key: key_b64
 
 sidecar:
-  version: '{{- $.Values.global.data.sidecar.version | default $.Values.global.sidecar.version }}'
+  version: '{{ .Values.global.sidecar.version | default latest }}'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   secret:

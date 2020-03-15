@@ -10,6 +10,6 @@ spec:
       protocol: TCP
       targetPort: 6379
   selector:
-    app: {{ .Values.redis.name | default "redis" }}
+    gm.proxy: {{ .Values.redis.name | default "redis" }}
   sessionAffinity: None
   type: ClusterIP

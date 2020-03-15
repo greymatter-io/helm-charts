@@ -8,12 +8,12 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: {{ .Values.jwt.name | default "jwt-security"  }}
+      gm.proxy: {{ .Values.jwt.name | default "jwt-security"  }}
       deployment: {{ .Values.jwt.name | default "jwt-security"  }}
   template:
     metadata:
       labels:
-        app: {{ .Values.jwt.name | default "jwt-security"  }}
+        gm.proxy: {{ .Values.jwt.name | default "jwt-security"  }}
         deployment: {{ .Values.jwt.name | default "jwt-security"  }}
     spec:
       containers:
@@ -87,7 +87,7 @@ spec:
         {{- include "sidecar_volume_certs_mount" . | indent 10 }}
         {{- end }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}
       {{- if .Values.global.spire.enabled }}
       volumes:
       {{- include "sidecar_volumes" . | indent 8 }}

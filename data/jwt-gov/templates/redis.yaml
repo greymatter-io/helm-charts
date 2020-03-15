@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   labels:
-    app: {{ .Values.redis.name | default "redis" }}
+    gm.proxy: {{ .Values.redis.name | default "redis" }}
   name: {{ .Values.redis.name | default "redis" }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -10,7 +10,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: {{ .Values.redis.name | default "redis" }}
+      gm.proxy: {{ .Values.redis.name | default "redis" }}
       deployment: {{ .Values.redis.name | default "redis" }}
   strategy:
     activeDeadlineSeconds: 21600
@@ -26,7 +26,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        app: {{ .Values.redis.name | default "redis" }}
+        gm.proxy: {{ .Values.redis.name | default "redis" }}
         deployment: {{ .Values.redis.name | default "redis" }}
     spec:
       containers:
@@ -50,7 +50,7 @@ spec:
           imagePullPolicy: {{ .Values.redis.imagePullPolicy }}
       {{- if .Values.redis.private_image }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}
       {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always

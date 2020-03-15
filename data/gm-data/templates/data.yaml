@@ -10,23 +10,23 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: {{ .Values.data.name }}
+      gm.proxy: {{ .Values.data.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.data.name }}
+        gm.proxy: {{ .Values.data.name }}
     spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
-      {{- if .Values.data.securityContext.enabled }}
+      {{- if .Values.data.security_context.enabled }}
       securityContext:
-        fsGroup: {{ .Values.data.securityContext.fsGroup }}
+        fsGroup: {{ .Values.data.security_context.fsGroup }}
       {{- end }}
       {{- end }}
       serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
       initContainers:
         - name: ensure-{{ .Values.data.name }}
           image: {{ .Values.global.waiter.image }}
-          imagePullPolicy: {{ .Values.data.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.data.image_pull_policy }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
@@ -35,16 +35,16 @@ spec:
       containers:
       - name: {{ .Values.data.name }}
         image: {{ tpl .Values.data.image $ | quote }}
-        imagePullPolicy: {{ .Values.data.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.data.image_pull_policy }}
         {{- if .Values.data.resources }}
         resources:
 {{ toYaml .Values.data.resources | indent 10 }}
         {{- end }}
         {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
-        {{- if .Values.data.securityContext.enabled }}
+        {{- if .Values.data.security_context.enabled }}
         securityContext:
-          runAsUser: {{ .Values.data.securityContext.runAsUser }}
-          runAsGroup: {{ .Values.data.securityContext.runAsGroup }}
+          runAsUser: {{ .Values.data.security_context.runAsUser }}
+          runAsGroup: {{ .Values.data.security_context.runAsGroup }}
         {{- end }}
         {{- end }}
         env:
@@ -78,7 +78,7 @@ spec:
         {{- end }}
       - name: sidecar
         image: {{ tpl .Values.sidecar.image $ | quote }}
-        imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
         {{- if .Values.sidecar.resources }}
         resources:
 {{ toYaml .Values.sidecar.resources | indent 10 }}
@@ -113,7 +113,7 @@ spec:
           periodSeconds: 5
 
       imagePullSecrets:
-      - name: {{ .Values.data.imagePullSecret | default "docker.secret" }}
+      - name: {{ .Values.data.image_pull_secret | default "docker.secret" }}
       volumes:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

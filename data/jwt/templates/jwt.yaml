@@ -8,12 +8,12 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      app: {{ .Values.jwt.name | default "jwt-security"  }}
+      gm.proxy: {{ .Values.jwt.name | default "jwt-security"  }}
       deployment: {{ .Values.jwt.name | default "jwt-security"  }}
   template:
     metadata:
       labels:
-        app: {{ .Values.jwt.name | default "jwt-security"  }}
+        gm.proxy: {{ .Values.jwt.name | default "jwt-security"  }}
         deployment: {{ .Values.jwt.name | default "jwt-security"  }}
     spec:
       containers:
@@ -88,7 +88,7 @@ spec:
       {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}
       volumes:
       {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}

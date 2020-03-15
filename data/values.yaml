@@ -1,6 +1,6 @@
 global:
 
-  imagePullSecret: docker.secret
+  image_pull_secret: docker.secret
 
   environment: openshift
   domain: staging.deciphernow.com
