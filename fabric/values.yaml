@@ -23,7 +23,7 @@ control:
     display_name: 'Control'
     replicas: 1
     image_pull_policy: IfNotPresent
-    additionalNamespacesToControl:  # Comma delimited string of namespaces for control to monitor
+    additional_namespaces_to_control:  # Comma delimited string of namespaces for control to monitor
     secret:                         # Secret used to talk to control-api
       enabled: true
       secret_name: controlapitls

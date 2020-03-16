@@ -23,7 +23,7 @@ control:
   version: latest
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
   image_pull_policy: IfNotPresent
-  additionalNamespacesToControl: 
+  additional_namespaces_to_control: 
   secret:
     enabled: true
     secret_name: controlapitls
