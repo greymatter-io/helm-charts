@@ -5,20 +5,18 @@ global:
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
   environment: openshift
-  # Used to configure TODO
-  zone: zone-default-zone
-  # Whether to use consul for service discovery and where to find the Consul server
+  # Whether to register services with Consul and where to find the Consul server
   consul:
     enabled: false
     host: ''
     port: 8500
   # The port where the edge proxy is running, needed if consul is enabled
   edge_port: 8080
+  # Port for Grey Matter Control. Used in sidecar envvars
+  control_port: 50000
   # Whether to use spire
   spire:
     enabled: false
-  # Port for Grey Matter Control. Used in control-api and sidecar envvars
-  control_port: 50000
 
 # Configures the init container used to wait on various deployments to be ready
 waiter:

@@ -1,25 +1,28 @@
-# Grey Matter Data settings
+# Grey Matter Data Defaults
 
 global:
-
+  # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
-  
+  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
   environment: kubernetes
-  zone: zone-default-zone
-  domain:
-  route_url_name:
-  remove_namespace_from_url: ''
   exhibitor:
     replicas: 1
+  # Whether to register services with Consul and where to find the Consul server
   consul:
     enabled: false
     host: ''
     port: 8500
-  control_port: 50000
+  # The port where the edge proxy is running, needed if consul is enabled
   edge_port: 8080
+  # Port for Grey Matter Control. Used in sidecar envvars
+  control_port: 50000
+  # Zone for Grey Matter objects. Used in sidecar envvars
+  zone: zone-default-zone
+  # Whether to use spire
   spire:
     enabled: false
 
+# Configures the init container used to wait on various deployments to be ready
 waiter:
   image: deciphernow/k8s-waiter:latest
   serviceAccount:
@@ -27,23 +30,21 @@ waiter:
     name: waiter-sa
 
 data:
-  # The name of this installation of GM Data.  Used in the zookeeper address.  Allow to be unique to support multiple installations of Data
+  # Name used for the deployment and service resources
   name: data
   version: 1.0.0
   replicas: 1
+  # If set, enables tls using the secret specified in secret_name
   secret:
     secret_name: data-secrets
-  client_jwt_endpoint_address: localhost
-  client_jwt_endpoint_use_tls: 'true'
-  jwt_prefix: /jwt
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
-  image_pull_secret: docker.secret
+  image_pull_secret: {{ .Values.global.image_pull_secret || default docker.secret }}
   image_pull_policy: IfNotPresent
-  use_tls: true
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
+  # Location and size of pvc to persist data if not using s3 
   pvc:
     mount_point: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
-  # Allows operators to change the user and group to match the process running inside the gm-data container.
+  # Security context for the statefulset if enabled
   security_context:
     enabled: false
     runAsUser: 666
@@ -107,14 +108,6 @@ data:
       type: secret
       secret: '{{ .Values.data.secret.secret_name }}'
       key: master_key
-      #mongo_initdb_root_username:
-      #type: secret
-      #secret: '{{ $.Values.mongo.credentials.secret_name }}'
-      #key: gmdata_username
-      #mongo_initdb_root_password:
-      #type: secret
-      #secret: '{{ $.Values.mongo.credentials.secret_name }}'
-      #key: gmdata_password
     mongodb:
       type: secret
       secret: '{{ $.Values.mongo.credentials.secret_name }}'
@@ -139,7 +132,7 @@ data:
       value: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
     client_jwt_prefix:
       type: value
-      value: '{{ .Values.data.jwt_prefix }}'
+      value: '/jwt'
     client_jwt_endpoint_address:
       type: value
       value: localhost
@@ -148,7 +141,7 @@ data:
       value: '8080'
     client_jwt_endpoint_prefix:
       type: value
-      value: '{{ .Values.data.jwt_prefix }}'
+      value: '/jwt'
     client_jwt_endpoint_use_tls:
       type: value
       value: 'true'
@@ -172,14 +165,16 @@ data:
     bucket: decipher-quickstart-helm
 
 mongo:
+  # Name used for the mongo deployment and service resources
   name: data-mongo
   replicas: 1
   image: 'deciphernow/mongo:4.0.3'
   image_pull_policy: IfNotPresent
+  # If defined, sets the size and storageClass name for the Mongo data persistent volume storage class
   storage:
-    #This mountPath should match where your mongo's image will place its data
+    # Where your mongo image will place its data
     mount_path: /data/db
-    # The size, in Gi, that the Mongo PVC should be
+    # Size, in Gi, that the Mongo PVC should be
     size: 40
     ## Mongo data Persistent Volume Storage Class
     ## If defined, StorageClassName: <storageClass>
@@ -220,10 +215,10 @@ mongo:
     mongo_cn:
       type: value
       value: 'localhost'
-  
+ 
+  # The credentials for setting up a mongo user and database for data to connect with
   credentials:
     secret_name: 'mongo-password'
-
     root_username: 'mongo'
     root_password: 'mongo'
     database: 'gmdata'
@@ -231,8 +226,8 @@ mongo:
     gmdata_username: 'gmdata-user'
     gmdata_password: 'mongopassword'
 
-  # set secret to enable MONGO_TLS
-    #secret:
+  # If set, enables tls and configures environment using the secret specified in secret_name
+  #secret:
     #secret_name: mongo-certs
     #mount_point: /secret/cert
     #secret_keys:
