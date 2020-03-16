@@ -231,7 +231,7 @@ sidecar:
       value: 'control.{{ .Release.Namespace }}.svc'
     xds_port:
       type: 'value'
-      value: '{{ .Values.control.port | quote }}'
+      value: '{{ .Values.global.controlPort | quote }}'
     xds_node_id:
       type: 'value'
       value: 'default'
