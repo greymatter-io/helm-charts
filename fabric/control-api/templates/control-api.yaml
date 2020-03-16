@@ -73,7 +73,7 @@ spec:
               mountPath: {{ dir .Values.controlApi.pvc_mount_point }}
         - name: sidecar   
           image: {{ tpl .Values.sidecar.image $ | quote }}
-          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
           {{- if .Values.sidecar.resources }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
@@ -108,7 +108,7 @@ spec:
           {{- end }}
           env:
           {{- include "greymatter.envvars" . | indent 12 }}
-        {{- if .Values.controlApi.secret }}
+        {{- if .Values.sidecar.secret }}
           volumeMounts:
           {{- include "sidecar_volume_certs_mount" . | indent 12 }}
         {{- end }}
