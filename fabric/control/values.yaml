@@ -39,7 +39,7 @@ control:
   # Secret used to talk to control-api
   secret:
     enabled: true
-    secret_name: controlapitls
+    secret_name: control-certs
     mount_point: /service-certs
     insecure: true
     secret_keys:

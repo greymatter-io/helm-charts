@@ -40,7 +40,7 @@ control:
     # Secret used to talk to control-api
     secret:                      
       enabled: true
-      secret_name: controlapitls
+      secret_name: control-certs
       mount_point: /service-certs
       insecure: true
       secret_keys:
@@ -135,7 +135,7 @@ control-api:
     pvc_mount_point: '/app/control-api/data/backend.json' 
     secret:                             
       enabled: true
-      secret_name: controlapitls
+      secret_name: controlapi-certs
       mount_point: /service-certs
       secret_keys:
         ca: ca.crt
