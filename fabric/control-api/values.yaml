@@ -1,30 +1,44 @@
 # Grey Matter Control API Defaults
 
 global:
-  image_pull_secret: docker.secret    # Used as imagePullSecrets value for each subchart
-  environment: openshift              # Deployment environment, one of "eks", "kuberenetes", or "openshift"
-  zone: zone-default-zone             # Used to configure control and control-api environment variables
-  consul:                             # Whether to use consul for service discovery
+  # Used as imagePullSecrets value for each subchart
+  image_pull_secret: docker.secret    
+  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  environment: openshift              
+  # Used to configure control and control-api environment variables
+  zone: zone-default-zone             
+  # Whether to use consul for service discovery
+  consul:                             
     enabled: false
     host: ''
     port: 8500
+  # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
+  controlPort: 50000                  
 
-waiter:                             # Configures the init container used to wait on various deployments to be ready
+# Configures the init container used to wait on various deployments to be ready
+waiter:                             
   image: deciphernow/k8s-waiter:latest
   service_account: 
     create: true
     name: waiter-sa
     
 controlApi:
-  name: control-api                   # Name used for the deployment and service resources
-  display_name: control-api            # Display name used for NOTES.txt
-  replicas: 1                         # Number of replicas for the deployment
+  # Name used for the deployment and service resources
+  name: control-api                   
+  # Display name used for NOTES.txt
+  display_name: control-api            
+  # Number of replicas for the deployment
+  replicas: 1                         
   version: latest
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
-  image_pull_policy: IfNotPresent       # When to pull images, used in the deployment
-  container_port: 5555                 # Port exposed by the control-api container
-  proxyPort: 8080                     # Port expose by the GM sidecar container
-  pvc_mount_point: '/app/control-api/data/backend.json' # Location for the control-api's configuration store
+  # When to pull images, used in the deployment
+  image_pull_policy: IfNotPresent       
+  # Port exposed by the control-api container
+  container_port: 5555                 
+  # Port exposed by the GM sidecar container
+  proxy_port: 8080                     
+  # Location to persist control-api's configuration store
+  pvc_mount_point: '/app/control-api/data/backend.json' 
   secret:
     enabled: true
     secret_name: controlapitls
@@ -68,22 +82,25 @@ controlApi:
       type: value
       value: '{{ .Values.controlApi.pvc_mount_point }}'
   resources:
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, and adjust them as necessary.
-    # limits:
-    #   cpu: 500m
-    #   memory: 1Gi
-    # requests:
-    #   cpu: 250m
-    #   memory: 256Mi
   pvc:
     size: 1Gi
-
+    
 sidecar:
+  # GM Proxy version, used by control-api
   version: latest
+  # Port where the proxy will listen
+  port: 8080
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
+  secret:
+    secret_name: sidecar-certs
+    mount_point: /etc/proxy/tls/sidecar
+    secret_keys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key    
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   resources:
     limits:
@@ -107,17 +124,10 @@ sidecar:
       value: 'control.{{ .Release.Namespace }}.svc'
     xds_port:
       type: 'value'
-      value: '50000'
+      value: '{{ .Values.control.port | quote }}'
     xds_node_id:
       type: 'value'
       value: 'default'
     envoy_admin_log_path:
       type: 'value'
       value: '/dev/stdout'
-  secret:
-    secret_name: sidecar-certs
-    mount_point: /etc/proxy/tls/sidecar
-    secret_keys:
-      ca: ca.crt
-      cert: server.crt
-      key: server.key    

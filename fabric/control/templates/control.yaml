@@ -26,7 +26,7 @@ spec:
             {{- include "envvars" (dict "envvar" .Values.control.envvars "top" $) | indent 10 }}
           ports:
             - name: grpc
-              container_port: 50000
+              containerPort: {{ .Values.global.controlPort }}
               protocol: TCP
           livenessProbe:
             tcpSocket:
