@@ -42,8 +42,7 @@ data:
   use_tls: true
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
   pvc:
-    #size:
-    mount_path: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
+    mount_point: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
   # Allows operators to change the user and group to match the process running inside the gm-data container.
   security_context:
     enabled: false

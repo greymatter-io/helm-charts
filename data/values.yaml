@@ -1,21 +1,26 @@
+# Grey Matter Data Chart Overrides
+
 global:
-
+  # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
-
+  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
   environment: openshift
-  domain: staging.deciphernow.com
-  route_url_name: greymatter
-  remove_namespace_from_url: false
+  # Used to configure TODO
   zone: zone-default-zone
+  # Whether to use consul for service discovery and where to find the Consul server
   consul:
     enabled: false
     host: ''
     port: 8500
+  # The port where the edge proxy is running, needed if consul is enabled
+  edge_port: 8080
+  # Whether to use spire
   spire:
     enabled: false
-  control_port: 50000 
-  edge_port: 8080
+  # Port for Grey Matter Control. Used in control-api and sidecar envvars
+  control_port: 50000
 
+# Configures the init container used to wait on various deployments to be ready
 waiter:
   image: deciphernow/k8s-waiter:latest
   serviceAccount:
@@ -23,6 +28,7 @@ waiter:
     name: waiter-sa
 
 data:
+  # Sidecar configuration overrides for data sidecar
   sidecar:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     envvars:
@@ -31,10 +37,13 @@ data:
         value: 'data'
 
   data:
+    # Name used for the deployment and service resources
     name: data
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
+    # Security context for the statefulset if enabled
     security_context:
       enabled: false
+    # If set, enables tls using the secret specified in secret_name
     secret:
       secret_name: data-secrets
     envvars:
@@ -132,13 +141,16 @@ data:
         key: jwt.trust.pem
 
   mongo:
+    # Name used for the mongo deployment and service resources
     name: data-mongo
+    # True if mongo uses a private image, sets the image pull secret to global.image_pull_secret
     private_image: true
-    # set secret here to turn on ssl
+    # If set, enables tls and configures environment using the secret specified in secret_name
     # secret:
     #   secret_name: mongo-certs
+    # If defined, sets the size and storageClass name for the Mongo data persistent volume storage class
     storage:
-      # The size, in Gi, that the Mongo PVC should be
+      # Size, in Gi, that the Mongo PVC should be
       size: 40
       ## Mongo data Persistent Volume Storage Class
       ## If defined, StorageClassName: <storageClass>
@@ -148,6 +160,7 @@ data:
       ##   GKE, AWS & OpenStack)
       ##
       # storageClass: "-"
+    # Sets the credentials for setting up a mongo user and database for data to connect with
     credentials:
       secret_name: 'mongo-password'
       root_username: 'mongo'
@@ -178,6 +191,7 @@ data:
         key: database
 
 internal-data:
+  # Sidecar configuration overrides for internal-data sidecar
   sidecar:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     envvars:
@@ -185,15 +199,19 @@ internal-data:
         type: value
         value: 'data-internal'
   data:
+    # Name used for the deployment and service resources
+    name: data-internal
+    version: 1.0.0
+    image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
+    # If set, enables tls using the secret specified in secret_name
     secret:
       secret_name: internal-data-secrets
-    version: 1.0.0
-    name: data-internal
-    image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
+    # Security context for the statefulset if enabled
     security_context:
       enabled: true
+    # Location and size of pvc to persist data if not using s3 
     pvc:
-      mount_path: /buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
+      mount_point: /buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
     envvars:
       gmdata_namespace:
         type: value
@@ -224,14 +242,18 @@ internal-data:
         type: secret
         secret: internal-jwt-security-secret
         key: jwt.api_key
+
   mongo:
-    private_image: true
+    # Name used for the mongo deployment and service resources
     name: internal-data-mongo
-    # set secret here to turn on ssl
+    # True if mongo uses a private image, sets the image pull secret to global.image_pull_secret
+    private_image: true
+    # If set, enables tls and configures environment using the secret specified in secret_name
     # secret:
     #   secret_name: mongo-certs
+    # If defined, sets the size and storageClass name for the Mongo data persistent volume storage class
     storage:
-      # The size, in Gi, that the Mongo PVC should be
+      # Size, in Gi, that the Mongo PVC should be
       size: 10
       ## Mongo data Persistent Volume Storage Class
       ## If defined, StorageClassName: <storageClass>
@@ -240,7 +262,8 @@ internal-data:
       ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
       ##   GKE, AWS & OpenStack)
       ##
-      # storageClass: '-'
+      # storageClass: "-"
+    # Sets the credentials for setting up a mongo user and database for data to connect with
     credentials:
       secret_name: 'internal-mongo-password'
       root_username: 'mongo'
@@ -272,6 +295,7 @@ internal-data:
 
 
 jwt:
+  # Sidecar configuration overrides for jwt sidecar
   sidecar:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     envvars:
@@ -280,10 +304,15 @@ jwt:
         value: 'jwt-security'
 
   jwt:
+    # Name used for the deployment and service resources
+    name: jwt-security
+    # Whether or not to use aac if using jwt-gov
     use_aac: false
+    # If set, enables tls using the secret specified in secret_name
     #secret:
     #  secret_name: jwt-certs
     #  mount_point: /gm-jwt-security/certs
+    # Location to mount the information specified in users_cg_name in the container
     users_mount_point: /gm-jwt-security/etc
     image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
@@ -322,6 +351,7 @@ jwt:
     private_image: true
 
 internal-jwt:
+  # Sidecar configuration overrides for internal-jwt sidecar
   sidecar:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     envvars:
@@ -329,7 +359,9 @@ internal-jwt:
         type: value
         value: 'internal-jwt-security'
   jwt:
+    # Name used for the deployment and service resources
     name: internal-jwt-security
+    # If set, enables tls using the secret specified in secret_name
     #secret:
     #  secret_name: internal-jwt-certs
     #  mount_point: /gm-jwt-security/certs
@@ -365,8 +397,8 @@ internal-jwt:
         name: TOKEN_EXP_TIME
         value: '300'
 
+    # Provides a list of authorized users for the JWT service - preloaded with the DNs for GM Control, GM Catalog and the Mesh cert
     users_cg_name: internal-jwt-users
-    # This is a list of authorized users for the JWT service. It's preloaded with the DNs for GM Control, GM Catalog and the Mesh Cert.
     users: |-
       {
         "users": [
@@ -413,11 +445,16 @@ internal-jwt:
           }
         }]
       }
-  redis:
-    name: internal-redis
-    secret_name: internal-redis-password
-    password: 'internalRedis'
 
+
+  redis:
+    # Name used for the internal-redis deployment and service resources
+    name: internal-redis
+    # The secret containing the password to configure the environment variable REDIS_PASSWORD
+    secret:
+      secret_name: internal-redis-password
+
+# Overrides the default configurations for all sidecars in all subcharts
 sidecar:
   version: latest
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'

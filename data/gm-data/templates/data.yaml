@@ -74,7 +74,7 @@ spec:
         {{- if  (eq .Values.data.envvars.uses3.value  "false") }}
         volumeMounts:
           - name: data-pvc
-            mountPath: {{ tpl .Values.data.pvc.mount_path $ }}
+            mountPath: {{ tpl .Values.data.pvc.mount_point $ }}
         {{- end }}
       - name: sidecar
         image: {{ tpl .Values.sidecar.image $ | quote }}
