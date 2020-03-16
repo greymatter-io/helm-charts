@@ -24,18 +24,21 @@ waiter:
 
 control:
   control:
+    # Name used for the deployment and service resources
     name: 'control'
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
-    port: '{{ .Values.global.controlPort }}'
     # Display name used for NOTES.txt
     display_name: 'Control'
     # Number of replicas for the deployment
     replicas: 1
+    # Version of control
+    version: latest
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
+    # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Comma delimited string of namespaces for control to monitor
-    additional_namespaces_to_control:  
+    additional_namespaces_to_control:
     # Secret used to talk to control-api
-    secret:                        
+    secret:                      
       enabled: true
       secret_name: controlapitls
       mount_point: /service-certs
