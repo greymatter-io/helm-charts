@@ -7,19 +7,19 @@ global:
   environment: kubernetes
   exhibitor:
     replicas: 1
-  # Whether to use consul for service discovery and where to find the Consul server
-  consul:
-    enabled: false
-    host: ''
-    port: 8500
-  # The port where the edge proxy is running, needed if consul is enabled
-  edge_port: 10808
   # Port for Grey Matter Control. Used in sidecar envvars
   control_port: 50000
   # Zone for Grey Matter objects. Used in sidecar envvars
   zone: zone-default-zone
+  # Whether or not to use spire
+  spire:
+    enabled: false
+  # Whether to register services with Consul and where to find the Consul server
+  consul:
+    enabled: false
 
 jwt:
+  # Name used for the deployment and service resources
   name: jwt-security
   version: '1.0.0'
   image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
@@ -29,8 +29,8 @@ jwt:
       '-c',
       'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /gm-jwt-security/gm-jwt-security',
     ]
+  # Used to configure the REDIS_DB environment variable 
   redis_db: '0'
-  redis_pass: redis
   # If set, enables tls using the secret specified in secret_name
   #secret:
   #  secret_name: jwt-certs
@@ -107,7 +107,7 @@ jwt:
     }
 
 redis:
-  # Name used for the internal-redis deployment and service resources
+  # Name used for the redis deployment and service resources
   name: redis
   # The secret containing the password to configure the environment variable REDIS_PASSWORD
   secret:
