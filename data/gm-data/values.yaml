@@ -211,6 +211,23 @@ mongo:
     mongo_cn:
       type: value
       value: 'localhost'
+
+    # If true, mongo.secret must be set, and mongo_key, mongo_trust, and mongo_cert must be specified as below
+    mongo_use_tls:
+      type: value
+      value: 'false'
+    #mongo_cert:
+    #  type: secret
+    #  secret: {{ .Values.mongo.secret.secret_name }}
+    #  key: {{ .Values.mongo.secret.secret_keys.cert }}
+    #mongo_key:
+    #  type: secret
+    #  secret: {{ .Values.mongo.secret.secret_name }}
+    #  key: {{ .Values.mongo.secret.secret_keys.key }}
+    #mongo_trust:
+    #  type: secret
+    #  secret: {{ .Values.mongo.secret.secret_name }}
+    #  key: {{ .Values.mongo.secret.secret_keys.ca }}
  
   # The credentials for setting up a mongo user and database for data to connect with
   credentials:

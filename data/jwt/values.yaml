@@ -30,7 +30,6 @@ jwt:
       'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /gm-jwt-security/gm-jwt-security',
     ]
   # Used to configure the REDIS_DB environment variable 
-  redis_db: '0'
   # If set, enables tls using the secret specified in secret_name
   #secret:
   #  secret_name: jwt-certs
@@ -67,6 +66,12 @@ jwt:
     - type: value
       name: TOKEN_EXP_TIME
       value: '300'
+    - type: value
+      name: REDIS_PORT
+      value: "6379"
+    - type: value
+      name: REDIS_DB
+      value: "0"
 
 
   # Provides a list of authorized users for the JWT service - preloaded with the DNs for GM Control, GM Catalog and the Mesh cert

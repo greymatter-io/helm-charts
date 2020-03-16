@@ -44,13 +44,9 @@ spec:
         - name: {{ $envName }}
           value: {{ $envvar.value | quote }}
         {{- end }}
-      {{- end  }}   
+      {{- end  }}
         - name: REDIS_HOST
-          value: {{ .Values.redis.name }}.{{ .Release.Namespace }}.svc
-        - name:  REDIS_PORT
-          value: "6379"
-        - name: REDIS_DB
-          value: {{ .Values.jwt.redis_db | quote }}
+          value: {{ .Values.redis.name }}.{{ .Release.Namespace }}.svc   
         - name: REDIS_PASS
           valueFrom:
             secretKeyRef:

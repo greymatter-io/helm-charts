@@ -52,25 +52,6 @@ spec:
         - name: MONGOHOST
           value: {{ template "greymatter.mongo.address" . }}
         
-        {{- if .Values.mongo.secret }}
-        - name: MONGO_USE_TLS
-          value: "true"
-        - name: MONGO_CERT
-          valueFrom: 
-            secretKeyRef: 
-              name: {{ .Values.mongo.secret.secret_name }}
-              key: {{ .Values.mongo.secret.secret_keys.cert }}
-        - name: MONGO_KEY
-          valueFrom: 
-            secretKeyRef: 
-              name: {{ .Values.mongo.secret.secret_name }}
-              key: {{ .Values.mongo.secret.secret_keys.key }}
-        - name: MONGO_TRUST
-          valueFrom: 
-            secretKeyRef: 
-              name: {{ .Values.mongo.secret.secret_name }}
-              key: {{ .Values.mongo.secret.secret_keys.ca }}
-        {{- end }}
         {{- if  (eq .Values.data.envvars.uses3.value  "false") }}
         volumeMounts:
           - name: data-pvc

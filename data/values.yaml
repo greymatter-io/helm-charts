@@ -187,6 +187,22 @@ data:
         type: secret
         secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: database
+      # If true, mongo.secret must be set, and mongo_key, mongo_trust, and mongo_cert must be specified as below
+      mongo_use_tls:
+        type: value
+        value: 'false'
+      #mongo_cert:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.cert }}
+      #mongo_key:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.key }}
+      #mongo_trust:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.ca }}
 
 internal-data:
   # Sidecar configuration overrides for internal-data sidecar
@@ -290,6 +306,22 @@ internal-data:
         type: secret
         secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: database
+      # If true, mongo.secret must be set, and mongo_key, mongo_trust, and mongo_cert must be specified as below
+      mongo_use_tls:
+        type: value
+        value: 'false'
+      #mongo_cert:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.cert }}
+      #mongo_key:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.key }}
+      #mongo_trust:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.ca }}
 
 
 jwt:
@@ -343,6 +375,12 @@ jwt:
       - type: value
         name: TOKEN_EXP_TIME
         value: '300'
+      - type: value
+        name: REDIS_PORT
+        value: "6379"
+      - type: value
+        name: REDIS_DB
+        value: "0"
 
 
   redis:
@@ -394,6 +432,12 @@ internal-jwt:
       - type: value
         name: TOKEN_EXP_TIME
         value: '300'
+      - type: value
+        name: REDIS_PORT
+        value: "6379"
+      - type: value
+        name: REDIS_DB
+        value: "0"
 
     # Provides a list of authorized users for the JWT service - preloaded with the DNs for GM Control, GM Catalog and the Mesh cert
     users_cg_name: internal-jwt-users
