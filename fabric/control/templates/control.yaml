@@ -17,16 +17,16 @@ spec:
         run: {{ .Values.control.name }}
     spec:
       # This service_account must have read access to both pods and endpoints, because gm-control uses the kubernetes API to do service discovery, and the waiter init container needs access to service endpoints to wait on control-api
-      service_accountName: {{ .Values.control.service_account.name }}
+      serviceAccountName: {{ .Values.control.service_account.name }}
       containers:
         - name: {{ .Values.control.name }}
           image: {{ tpl .Values.control.image $ }}
-          image_pull_policy: {{ .Values.control.image_pull_policy }}
+          imagePullPolicy: {{ .Values.control.image_pull_policy }}
           env:
             {{- include "envvars" (dict "envvar" .Values.control.envvars "top" $) | indent 10 }}
           ports:
             - name: grpc
-              containerPort: 50000
+              container_port: 50000
               protocol: TCP
           livenessProbe:
             tcpSocket:
@@ -36,7 +36,7 @@ spec:
         {{- if .Values.control.secret }}
           volumeMounts:
             - name: controlapi-certs
-              mountPath: {{ .Values.control.secret.mountPoint }}
+              mountPath: {{ .Values.control.secret.mount_point }}
         {{- end }}
       initContainers:
         - name: ensure-control-api

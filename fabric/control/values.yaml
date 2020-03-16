@@ -27,9 +27,9 @@ control:
   secret:
     enabled: true
     secret_name: controlapitls
-    mountPoint: /service-certs
+    mount_point: /service-certs
     insecure: true
-    secretKeys:
+    secret_keys:
       cert: server.crt
       key: server.key
   service_account:
@@ -44,10 +44,10 @@ control:
       value: "{{ .Values.control.secret.enabled }}"
     gm_control_api_sslcert:
       type: 'value'
-      value: "{{ .Values.control.secret.mountPoint }}/{{ .Values.control.secret.secretKeys.cert }}"
+      value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.cert }}"
     gm_control_api_sslkey:
       type: 'value'
-      value: "{{ .Values.control.secret.mountPoint }}/{{ .Values.control.secret.secretKeys.key }}"
+      value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.key }}"
     gm_control_console_level:
       type: 'value'
       value: 'info'
@@ -136,8 +136,8 @@ sidecar:
       value: '/dev/stdout'
   secret:
     secret_name: sidecar-certs
-    mountPoint: /etc/proxy/tls/sidecar
-    secretKeys:
+    mount_point: /etc/proxy/tls/sidecar
+    secret_keys:
       ca: ca.crt
       cert: server.crt
       key: server.key    

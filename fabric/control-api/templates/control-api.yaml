@@ -27,12 +27,12 @@ spec:
       containers:
         - name: {{ .Values.controlApi.name }}
           image: {{ tpl .Values.controlApi.image $ }}
-          image_pull_policy: {{ .Values.controlApi.image_pull_policy }}
+          imagePullPolicy: {{ .Values.controlApi.image_pull_policy }}
           env:
             {{- include "envvars" (dict "envvar" .Values.controlApi.envvars "top" $) | indent 10 }}
           ports:
             - name: http
-              containerPort: {{ .Values.controlApi.containerPort }}
+              containerPort: {{ .Values.controlApi.container_port }}
               protocol: TCP
           {{- if not .Values.controlApi.secret }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
@@ -67,13 +67,13 @@ spec:
           volumeMounts:
             {{- if .Values.controlApi.secret }}
             - name: service-certs
-              mountPath: {{ .Values.controlApi.secret.mountPoint }}
+              mountPath: {{ .Values.controlApi.secret.mount_point }}
             {{- end }}
             - name: control-api-backup
-              mountPath: {{ dir .Values.controlApi.pvcMountPoint }}
+              mountPath: {{ dir .Values.controlApi.pvc_mount_point }}
         - name: sidecar   
           image: {{ tpl .Values.sidecar.image $ | quote }}
-          image_pull_policy: {{ .Values.sidecar.image_pull_policy }}
+          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
           {{- if .Values.sidecar.resources }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}

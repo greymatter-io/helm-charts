@@ -27,9 +27,9 @@ control:
     secret:                         # Secret used to talk to control-api
       enabled: true
       secret_name: controlapitls
-      mountPoint: /service-certs
+      mount_point: /service-certs
       insecure: true
-      secretKeys:
+      secret_keys:
         cert: server.crt
         key: server.key
     service_account:
@@ -53,10 +53,10 @@ control:
         value: "{{ .Values.control.secret.enabled }}"
       gm_control_api_sslcert:
         type: 'value'
-        value: "{{ .Values.control.secret.mountPoint }}/{{ .Values.control.secret.secretKeys.cert }}"
+        value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.cert }}"
       gm_control_api_sslkey:
         type: 'value'
-        value: "{{ .Values.control.secret.mountPoint }}/{{ .Values.control.secret.secretKeys.key }}"
+        value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.key }}"
       gm_control_api_host:
         type: 'value'
         value: 'control-api:5555'
@@ -109,14 +109,14 @@ control-api:
     version: latest                     # Gm Control API version
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
     image_pull_policy: IfNotPresent       # When to pull images, used in the deployment
-    containerPort: 5555                 # Port exposed by the control-api container
+    container_port: 5555                 # Port exposed by the control-api container
     proxyPort: 8080                     # Port expose by the GM sidecar container
-    pvcMountPoint: '/app/control-api/data/backend.json' # Location for the control-api's configuration store
+    pvc_mount_point: '/app/control-api/data/backend.json' # Location for the control-api's configuration store
     secret:                             
       enabled: true
       secret_name: controlapitls
-      mountPoint: /service-certs
-      secretKeys:
+      mount_point: /service-certs
+      secret_keys:
         ca: ca.crt
         cert: server.crt
         key: server.key
@@ -126,13 +126,13 @@ control-api:
         value: "{{ .Values.controlApi.secret.enabled }}"
       gm_control_api_ca_cert_path:
         type: 'value'
-        value: "{{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.ca }}"
+        value: "{{ .Values.controlApi.secret.mount_point}}/{{ .Values.controlApi.secret.secret_keys.ca }}"
       gm_control_api_server_cert_path:
         type: 'value'
-        value: "{{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.cert }}"
+        value: "{{ .Values.controlApi.secret.mount_point}}/{{ .Values.controlApi.secret.secret_keys.cert }}"
       gm_control_api_server_key_path:
         type: 'value'
-        value: "{{ .Values.controlApi.secret.mountPoint}}/{{ .Values.controlApi.secret.secretKeys.key }}"
+        value: "{{ .Values.controlApi.secret.mount_point}}/{{ .Values.controlApi.secret.secret_keys.key }}"
       gm_control_api_log_level:
         type: 'value'
         value: 'debug'
@@ -153,7 +153,7 @@ control-api:
         value: 'file'
       gm_control_api_persister_path:
         type: value
-        value: '{{ .Values.controlApi.pvcMountPoint }}'
+        value: '{{ .Values.controlApi.pvc_mount_point }}'
     resources:
       # We usually recommend not to specify default resources and to leave this as a conscious
       # choice for the user. This also increases chances charts run on environments with little
@@ -204,8 +204,8 @@ sidecar:
       value: '/dev/stdout'
   secret:
     secret_name: sidecar-certs
-    mountPoint: /etc/proxy/tls/sidecar
-    secretKeys:
+    mount_point: /etc/proxy/tls/sidecar
+    secret_keys:
       ca: ca.crt
       cert: server.crt
       key: server.key    
