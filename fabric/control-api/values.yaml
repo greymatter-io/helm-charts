@@ -34,9 +34,7 @@ controlApi:
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent       
   # Port exposed by the control-api container
-  container_port: 5555                 
-  # Port exposed by the GM sidecar container
-  proxy_port: 8080                     
+  container_port: 5555                                 
   # Location to persist control-api's configuration store
   pvc_mount_point: '/app/control-api/data/backend.json' 
   secret:
