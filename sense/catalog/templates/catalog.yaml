@@ -15,10 +15,10 @@ spec:
         app: catalog
         deployment: catalog
     spec:
-      serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
+      serviceAccountName: {{ .Values.waiter.service_account.name }}
       initContainers:
         - name: ensure-gm-control
-          image: {{ .Values.global.waiter.image }}
+          image: {{ .Values.waiter.image }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
@@ -55,10 +55,7 @@ spec:
               containerPort: 8081
           env:
           {{- include "greymatter.envvars" $ | indent 10 }}
-          {{- if .Values.global.spire.enabled }}
-          volumeMounts:
-          {{- include "sidecar_volume_mounts" . | indent 10 }}
-          {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+          {{- if .Values.catalog.secret }}
           volumeMounts:
           {{- include "sidecar_volume_certs_mount" . | indent 10 }}
           {{- end }}
@@ -82,15 +79,11 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.global.spire.enabled }}
-      {{- include "sidecar_volumes" . | indent 6 }}
-      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-      {{- include "sidecar_certs_volumes" . | indent 6 }}
-      {{- end }} 
       {{- if .Values.catalog.secret }}
+      {{- include "sidecar_certs_volumes" . | indent 6 }}
       - name: certs
         secret:
           secretName: {{ .Values.catalog.secret.secret_name }}
       {{- end }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}

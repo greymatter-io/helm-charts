@@ -1,64 +1,31 @@
-global:
+# Grey Matter Catalog Defaults
 
-  imagePullSecret: docker.secret
-  mesh_tls:
-    use_provided_certs: true
-  environment: kubernetes
-  domain:
-  route_url_name:
-  remove_namespace_from_url: false
-  zone: zone-default-zone
-  catalog:
-    name: catalog
-    version: latest
-    data_prefix: /data
-    sidecar:
-      version: latest
-  dashboard:
-    version: 3.1.0
-  documentation:
-    version: 3.0.0
-  edge:
-    version: 0.8.1
-  exhibitor:
-    replicas: 1
-    version:
-  jwt:
-    version: 1.0.0
-  slo:
-    version: 1.0.0
-  spire: 
-    enabled: false
-  xds:
-    cluster: greymatter
-    port: 18000
-    version: 0.2.6
-  waiter:
-    serviceAccount:
-      name: waiter-sa
-    image: deciphernow/k8s-waiter:latest
-  control:
-    name: control
-    port: 50000
-  services:
-    catalog:
-      egressTLS: false
-  consul:
+global:
+  # Used as imagePullSecrets value for each subchart
+  image_pull_secret: docker.secret    
+  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  environment: openshift              
+  # Used to configure control and control-api environment variables
+  zone: zone-default-zone             
+  # Whether to use consul for service discovery
+  consul:                             
     enabled: false
     host: ''
     port: 8500
-  sidecar: 
-    version: latest
-  spire:
-    enabled: false
-  mesh_tls:
-    use_provided_certs: true
+  # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
+  controlPort: 50000                  
+
+# Configures the init container used to wait on various deployments to be ready
+waiter:                             
+  image: deciphernow/k8s-waiter:latest
+  service_account: 
+    create: true
+    name: waiter-sa
 
 catalog:
   name: catalog
   version: latest
-  image: docker-dev.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.global.catalog.version }}
-  debug: 'true'
+  image: docker-dev.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
   imagePullPolicy: IfNotPresent
   resources:
     limits:
@@ -68,7 +35,6 @@ catalog:
       cpu: 100m
       memory: 128Mi
   port: 9080
-
   envvars:
     config_source:
       type: value
@@ -78,10 +44,10 @@ catalog:
       value: '300s'
     port:
       type: value
-      value: '9080'
+      value: '{{ $.Values.catalog.port }}'
     control_server_0_address:
       type: value
-      value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
+      value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.controlPort }}'
     control_server_0_zone_name:
       type: value
       value: '{{ .Values.global.zone }}'
@@ -93,13 +59,13 @@ catalog:
       value: 'true'
     ca_cert_path:
       type: value
-      value: '/etc/pki/ca.crt'
+      value: '/etc/pki/{{ .Values.catalog.secret.secretKeys.ca }}'
     server_cert_path:
       type: value
-      value: '/etc/pki/server.crt'
+      value: '/etc/pki/{{ .Values.catalog.secret.secretKeys.cert }}'
     server_key_path:
       type: value
-      value: '/etc/pki/server.key'
+      value: '/etc/pki/{{ .Values.catalog.secret.secretKeys.key }}'
     client_address:
       type: value
       value: localhost
@@ -148,24 +114,10 @@ catalog:
     secretKeys:
       ca: ca.crt
       cert: server.crt
-      key: server.key
-      
-  init:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-    imagePullPolicy: IfNotPresent
-    envvars:
-      debug:
-        type: 'value'
-        value: 'false'
-      catalog_api_host:
-        type: 'value'
-        value: '{{ .Values.catalog.name }}:{{ .Values.catalog.port }}'
-      use_tls:
-        type: value
-        value: '{{ $.Values.global.services.catalog.egressTLS | default false }}'
+      key: server.key     
 
 sidecar:
-  version: '{{- $.Values.global.catalog.sidecar.version | default $.Values.global.sidecar.version }}'
+  version: 'latest'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
@@ -178,7 +130,7 @@ sidecar:
   envvars:
     xds_cluster:
       type: value
-      value: 'catalog'
+      value: '{{ .Values.catalog.name }}'
     kafka_topic:
       type: value
       value: 'gm-catalog'
