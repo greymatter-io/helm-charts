@@ -20,7 +20,7 @@ control:
     name: 'control'
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
     port: 50000
-    displayName: 'Control'
+    display_name: 'Control'
     replicas: 1
     imagePullPolicy: IfNotPresent
     additionalNamespacesToControl:  # Comma delimited string of namespaces for control to monitor
@@ -104,7 +104,7 @@ control:
 control-api:
   controlApi:
     name: control-api                   # Name used for the deployment and service resources
-    displayName: control-api            # Display name used for NOTES.txt
+    display_name: control-api            # Display name used for NOTES.txt
     replicas: 1                         # Number of replicas for the deployment
     version: latest                     # Gm Control API version
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'

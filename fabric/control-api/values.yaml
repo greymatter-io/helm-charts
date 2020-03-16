@@ -17,7 +17,7 @@ waiter:                             # Configures the init container used to wait
     
 controlApi:
   name: control-api                   # Name used for the deployment and service resources
-  displayName: control-api            # Display name used for NOTES.txt
+  display_name: control-api            # Display name used for NOTES.txt
   replicas: 1                         # Number of replicas for the deployment
   version: latest
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'

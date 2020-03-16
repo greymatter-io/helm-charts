@@ -18,7 +18,7 @@ waiter:                             # Configures the init container used to wait
 control:
   name: 'control'
   port: 50000
-  displayName: 'Control'
+  display_name: 'Control'
   replicas: 1
   version: latest
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
