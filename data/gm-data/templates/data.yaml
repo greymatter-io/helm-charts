@@ -22,10 +22,10 @@ spec:
         fsGroup: {{ .Values.data.security_context.fsGroup }}
       {{- end }}
       {{- end }}
-      serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
+      serviceAccountName: {{ .Values.waiter.serviceAccount.name }}
       initContainers:
         - name: ensure-{{ .Values.data.name }}
-          image: {{ .Values.global.waiter.image }}
+          image: {{ .Values.waiter.image }}
           imagePullPolicy: {{ .Values.data.image_pull_policy }}
           env:
             - name: NAMESPACE
@@ -95,7 +95,7 @@ spec:
         {{- if .Values.global.spire.enabled }}
         volumeMounts:
         {{- include "sidecar_volume_mounts" . | indent 8 }}
-        {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+        {{- else if .Values.data.secret }}
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end}}
@@ -123,7 +123,7 @@ spec:
       {{- end }}
       {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}
-      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      {{- else if .Values.data.secret }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       - name: data

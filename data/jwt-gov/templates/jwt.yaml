@@ -19,7 +19,7 @@ spec:
       containers:
       - name: jwt-security
         image: {{ tpl $.Values.jwt.image $ | quote }}
-        imagePullPolicy: {{ .Values.jwt.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.jwt.image_pull_policy }}
         {{- if .Values.jwt.resources }}
         resources:
 {{ toYaml .Values.jwt.resources | indent 10 }}
@@ -71,7 +71,7 @@ spec:
         env:
         {{- include "greymatter.envvars" . | indent 8 }}
         image: {{ tpl .Values.sidecar.image $ | quote }}
-        imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
         ports:
         - containerPort: 8080
           name: proxy
@@ -82,7 +82,7 @@ spec:
         {{- if .Values.global.spire.enabled }}
         volumeMounts:
         {{- include "sidecar_volume_mounts" . | indent 10 }}
-        {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+        {{- else if .Values.jwt.secret }}
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 10 }}
         {{- end }}
@@ -91,7 +91,7 @@ spec:
       {{- if .Values.global.spire.enabled }}
       volumes:
       {{- include "sidecar_volumes" . | indent 8 }}
-      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      {{- else if .Values.jwt.secret }}
       volumes:
       {{- include "sidecar_certs_volumes" . | indent 8 }}
       {{- end }}

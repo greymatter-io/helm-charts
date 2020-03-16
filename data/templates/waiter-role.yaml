@@ -1,8 +1,8 @@
-{{- if .Values.global.waiter.serviceAccount.create }}
+{{- if .Values.waiter.serviceAccount.create }}
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .Values.global.waiter.serviceAccount.name }}-role
+  name: {{ .Values.waiter.serviceAccount.name }}-role
   namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: [""]

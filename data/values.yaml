@@ -7,24 +7,20 @@ global:
   route_url_name: greymatter
   remove_namespace_from_url: false
   zone: zone-default-zone
-  mesh_tls:
-    enabled: true
-    use_provided_certs: true
-    # This is the DN of the cert being used in the mesh. The Helm charts will add whitelist the DN throughout the mesh
-    dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local
-  # Turns on tls for control api and configures control to talk to it using tls
   consul:
     enabled: false
     host: ''
     port: 8500
   spire:
     enabled: false
-  waiter:
-    serviceAccount:
-      create: true
-      name: waiter-sa
   control_port: 50000 
   edge_port: 8080
+
+waiter:
+  image: deciphernow/k8s-waiter:latest
+  serviceAccount:
+    create: true
+    name: waiter-sa
 
 data:
   sidecar:
@@ -37,7 +33,6 @@ data:
   data:
     name: data
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
-    certs_mount_point: /app/certs
     security_context:
       enabled: false
     secret:
@@ -163,19 +158,19 @@ data:
     envvars:
       mongodb_admin_password:
         type: secret
-        secret: mongo-password
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: gmdata_password
       mongodb_database:
         type: secret
-        secret: mongo-password
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: database
       mongodb_user:
         type: secret
-        secret: mongo-password
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: root_username
       mongodb_password:
         type: secret
-        secret: mongo-password
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: root_password
       mongo_initdb_database:
         type: secret
@@ -185,7 +180,6 @@ data:
 internal-data:
   sidecar:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-    create_sidecar_secret: false
     envvars:
       xds_cluster:
         type: value
@@ -196,7 +190,6 @@ internal-data:
     version: 1.0.0
     name: data-internal
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
-    certs_mount_point: /app/certs
     security_context:
       enabled: true
     pvc:
@@ -258,19 +251,19 @@ internal-data:
     envvars:
       mongodb_admin_password:
         type: secret
-        secret: internal-mongo-password
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: gmdata_password
       mongodb_database:
         type: secret
-        secret: internal-mongo-password
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: database
       mongodb_user:
         type: secret
-        secret: internal-mongo-password
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: root_username
       mongodb_password:
         type: secret
-        secret: internal-mongo-password
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: root_password
       mongo_initdb_database:
         type: secret
@@ -281,7 +274,6 @@ internal-data:
 jwt:
   sidecar:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-    create_sidecar_secret: false
     envvars:
       xds_cluster:
         type: value
@@ -289,6 +281,9 @@ jwt:
 
   jwt:
     use_aac: false
+    #secret:
+    #  secret_name: jwt-certs
+    #  mount_point: /gm-jwt-security/certs
     users_mount_point: /gm-jwt-security/etc
     image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
@@ -335,7 +330,9 @@ internal-jwt:
         value: 'internal-jwt-security'
   jwt:
     name: internal-jwt-security
-    certs_mount_point: /gm-jwt-security/certs
+    #secret:
+    #  secret_name: internal-jwt-certs
+    #  mount_point: /gm-jwt-security/certs
     image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
       - type: value
@@ -424,7 +421,6 @@ internal-jwt:
 sidecar:
   version: latest
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-  create_sidecar_secret: true
   secret:
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar

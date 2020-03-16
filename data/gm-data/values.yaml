@@ -17,17 +17,14 @@ global:
     port: 8500
   control_port: 50000
   edge_port: 8080
-  mesh_tls:
-    use_provided_certs: true
-
   spire:
     enabled: false
 
-  waiter:
-    image: deciphernow/k8s-waiter:latest
-    serviceAccount:
-      create: true
-      name: waiter-sa
+waiter:
+  image: deciphernow/k8s-waiter:latest
+  serviceAccount:
+    create: true
+    name: waiter-sa
 
 data:
   # The name of this installation of GM Data.  Used in the zookeeper address.  Allow to be unique to support multiple installations of Data

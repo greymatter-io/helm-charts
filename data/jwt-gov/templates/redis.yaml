@@ -47,7 +47,7 @@ spec:
               secretKeyRef:
                 name: {{ .Values.redis.secret.secret_name }}
                 key: password
-          imagePullPolicy: {{ .Values.redis.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.redis.image_pull_policy }}
       {{- if .Values.redis.private_image }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}

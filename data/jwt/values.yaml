@@ -19,8 +19,6 @@ global:
   edge_port: 8080
   spire:
     enabled: false
-  mesh_tls:
-    use_provided_certs: true
 
 jwt:
   version: '1.0.0'
@@ -34,9 +32,11 @@ jwt:
   redis_db: '0'
   redis_pass: redis
   egress_use_tls: 'true'
+  #secret:
+  #  secret_name: jwt-certs
+  #  mount_point: /gm-jwt-security/certs
   users_mount_point: /gm-jwt-security/etc
-  certs_mount_point: /gm-jwt-security/certs
-  imagePullPolicy: IfNotPresent
+  image_pull_policy: IfNotPresent
   resources:
     limits:
       cpu: 200m
@@ -115,7 +115,7 @@ redis:
   k8s:
     image: 'redis:3.2'
   replica_count: 1
-  imagePullPolicy: IfNotPresent
+  image_pull_policy: IfNotPresent
   #private_image: false
   resources:
     limits:
@@ -128,7 +128,7 @@ redis:
 sidecar:
   version: '{{- $.Values.jwt.sidecar.version | default latest }}'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  imagePullPolicy: IfNotPresent
+  image_pull_policy: IfNotPresent
   resources:
     limits:
       cpu: 200m
