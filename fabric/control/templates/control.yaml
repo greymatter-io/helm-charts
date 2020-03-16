@@ -21,7 +21,7 @@ spec:
       containers:
         - name: {{ .Values.control.name }}
           image: {{ tpl .Values.control.image $ }}
-          imagePullPolicy: {{ .Values.control.imagePullPolicy }}
+          image_pull_policy: {{ .Values.control.image_pull_policy }}
           env:
             {{- include "envvars" (dict "envvar" .Values.control.envvars "top" $) | indent 10 }}
           ports:

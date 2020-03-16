@@ -21,7 +21,7 @@ controlApi:
   replicas: 1                         # Number of replicas for the deployment
   version: latest
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
-  imagePullPolicy: IfNotPresent       # When to pull images, used in the deployment
+  image_pull_policy: IfNotPresent       # When to pull images, used in the deployment
   containerPort: 5555                 # Port exposed by the control-api container
   proxyPort: 8080                     # Port expose by the GM sidecar container
   pvcMountPoint: '/app/control-api/data/backend.json' # Location for the control-api's configuration store
@@ -84,7 +84,7 @@ controlApi:
 sidecar:
   version: latest
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  imagePullPolicy: IfNotPresent
+  image_pull_policy: IfNotPresent
   resources:
     limits:
       cpu: 200m

@@ -2,7 +2,7 @@
 {{- define "consul.agent" }}
 - name: consul
   image: consul:1.5.0
-  imagePullPolicy: IfNotPresent
+  image_pull_policy: IfNotPresent
   env:
   - name: POD_IP
     valueFrom:

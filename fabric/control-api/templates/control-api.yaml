@@ -27,7 +27,7 @@ spec:
       containers:
         - name: {{ .Values.controlApi.name }}
           image: {{ tpl .Values.controlApi.image $ }}
-          imagePullPolicy: {{ .Values.controlApi.imagePullPolicy }}
+          image_pull_policy: {{ .Values.controlApi.image_pull_policy }}
           env:
             {{- include "envvars" (dict "envvar" .Values.controlApi.envvars "top" $) | indent 10 }}
           ports:
@@ -73,7 +73,7 @@ spec:
               mountPath: {{ dir .Values.controlApi.pvcMountPoint }}
         - name: sidecar   
           image: {{ tpl .Values.sidecar.image $ | quote }}
-          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+          image_pull_policy: {{ .Values.sidecar.image_pull_policy }}
           {{- if .Values.sidecar.resources }}
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
