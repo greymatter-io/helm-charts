@@ -87,7 +87,7 @@ sidecar:
   # GM Proxy version, used by control-api
   version: latest
   # Port where the proxy will listen
-  port: 8080
+  port: 10808
   # Port where the proxy will expose metrics
   metrics_port: 8081
   secret:
