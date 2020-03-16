@@ -86,10 +86,10 @@ spec:
         env:
         {{- include "greymatter.envvars" . | indent 8 }}
         ports:
-        - containerPort: 8080
+        - containerPort: {{ .Values.sidecar.port }}
           name: proxy
           protocol: TCP
-        - containerPort: 8081
+        - containerPort: {{ .Values.sidecar.metrics_port }}
           name: metrics
           protocol: TCP
         {{- if .Values.global.spire.enabled }}
@@ -113,7 +113,7 @@ spec:
           periodSeconds: 5
 
       imagePullSecrets:
-      - name: {{ .Values.data.image_pull_secret }}
+      - name: {{ .Values.global.image_pull_secret | default "docker.secret" }}
       volumes:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

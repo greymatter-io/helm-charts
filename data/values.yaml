@@ -11,7 +11,7 @@ global:
     host: ''
     port: 8500
   # The port where the edge proxy is running, needed if consul is enabled
-  edge_port: 8080
+  edge_port: 10808
   # Port for Grey Matter Control. Used in sidecar envvars
   control_port: 50000
   # Whether to use spire
@@ -118,7 +118,7 @@ data:
         value: localhost
       client_jwt_endpoint_port:
         type: value
-        value: '8080'
+        value: '10808'
       client_jwt_endpoint_prefix:
         type: value
         value: /jwt

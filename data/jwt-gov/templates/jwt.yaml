@@ -73,10 +73,10 @@ spec:
         image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
         ports:
-        - containerPort: 8080
+        - containerPort: {{ .Values.sidecar.port }}
           name: proxy
           protocol: TCP
-        - containerPort: 8081
+        - containerPort: {{ .Values.sidecar.metrics_port }}
           name: metrics
           protocol: TCP
         {{- if .Values.global.spire.enabled }}

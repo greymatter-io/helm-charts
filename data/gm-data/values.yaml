@@ -13,7 +13,7 @@ global:
     host: ''
     port: 8500
   # The port where the edge proxy is running, needed if consul is enabled
-  edge_port: 8080
+  edge_port: 10808
   # Port for Grey Matter Control. Used in sidecar envvars
   control_port: 50000
   # Zone for Grey Matter objects. Used in sidecar envvars
@@ -38,7 +38,7 @@ data:
   secret:
     secret_name: data-secrets
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
-  image_pull_secret: {{ .Values.global.image_pull_secret || default docker.secret }}
+  image_pull_secret: '{{ .Values.global.image_pull_secret }}'
   image_pull_policy: IfNotPresent
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
   # Location and size of pvc to persist data if not using s3 
@@ -138,7 +138,7 @@ data:
       value: localhost
     client_jwt_endpoint_port:
       type: value
-      value: '8080'
+      value: '10808'
     client_jwt_endpoint_prefix:
       type: value
       value: '/jwt'
@@ -235,10 +235,14 @@ mongo:
     #  cert: cert_b64
     #  key: key_b64
 
+# Sets default sidecar configurations for all sidecars
 sidecar:
   version: 'latest'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  image_pull_policy: IfNotPresent
+  # Port where the proxy will listen
+  port: 10808
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
+  # If set, enables tls using the secret specified in secret_name
   secret:
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar/
@@ -246,6 +250,8 @@ sidecar:
       ca: ca.crt
       cert: service.crt
       key: service.key
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image_pull_policy: IfNotPresent
   resources:
     limits:
       cpu: 200m
