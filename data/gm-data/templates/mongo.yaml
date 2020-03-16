@@ -28,7 +28,7 @@ spec:
       - env:
         {{- include "data.envvars" (dict "envvar" .Values.mongo.envvars "top" $) | indent 8 }}
         image: {{ tpl .Values.mongo.image $ | quote }}
-        imagePullPolicy: {{ .Values.mongo.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.mongo.image_pull_policy }}
         {{- if .Values.mongo.resources }}
         resources:
 {{ toYaml .Values.mongo.resources | indent 10 }}
@@ -39,13 +39,13 @@ spec:
           name: mongo
           protocol: TCP
         volumeMounts:
-        - mountPath: {{ .Values.mongo.storage.mountPath }}
+        - mountPath: {{ .Values.mongo.storage.mount_path }}
           name: data
         - mountPath: /docker-entrypoint-initdb.d/
           name: mongo-init
         {{- if .Values.mongo.secret }}
         - name: certificates
-          mountPath: {{ .Values.mongo.secret.mountPoint }}
+          mountPath: {{ .Values.mongo.secret.mount_point }}
         {{- end }}
       volumes:
         - name: mongo-init

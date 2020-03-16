@@ -11,21 +11,19 @@ global:
   xds:
     port: 18000
     cluster: greymatter
-  jwt:
-    version: 1.0.0
-    sidecar:
-      version: latest
   consul:
     enabled: false
     host: ''
     port: 8500
+  control_port: 50000
+  edge_port: 8080
   spire:
     enabled: false
   mesh_tls:
     use_provided_certs: true
 
 jwt:
-  version: '{{ .Values.global.jwt.version }}'
+  version: '1.0.0'
   image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
@@ -128,7 +126,7 @@ redis:
       memory: 128Mi
 
 sidecar:
-  version: '{{- $.Values.global.jwt.sidecar.version | default $.Values.global.sidecar.version }}'
+  version: '{{- $.Values.jwt.sidecar.version | default latest }}'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   imagePullPolicy: IfNotPresent
   resources:
@@ -144,8 +142,8 @@ sidecar:
       value: 'jwt-security'
   secret:
     secret_name: sidecar-certs
-    mountPoint: /etc/proxy/tls/sidecar
-    secretKeys:
+    mount_point: /etc/proxy/tls/sidecar
+    secret_keys:
       ca: ca.crt
       cert: service.crt
       key: service.key

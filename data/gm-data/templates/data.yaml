@@ -59,22 +59,22 @@ spec:
           valueFrom: 
             secretKeyRef: 
               name: {{ .Values.mongo.secret.secret_name }}
-              key: {{ .Values.mongo.secret.secretKeys.cert }}
+              key: {{ .Values.mongo.secret.secret_keys.cert }}
         - name: MONGO_KEY
           valueFrom: 
             secretKeyRef: 
               name: {{ .Values.mongo.secret.secret_name }}
-              key: {{ .Values.mongo.secret.secretKeys.key }}
+              key: {{ .Values.mongo.secret.secret_keys.key }}
         - name: MONGO_TRUST
           valueFrom: 
             secretKeyRef: 
               name: {{ .Values.mongo.secret.secret_name }}
-              key: {{ .Values.mongo.secret.secretKeys.ca }}
+              key: {{ .Values.mongo.secret.secret_keys.ca }}
         {{- end }}
         {{- if  (eq .Values.data.envvars.uses3.value  "false") }}
         volumeMounts:
           - name: data-pvc
-            mountPath: {{ tpl .Values.data.pvc.mountPath $ }}
+            mountPath: {{ tpl .Values.data.pvc.mount_path $ }}
         {{- end }}
       - name: sidecar
         image: {{ tpl .Values.sidecar.image $ | quote }}

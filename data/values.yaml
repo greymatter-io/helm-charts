@@ -13,114 +13,22 @@ global:
     # This is the DN of the cert being used in the mesh. The Helm charts will add whitelist the DN throughout the mesh
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local
   # Turns on tls for control api and configures control to talk to it using tls
-  control_api_tls: true
-  kafka:
-    replicas: 3
-  dashboard:
-    version: 3.3.1
-    sidecar:
-      version: latest
-  catalog:
-    version: latest
-    sidecar:
-      version: latest
-  sense:
-    enabled: false
   consul:
     enabled: false
     host: ''
     port: 8500
-  edge:
-    enableTLS: true
-    # This is the DN of the new certificate issued to the edge for internal mesh communication. It needs to be whitelisted by the proxies
-    egressDn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=edge
-    certPath: /etc/proxy/tls/edge
-    version: 1.1.1
   spire:
     enabled: false
   waiter:
     serviceAccount:
       create: true
       name: waiter-sa
-  control:
-    # This specifies the service name that all XDS clients will try to connect to
-    name: control
-    port: 50000
-    version: latest
-  data:
-    jwt_prefix: '/jwt'
-  internal-data:
-    jwt_prefix: '/jwt'
-  services:
-    catalog:
-      egressTLS: true
-      mTLS: true
-      version: 1.0.3
-    dashboard:
-      egressTLS: true
-      mTLS: true
-    prometheus:
-      egressTLS: false
-      mTLS: true
-    data:
-      egressTLS: true
-      mTLS: true
-    internal-data:
-      egressTLS: true
-      mTLS: true
-    jwt:
-      egressTLS: true
-      mTLS: true
-    internal-jwt:
-      egressTLS: true
-      mTLS: true
-    slo:
-      egressTLS: true
-      mTLS: true
-    control:
-      egressTLS: false
-      mTLS: true
-    controlApi:
-      # This value must match global.control_api_tls
-      egressTLS: true
-
-  sidecar:
-    version: latest
-    envvars:
-      # You can customize the sidecar environment variables mesh-wide to enable features in the mesh
-      # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services `configuration.md` files.
-      # These are sorted by how different the values are for the sidecars running on different services. The options are "all the same", "all except XDS". and "different"
-      # TODO: update each service to use default global values and only set the ones that are different.
-      # All the same
-      proxy_dynamic:
-        type: 'value'
-        value: 'true'
-      xds_zone:
-        type: 'value'
-        value: '{{ .Values.global.zone }}'
-      xds_cluster:
-        type: 'value'
-        value: ''
-      xds_host:
-        type: 'value'
-        value: 'control.{{ .Release.Namespace }}.svc'
-      xds_port:
-        type: 'value'
-        value: '{{ .Values.global.control.port }}'
-      xds_node_id:
-        type: 'value'
-        value: 'default'
-      envoy_admin_log_path:
-        type: 'value'
-        value: '/dev/stdout'
-      # There may be more sidecar environment variables, but we haven't added them here yet.
-      # However, to use an env var with the sidecar, even if it doesn't have a global default,
-      # it needs to be set globally as either a value or a secret
+  control_port: 50000 
+  edge_port: 8080
 
 data:
   sidecar:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-    create_sidecar_secret: false
     envvars:
       xds_cluster:
         type: value
@@ -130,7 +38,7 @@ data:
     name: data
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
-    securityContext:
+    security_context:
       enabled: false
     secret:
       secret_name: data-secrets
@@ -289,10 +197,10 @@ internal-data:
     name: data-internal
     image: docker.production.deciphernow.com/deciphernow/gm-data:1.0.0
     certs_mount_point: /app/certs
-    securityContext:
+    security_context:
       enabled: true
     pvc:
-      mountPath: /buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
+      mount_path: /buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
     envvars:
       gmdata_namespace:
         type: value
@@ -514,12 +422,13 @@ internal-jwt:
     password: 'internalRedis'
 
 sidecar:
+  version: latest
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
   create_sidecar_secret: true
   secret:
     secret_name: sidecar-certs
-    mountPoint: /etc/proxy/tls/sidecar
-    secretKeys:
+    mount_point: /etc/proxy/tls/sidecar
+    secret_keys:
       ca: ca.crt
       cert: service.crt
       key: service.key

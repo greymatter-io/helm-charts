@@ -15,8 +15,8 @@ global:
     enabled: false
     host: ''
     port: 8500
-  control:
-    port: 50000
+  control_port: 50000
+  edge_port: 8080
   mesh_tls:
     use_provided_certs: true
 
@@ -28,38 +28,6 @@ global:
     serviceAccount:
       create: true
       name: waiter-sa
-  sidecar:
-    version: latest
-    envvars:
-      # You can customize the sidecar environment variables mesh-wide to enable features in the mesh
-      # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services `configuration.md` files.
-      # These are sorted by how different the values are for the sidecars running on different services. The options are "all the same", "all except XDS". and "different"
-      # TODO: update each service to use default global values and only set the ones that are different.
-      # All the same
-      proxy_dynamic:
-        type: 'value'
-        value: 'true'
-      xds_zone:
-        type: 'value'
-        value: '{{ .Values.global.zone }}'
-      xds_cluster:
-        type: 'value'
-        value: ''
-      xds_host:
-        type: 'value'
-        value: 'control.{{ .Release.Namespace }}.svc'
-      xds_port:
-        type: 'value'
-        value: '{{ .Values.global.control.port }}'
-      xds_node_id:
-        type: 'value'
-        value: 'default'
-      envoy_admin_log_path:
-        type: 'value'
-        value: '/dev/stdout'
-
-# if this is false then you will need to change values.data.imagePullSecret to refrence a secret already in your namespace.
-createDockerSecret: true
 
 data:
   # The name of this installation of GM Data.  Used in the zookeeper address.  Allow to be unique to support multiple installations of Data
@@ -78,7 +46,7 @@ data:
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
   pvc:
     #size:
-    mountPath: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
+    mount_path: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
   # Allows operators to change the user and group to match the process running inside the gm-data container.
   security_context:
     enabled: false
@@ -211,11 +179,10 @@ mongo:
   name: data-mongo
   replicas: 1
   image: 'deciphernow/mongo:4.0.3'
-  imagePullPolicy: IfNotPresent
-  #private_image: false
+  image_pull_policy: IfNotPresent
   storage:
     #This mountPath should match where your mongo's image will place its data
-    mountPath: /data/db
+    mount_path: /data/db
     # The size, in Gi, that the Mongo PVC should be
     size: 40
     ## Mongo data Persistent Volume Storage Class
@@ -271,20 +238,20 @@ mongo:
   # set secret to enable MONGO_TLS
     #secret:
     #secret_name: mongo-certs
-    #mountPoint: /secret/cert
-    #secretKeys:
+    #mount_point: /secret/cert
+    #secret_keys:
     #  ca: ca_b64
     #  cert: cert_b64
     #  key: key_b64
 
 sidecar:
-  version: '{{ .Values.global.sidecar.version | default latest }}'
+  version: 'latest'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  imagePullPolicy: IfNotPresent
+  image_pull_policy: IfNotPresent
   secret:
     secret_name: sidecar-certs
-    mountPoint: /etc/proxy/tls/sidecar/
-    secretKeys:
+    mount_point: /etc/proxy/tls/sidecar/
+    secret_keys:
       ca: ca.crt
       cert: service.crt
       key: service.key
@@ -299,4 +266,25 @@ sidecar:
     xds_cluster:
       type: value
       value: '{{ $.Values.data.name }}'
+    proxy_dynamic:
+      type: 'value'
+      value: 'true'
+    xds_zone:
+      type: 'value'
+      value: '{{ .Values.global.zone }}'
+    xds_cluster:
+      type: 'value'
+      value: ''
+    xds_host:
+      type: 'value'
+      value: 'control.{{ .Release.Namespace }}.svc'
+    xds_port:
+      type: 'value'
+      value: '{{ .Values.global.control_port }}'
+    xds_node_id:
+      type: 'value'
+      value: 'default'
+    envoy_admin_log_path:
+      type: 'value'
+      value: '/dev/stdout'
 

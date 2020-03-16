@@ -24,8 +24,8 @@ We use indentation in the template for readability, but the template returns the
 Most users should use the `indent` or `nindent` functions to automatically indent the proper amount. */}}
 {{- define "greymatter.envvars" }}
   {{- $top := . }}
-  {{- if .Values.global.sidecar }}
-    {{- range $name, $envvar := .Values.global.sidecar.envvars }}
+  {{- if .Values.sidecar.envvars }}
+    {{- range $name, $envvar := .Values.sidecar.envvars }}
           {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
           {{- $l := "" }}
           {{- if $top.Values.sidecar.envvars }}

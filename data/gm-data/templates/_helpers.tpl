@@ -34,6 +34,6 @@ Define where to mount the sidecar certs.  Required here to support a standalone 
 */}}
 {{- define "sidecar_volume_certs_mount" }}
 - name: sidecar-certs
-  mountPath: {{ .Values.sidecar.secret.mountPoint }}
+  mountPath: {{ .Values.sidecar.secret.mount_point }}
   readOnly: true
 {{- end }}
