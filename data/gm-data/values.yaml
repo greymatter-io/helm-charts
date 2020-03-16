@@ -5,6 +5,7 @@ global:
   imagePullSecret: docker.secret
   
   environment: kubernetes
+  zone: zone-default-zone
   domain:
   route_url_name:
   remove_namespace_from_url: ''
@@ -31,7 +32,37 @@ global:
   waiter:
     image: deciphernow/k8s-waiter:latest
     serviceAccount:
+      create: true
       name: waiter-sa
+  sidecar:
+    version: latest
+    envvars:
+      # You can customize the sidecar environment variables mesh-wide to enable features in the mesh
+      # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services `configuration.md` files.
+      # These are sorted by how different the values are for the sidecars running on different services. The options are "all the same", "all except XDS". and "different"
+      # TODO: update each service to use default global values and only set the ones that are different.
+      # All the same
+      proxy_dynamic:
+        type: 'value'
+        value: 'true'
+      xds_zone:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      xds_cluster:
+        type: 'value'
+        value: ''
+      xds_host:
+        type: 'value'
+        value: 'control.{{ .Release.Namespace }}.svc'
+      xds_port:
+        type: 'value'
+        value: '{{ .Values.global.control.port }}'
+      xds_node_id:
+        type: 'value'
+        value: 'default'
+      envoy_admin_log_path:
+        type: 'value'
+        value: '/dev/stdout'
 
 # if this is false then you will need to change values.data.imagePullSecret to refrence a secret already in your namespace.
 createDockerSecret: true
@@ -118,7 +149,7 @@ data:
       value: home
     gmdata_namespace_userfield:
       type: value
-      value: userDN
+      value: email
     jwt_pub:
       type: secret
       secret: jwt-security
@@ -134,14 +165,14 @@ data:
       type: secret
       secret: '{{ .Values.data.secret.secret_name }}'
       key: master_key
-    mongo_initdb_root_username:
-      type: secret
-      secret: '{{ $.Values.mongo.credentials.secret_name }}'
-      key: gmdata_username
-    mongo_initdb_root_password:
-      type: secret
-      secret: '{{ $.Values.mongo.credentials.secret_name }}'
-      key: gmdata_password
+      #mongo_initdb_root_username:
+      #type: secret
+      #secret: '{{ $.Values.mongo.credentials.secret_name }}'
+      #key: gmdata_username
+      #mongo_initdb_root_password:
+      #type: secret
+      #secret: '{{ $.Values.mongo.credentials.secret_name }}'
+      #key: gmdata_password
     mongodb:
       type: secret
       secret: '{{ $.Values.mongo.credentials.secret_name }}'
@@ -163,7 +194,7 @@ data:
       key: server.trust.pem
     client_prefix:
       type: value
-      value: /services/{{ .Release.Namespace | lower }}-{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
+      value: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version }}
     client_jwt_prefix:
       type: value
       value: '{{ .Values.global.data.jwt_prefix }}'
@@ -229,21 +260,34 @@ mongo:
       type: secret
       secret: '{{ $.Values.mongo.credentials.secret_name }}'
       key: database
-    mongo_initdb_root_username:
-      type: secret
-      secret: '{{ $.Values.mongo.credentials.secret_name }}'
-      key: root_username
-    mongo_initdb_root_password:
-      type: secret
-      secret: '{{ $.Values.mongo.credentials.secret_name }}'
-      key: root_password
     mongodb_admin_password:
       type: secret
       secret: '{{ $.Values.mongo.credentials.secret_name }}'
       key: gmdata_password
-
+    mongodb_database:
+      type: secret
+      secret: '{{ $.Values.mongo.credentials.secret_name }}'
+      key: database
+    mongodb_user:
+      type: secret
+      secret: '{{ $.Values.mongo.credentials.secret_name }}'
+      key: root_username
+    mongodb_password:
+      type: secret
+      secret: '{{ $.Values.mongo.credentials.secret_name }}'
+      key: root_password
+    mongo_cn:
+      type: value
+      value: 'localhost'
+  
   credentials:
     secret_name: 'mongo-password'
+    root_username: 'mongo'
+    root_password: 'mongo'
+    database: 'gmdata'
+    admin_password: 'mongopassword'
+    gmdata_username: 'gmdata-user'
+    gmdata_password: 'mongopassword'
 
   # set secret to enable MONGO_TLS
     #secret:
@@ -260,7 +304,7 @@ sidecar:
   imagePullPolicy: IfNotPresent
   secret:
     secret_name: sidecar-certs
-    mountPoint: /etc/proxy/tls/sidecar
+    mountPoint: /etc/proxy/tls/sidecar/
     secretKeys:
       ca: ca.crt
       cert: service.crt

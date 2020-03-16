@@ -178,14 +178,6 @@ data:
         type: secret
         secret: '{{ .Values.data.name }}-secrets'
         key: master_key
-      mongo_initdb_root_username:
-        type: secret
-        secret: '{{ .Values.mongo.credentials.secret_name }}'
-        key: gmdata_username
-      mongo_initdb_root_password:
-        type: secret
-        secret: '{{ .Values.mongo.credentials.secret_name }}'
-        key: gmdata_password
       mongodb:
         type: secret
         secret: '{{ .Values.mongo.credentials.secret_name }}'
@@ -281,14 +273,6 @@ data:
         type: secret
         secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: database
-      mongo_initdb_root_username:
-        type: secret
-        secret: '{{ $.Values.mongo.credentials.secret_name }}'
-        key: root_username
-      mongo_initdb_root_password:
-        type: secret
-        secret: '{{ $.Values.mongo.credentials.secret_name }}'
-        key: root_password
 
 internal-data:
   sidecar:
@@ -384,14 +368,6 @@ internal-data:
         type: secret
         secret: '{{ $.Values.mongo.credentials.secret_name }}'
         key: database
-      mongo_initdb_root_username:
-        type: secret
-        secret: '{{ $.Values.mongo.credentials.secret_name }}'
-        key: root_username
-      mongo_initdb_root_password:
-        type: secret
-        secret: '{{ $.Values.mongo.credentials.secret_name }}'
-        key: root_password
 
 
 jwt:

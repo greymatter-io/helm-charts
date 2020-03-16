@@ -17,7 +17,6 @@ if [ $LC -ge 4 ]; then
     sudo chown -R ubuntu /home/ubuntu/.kube /home/ubuntu/.minikube
 fi
 
-helm init --wait
 ./ci/scripts/install-voyager.sh
 
 if [ "$1" == "--prod" ]; then
