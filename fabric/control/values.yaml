@@ -8,11 +8,12 @@ global:
     enabled: false
     host: ''
     port: 8500
-  waiter:                             # Configures the init container used to wait on various deployments to be ready
-    image: deciphernow/k8s-waiter:latest
-    serviceAccount: 
-      create: true
-      name: waiter-sa
+    
+waiter:                             # Configures the init container used to wait on various deployments to be ready
+  image: deciphernow/k8s-waiter:latest
+  serviceAccount: 
+    create: true
+    name: waiter-sa
 
 control:
   name: 'control'

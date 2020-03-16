@@ -40,7 +40,7 @@ spec:
         {{- end }}
       initContainers:
         - name: ensure-control-api
-          image: {{ .Values.global.waiter.image }}
+          image: {{ .Values.waiter.image }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
