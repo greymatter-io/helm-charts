@@ -1,8 +1,8 @@
-{{- if .Values.control.serviceAccount.create }}
+{{- if .Values.control.service_account.create }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .Values.control.serviceAccount.name }}-role
+  name: {{ .Values.control.service_account.name }}-role
   namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: [""]

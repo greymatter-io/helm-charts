@@ -11,7 +11,7 @@ global:
     
 waiter:                             # Configures the init container used to wait on various deployments to be ready
   image: deciphernow/k8s-waiter:latest
-  serviceAccount: 
+  service_account: 
     create: true
     name: waiter-sa
 
@@ -32,7 +32,7 @@ control:
       secretKeys:
         cert: server.crt
         key: server.key
-    serviceAccount:
+    service_account:
       create: true
       name: control-sa
     envvars:

@@ -16,8 +16,8 @@ spec:
         deployment: {{ .Values.control.name }}
         run: {{ .Values.control.name }}
     spec:
-      # This serviceaccount must have read access to both pods and endpoints, because gm-control uses the kubernetes API to do service discovery, and the waiter init container needs access to service endpoints to wait on control-api
-      serviceAccountName: {{ .Values.control.serviceAccount.name }}
+      # This service_account must have read access to both pods and endpoints, because gm-control uses the kubernetes API to do service discovery, and the waiter init container needs access to service endpoints to wait on control-api
+      service_accountName: {{ .Values.control.service_account.name }}
       containers:
         - name: {{ .Values.control.name }}
           image: {{ tpl .Values.control.image $ }}
