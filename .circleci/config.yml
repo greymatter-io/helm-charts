@@ -19,43 +19,43 @@ jobs:
       - run:
           name: Package and Publish Catalog
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/sense/catalog
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/sense/catalog
       - run:
           name: Package and Publish Control
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/fabric/control
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/control
       - run:
           name: Package and Publish Data
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/data/gm-data
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/gm-data
       - run:
           name: Package and Publish GM Control API
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/fabric/gm-control-api
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/gm-control-api
       - run:
           name: Package and Publish Dashboard
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/sense/dashboard
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/sense/dashboard
       - run:
           name: Package and Publish JWT
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/data/jwt
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt
       - run:
           name: Package and Publish JWT Gov
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/data/jwt-gov
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt-gov
       - run:
           name: Package and Publish Edge
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/edge
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/edge
       - run:
           name: Package and Publish SLO
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/sense/slo
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/sense/slo
       - run:
           name: Package and Publish Spire
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/spire
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire
   package-and-publish-greymatter-staging:
     machine: true
     steps:
@@ -67,9 +67,9 @@ jobs:
       - run:
           name: Change Grey Matter (fabric, sense, data) Requirements from local to helm-staging
           command: |
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/fabric/requirements.yaml
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/sense/requirements.yaml
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/data/requirements.yaml
+            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/fabric/Chart.yaml
+            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/sense/Chart.yaml
+            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/data/Chart.yaml
       - run:
           name: Print directory listing
           command: |
@@ -77,23 +77,23 @@ jobs:
       - run:
           name: Package and Publish Fabric
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/fabric
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
       - run:
           name: Package and Publish Sense
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/sense
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/sense
       - run:
           name: Package and Publish Data
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/data
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data
       - run:
           name: Package and Publish Edge
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/edge
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/edge
       - run:
           name: Package and Publish Spire
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/spire
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire
   package-and-publish-core-hosted:
     machine: true
     steps:
@@ -105,43 +105,43 @@ jobs:
       - run:
           name: Package and Publish Catalog
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/sense/catalog
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/sense/catalog
       - run:
           name: Package and Publish Control
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/fabric/control
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/control
       - run:
           name: Package and Publish Data
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/data/data
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/data
       - run:
           name: Package and Publish GM Control API
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/fabric/gm-control-api
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/gm-control-api
       - run:
           name: Package and Publish Dashboard
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/sense/dashboard
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/sense/dashboard
       - run:
           name: Package and Publish JWT
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/data/jwt
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt
       - run:
           name: Package and Publish JWT Gov
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/data/jwt-gov
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt-gov
       - run:
           name: Package and Publish Edge
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/edge
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/edge
       - run:
           name: Package and Publish SLO
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/sense/slo
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/sense/slo
       - run:
           name: Package and Publish Spire
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/spire
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire
   package-and-publish-greymatter-hosted:
     machine: true
     steps:
@@ -153,29 +153,29 @@ jobs:
       - run:
           name: Change Grey Matter (fabric, sense, data) Requirements from local to helm-hosted
           command: |
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/fabric/requirements.yaml
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/sense/requirements.yaml
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/data/requirements.yaml
+            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/fabric/Chart.yaml
+            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/sense/Chart.yaml
+            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/data/Chart.yaml
       - run:
           name: Package and Publish Fabric
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/fabric
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
       - run:
           name: Package and Publish Sense
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/sense
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/sense
       - run:
           name: Package and Publish Data
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/data
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data
       - run:
           name: Package and Publish Edge
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/edge
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/edge
       - run:
           name: Package and Publish Spire
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:latest /helm/spire
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire
 workflows:
   version: 2
   build-and-publish:
