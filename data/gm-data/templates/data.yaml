@@ -19,7 +19,7 @@ spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       {{- if .Values.data.security_context.enabled }}
       securityContext:
-        fsGroup: {{ .Values.data.security_context.fsGroup }}
+        fsGroup: {{ .Values.data.security_context.fs_group }}
       {{- end }}
       {{- end }}
       serviceAccountName: {{ .Values.waiter.service_account.name }}
@@ -43,8 +43,8 @@ spec:
         {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
         {{- if .Values.data.security_context.enabled }}
         securityContext:
-          runAsUser: {{ .Values.data.security_context.runAsUser }}
-          runAsGroup: {{ .Values.data.security_context.runAsGroup }}
+          runAsUser: {{ .Values.data.security_context.run_as_user }}
+          runAsGroup: {{ .Values.data.security_context.run_as_group }}
         {{- end }}
         {{- end }}
         env:
@@ -73,11 +73,8 @@ spec:
         - containerPort: {{ .Values.sidecar.metrics_port }}
           name: metrics
           protocol: TCP
-        {{- if .Values.global.spire.enabled }}
         volumeMounts:
-        {{- include "sidecar_volume_mounts" . | indent 8 }}
-        {{- else if .Values.data.secret }}
-        volumeMounts:
+        {{- if .Values.data.secret }}
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end}}
       {{- if .Values.global.consul.enabled }}
@@ -89,7 +86,7 @@ spec:
             command:
               - /bin/sh
               - -c
-              - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:8181/list/1/"
+              - "curl -k --cacert {{ .Values.sidecar.secret.mount_point }}{{ .Values.sidecar.secret.secret_keys.ca }} --key  {{ .Values.sidecar.secret.mount_point }}{{ .Values.sidecar.secret.secret_keys.key }} --cert  {{ .Values.sidecar.secret.mount_point }}{{ .Values.sidecar.secret.secret_keys.cert }} https://localhost:8181/list/1/"
           initialDelaySeconds: 20
           periodSeconds: 5
 
@@ -102,9 +99,7 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.global.spire.enabled }}
-      {{- include "sidecar_volumes" . | indent 6 }}
-      {{- else if .Values.data.secret }}
+      {{- if .Values.data.secret }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       - name: data

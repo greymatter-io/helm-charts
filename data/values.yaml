@@ -151,13 +151,13 @@ data:
       # Size, in Gi, that the Mongo PVC should be
       size: 40
       ## Mongo data Persistent Volume Storage Class
-      ## If defined, StorageClassName: <storageClass>
+      ## If defined, StorageClassName: <storage_class>
       ## If set to "-", StorageClassName: "", which disables dynamic provisioning
       ## If undefined (the default) or set to null, no storageClassName spec is
       ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
       ##   GKE, AWS & OpenStack)
       ##
-      # storageClass: "-"
+      # storage_class: "-"
     # Sets the credentials for setting up a mongo user and database for data to connect with
     credentials:
       secret_name: 'mongo-password'
@@ -270,13 +270,13 @@ internal-data:
       # Size, in Gi, that the Mongo PVC should be
       size: 10
       ## Mongo data Persistent Volume Storage Class
-      ## If defined, StorageClassName: <storageClass>
+      ## If defined, StorageClassName: <storage_class>
       ## If set to "-", StorageClassName: "", which disables dynamic provisioning
       ## If undefined (the default) or set to null, no storageClassName spec is
       ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
       ##   GKE, AWS & OpenStack)
       ##
-      # storageClass: "-"
+      # storage_class: "-"
     # Sets the credentials for setting up a mongo user and database for data to connect with
     credentials:
       secret_name: 'internal-mongo-password'
@@ -502,9 +502,8 @@ sidecar:
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
   secret:
     secret_name: sidecar-certs
-    mount_point: /etc/proxy/tls/sidecar
+    mount_point: /etc/proxy/tls/sidecar/
     secret_keys:
       ca: ca.crt
-      cert: service.crt
-      key: service.key
-
+      key: server.key
+      cert: server.cert 

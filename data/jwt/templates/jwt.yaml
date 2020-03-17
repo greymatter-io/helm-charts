@@ -72,10 +72,7 @@ spec:
         - containerPort: {{ .Values.sidecar.metrics_port }}
           name: metrics
           protocol: TCP
-        {{- if .Values.global.spire.enabled }}
-        volumeMounts:
-        {{- include "sidecar_volume_mounts" . | indent 8 }}
-        {{- else if .Values.jwt.secret }}
+        {{- if .Values.jwt.secret }}
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
@@ -86,9 +83,7 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       volumes:
-      {{- if .Values.global.spire.enabled }}
-      {{- include "sidecar_volumes" . | indent 6 }}
-      {{- else if .Values.jwt.secret }}
+      {{- if .Values.jwt.secret }}
       volumes:
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}

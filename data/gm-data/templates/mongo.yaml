@@ -69,10 +69,10 @@ spec:
       resources:
         requests:
           storage: {{ .Values.mongo.storage.size }}Gi
-    {{- if .Values.mongo.storage.storageClass }}
-    {{- if (eq "-" .Values.mongo.storage.storageClass) }}
+    {{- if .Values.mongo.storage.storage_class }}
+    {{- if (eq "-" .Values.mongo.storage.storage_class) }}
       storageClassName: ""
     {{- else }}
-      storageClassName: "{{ .Values.mongo.storage.storageClass }}"
+      storageClassName: "{{ .Values.mongo.storage.storage_class }}"
     {{- end }}
     {{- end }}
