@@ -49,9 +49,6 @@ spec:
         {{- end }}
         env:
           {{- include "data.envvars" (dict "envvar" .Values.data.envvars "top" $) | indent 8 }}
-        - name: MONGOHOST
-          value: {{ template "greymatter.mongo.address" . }}
-        
         {{- if  (eq .Values.data.envvars.uses3.value  "false") }}
         volumeMounts:
           - name: data-pvc
