@@ -72,6 +72,13 @@ jwt:
     redis_db:   
       type: value
       value: "0"
+    redis_host:
+      type: value
+      value: '{{ .Values.redis.name }}.{{ .Release.Namespace }}.svc'
+    redis_pass:
+      type: secret
+      secret: '{{ .Values.redis.secret.secret_name | default "redis-password" }}'
+      key: password
 
 
   # Provides a list of authorized users for the JWT service - preloaded with the DNs for GM Control, GM Catalog and the Mesh cert
