@@ -8,7 +8,7 @@ global:
     enabled: true
     use_provided_certs: true
     # This is the DN of the cert being used in the mesh. The Helm charts will add whitelist the DN throughout the mesh
-    dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local
+    dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
   # Turns on tls for control api and configures control to talk to it using tls
   control_api_tls: true
   kafka:
@@ -472,7 +472,7 @@ catalog:
         value: 'world'
       client_identity:
         type: value
-        value: 'C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local'
+        value: 'C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter'
       client_email:
         type: value
         value: 'engineering@deciphernow.com'
@@ -558,7 +558,7 @@ slo:
         key: password
       - type: value
         name: POSTGRES_USER_CN
-        value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
+        value: CN=greymatter, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
       - type: secret
         name: POSTGRESQL_DATABASE
         secret: postgres-credentials
@@ -682,7 +682,7 @@ internal-jwt:
           }
         },
         {
-          "label": "C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local",
+          "label": "C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter",
           "values": {
             "email": [
                 "engineering@deciphernow.com"
@@ -730,7 +730,7 @@ edge:
       #   nginx.ingress.kubernetes.io/backend-protocol: "https"
 
       # rules:
-      #   - host: greymatter.development.deciphernow.com
+      #   - host: development.deciphernow.com
       #     http:
       #       paths:
       #         - path: /
