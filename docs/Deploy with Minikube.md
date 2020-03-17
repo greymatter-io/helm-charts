@@ -31,7 +31,7 @@ You will need the following tools installed (tested on both Mac OS and Linux Ubu
 
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)@1.16.0
 - [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)@1.4.0
-- [helm](https://github.com/helm/helm/releases/tag/v2.14.3)@2.16.1
+- [helm](https://github.com/helm/helm/releases/tag/v2.16.1)@2.16.1
 - [virtualbox](https://www.virtualbox.org/wiki/Downloads)@6.0.12
 
 ### Quick Start
