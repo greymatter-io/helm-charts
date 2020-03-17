@@ -13,7 +13,7 @@ global:
     host: ''
     port: 8500
   # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
-  controlPort: 50000                  
+  control_port: 50000                  
 
 # Configures the init container used to wait on various deployments to be ready
 waiter:                             
@@ -122,7 +122,7 @@ sidecar:
       value: 'control.{{ .Release.Namespace }}.svc'
     xds_port:
       type: 'value'
-      value: '{{ .Values.global.controlPort }}'
+      value: '{{ .Values.global.control_port }}'
     xds_node_id:
       type: 'value'
       value: 'default'
