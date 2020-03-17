@@ -1,7 +1,7 @@
 {
   "shared_rules_key": "shared-rules-edge",
   "name": "edge",
-  "zone_key": "{{.Values.global.zone}}",
+  "zone_key": "{{ .Values.global.zone }}",
   "default": {
     "light": [
       {

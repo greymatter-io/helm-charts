@@ -1,6 +1,6 @@
 {
   "listener_key": "listener-{{.service.serviceName}}",
-  "zone_key": "{{.Values.global.zone}}",
+  "zone_key": "{{ .Values.global.zone }}",
   "name": "{{.service.serviceName}}",
   "ip": "0.0.0.0",
   "port": 8080,

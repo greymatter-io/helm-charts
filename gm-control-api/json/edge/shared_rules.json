@@ -1,5 +1,5 @@
 {
-  "zone_key": "{{.Values.global.zone}}",
+  "zone_key": "{{ .Values.global.zone }}",
   "shared_rules_key": "edge-{{.service.serviceName}}-shared-rules",
   "name": "{{.service.serviceName}}",
   "default": {

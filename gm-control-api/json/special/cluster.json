@@ -1,6 +1,6 @@
 {
     "cluster_key": "cluster-edge",
-    "zone_key": "{{.Values.global.zone}}",
+    "zone_key": "{{ .Values.global.zone }}",
     "name": "edge",
     "instances": [
       {

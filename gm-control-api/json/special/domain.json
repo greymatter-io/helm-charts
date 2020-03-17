@@ -1,6 +1,6 @@
 {
     "domain_key": "edge",
-    "zone_key": "{{.Values.global.zone}}",
+    "zone_key": "{{ .Values.global.zone }}",
     "name": "*",
     "port": 8080,
     "redirects": null,

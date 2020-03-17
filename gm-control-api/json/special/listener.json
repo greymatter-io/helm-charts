@@ -1,5 +1,5 @@
 {
-    "zone_key": "{{.Values.global.zone}}",
+    "zone_key": "{{ .Values.global.zone }}",
     "listener_key": "edge-listener",
     "domain_keys": ["edge"],
     "name": "edge",
