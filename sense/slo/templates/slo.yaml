@@ -21,11 +21,11 @@ spec:
         runAsGroup: 0
         fsGroup: 2000
       {{- end }}
-      serviceAccountName: {{ .Values.global.waiter.service_account.name }}
+      serviceAccountName: {{ .Values.waiter.service_account.name }}
       {{- if not .Values.postgres.rds.enabled }}
       initContainers:
         - name: ensure-postgres
-          image: {{ .Values.global.waiter.image }}
+          image: {{ .Values.waiter.image }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
@@ -43,70 +43,16 @@ spec:
 {{ toYaml .Values.slo.resources | indent 10 }}
         {{- end }}
         volumeMounts:
-          {{- if .Values.postgres.secret }}
+          {{- if .Values.postgres.secret.enabled }}
         - name: postgres-certs
-          mountPath: {{ .Values.postgres.secret.mountPoint }}
+          mountPath: {{ .Values.postgres.secret.mount_point }}
           {{- end}}
-          {{- if .Values.slo.secret }}
+          {{- if .Values.slo.secret.enabled }}
         - name: service-certs
-          mountPath: {{ .Values.slo.secret.mountPoint }}
+          mountPath: {{ .Values.slo.secret.mount_point }}
           {{- end }}
         env:        
-        - name: POSTGRESQL_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgres.credentials.secret_name }}
-              key: username
-        - name: POSTGRESQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgres.credentials.secret_name }}
-              key: password
-        - name: POSTGRESQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.postgres.credentials.secret_name }}
-              key: database
-        {{- if .Values.postgres.rds.enabled }}
-        - name: POSTGRESQL_ENDPOINT
-          value: {{ .Values.postgres.rds.endpoint }}
-        {{- end }}
-        - name: DATABASE_URI
-          {{- if .Values.postgres.rds.enabled }}
-          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@$(POSTGRESQL_ENDPOINT):5432/$(POSTGRESQL_DATABASE)
-          {{- else}}
-          value: postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc:5432/$(POSTGRESQL_DATABASE)
-          {{- end }}
-        - name: SERVICE_PORT
-          value: "1337"
-        {{- if .Values.postgres.secret }}
-        - name: SSL_ENABLED
-          value: "true"
-        - name: SSL_SERVER_CA
-          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secret_keys.ca }}
-        {{- if not .Values.postgres.rds.enabled }}
-        - name: SSL_SERVER_CERT
-          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secret_keys.cert }}
-        - name: SSL_SERVER_KEY
-          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secret_keys.key }}
-        {{- end }}
-        {{- end }}
-        {{- if and .Values.slo.secret }}
-        - name: SERVICE_SSL_ENABLED
-          value: "true"
-        - name: SERVICE_SSL_CA
-          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secret_keys.ca }}
-        - name: SERVICE_SSL_CERT
-          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secret_keys.cert }}
-        - name: SERVICE_SSL_KEY
-          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secret_keys.key }}
-        {{- end }}
-        {{- if .Values.postgres.rds.enabled }}
-        - name: DROP_SCHEMA
-          value: "false"
-        - name: SSL_1_WAY_SSL
-          value: "true"
-        {{- end }}
+        {{- include "envvars" (dict "envvar" .Values.slo.envvars "top" $) | indent 10 }}
       - name: sidecar
         image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
@@ -120,7 +66,7 @@ spec:
         - name: metrics
           containerPort: 8081
         env:
-        {{- include "greymatter.envvars" . | indent 8 }}
+        {{- include "greymatter.envvars" (dict "overrides" .Values.slo.sidecar "top" .) | indent 8 }}
         {{- if .Values.sidecar.secret }}
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
@@ -132,16 +78,16 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.global.image_pull_secret }}
       volumes:
-      {{- if .Values.sidecar.secret }}
+      {{- if .Values.sidecar.secret.enabled }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
-      {{- if .Values.postgres.secret}}
+      {{- if .Values.postgres.secret.enabled }}
       - name: postgres-certs
         secret:
           secretName: {{ .Values.postgres.secret.secret_name }}
           defaultMode: 0600
       {{- end }}
-      {{- if .Values.slo.secret}}
+      {{- if .Values.slo.secret.enabled }}
       - name: service-certs
         secret:
           secretName: {{ .Values.slo.secret.secret_name }}

@@ -26,12 +26,8 @@ spec:
       {{- end }}
       containers:
       - name: postgres
-        {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
-        image: {{ .Values.postgres.openshift.image }}
-        {{- else }}
-        image: {{ .Values.postgres.k8s.image }}
-        {{- end }}
-        imagePullPolicy: {{ .Values.postgres.imagePullPolicy }}
+        image: {{ .Values.postgres.image }}
+        imagePullPolicy: {{ .Values.postgres.image_pull_policy }}
         {{- if .Values.postgres.resources }}
         resources:
 {{ toYaml .Values.postgres.resources | indent 10 }}
@@ -40,29 +36,17 @@ spec:
           - name: postgres
             containerPort: 5432
         env:
-      {{- range $envvar := .Values.postgres.envvars }}
-        {{- $envName := tpl $envvar.name $ | upper | replace "." "_" | replace "-" "_" }}
-        {{- if eq $envvar.type "secret" }}
-          - name: {{ $envName }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ $envvar.secret }}
-                key: {{ $envvar.key }}
-        {{- else if eq $envvar.type "value" }}
-          - name: {{ $envName }}
-            value: {{ $envvar.value | quote }}
-        {{- end }}
-      {{- end  }}
+        {{- include "envvars" (dict "envvar" .Values.postgres.envvars "top" $) | indent 10 }}
         volumeMounts:
           - name: data
             mountPath: {{ .Values.postgres.data_mount_point }}
-        {{- if .Values.postgres.secret }}
+        {{- if .Values.postgres.secret.enabled }}
           - name: certificates
-            mountPath: {{ .Values.postgres.secret.mountPoint }}
+            mountPath: {{ .Values.postgres.secret.mount_point }}
           - name: postgres-slo-config
-            mountPath: {{ .Values.postgres.confMountPoint }}
+            mountPath: {{ .Values.postgres.conf_mount_point }}
           - name: postgres-slo-overrides
-            mountPath: {{ .Values.postgres.overridesMountPoint }}
+            mountPath: {{ .Values.postgres.overrides_mount_point }}
         {{- end }}
         readinessProbe:
           tcpSocket:
@@ -81,7 +65,7 @@ spec:
       - name: postgres-slo-overrides
         configMap:
           name: postgres-slo-overrides
-      {{- if .Values.postgres.secret }}
+      {{- if .Values.postgres.secret.enabled }}
       - name: certificates
         secret:
           secretName: {{ .Values.postgres.secret.secret_name }}

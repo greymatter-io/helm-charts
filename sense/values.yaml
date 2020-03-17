@@ -361,10 +361,10 @@ slo:
       requests:
         cpu: 100m
         memory: 128Mi
-    confMountPoint: /conf
+    conf_mount_point: /conf
     # This override is unique to OpenShift's postgresql container
     # https://github.com/sclorg/postgresql-container/tree/master/examples/custom-config
-    overridesMountPoint: /opt/app-root/src/postgresql-cfg
+    overrides_mount_point: /opt/app-root/src/postgresql-cfg
     secret:
       secret_name: postgres-ssl-certs
       mountPoint: /certs

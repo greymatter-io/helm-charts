@@ -1,40 +1,34 @@
+# Grey Matter Service Level Objectives Defaults
+
 global:
-
-  imagePullSecret: docker.secret
-
-  environment: openshift
-  domain:
-  route_url_name:
-  remove_namespace_from_url: ''
-  exhibitor:
-    replicas: 1
-  xds:
-    port: 18000
-    cluster: greymatter
-  slo:
-    sidecar:
-      version: latest
-  spire:
-    enabled: false
-  mesh_tls:
-    use_provided_certs: false
-  waiter:
-    image: deciphernow/k8s-waiter:latest
-    serviceAccount:
-      name: waiter-sa
-  consul:
+  # Used as imagePullSecrets value
+  image_pull_secret: docker.secret    
+  # Deployment environment, one of "eks", "kubernetes", or "openshift"
+  environment: openshift              
+  # Used to configure control and control-api environment variables
+  zone: zone-default-zone             
+  # Whether to use consul for service discovery
+  consul:                             
     enabled: false
     host: ''
     port: 8500
-  slo: 
-    sidecar:
-      version: latest
-  sidecar:
-    version: latest
+  # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
+  control_port: 50000                  
+
+# Configures the init container used to wait on various deployments to be ready
+waiter:
+  image: deciphernow/k8s-waiter:latest
+  service_account: 
+    create: true
+    name: waiter-sa
+
 slo:
+  # SLO version
   version: 1.1.1
   image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.1
-  imagePullPolicy: IfNotPresent
+  # When to pull container images, used in the deployment
+  image_pull_policy: IfNotPresent
+  # CPU and memory limits for the SLO service
   resources:
     limits:
       cpu: 250m
@@ -42,26 +36,98 @@ slo:
     requests:
       cpu: 100m
       memory: 128Mi
+  # Secret used to template envvars
   secret:
+    enabled: true
     secret_name: slo-certs
-    mountPoint: /service-certs
+    mount_point: /service-certs
     secret_keys:
       ca: ca.crt
       cert: service.crt
       key: service.key
+  envvars:
+    postgresql_username:
+      type: secret
+      secret: '{{ .Values.postgres.credentials.secret_name }}'
+      key: username
+    postgresql_password:
+      type: secret
+      secret: '{{ .Values.postgres.credentials.secret_name }}'
+      key: password
+    postgresql_database:
+      type: secret
+      secret: '{{ .Values.postgres.credentials.secret_name }}'
+      key: database
+    # Postgresql endpoint - only templated if rds is enabled, otherwise the var isn't included at all
+    postgresql_endpoint:
+      type: "{{- if .Values.postgres.rds.enabled }}value{{- else }}null{{- end }}"
+      value: "{{ .Values.postgres.rds.endpoint }}"
+    database_uri:
+      type: value
+      value: '{{- if .Values.postgres.rds.enabled }}"postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@$(POSTGRESQL_ENDPOINT):5432/$(POSTGRESQL_DATABASE)"{{- else }}"postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc:5432/$(POSTGRESQL_DATABASE)"{{- end }}'
+    service_port:
+      type: value
+      value: "1337"
+    # SSL for SLO <-> postgres connection. Enabled if posgres.secret.enabled is true. 
+    ssl_enabled:
+      type: value
+      value: "{{- if .Values.postgres.secret.enabled }}true{{- else }}false{{- end }}"
+    ssl_server_ca:
+      type: value
+      value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.ca }}"
+    ssl_server_cert:
+      type: value
+      value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.cert }}"
+    ssl_server_key:
+      type: value
+      value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.key }}"
+    # SSL for the SLO service. Enabled if slo.secret.enabled is true.
+    service_ssl_enabled:
+      type: value
+      value: "{{- if .Values.slo.secret.enabled }}true{{- else }}false{{- end }}"
+    service_ssl_ca:
+      type: value
+      value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.ca }}"
+    service_ssl_cert:
+      type: value
+      value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.cert }}"
+    service_ssl_key:
+      type: value
+      value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.key }}"
+    drop_schema:
+      type: value
+      value: "false"
+    # One way ssl between SLO <-> Postgres. Enabled if postgres.rds.enabled is true.
+    ssl_1_way_ssl:
+      type: value
+      value: "{{- if .Values.postgres.rds.enabled }}true{{- else }}false{{- end }}"
+  # Sidecar configuration overrides for SLO
+  sidecar:
+    envvars:
+      xds_cluster:
+        type: value
+        value: '{{ .Values.slo.name }}'
 
+# Global sidecar configuration
 sidecar:
-  version: '{{- $.Values.global.slo.sidecar.version | default $.Values.global.sidecar.version }}'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  metrics_key_function: depth
-  imagePullPolicy: IfNotPresent
+  # GM Proxy version
+  version: latest
+  # Port where the proxy will listen
+  port: 10808
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
   secret:
+    enabled: true
     secret_name: sidecar-certs
-    mountPoint: /etc/proxy/tls/sidecar
+    mount_point: /etc/proxy/tls/sidecar
     secret_keys:
       ca: ca.crt
-      cert: service.crt
-      key: service.key
+      cert: server.crt
+      key: server.key    
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  # When to pull images, used in the deployment
+  image_pull_policy: IfNotPresent
+  # CPU and memory limits for the sidecar
   resources:
     limits:
       cpu: 200m
@@ -70,9 +136,24 @@ sidecar:
       cpu: 100m
       memory: 128Mi
   envvars:
-    xds_cluster:
-      type: value
-      value: 'slo'
+    proxy_dynamic:
+      type: 'value'
+      value: 'true'
+    xds_zone:
+      type: 'value'
+      value: '{{ .Values.global.zone }}'
+    xds_host:
+      type: 'value'
+      value: 'control.{{ .Release.Namespace }}.svc'
+    xds_port:
+      type: 'value'
+      value: '{{ .Values.global.control_port }}'
+    xds_node_id:
+      type: 'value'
+      value: 'default'
+    envoy_admin_log_path:
+      type: 'value'
+      value: '/dev/stdout'
 
 postgres:
   credentials:
@@ -83,11 +164,8 @@ postgres:
     enabled: false
     endpoint:
   data_mount_point: /var/lib/pgsql/data
-  openshift:
-    image: 'docker.io/centos/postgresql-10-centos7'
-  k8s:
-    image: 'docker.io/centos/postgresql-10-centos7'
-  imagePullPolicy: IfNotPresent
+  image: 'docker.io/centos/postgresql-10-centos7'
+  image_pull_policy: IfNotPresent
   replica_count: 1
   private_image: false
   resources:
@@ -97,30 +175,31 @@ postgres:
     requests:
       cpu: 100m
       memory: 128Mi
-  confMountPoint: /conf
+  conf_mount_point: /conf
   # This override is unique to OpenShift's postgresql container
   # https://github.com/sclorg/postgresql-container/tree/master/examples/custom-config
-  overridesMountPoint: /opt/app-root/src/postgresql-cfg
+  overrides_mount_point: /opt/app-root/src/postgresql-cfg
   secret:
+    enabled: false
     secret_name: postgres-ssl-certs
-    mountPoint: /certs
+    mount_point: /certs
     secret_keys:
       ca: ca.pem
       cert: server.crt
       key: server.key
   envvars:
-    - type: secret
-      name: postgresql_user
+    postgresql_user:
+      type: secret
       secret: postgres-credentials
       key: username
-    - type: secret
-      name: POSTGRESQL_PASSWORD
+    postgresql_password:
+      type: secret
       secret: postgres-credentials
       key: password
-    - type: value
-      name: POSTGRES_USER_CN
+    postgres_user_cn:
+      type: value
       value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
-    - type: secret
-      name: POSTGRESQL_DATABASE
+    postgresql_database:
+      type: secret
       secret: postgres-credentials
       key: database
