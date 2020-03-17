@@ -12,4 +12,4 @@ dependencies:
   repository: file://./jwt
   version: 2.1.2
 digest: sha256:fd418d8eeba562ae0eb3ad9c8828dd2402e3ec6a20cb1c043a33a198a7a31916
-generated: "2020-03-12T11:57:26.445463-04:00"
+generated: "2020-03-17T13:12:02.905708-04:00"

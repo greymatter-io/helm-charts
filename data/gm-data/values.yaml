@@ -261,7 +261,7 @@ sidecar:
     secret_keys:
       ca: ca.crt
       key: server.key
-      cert: server.cert
+      cert: server.crt
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
