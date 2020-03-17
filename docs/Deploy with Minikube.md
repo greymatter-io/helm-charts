@@ -31,7 +31,7 @@ You will need the following tools installed (tested on both Mac OS and Linux Ubu
 
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)@1.16.0
 - [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)@1.4.0
-- [helm](https://github.com/helm/helm/releases/tag/v2.14.3)@2.15.0
+- [helm](https://github.com/helm/helm/releases/tag/v2.14.3)@2.16.1
 - [virtualbox](https://www.virtualbox.org/wiki/Downloads)@6.0.12
 
 ### Quick Start
@@ -156,7 +156,7 @@ curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.3.1/miniku
 # Install Helm
 curl -LO https://git.io/get_helm.sh
 chmod 700 get_helm.sh
-./get_helm.sh --version v2.15.0
+./get_helm.sh --version v2.16.1
 
 # add helpful aliases
 alias minikube='sudo minikube'
@@ -183,6 +183,7 @@ Our Helm charts can be overridden by custom YAML files that are chained together
 - [greymatter.yaml](../greymatter.yaml) provides a primary set of overrides
 - [greymatter-secrets.yaml](../greymatter-secrets.yaml) provides a separate set of overrides specifically for passwords, secrets, and other sensitive data
   
+
 Copy these files to `custom-greymatter.yaml` and  `custom-greymatter-secrets.yaml`.
 
 ### Copy Files to EC2
