@@ -37,11 +37,7 @@ spec:
             - "$(REDIS_PASSWORD)"
           {{- end }}
           env:
-          - name: REDIS_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.redis.secret.secret_name }}
-                key: password
+          {{- include "jwt.envvars" (dict "envvar" .Values.redis.envvars "top" $) | indent 12 }}
           imagePullPolicy: {{ .Values.redis.image_pull_policy }}
         {{- if .Values.redis.resources }}
           resources:

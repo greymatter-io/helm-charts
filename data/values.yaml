@@ -346,41 +346,44 @@ jwt:
     users_mount_point: /gm-jwt-security/etc
     image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
-      - type: value
-        name: HTTPS_PORT
-        value: '3000'
-      - type: secret
-        name: PRIVATE_KEY
+      private_key:
+        type: secret
         secret: jwt-security
         key: jwt.key
-      - type: secret
-        name: JWT_API_KEY
+      jwt_api_key:
+        type: secret
         secret: jwt-security
         key: jwt.api_key
-      - type: value
-        name: ENABLE_TLS
-        value: true
-      - type: secret
-        name: SERVER_TRUST
+      enable_tls:
+        type: value
+        value: 'true'
+      zerolog_level:
+        type: value
+        value: 'info'
+      token_exp_time:
+        type: value
+        value: '300'
+      redis_port:
+        type: value
+        value: "6379"
+      redis_db:
+        type: value
+        value: "0"
+      https_port:
+        type: value
+        value: '3000'
+      server_trust:
+        type: secret
         secret: jwt-certs
         key: jwt.trust.pem
-      - type: secret
-        name: SERVER_CERT
+      server_cert:      
+        type: secret
         secret: jwt-certs
         key: jwt.cert.pem
-      - type: secret
-        name: SERVER_KEY
+      server_key:     
+        type: secret
         secret: jwt-certs
         key: jwt.key.pem
-      - type: value
-        name: TOKEN_EXP_TIME
-        value: '300'
-      - type: value
-        name: REDIS_PORT
-        value: "6379"
-      - type: value
-        name: REDIS_DB
-        value: "0"
 
 
   redis:
@@ -403,41 +406,44 @@ internal-jwt:
     #  mount_point: /gm-jwt-security/certs
     image: docker.production.deciphernow.com/deciphernow/gm-jwt-security:1.0.0
     envvars:
-      - type: value
-        name: HTTPS_PORT
-        value: '3000'
-      - type: secret
-        name: PRIVATE_KEY
-        secret: internal-jwt-security-secret
+      private_key:
+        type: secret
+        secret: jwt-security
         key: jwt.key
-      - type: secret
-        name: JWT_API_KEY
-        secret: internal-jwt-security-secret
+      jwt_api_key:
+        type: secret
+        secret: jwt-security
         key: jwt.api_key
-      - type: value
-        name: ENABLE_TLS
-        value: true
-      - type: secret
-        name: SERVER_TRUST
-        secret: internal-jwt-certs
-        key: jwt.trust.pem
-      - type: secret
-        name: SERVER_CERT
-        secret: internal-jwt-certs
-        key: jwt.cert.pem
-      - type: secret
-        name: SERVER_KEY
-        secret: internal-jwt-certs
-        key: jwt.key.pem
-      - type: value
-        name: TOKEN_EXP_TIME
+      enable_tls:
+        type: value
+        value: 'true'
+      zerolog_level:
+        type: value
+        value: 'info'
+      token_exp_time:
+        type: value
         value: '300'
-      - type: value
-        name: REDIS_PORT
+      redis_port:
+        type: value
         value: "6379"
-      - type: value
-        name: REDIS_DB
+      redis_db:
+        type: value
         value: "0"
+      https_port:
+        type: value
+        value: '3000'
+      server_trust:
+        type: secret
+        secret: jwt-certs
+        key: jwt.trust.pem
+      server_cert:
+        type: secret
+        secret: jwt-certs
+        key: jwt.cert.pem
+      server_key:
+        type: secret
+        secret: jwt-certs
+        key: jwt.key.pem
 
     # Provides a list of authorized users for the JWT service - preloaded with the DNs for GM Control, GM Catalog and the Mesh cert
     users_cg_name: internal-jwt-users

@@ -46,31 +46,31 @@ jwt:
       memory: 64Mi
 
   envvars:
-    - type: value
-      name: HTTP_PORT
+    http_port:
+      type: value
       value: '3000'
-    - type: secret
-      name: PRIVATE_KEY
+    private_key: 
+      type: secret
       secret: jwt-security
       key: jwt.key
-    - type: secret
-      name: JWT_API_KEY
+    jwt_api_key:
+      type: secret
       secret: jwt-security
       key: jwt.api_key
-    - type: value
-      name: ENABLE_TLS
+    enable_tls:
+      type: value
       value: false
-    - type: value
-      name: ZEROLOG_LEVEL
+    zerolog_level:
+      type: value
       value: info
-    - type: value
-      name: TOKEN_EXP_TIME
+    token_exp_time:   
+      type: value
       value: '300'
-    - type: value
-      name: REDIS_PORT
+    redis_port:
+      type: value
       value: "6379"
-    - type: value
-      name: REDIS_DB
+    redis_db:   
+      type: value
       value: "0"
 
 
@@ -134,6 +134,11 @@ redis:
     requests:
       cpu: 100m
       memory: 128Mi
+  envvars:
+    redis_password:
+      type: secret 
+      secret: '{{ .Values.redis.secret.secret_name | default "redis-password" }}'
+      key: password
 
 # Sets default sidecar configurations for all sidecars
 sidecar:
