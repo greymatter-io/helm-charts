@@ -62,7 +62,7 @@ spec:
       {{- end }}
       - name: sidecar
         image: {{ tpl .Values.sidecar.image $ }}
-        imagePullPolicy: {{ .Values.prometheus.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.prometheus.image_pull_policy }}
         {{- if .Values.sidecar.resources }}
         resources:
 {{ toYaml .Values.sidecar.resources | indent 10 }}
@@ -77,7 +77,7 @@ spec:
         - name: metrics
           containerPort: {{ .Values.sidecar.metrics_port }}
         env:   
-        {{- include "greymatter.envvars" . | indent 8 }}
+        {{- include "greymatter.envvars" (dict "overrides" .Values.prometheus.sidecar "top" .) | indent 8 }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       volumes:

@@ -158,7 +158,7 @@ prometheus:
   start_cmd: /bin/prometheus
   # Service account for prometheus
   service_account:
-    create: false
+    create: true
     name: prometheus-sa
   resources:
     requests:

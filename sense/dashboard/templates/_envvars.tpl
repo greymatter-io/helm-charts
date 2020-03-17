@@ -44,20 +44,13 @@
 We use indentation in the template for readability, but the template returns the output without indents, leaving it up to the user
 Most users should use the `indent` or `nindent` functions to automatically indent the proper amount. */}}
 {{- define "greymatter.envvars" }}
-  {{- $top := . }}
-  {{- if .Values.sidecar.envvars }}
-    {{- range $name, $envvar := .Values.sidecar.envvars }}
-          {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
-          {{- $l := "" }}
-          {{- if $top.Values.sidecar.envvars }}
-            {{- $l = index $top.Values.sidecar.envvars $name }}
-          {{- end}}
-          {{- $e := $l | default $envvar }}
-          {{- $args := dict "name" $envName "value" $e "top" $top }}
-          {{- include "envvar" $args }}
-    {{- end }}
-  {{- else }}
-    {{- range $name, $envvar := .Values.sidecar.envvars }}
+  {{- $top := index . "top" | default . }}
+  {{- $allvars := $top.Values.sidecar.envvars }}
+  {{- if .overrides }}
+     {{- $allvars = merge .overrides.envvars $allvars }}
+  {{- end }}
+  {{- if $allvars }}
+    {{- range $name, $envvar := $allvars }}
           {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
           {{- $args := dict "name" $envName "value" $envvar "top" $top }}
           {{- include "envvar" $args }}
