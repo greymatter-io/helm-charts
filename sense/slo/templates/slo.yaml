@@ -21,7 +21,7 @@ spec:
         runAsGroup: 0
         fsGroup: 2000
       {{- end }}
-      serviceAccountName: {{ .Values.global.waiter.serviceAccount.name }}
+      serviceAccountName: {{ .Values.global.waiter.service_account.name }}
       {{- if not .Values.postgres.rds.enabled }}
       initContainers:
         - name: ensure-postgres
@@ -121,10 +121,7 @@ spec:
           containerPort: 8081
         env:
         {{- include "greymatter.envvars" . | indent 8 }}
-        {{- if .Values.global.spire.enabled }}
-        volumeMounts:
-        {{- include "sidecar_volume_mounts" . | indent 8 }}
-        {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+        {{- if .Values.sidecar.secret }}
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
@@ -135,10 +132,7 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.global.image_pull_secret }}
       volumes:
-      {{- if .Values.global.spire.enabled }}
-      {{- include "sidecar_volumes" . | indent 6 }}
-      {{- include "sidecar_certs_volumes" . | indent 6 }}
-      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      {{- if .Values.sidecar.secret }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       {{- if .Values.postgres.secret}}

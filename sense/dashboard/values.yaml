@@ -65,7 +65,7 @@ dashboard:
       value: '/services/prometheus/latest/api/v1/'
     base_url:
       type: "value"
-      value: '/services/dashboard/{{ $.Values.global.dashboard.version }}/'
+      value: '/services/dashboard/{{ $.Values.dashboard.version }}/'
     request_timeout:
       type: "value"
       value: '15000'

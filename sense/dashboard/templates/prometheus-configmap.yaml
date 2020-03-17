@@ -53,7 +53,7 @@ data:
           #replacement:   '${1}'
           replacement:   '${1}'
       {{- end }}
-      {{- if .Values.global.sense.enabled }}
+      {{- if .Values.prometheus.sense_enabled }}
       - job_name: sense
         metrics_path: /stats/prometheus
         kubernetes_sd_configs:

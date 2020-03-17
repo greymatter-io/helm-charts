@@ -1,23 +1,23 @@
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  name: prometheus
+  name: {{ .Values.prometheus.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  serviceName: prometheus
+  serviceName: {{ .Values.prometheus.name }}
   selector:
     matchLabels:
-      app: prometheus
-      deployment: prometheus
+      app: {{ .Values.prometheus.name }}
+      deployment: {{ .Values.prometheus.name }}
   replicas: {{ .Values.prometheus.replica_count }}
   template:
     metadata:
       labels:
-        app: prometheus
-        deployment: prometheus
+        app: {{ .Values.prometheus.name }}
+        deployment: {{ .Values.prometheus.name }}
     spec:
-      serviceAccountName: prometheus-sa
-      {{- if ((.Values.global.spire.enabled) or (ne .Values.global.environment "openshift")) }}
+      serviceAccountName: {{ .Values.prometheus.service_account.name }}
+      {{- if ((ne .Values.global.environment "openshift")) }}
       # Pod security contexts are propagated to their children volumes to allow r/w permissions
       # We only do this in openshift when spire is enabled because then it is running with a more relaxed security context constraint
       securityContext:
@@ -67,20 +67,17 @@ spec:
         resources:
 {{ toYaml .Values.sidecar.resources | indent 10 }}
         {{- end }}
-        {{- if .Values.global.spire.enabled }}
-        volumeMounts:
-        {{- include "sidecar_volume_mounts" . | indent 8 }}
-        {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+        {{- if .Values.sidecar.secret }}
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
         ports:
         - name: proxy
-          containerPort: 8080
+          containerPort: {{ .Values.sidecar.port }}
         - name: metrics
-          containerPort: 8081
+          containerPort: {{ .Values.sidecar.metrics_port }}
         env:   
-        {{- include "greymatter.envvars-prometheus" . | indent 8 }}
+        {{- include "greymatter.envvars" . | indent 8 }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       volumes:
@@ -90,9 +87,7 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.global.spire.enabled }}
-      {{- include "sidecar_volumes" . | indent 6 }}
-      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      {{- if .Values.sidecar.secret }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       - name: prometheus-configuration
@@ -105,4 +100,4 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{ .Values.prometheus.pvcSize | default "40" }}Gi
+          storage: {{ .Values.prometheus.pvc_size | default "40" }}Gi

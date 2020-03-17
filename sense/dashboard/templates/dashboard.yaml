@@ -16,7 +16,7 @@ spec:
       containers:
       - name: dashboard
         image: '{{ tpl .Values.dashboard.image $ }}'
-        imagePullPolicy: {{ .Values.dashboard.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.dashboard.image_pull_policy }}
         {{- if .Values.dashboard.resources }}
         resources:
 {{ toYaml .Values.dashboard.resources | indent 10 }}
@@ -36,30 +36,27 @@ spec:
           initialDelaySeconds: 20
           periodSeconds: 5
         env:
-        {{- include "envvars" (dict "envvar" .Values.catalog.envvars "top" $) | indent 10 }}
+        {{- include "envvars" (dict "envvar" .Values.dashboard.envvars "top" $) | indent 10 }}
         {{- if .Values.dashboard.secret }}
         volumeMounts:
         - name: service-certs
-          mountPath: {{ .Values.dashboard.secret.mountPoint }}
+          mountPath: {{ .Values.dashboard.secret.mount_point }}
         {{- end }}
       - name: sidecar
         image: '{{ tpl .Values.sidecar.image $ }}'
-        imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
         {{- if .Values.dashboard.resources }}
         resources:
 {{ toYaml .Values.sidecar.resources | indent 10 }}
         {{- end }}
         ports:
         - name: proxy
-          containerPort: 8080
+          containerPort: {{ .Values.sidecar.port }}
         - name: metrics
-          containerPort: 8081
+          containerPort: {{ .Values.sidecar.metrics_port }}
         env:
         {{- include "greymatter.envvars" . | indent 8 }}
-        {{- if .Values.global.spire.enabled }}
-        volumeMounts:
-        {{- include "sidecar_volume_mounts" . | indent 8 }}
-        {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+        {{- if .Values.sidecar.secret }}
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
@@ -74,9 +71,7 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.global.spire.enabled }}
-      {{- include "sidecar_volumes" . | indent 6 }}
-      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
+      {{- if .Values.sidecar.secret }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       {{- if .Values.dashboard.secret }}

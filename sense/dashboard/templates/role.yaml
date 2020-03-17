@@ -1,8 +1,8 @@
-{{- if .Values.prometheus.serviceAccount.create }}
+{{- if .Values.prometheus.service_account.create }}
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .Values.prometheus.serviceAccount.name }}-role
+  name: {{ .Values.prometheus.service_account.name }}-role
   namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups: [""]
