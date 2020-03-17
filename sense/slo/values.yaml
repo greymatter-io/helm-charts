@@ -45,7 +45,7 @@ slo:
   secret:
     secret_name: slo-certs
     mountPoint: /service-certs
-    secretKeys:
+    secret_keys:
       ca: ca.crt
       cert: service.crt
       key: service.key
@@ -58,7 +58,7 @@ sidecar:
   secret:
     secret_name: sidecar-certs
     mountPoint: /etc/proxy/tls/sidecar
-    secretKeys:
+    secret_keys:
       ca: ca.crt
       cert: service.crt
       key: service.key
@@ -104,7 +104,7 @@ postgres:
   secret:
     secret_name: postgres-ssl-certs
     mountPoint: /certs
-    secretKeys:
+    secret_keys:
       ca: ca.pem
       cert: server.crt
       key: server.key

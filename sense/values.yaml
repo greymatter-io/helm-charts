@@ -196,7 +196,7 @@ catalog:
     secret:
       secret_name: sidecar-certs
       mountPoint: /etc/proxy/tls/sidecar
-      secretKeys:
+      secret_keys:
         ca: ca.crt
         cert: server.crt
         key: server.key
@@ -219,7 +219,7 @@ dashboard:
     secret:
       secret_name: dashboard-certs
       mountPoint: /certs
-      secretKeys:
+      secret_keys:
         ca: ca.crt
         cert: service.crt
         key: service.key
@@ -242,7 +242,7 @@ dashboard:
     secret:
       secret_name: sidecar-certs
       mountPoint: /etc/proxy/tls/sidecar
-      secretKeys:
+      secret_keys:
         ca: ca.crt
         cert: server.crt
         key: server.key
@@ -289,7 +289,7 @@ dashboard:
     secret:
       secret_name: sidecar-certs
       mountPoint: /etc/proxy/tls/sidecar
-      secretKeys:
+      secret_keys:
         ca: ca.crt
         cert: server.crt
         key: server.key
@@ -309,7 +309,7 @@ slo:
     secret:
       secret_name: slo-certs
       mountPoint: /service-certs
-      secretKeys:
+      secret_keys:
         ca: ca.crt
         cert: service.crt
         key: service.key
@@ -322,7 +322,7 @@ slo:
     secret:
       secret_name: sidecar-certs
       mountPoint: /etc/proxy/tls/sidecar
-      secretKeys:
+      secret_keys:
         ca: ca.crt
         cert: service.crt
         key: service.key
@@ -368,7 +368,7 @@ slo:
     secret:
       secret_name: postgres-ssl-certs
       mountPoint: /certs
-      secretKeys:
+      secret_keys:
         ca: ca.pem
         cert: server.crt
         key: server.key

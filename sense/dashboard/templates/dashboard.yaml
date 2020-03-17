@@ -36,29 +36,8 @@ spec:
           initialDelaySeconds: 20
           periodSeconds: 5
         env:
-        - name: FABRIC_SERVER
-          value: '{{ tpl .Values.dashboard.fabric_server . }}'
-        - name: CONFIG_SERVER
-          value: '{{ tpl .Values.dashboard.config_server . }}'
-        - name: USE_PROMETHEUS
-          value: '{{ .Values.dashboard.use_prometheus }}'
-        - name: OBJECTIVES_SERVER
-          value: '{{ tpl .Values.dashboard.objectives_server . }}'
-        - name: PROMETHEUS_SERVER
-          value: '{{ .Values.dashboard.prometheus_server }}'
-        - name: BASE_URL
-          value: '{{ tpl .Values.dashboard.base_url . }}'
-        - name: REQUEST_TIMEOUT
-          value: '{{ .Values.dashboard.requestTimeout }}'
+        {{- include "envvars" (dict "envvar" .Values.catalog.envvars "top" $) | indent 10 }}
         {{- if .Values.dashboard.secret }}
-        - name: SERVER_SSL_ENABLED
-          value: "true"
-        - name: SERVER_SSL_CA
-          value: {{ .Values.dashboard.secret.mountPoint}}/{{ .Values.dashboard.secret.secretKeys.ca }}
-        - name: SERVER_SSL_CERT
-          value: {{ .Values.dashboard.secret.mountPoint}}/{{ .Values.dashboard.secret.secretKeys.cert }}
-        - name: SERVER_SSL_KEY
-          value: {{ .Values.dashboard.secret.mountPoint}}/{{ .Values.dashboard.secret.secretKeys.key }}
         volumeMounts:
         - name: service-certs
           mountPath: {{ .Values.dashboard.secret.mountPoint }}

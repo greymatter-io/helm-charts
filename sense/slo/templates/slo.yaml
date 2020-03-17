@@ -83,23 +83,23 @@ spec:
         - name: SSL_ENABLED
           value: "true"
         - name: SSL_SERVER_CA
-          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secretKeys.ca }}
+          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secret_keys.ca }}
         {{- if not .Values.postgres.rds.enabled }}
         - name: SSL_SERVER_CERT
-          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secretKeys.cert }}
+          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secret_keys.cert }}
         - name: SSL_SERVER_KEY
-          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secretKeys.key }}
+          value: {{ .Values.postgres.secret.mountPoint}}/{{ .Values.postgres.secret.secret_keys.key }}
         {{- end }}
         {{- end }}
         {{- if and .Values.slo.secret }}
         - name: SERVICE_SSL_ENABLED
           value: "true"
         - name: SERVICE_SSL_CA
-          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secretKeys.ca }}
+          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secret_keys.ca }}
         - name: SERVICE_SSL_CERT
-          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secretKeys.cert }}
+          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secret_keys.cert }}
         - name: SERVICE_SSL_KEY
-          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secretKeys.key }}
+          value: {{ .Values.slo.secret.mountPoint}}/{{ .Values.slo.secret.secret_keys.key }}
         {{- end }}
         {{- if .Values.postgres.rds.enabled }}
         - name: DROP_SCHEMA

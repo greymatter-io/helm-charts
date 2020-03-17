@@ -1,3 +1,24 @@
+{{- define "envvars" }}
+  {{- $e := index . "envvar" }}
+  {{- $t := index . "top" }}
+  {{- range $name, $envvar := $e }}
+    {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+    {{- /* They may be times when default environment variables don't need to be set.  This allows an operator to set the type to null which tells the function to skip that environment variable */}}
+    {{- if not (eq $envvar.type "null") }}
+      {{- if eq $envvar.type "secret" }}
+- name: {{ $envName }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ tpl $envvar.secret $t }}
+      key: {{ tpl $envvar.key $t }}
+      {{- else if eq $envvar.type "value" }}
+- name: {{ $envName }}
+  value: {{ tpl $envvar.value $t | quote }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
 {{/* envvar take a dictionary of name, value, and top as arguments, and generates a single environment variable from it. */}}
 {{/* Top must be the scope of the top of a named template or any scope which includes the default values, namely .Template (since we use the `tpl` function in this template, .Template.BasePath is required for some reason) */}}
 {{- define "envvar" }}
@@ -24,8 +45,8 @@ We use indentation in the template for readability, but the template returns the
 Most users should use the `indent` or `nindent` functions to automatically indent the proper amount. */}}
 {{- define "greymatter.envvars" }}
   {{- $top := . }}
-  {{- if .Values.global.sidecar }}
-    {{- range $name, $envvar := .Values.global.sidecar.envvars }}
+  {{- if .Values.sidecar.envvars }}
+    {{- range $name, $envvar := .Values.sidecar.envvars }}
           {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
           {{- $l := "" }}
           {{- if $top.Values.sidecar.envvars }}
@@ -37,29 +58,6 @@ Most users should use the `indent` or `nindent` functions to automatically inden
     {{- end }}
   {{- else }}
     {{- range $name, $envvar := .Values.sidecar.envvars }}
-          {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
-          {{- $args := dict "name" $envName "value" $envvar "top" $top }}
-          {{- include "envvar" $args }}
-    {{- end }}
-  {{- end }}
-{{- end }}
-
-{{- /* merged envvars for prometheus sidecar*/}}
-{{- define "greymatter.envvars-prometheus" }}
-  {{- $top := . }}
-  {{- if .Values.global.sidecar }}
-    {{- range $name, $envvar := .Values.global.sidecar.envvars }}
-          {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
-          {{- $l := "" }}
-          {{- if $top.Values.sidecar_prometheus.envvars }}
-            {{- $l = index $top.Values.sidecar_prometheus.envvars $name }}
-          {{- end}}
-          {{- $e := $l | default $envvar }}
-          {{- $args := dict "name" $envName "value" $e "top" $top }}
-          {{- include "envvar" $args }}
-    {{- end }}
-  {{- else }}
-    {{- range $name, $envvar := .Values.sidecar_prometheus.envvars }}
           {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
           {{- $args := dict "name" $envName "value" $envvar "top" $top }}
           {{- include "envvar" $args }}
