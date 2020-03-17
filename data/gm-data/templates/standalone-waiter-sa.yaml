@@ -1,4 +1,4 @@
-{{- if and .Values.data.deploy.standalone ( .Values.data.deploy.waiterSA ) }}
+{{- if and .Values.data.deploy.standalone ( .Values.data.deploy.waiter_sa ) }}
 
 # Grey Matter Waiter service account
 apiVersion: v1

@@ -21,7 +21,7 @@ global:
 # Configures the init container used to wait on various deployments to be ready
 waiter:
   image: deciphernow/k8s-waiter:latest
-  serviceAccount:
+  service_account:
     create: true
     name: waiter-sa
 
@@ -50,8 +50,8 @@ data:
   # If Grey Matter Data is being deployed as a standalone instance, these values need to be provided
   deploy:
     standalone: false
-    # deploy waiterSA automatically (true if tiller service account has ability to make roles in cluster)
-    waiterSA: false
+    # deploy waiter_sa automatically (true if tiller service account has ability to make roles in cluster)
+    waiter_sa: false
 
   resources:
     limits:

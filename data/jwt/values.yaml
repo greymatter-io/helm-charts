@@ -2,7 +2,7 @@
 
 global:
   # Used as imagePullSecrets value for each subchart
-  imagePullSecret: docker.secret
+  image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
   environment: kubernetes
   exhibitor:

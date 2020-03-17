@@ -2,7 +2,7 @@
 
 global:
   # Used as imagePullSecrets value for each subchart
-  imagePullSecret: docker.secret
+  image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
   environment: kubernetes
   exhibitor:
@@ -30,8 +30,6 @@ jwt:
       'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./certs/aac ]]; then mkdir -p ./certs/aac; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /app/gm-jwt-security-gov.linux',
 
     ]
-  # Used to configure the REDIS_DB environment variable 
-  redis_db: '0'
   # If set, enables tls using the secret specified in secret_name
   #secret:
   #  secret_name: jwt-certs
@@ -80,6 +78,12 @@ jwt:
     - type: value
       name: TOKEN_EXP_TIME
       value: '300'
+    - type: value
+      name: REDIS_PORT
+      value: "6379"
+    - type: value
+      name: REDIS_DB
+      value: "0"
 
   # Provides a list of authorized users for the JWT service
   users: |-

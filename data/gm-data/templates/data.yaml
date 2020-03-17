@@ -22,7 +22,7 @@ spec:
         fsGroup: {{ .Values.data.security_context.fsGroup }}
       {{- end }}
       {{- end }}
-      serviceAccountName: {{ .Values.waiter.serviceAccount.name }}
+      serviceAccountName: {{ .Values.waiter.service_account.name }}
       initContainers:
         - name: ensure-{{ .Values.data.name }}
           image: {{ .Values.waiter.image }}
