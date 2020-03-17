@@ -153,6 +153,9 @@ data:
       type: secret
       secret: jwt-certs
       key: jwt.trust.pem
+    mongohost:
+      type: value
+      value: '{{ template "greymatter.mongo.address" . }}'
 
   aws:
     access_key: xxx
