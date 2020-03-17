@@ -13,7 +13,7 @@ global:
     host: ''
     port: 8500
   # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
-  controlPort: 50000                  
+  control_port: 50000                  
 
 # Configures the init container used to wait on various deployments to be ready
 waiter:
@@ -23,47 +23,16 @@ waiter:
     name: waiter-sa
 
 dashboard:
-  version: "latest"
+  # Name used for the deployment and service resources
+  name: dashboard
+  # Dashboard app version
+  version: "3.3.1"
   image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
+  # Port for the Dashboard App
   port: 1337
-  envvars:
-  - name: FABRIC_SERVER
-    value: '{{ tpl .Values.dashboard.fabric_server . }}'
-  - name: CONFIG_SERVER
-    value: '{{ tpl .Values.dashboard.config_server . }}'
-  - name: USE_PROMETHEUS
-    value: '{{ .Values.dashboard.use_prometheus }}'
-  - name: OBJECTIVES_SERVER
-    value: '{{ tpl .Values.dashboard.objectives_server . }}'
-  - name: PROMETHEUS_SERVER
-    value: '{{ .Values.dashboard.prometheus_server }}'
-  - name: BASE_URL
-    value: '{{ tpl .Values.dashboard.base_url . }}'
-  - name: REQUEST_TIMEOUT
-    value: '{{ .Values.dashboard.requestTimeout }}'
-  - name: SERVER_SSL_ENABLED
-    value: "true"
-  - name: SERVER_SSL_CA
-    value: {{ .Values.dashboard.secret.mountPoint}}/{{ .Values.dashboard.secret.secret_keys.ca }}
-  - name: SERVER_SSL_CERT
-    value: {{ .Values.dashboard.secret.mountPoint}}/{{ .Values.dashboard.secret.secret_keys.cert }}
-  - name: SERVER_SSL_KEY
-    value: {{ .Values.dashboard.secret.mountPoint}}/{{ .Values.dashboard.secret.secret_keys.key }}
-
- 
- 
-  fabric_server: '/services/catalog/latest/'
-  use_prometheus: 'true'
-  objectives_server: '/services/slo/latest/'
-  config_server: '/services/gm-control-api/latest/v1.0'
-  prometheus_server: '/services/prometheus/latest/api/v1/'
-  base_url: '/services/dashboard/{{ $.Values.global.dashboard.version }}/'
-  requestTimeout: '15000'
-  version: 3.3.1
-  imagePullPolicy: IfNotPresent
-  pvcSize: 80
-  serviceAccount:
-    create: true
+  # When to pull container images, used in the deployment
+  image_pull_policy: IfNotPresent
+  # CPU and memory limits for the dashboard app
   resources:
     requests:
       memory: '8Gi'
@@ -73,16 +42,71 @@ dashboard:
       cpu: '2'
   secret:
     secret_name: dashboard-certs
-    mountPoint: /certs
+    mount_point: /certs
     secret_keys:
       ca: ca.crt
       cert: service.crt
       key: service.key
+  envvars:
+    fabric_server:
+      type: "value"
+      value: '/services/catalog/latest/'
+    config_server:
+      type: "value"
+      value: '/services/gm-control-api/latest/v1.0'
+    use_prometheus:
+      type: "value"
+      value: 'true'
+    objectives_server:
+      type: "value"
+      value: '/services/slo/latest/'
+    prometheus_server:
+      type: "value"
+      value: '/services/prometheus/latest/api/v1/'
+    base_url:
+      type: "value"
+      value: '/services/dashboard/{{ $.Values.global.dashboard.version }}/'
+    request_timeout:
+      type: "value"
+      value: '15000'
+    server_ssl_enabled:
+      type: "value"
+      value: "true"
+    server_ssl_ca:
+      type: "value"
+      value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.ca }}'
+    server_ssl_cert:
+      type: "value"
+      value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.cert }}'
+    server_ssl_key:
+      type: "value"
+      value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.key }}'
+  # Sidecar configuration overrides for dashboard
+  sidecar:
+    envvars:
+      xds_cluster:
+        type: value
+        value: '{{ .Values.dashboard.name }}'
 
+# Global sidecar configuration
 sidecar:
-  version: '{{- $.Values.global.dashboard.sidecar.version | default $.Values.global.sidecar.version }}'
+  # GM Proxy version, used by control-api
+  version: latest
+  # Port where the proxy will listen
+  port: 10808
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
+  secret:
+    secret_name: sidecar-certs
+    mount_point: /etc/proxy/tls/sidecar
+    secret_keys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key    
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  imagePullPolicy: IfNotPresent
+  # When to pull images, used in the deployment
+  image_pull_policy: IfNotPresent
+  # CPU and memory limits for the sidecar
   resources:
     limits:
       cpu: 200m
@@ -91,30 +115,49 @@ sidecar:
       cpu: 100m
       memory: 128Mi
   envvars:
-    xds_cluster:
-      type: value
-      value: 'dashboard'
-  secret:
-    secret_name: sidecar-certs
-    mountPoint: /etc/proxy/tls/sidecar
-    secret_keys:
-      ca: ca.crt
-      cert: server.crt
-      key: server.key
+    proxy_dynamic:
+      type: 'value'
+      value: 'true'
+    xds_zone:
+      type: 'value'
+      value: '{{ .Values.global.zone }}'
+    xds_host:
+      type: 'value'
+      value: 'control.{{ .Release.Namespace }}.svc'
+    xds_port:
+      type: 'value'
+      value: '{{ .Values.global.control_port | quote }}'
+    xds_node_id:
+      type: 'value'
+      value: 'default'
+    envoy_admin_log_path:
+      type: 'value'
+      value: '/dev/stdout'
 
 prometheus:
-  #Size is in GB
-  pvcSize: 80
+  # Used by promethues-configmap.yaml to enable prometheus metrics scraping for sense
+  sense_enabled: false
+  # Name used for the deployment and service resources
+  name: prometheus
+  # PVC size in Gb, used in prometheus.yaml volumeClaimTemplate
+  pvc_size: 80
   image: 'prom/prometheus:v2.7.1'
-  imagePullPolicy: IfNotPresent
-  zk_announce_path: '/services/prometheus/2.7.1'
+  # When to pull container images, used in the deployment
+  image_pull_policy: IfNotPresent
+  # Prometheus service version
   version: '2.7.1'
+  # Number of replicas for the deployment
   replica_count: 1
+  # Location where prometheus data should be mounted in the container
   data_mount_point: /var/lib/prometheus/data
+  # Location where prometheus config should be mounted
   config_mount_point: /etc/prometheus
-  #private_image: false
+  # If true, don't use an image pull secret
+  private_image: false
+  # Command to start prometheus
   start_cmd: /bin/prometheus
-  serviceAccount:
+  # Service account for prometheus
+  service_account:
     create: false
     name: prometheus-sa
   resources:
@@ -124,26 +167,9 @@ prometheus:
     limits:
       memory: "40Gi"
       cpu: "2"
-
-sidecar_prometheus:
-  version: '{{- $.Values.global.dashboard.sidecar_prometheus.version | default $.Values.global.sidecar.version }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
-  imagePullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 200m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  envvars:
-    xds_cluster:
-      type: value
-      value: 'prometheus'
-  secret:
-    secret_name: sidecar-certs
-    mountPoint: /etc/proxy/tls/sidecar
-    secret_keys:
-      ca: ca.crt
-      cert: server.crt
-      key: server.key
+  # Sidecar configuration overrides for prometheus
+  sidecar:
+    envvars:
+      xds_cluster:
+        type: value
+        value: '{{ .Values.prometheus.name }}'

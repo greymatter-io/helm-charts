@@ -61,11 +61,11 @@ spec:
       {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}
       - name: sidecar
-        image: {{ tpl .Values.sidecar_prometheus.image $ }}
+        image: {{ tpl .Values.sidecar.image $ }}
         imagePullPolicy: {{ .Values.prometheus.imagePullPolicy }}
-        {{- if .Values.sidecar_prometheus.resources }}
+        {{- if .Values.sidecar.resources }}
         resources:
-{{ toYaml .Values.sidecar_prometheus.resources | indent 10 }}
+{{ toYaml .Values.sidecar.resources | indent 10 }}
         {{- end }}
         {{- if .Values.global.spire.enabled }}
         volumeMounts:
@@ -82,7 +82,7 @@ spec:
         env:   
         {{- include "greymatter.envvars-prometheus" . | indent 8 }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}
       volumes:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

@@ -72,7 +72,7 @@ spec:
           periodSeconds: 2
       {{- if .Values.postgres.private_image }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}
       {{- end }} 
       volumes:
       - name: postgres-slo-config

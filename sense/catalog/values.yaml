@@ -13,7 +13,7 @@ global:
     host: ''
     port: 8500
   # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
-  controlPort: 50000                  
+  control_port: 50000                  
 
 # Configures the init container used to wait on various deployments to be ready
 waiter:                             
@@ -29,7 +29,7 @@ catalog:
   version: latest
   image: docker-dev.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
-  imagePullPolicy: IfNotPresent
+  image_pull_policy: IfNotPresent
   # CPU and memory limits for the catalog service
   resources:
     limits:
@@ -42,7 +42,7 @@ catalog:
   port: 9080
   secret:
     secret_name: sidecar-certs
-    mountPoint: /etc/pki
+    mount_point: /etc/pki
     secret_keys:
       ca: ca.crt
       cert: server.crt
@@ -59,7 +59,7 @@ catalog:
       value: '{{ $.Values.catalog.port }}'
     control_server_0_address:
       type: value
-      value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.controlPort }}'
+      value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.control_port }}'
     control_server_0_zone_name:
       type: value
       value: '{{ .Values.global.zone }}'
@@ -120,8 +120,14 @@ catalog:
     client_email:
       type: value
       value: 'gm-control@deciphernow.com'
+  # Sidecar configuration overrides for catalog
+  sidecar:
+    envvars:
+      xds_cluster:
+        type: value
+        value: '{{ .Values.catalog.name }}'
 
-# Sidecar configuration (control-api is the only service in this chart with a proxy)
+# Sidecar configuration
 sidecar:
   # GM Proxy version, used by control-api
   version: latest
@@ -148,9 +154,6 @@ sidecar:
       cpu: 100m
       memory: 128Mi
   envvars:
-    xds_cluster:
-      type: value
-      value: '{{ .Values.catalog.name }}'
     proxy_dynamic:
       type: 'value'
       value: 'true'
@@ -162,7 +165,7 @@ sidecar:
       value: 'control.{{ .Release.Namespace }}.svc'
     xds_port:
       type: 'value'
-      value: '{{ .Values.global.controlPort | quote }}'
+      value: '{{ .Values.global.control_port | quote }}'
     xds_node_id:
       type: 'value'
       value: 'default'

@@ -133,7 +133,7 @@ spec:
       {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}
       imagePullSecrets:
-        - name: {{ .Values.global.imagePullSecret }}
+        - name: {{ .Values.global.image_pull_secret }}
       volumes:
       {{- if .Values.global.spire.enabled }}
       {{- include "sidecar_volumes" . | indent 6 }}

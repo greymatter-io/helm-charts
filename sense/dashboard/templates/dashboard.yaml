@@ -86,4 +86,4 @@ spec:
           defaultMode: 0600
       {{- end }}
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}
