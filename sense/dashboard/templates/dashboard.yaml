@@ -55,7 +55,7 @@ spec:
         - name: metrics
           containerPort: {{ .Values.sidecar_dashboard.metrics_port }}
         env:
-        {{- include "greymatter.envvars-dashboard" . | indent 8 }}
+        {{- include "sidecar.envvars-dashboard" . | indent 8 }}
         {{- if .Values.sidecar_dashboard.secret }}
         volumeMounts:
         - name: sidecar-certs

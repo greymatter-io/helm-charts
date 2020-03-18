@@ -21,47 +21,51 @@
 {{- end }}
 
 {{- /* merged envvars for dashboard sidecar*/}}
-{{- define "greymatter.envvars-dashboard" }}
-  {{- $top := . }}
-  {{- if .Values.global.sidecar }}
-    {{- range $name, $envvar := .Values.global.sidecar.envvars }}
-          {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
-          {{- $l := "" }}
-          {{- if $top.Values.sidecar_dashboard.envvars }}
-            {{- $l = index $top.Values.sidecar_dashboard.envvars $name }}
-          {{- end }}
-          {{- $e := $l | default $envvar }}
-          {{- $args := dict "name" $envName "value" $e "top" $top }}
-          {{- include "envvar" $args }}
+{{- define "sidecar.envvars-dashboard" }}
+ {{- $top := . }}
+  {{- if and .Values.global.sidecar.envvars $top.Values.sidecar.envvars }}
+    {{- $allvars := merge $top.Values.sidecar.envvars .Values.global.sidecar.envvars }}
+    {{- range $name, $envvar := $allvars }}
+      {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+      {{- $args := dict "name" $envName "value" $envvar "top" $top }}
+      {{- include "envvar" $args }}
     {{- end }}
-  {{- else }}
-    {{- range $name, $envvar := .Values.sidecar_dashboard.envvars }}
-          {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
-          {{- $args := dict "name" $envName "value" $envvar "top" $top }}
-          {{- include "envvar" $args }}
+  {{- else if .Values.global.sidecar.envvars }}
+    {{- range $name, $envvar := .Values.global.sidecar.envvars }}
+      {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+      {{- $args := dict "name" $envName "value" $envvar "top" $top }}
+      {{- include "envvar" $args }}
+    {{- end }}
+  {{- else if $top.Values.sidecar.envvars }}
+    {{- range $name, $envvar := $top.Values.sidecar.envvars }}
+      {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+      {{- $args := dict "name" $envName "value" $envvar "top" $top }}
+      {{- include "envvar" $args }}
     {{- end }}
   {{- end }}
 {{- end }}
 
 {{- /* merged envvars for prometheus sidecar*/}}
-{{- define "greymatter.envvars-prometheus" }}
-  {{- $top := . }}
-  {{- if .Values.global.sidecar }}
-    {{- range $name, $envvar := .Values.global.sidecar.envvars }}
-          {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
-          {{- $l := "" }}
-          {{- if $top.Values.sidecar_prometheus.envvars }}
-            {{- $l = index $top.Values.sidecar_prometheus.envvars $name }}
-          {{- end }}
-          {{- $e := $l | default $envvar }}
-          {{- $args := dict "name" $envName "value" $e "top" $top }}
-          {{- include "envvar" $args }}
+{{- define "sidecar.envvars-prometheus" }}
+ {{- $top := . }}
+  {{- if and .Values.global.sidecar.envvars $top.Values.sidecar.envvars }}
+    {{- $allvars := merge $top.Values.sidecar.envvars .Values.global.sidecar.envvars }}
+    {{- range $name, $envvar := $allvars }}
+      {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+      {{- $args := dict "name" $envName "value" $envvar "top" $top }}
+      {{- include "envvar" $args }}
     {{- end }}
-  {{- else }}
-    {{- range $name, $envvar := .Values.sidecar_prometheus.envvars }}
-          {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
-          {{- $args := dict "name" $envName "value" $envvar "top" $top }}
-          {{- include "envvar" $args }}
+  {{- else if .Values.global.sidecar.envvars }}
+    {{- range $name, $envvar := .Values.global.sidecar.envvars }}
+      {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+      {{- $args := dict "name" $envName "value" $envvar "top" $top }}
+      {{- include "envvar" $args }}
+    {{- end }}
+  {{- else if $top.Values.sidecar.envvars }}
+    {{- range $name, $envvar := $top.Values.sidecar.envvars }}
+      {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+      {{- $args := dict "name" $envName "value" $envvar "top" $top }}
+      {{- include "envvar" $args }}
     {{- end }}
   {{- end }}
 {{- end }}

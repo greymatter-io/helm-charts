@@ -79,7 +79,7 @@ spec:
         - name: metrics
           containerPort: {{ .Values.sidecar_prometheus.metrics_port }}
         env:   
-        {{- include "greymatter.envvars-prometheus" . | indent 8 }}
+        {{- include "sidecar.envvars-prometheus" . | indent 8 }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       volumes:
