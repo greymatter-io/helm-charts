@@ -13,7 +13,9 @@ global:
     host: ''
     port: 8500
   # Port for Grey Matter Control. Used in control-api and sidecar envvars.
-  control_port: 50000             
+  control_port: 50000 
+  # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
+  control_additional_namespaces:
   # Configures the init container used to wait on various deployments to be ready
   waiter:                               
     image: deciphernow/k8s-waiter:latest
@@ -60,8 +62,6 @@ control:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
-    # Comma delimited string of namespaces for control to monitor
-    additional_namespaces_to_control:
     # Secret used to talk to control-api
     secret:                      
       enabled: true
