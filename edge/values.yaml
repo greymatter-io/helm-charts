@@ -2,7 +2,7 @@
 
 global:
 
-  imagePullSecret: docker.secret
+  image_pull_secret: docker.secret
   
   environment: kubernetes
   domain: development.deciphernow.com
@@ -14,34 +14,44 @@ global:
   remove_namespace_from_url: 'false'
   exhibitor:
     replicas: 1
-  edge:
-    version: latest
-    enableTLS: true
-    certPath: /etc/proxy/tls/edge
-    egressDn: cn=edge
+  zone: zone-default-zone
   consul:
     enabled: false
     host: ''
     port: 8500
-  sidecar:
-    version: latest
-  spire:
-    enabled: false
-  mesh_tls:
-    use_provided_certs: true
-
-ingress_config:
-  default_url: '{{ .Values.global.route_url_name }}.{{ .Release.Namespace }}.{{ .Values.global.domain }}'
-  custom_url: '{{ .Values.global.route_url_name }}.{{ .Values.global.domain }}'
+  control_port: 50000
 
 edge:
-  egress_use_tls: 'true'
-  inheaders_enabled: 'true'
-  obs_enabled: 'false'
-  obs_full_response: 'false'
-  base_path: /services/edge/0.7.1
-  acl_enabled: 'false'
-  imagePullPolicy: IfNotPresent
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.edge.version $ }}'
+  version: latest
+  image_pull_policy: IfNotPresent
+  port: 10808
+  metrics_port: 8081
+
+  envvars:
+    xds_cluster:
+      type: value
+      value: 'edge'
+    proxy_dynamic:
+      type: 'value'
+      value: 'true'
+    xds_zone:
+      type: 'value'
+      value: '{{ .Values.global.zone }}'
+    xds_host:
+      type: 'value'
+      value: 'control.{{ .Release.Namespace }}.svc'
+    xds_port:
+      type: 'value'
+      value: '{{ .Values.global.control_port }}'
+    xds_node_id:
+      type: 'value'
+      value: 'default'
+    envoy_admin_log_path:
+      type: 'value'
+      value: '/dev/stdout'
+
+ 
   resources:
     limits:
       cpu: 1
@@ -50,10 +60,18 @@ edge:
       cpu: 100m
       memory: 128Mi
 
+  egress:
+    secret:
+      secret_name: greymatter-edge-egress
+      mount_point: /etc/proxy/tls/sidecar/
   ingress:
+    secret:
+      secret_name: greymatter-edge-ingress
+      mount_point: /etc/proxy/tls/edge/
+
     # For ingress, you can specify which API verison  to use
     apiVersion: voyager.appscode.com/v1beta1
-  
+
     # Specific annotations for your deployment
     # Choosing the ingress.appscode.com/type is important and depends on your environment type.
     #   - If using EKS, you need to configure the Type as LoadBalancder 
@@ -76,32 +94,4 @@ edge:
           nodePort: '30000'
           backend:
             serviceName: edge
-            servicePort: 8080
-
-  # These are the certs that the edge will use for ingress traffic into the mesh
-  create_edge_secret: false
-  certificates:
-    ingress:
-      name: greymatter-edge-ingress
-    egress:
-      name: greymatter-edge-egress
-      mountPoint: /etc/proxy/tls/sidecar/
-
-sidecar:
-  version: '{{- $.Values.global.edge.version | default $.Values.global.sidecar.version }}'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  metrics_key_function: depth
-  imagePullPolicy: IfNotPresent
-  resources:
-    limits:
-      cpu: 200m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  envvars:
-    xds_cluster:
-      type: value
-      value: 'edge'
-
-
+            servicePort: 8080 

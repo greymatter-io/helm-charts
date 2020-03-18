@@ -22,14 +22,14 @@
 {{- /*  envvars loops through the global sidecar envvars and generates Kubernetes container env keys for both regular values and secrets from the local sidecar values and from the global values as a backup.
 We use indentation in the template for readability, but the template returns the output without indents, leaving it up to the user
 Most users should use the `indent` or `nindent` functions to automatically indent the proper amount. */}}
-{{- define "greymatter.envvars" }}
+{{- define "edge.envvars" }}
   {{- $top := . }}
-  {{- if .Values.global.sidecar }}
-    {{- range $name, $envvar := .Values.global.sidecar.envvars }}
+  {{- if .Values.edge.envvars }}
+    {{- range $name, $envvar := .Values.edge.envvars }}
           {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
           {{- $l := "" }}
-          {{- if $top.Values.sidecar.envvars }}
-            {{- $l = index $top.Values.sidecar.envvars $name }}
+          {{- if $top.Values.edge.envvars }}
+            {{- $l = index $top.Values.edge.envvars $name }}
           {{- end}}
           {{- $e := $l | default $envvar }}
           {{- $args := dict "name" $envName "value" $e "top" $top }}

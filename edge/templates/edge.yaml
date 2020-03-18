@@ -7,45 +7,42 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: edge
+      gm.proxy: edge
       deployment: edge
   template:
     metadata:
       labels:
-        app: edge
+        gm.proxy: edge
         deployment: edge
     spec:
       containers:
       - name: edge
-        image: {{ tpl .Values.sidecar.image $ | quote }}
-        imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
+        image: {{ tpl .Values.edge.image $ | quote }}
+        imagePullPolicy: {{ .Values.edge.image_pull_policy }}
         {{- if .Values.edge.resources }}
         resources:
 {{ toYaml .Values.edge.resources | indent 10 }}
         {{- end }}
         env:
-        {{- include "greymatter.envvars" . | indent 8 }}
+        {{- include "edge.envvars" . | indent 8 }}
         ports:
         - name: proxy
-          containerPort: 8080
+          containerPort: {{ .Values.edge.port }}
         - name: metrics
-          containerPort: 8081
+          containerPort: {{ .Values.edge.metrics_port }}
         volumeMounts:
-        - name: edge
-          mountPath: {{ .Values.global.edge.certPath }}
-        {{- if .Values.global.spire.enabled }}
-        - name: spire-agent-socket
-          mountPath: /run/spire/sockets
-          readOnly: true
-        {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-        {{- include "edge_volume_certs_mount" . | indent 8 }}
-        {{- end}}
+        {{- if .Values.edge.ingress.secret }}
+        {{- include "edge_ingress_certs_mount" . | indent 8 }}
+        {{- end }}
+        {{- if .Values.edge.egress.secret }}
+        {{- include "edge_egress_certs_mount" . | indent 8 }}
+        {{- end }}
       {{- if .Values.global.consul.enabled }}
       {{- $data := dict "Values" .Values "ServiceName" "edge" }}
       {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}      
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}
       volumes:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul
@@ -53,14 +50,9 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      - name: edge
-        secret:
-          secretName: {{ .Values.edge.certificates.ingress.name}}
-      {{- if .Values.global.spire.enabled }}
-      - name: spire-agent-socket
-        hostPath:
-          path: /run/spire/sockets
-          type: Directory
-      {{- else if and (not .Values.global.spire.enabled) (.Values.global.mesh_tls.use_provided_certs) }}
-      {{- include "edge_certs_volumes" . | indent 6 }}
+      {{- if .Values.edge.ingress.secret }}
+      {{- include "edge_ingress_volumes" . | indent 6 }}
+      {{- end }}
+      {{- if .Values.edge.egress.secret }}
+      {{- include "edge_egress_volumes" . | indent 6 }}
       {{- end }}
