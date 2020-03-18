@@ -98,7 +98,7 @@ sidecar_dashboard:
   envvars:
     xds_cluster:
       type: value
-      value: '{{ .Values.slo.name }}'
+      value: '{{ .Values.dashboard.name }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the sidecar
