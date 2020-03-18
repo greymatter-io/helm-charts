@@ -7,13 +7,13 @@ spec:
   serviceName: {{ .Values.prometheus.name }}
   selector:
     matchLabels:
-      app: {{ .Values.prometheus.name }}
+      gm.proxy: {{ .Values.prometheus.name }}
       deployment: {{ .Values.prometheus.name }}
   replicas: {{ .Values.prometheus.replica_count }}
   template:
     metadata:
       labels:
-        app: {{ .Values.prometheus.name }}
+        gm.proxy: {{ .Values.prometheus.name }}
         deployment: {{ .Values.prometheus.name }}
     spec:
       serviceAccountName: {{ .Values.prometheus.service_account.name }}

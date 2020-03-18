@@ -6,12 +6,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: dashboard
+      gm.proxy: dashboard
   replicas: 1
   template:
     metadata:
       labels:
-        app: dashboard
+        gm.proxy: dashboard
     spec:
       containers:
       - name: dashboard

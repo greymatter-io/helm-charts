@@ -5,18 +5,18 @@ metadata:
   name: postgres-slo
   namespace: {{ .Release.Namespace }}
   labels:
-    app: postgres-slo
+    gm.proxy: postgres-slo
 spec:
   serviceName: postgres-slo
   selector:
     matchLabels:
-      app: postgres-slo
+      gm.proxy: postgres-slo
   replicas: {{ .Values.postgres.replica_count }}
   serviceName: postgres-slo
   template:
     metadata:
       labels:
-        app: postgres-slo
+        gm.proxy: postgres-slo
     spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       securityContext:
