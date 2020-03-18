@@ -35,7 +35,7 @@ dependencies:
 
   - name: gm-control-api
     repository: file://../gm-control-api
-    version: '2.1.6'
+    version: '2.1.7'
 
   - name: control
     repository: file://../control
