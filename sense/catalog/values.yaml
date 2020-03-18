@@ -17,9 +17,9 @@ global:
   # Configures the init container used to wait on various deployments to be ready
   waiter:                             
     image: deciphernow/k8s-waiter:latest
-    service_account: 
-      create: false
+    service_account:
       name: waiter-sa
+  # Global sidecar config (supports version and envvars)
   sidecar:
     version: latest
 
