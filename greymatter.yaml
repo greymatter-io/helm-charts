@@ -42,6 +42,10 @@ global:
     name: control
     port: 50000
     version: 1.1.0
+# If you want to set sidecar version for control api that is different from global.sidecar.version
+#  gmControlApi:
+#    sidecar:
+#      version: 1.1.1
   data:
     jwt_prefix: '/jwt'
   internal-data:
