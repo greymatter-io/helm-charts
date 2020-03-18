@@ -107,7 +107,7 @@ spec:
             periodSeconds: 3
           {{- end }}
           env:
-          {{- include "greymatter.envvars" . | indent 12 }}
+          {{- include "sidecar.envvars" . | indent 12 }}
         {{- if .Values.sidecar.secret.enabled }}
           volumeMounts:
           {{- include "sidecar_volume_certs_mount" . | indent 12 }}
