@@ -23,8 +23,8 @@
 {{- /* merged envvars for dashboard sidecar*/}}
 {{- define "sidecar.envvars-dashboard" }}
  {{- $top := . }}
-  {{- if and .Values.global.sidecar.envvars $top.Values.sidecar.envvars }}
-    {{- $allvars := merge $top.Values.sidecar.envvars .Values.global.sidecar.envvars }}
+  {{- if and .Values.global.sidecar.envvars $top.Values.sidecar_dashboard.envvars }}
+    {{- $allvars := merge $top.Values.sidecar_dashboard.envvars .Values.global.sidecar.envvars }}
     {{- range $name, $envvar := $allvars }}
       {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
       {{- $args := dict "name" $envName "value" $envvar "top" $top }}
@@ -36,8 +36,8 @@
       {{- $args := dict "name" $envName "value" $envvar "top" $top }}
       {{- include "envvar" $args }}
     {{- end }}
-  {{- else if $top.Values.sidecar.envvars }}
-    {{- range $name, $envvar := $top.Values.sidecar.envvars }}
+  {{- else if $top.Values.sidecar_dashboard.envvars }}
+    {{- range $name, $envvar := $top.Values.sidecar_dashboard.envvars }}
       {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
       {{- $args := dict "name" $envName "value" $envvar "top" $top }}
       {{- include "envvar" $args }}
@@ -48,8 +48,8 @@
 {{- /* merged envvars for prometheus sidecar*/}}
 {{- define "sidecar.envvars-prometheus" }}
  {{- $top := . }}
-  {{- if and .Values.global.sidecar.envvars $top.Values.sidecar.envvars }}
-    {{- $allvars := merge $top.Values.sidecar.envvars .Values.global.sidecar.envvars }}
+  {{- if and .Values.global.sidecar.envvars $top.Values.sidecar_prometheus.envvars }}
+    {{- $allvars := merge $top.Values.sidecar_prometheus.envvars .Values.global.sidecar.envvars }}
     {{- range $name, $envvar := $allvars }}
       {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
       {{- $args := dict "name" $envName "value" $envvar "top" $top }}
@@ -61,8 +61,8 @@
       {{- $args := dict "name" $envName "value" $envvar "top" $top }}
       {{- include "envvar" $args }}
     {{- end }}
-  {{- else if $top.Values.sidecar.envvars }}
-    {{- range $name, $envvar := $top.Values.sidecar.envvars }}
+  {{- else if $top.Values.sidecar_prometheus.envvars }}
+    {{- range $name, $envvar := $top.Values.sidecar_prometheus.envvars }}
       {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
       {{- $args := dict "name" $envName "value" $envvar "top" $top }}
       {{- include "envvar" $args }}
