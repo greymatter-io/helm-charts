@@ -26,6 +26,8 @@ global:
     service_account:
       create: true
       name: waiter-sa
+  sidecar:
+    version:
 
 data:
   # Name used for the deployment and service resources
