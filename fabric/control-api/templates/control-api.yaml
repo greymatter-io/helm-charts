@@ -34,7 +34,7 @@ spec:
             - name: http
               containerPort: {{ .Values.controlApi.container_port }}
               protocol: TCP
-          {{- if not .Values.controlApi.secret }}
+          {{- if not .Values.controlApi.secret.enabled }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
           readinessProbe:
             httpGet:
@@ -65,7 +65,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           {{- end }}
           volumeMounts:
-            {{- if .Values.controlApi.secret }}
+            {{- if .Values.controlApi.secret.enabled }}
             - name: service-certs
               mountPath: {{ .Values.controlApi.secret.mount_point }}
             {{- end }}
@@ -84,7 +84,7 @@ spec:
             - name: metrics
               containerPort: {{ .Values.sidecar.metrics_port }}
           # If mTLS is enabled on the service, we can't use normal httpGet probes. Instead we add the probes to the sidecar so that we can exec in and call the service directly. The control-api service does not have the utilities (curl, wget with ssl) we need to do these probes there.
-          {{- if .Values.controlApi.secret }}
+          {{- if .Values.controlApi.secret.enabled }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
           readinessProbe:
             exec:
@@ -108,7 +108,7 @@ spec:
           {{- end }}
           env:
           {{- include "greymatter.envvars" . | indent 12 }}
-        {{- if .Values.sidecar.secret }}
+        {{- if .Values.sidecar.secret.enabled }}
           volumeMounts:
           {{- include "sidecar_volume_certs_mount" . | indent 12 }}
         {{- end }}
@@ -119,7 +119,7 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       volumes:
-      {{- if .Values.controlApi.secret }}
+      {{- if .Values.controlApi.secret.enabled }}
       - name: service-certs
         secret:
           secretName: {{ .Values.controlApi.secret.secret_name }}
@@ -131,7 +131,7 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.controlApi.secret }}
+      {{- if .Values.controlApi.secret.enabled }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
   volumeClaimTemplates:

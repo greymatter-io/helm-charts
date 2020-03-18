@@ -14,14 +14,16 @@ global:
     port: 8500
   # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
   control_port: 50000                  
-
-# Configures the init container used to wait on various deployments to be ready
-waiter:                             
-  image: deciphernow/k8s-waiter:latest
-  service_account: 
-    create: true
-    name: waiter-sa
-    
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:                             
+    image: deciphernow/k8s-waiter:latest
+    service_account: 
+      create: true
+      name: waiter-sa
+  # Global sidecar configuration
+  sidecar:
+    version: latest
+   
 controlApi:
   # Name used for the deployment and service resources
   name: control-api                   
@@ -91,6 +93,7 @@ sidecar:
   # Port where the proxy will expose metrics
   metrics_port: 8081
   secret:
+    enabled: true
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar
     secret_keys:
@@ -129,3 +132,30 @@ sidecar:
     envoy_admin_log_path:
       type: 'value'
       value: '/dev/stdout'
+     
+# Sidecar configuration for Control Api
+sidecar:
+  version: '{{- $.Values.global.sidecar.version | default "latest" }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  # Port where the proxy will listen
+  port: 10808
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
+  secret:
+    enabled: true
+    secret_name: sidecar-certs
+    mount_point: /etc/proxy/tls/sidecar
+    secret_keys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key
+  # When to pull images, used in the deployment
+  image_pull_policy: IfNotPresent
+  # CPU and memory limits for the sidecar
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

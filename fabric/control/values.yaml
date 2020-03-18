@@ -14,13 +14,12 @@ global:
     port: 8500
   # Port for Grey Matter Control
   control_port: 50000     
-
-# Configures the init container used to wait on various deployments to be ready
-waiter:                             
-  image: deciphernow/k8s-waiter:latest
-  service_account: 
-    create: true
-    name: waiter-sa
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:                             
+    image: deciphernow/k8s-waiter:latest
+    service_account: 
+      create: true
+      name: waiter-sa
 
 control:
   # Name used for the deployment and service resources
