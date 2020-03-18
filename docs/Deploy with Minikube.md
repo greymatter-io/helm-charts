@@ -348,7 +348,7 @@ $ minikube -p gm-deploy service --https=true voyager-edge
 
 Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:30000> in the above example, then navigate to there in your browser.
 
-You should be prompted for your [Decipher localuser certificate](./certs/) and be taken to the dashboard. Once there, make sure all services are "green" and then pat yourself on the back -- you deployed Grey Matter to Minikube!!
+You should be prompted for your [Decipher localuser certificate](../certs/quickstart.p12) and be taken to the dashboard. Once there, make sure all services are "green" and then pat yourself on the back -- you deployed Grey Matter to Minikube!!
 
 #### EC2
 

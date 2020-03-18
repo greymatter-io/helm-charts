@@ -151,7 +151,7 @@ You may notice a large section of your `custom-greymatter-secrets.yaml` file con
 
 To access anything in the mesh, your request will pass through the edge proxy, which performs Mutual TLS (mTLS) authentication. Both the client and server must authenticate themselves and your browser (or other HTTPS client like `curl` or `wget`) will need to have the appropriate certificates loaded.
 
-To keep things simple, `greymatter-secrets.yaml` uses the same certificates as those from `common/certificates/user/quickstart.p12` in the [DecipherNow/grey-matter-quickstart](./certs/) repository. If you load `quickstart.p12` into your browser, when you access the Grey Matter Dashboard, you'll be prompted to use that certificate to verify yourself.
+The certs can found [here](../certs/). If you load `quickstart.p12` into your browser, when you access the Grey Matter Dashboard, you'll be prompted to use that certificate to verify yourself.
 
 For production deployments it's recommened to use certificates generated from a secure Certificate Auhority (CA).
 
