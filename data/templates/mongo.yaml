@@ -41,15 +41,15 @@ spec:
         - mountPath: {{ .Values.mongo.storage.mountPath }}
           name: data
         - mountPath: /docker-entrypoint-initdb.d/
-          name: mongo-init
+          name: mongo-secret
         {{- if .Values.mongo.ssl.enabled }}
         - name: certificates
           mountPath: {{ .Values.mongo.ssl.mount_path }}
         {{- end }}
       volumes:
-        - name: mongo-init
-          configMap:
-            name: {{ .Values.mongo.name }}-init
+        - name: mongo-secret
+          secret:
+            secretName: mongo-secret
         {{- if .Values.mongo.ssl.enabled }}
         - name: certificates
           secret:
