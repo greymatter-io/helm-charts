@@ -52,7 +52,8 @@ spec:
           mountPath: {{ .Values.slo.secret.mount_point }}
           {{- end }}
         env:        
-        {{- include "envvars" (dict "envvar" .Values.slo.envvars "top" $) | indent 10 }}
+        {{- include "envvars" (dict "envvar" .Values.slo.envvars.postgres_env "top" $) | indent 10 }}
+        {{- include "envvars" (dict "envvar" .Values.slo.envvars.slo_env "top" $) | indent 10 }}
       - name: sidecar
         image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy }}
