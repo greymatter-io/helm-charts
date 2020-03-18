@@ -13,15 +13,11 @@ spec:
       gm.proxy: {{ .Values.redis.name | default "redis" }}
       deployment: {{ .Values.redis.name | default "redis" }}
   strategy:
-    activeDeadlineSeconds: 21600
-    resources: {}
-    rollingParams:
-      intervalSeconds: 1
+    rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-      timeoutSeconds: 600
-      updatePeriodSeconds: 1
     type: RollingUpdate
+  progressDeadlineSeconds: 21600
   template:
     metadata:
       creationTimestamp: null
@@ -57,6 +53,3 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-  test: false
-  triggers:
-    - type: ConfigChange

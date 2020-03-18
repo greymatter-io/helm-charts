@@ -17,12 +17,14 @@ global:
   # Whether to register services with Consul and where to find the Consul server
   consul:
     enabled: false
+  sidecar:
+    version:
 
 jwt:
   version: '1.0.0'
   # If true, uses aac for auth control
   use_aac: true
-  image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
+  image: 'docker-gov.production.deciphernow.com/deciphernow/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
@@ -46,44 +48,54 @@ jwt:
       memory: 64Mi
 
   envvars:
-    - type: value
-      name: HTTPS_PORT
+    https_port:
+      type: value
       value: '3000'
-    - type: secret
-      name: PRIVATE_KEY
+    private_key:
+      type: secret
       secret: jwt-security
       key: jwt.key
-    - type: secret
-      name: JWT_API_KEY
+    jwt_api_key:
+      type: secret
       secret: jwt-security
       key: jwt.api_key
-    - type: value
-      name: ENABLE_TLS
-      value: true
-    - type: secret
-      name: SERVER_TRUST
+    enable_tls:
+      type: value
+      value: 'true'
+    server_trust:
+      type: secret
       secret: jwt-certs
       key: jwt.trust.pem
-    - type: secret
-      name: SERVER_CERT
+    server_cert:
+      type: secret
       secret: jwt-certs
       key: jwt.cert.pem
-    - type: secret
-      name: SERVER_KEY
+    server_key:
+      type: secret
       secret: jwt-certs
       key: jwt.key.pem
-    - type: value
-      name: ZEROLOG_LEVEL
-      value: info
-    - type: value
-      name: TOKEN_EXP_TIME
+    zerolog_level:
+      type: value
+      value: 'info'
+    token_exp_time:
+      type: value
       value: '300'
-    - type: value
-      name: REDIS_PORT
+    redis_port:
+      type: value
       value: "6379"
-    - type: value
-      name: REDIS_DB
+    redis_db:
+      type: value
       value: "0"
+    redis_host:
+      type: value
+      value: '{{ .Values.redis.name }}.{{ .Release.Namespace }}.svc'
+    redis_pass:
+      type: secret
+      secret: '{{ .Values.redis.secret.secret_name | default "redis-password" }}'
+      key: password
+    demo_mode:
+      type: value
+      value: '{{- if .Values.jwt.use_acc }}false{{- else }}true{{- end }}'
 
   # Provides a list of authorized users for the JWT service
   users: |-
@@ -189,56 +201,6 @@ redis:
 # Sets default sidecar configurations for all sidecars
 sidecar:
   version: '{{ .Values.global.sidecar.version | default "latest" }}'
-  # Port where the proxy will listen
-  port: 10808
-  # Port where the proxy will expose metrics
-  metrics_port: 8081
-  # If set, enables tls using the secret specified in secret_name
-  secret:
-    secret_name: sidecar-certs
-    mount_point: /etc/proxy/tls/sidecar
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  image_pull_policy: IfNotPresent
-  resources:
-    limits:
-      cpu: 200m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  envvars:
-    xds_cluster:
-      type: value
-      value: 'jwt-security'
-  envvars:
-    xds_cluster:
-      type: value
-      value: '{{ $.Values.jwt.name }}'
-    proxy_dynamic:
-      type: 'value'
-      value: 'true'
-    xds_zone:
-      type: 'value'
-      value: '{{ .Values.global.zone }}'
-    xds_cluster:
-      type: 'value'
-      value: ''
-    xds_host:
-      type: 'value'
-      value: 'control.{{ .Release.Namespace }}.svc'
-    xds_port:
-      type: 'value'
-      value: '{{ .Values.global.control_port }}'
-    xds_node_id:
-      type: 'value'
-      value: 'default'
-    envoy_admin_log_path:
-      type: 'value'
-      value: '/dev/stdout'
-
-# Sets default sidecar configurations for all sidecars
-sidecar:
-  version: 'latest'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics

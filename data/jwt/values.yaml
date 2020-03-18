@@ -18,6 +18,9 @@ global:
   consul:
     enabled: false
 
+  sidecar:
+    version:
+
 jwt:
   # Name used for the deployment and service resources
   name: jwt-security
@@ -59,10 +62,10 @@ jwt:
       key: jwt.api_key
     enable_tls:
       type: value
-      value: false
+      value: 'false'
     zerolog_level:
       type: value
-      value: info
+      value: 'info'
     token_exp_time:   
       type: value
       value: '300'

@@ -32,28 +32,7 @@ spec:
         {{- end }}
         
         env:
-      {{- range $envvar := .Values.jwt.envvars }}
-      {{- $envName := $envvar.name | upper | replace "." "_" | replace "-" "_" }}
-        {{- if eq $envvar.type "secret" }}
-        - name: {{ $envName }}
-          valueFrom:
-            secretKeyRef:
-              name: {{ $envvar.secret }}
-              key: {{ $envvar.key }}
-        {{- else if eq $envvar.type "value" }}
-        - name: {{ $envName }}
-          value: {{ $envvar.value | quote }}
-        {{- end }}
-      {{- end  }}   
-        - name: REDIS_HOST
-          value: {{ .Values.redis.name }}.{{ .Release.Namespace }}.svc
-        - name: REDIS_PASS
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.redis.secret.secret_name }}
-              key: password
-        - name: DEMO_MODE
-          value: {{ not .Values.jwt.use_aac | default false | quote }}
+        {{- include "jwt.envvars" (dict "envvar" .Values.jwt.envvars "top" $) | indent 8 }}
         ports:
         - containerPort: 3000
           name: http
