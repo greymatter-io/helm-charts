@@ -1,5 +1,0 @@
-273c273,274
-<           secretName: voyager-voyager-operator-apiserver-certsecurityContext:
----
->           secretName: voyager-voyager-operator-apiserver-cert
->       securityContext:
