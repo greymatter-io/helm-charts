@@ -21,11 +21,11 @@ spec:
         runAsGroup: 0
         fsGroup: 2000
       {{- end }}
-      serviceAccountName: {{ .Values.waiter.service_account.name }}
+      serviceAccountName: {{ .Values.global.waiter.service_account.name }}
       {{- if not .Values.postgres.rds.enabled }}
       initContainers:
         - name: ensure-postgres
-          image: {{ .Values.waiter.image }}
+          image: {{ .Values.global.waiter.image }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
@@ -37,7 +37,7 @@ spec:
       containers:
       - name: slo
         image: {{ .Values.slo.image | quote }}
-        imagePullPolicy: {{ .Values.slo.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.slo.image_pull_policy }}
         {{- if .Values.slo.resources }}
         resources:
 {{ toYaml .Values.slo.resources | indent 10 }}
@@ -74,8 +74,8 @@ spec:
         - name: metrics
           containerPort: 8081
         env:
-        {{- include "greymatter.envvars" (dict "overrides" .Values.slo.sidecar "top" .) | indent 8 }}
-        {{- if .Values.sidecar.secret }}
+        {{- include "greymatter.envvars" . | indent 8 }}
+        {{- if .Values.sidecar.secret.enabled }}
         volumeMounts:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}

@@ -14,14 +14,10 @@ global:
     port: 8500
   # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
   control_port: 50000                  
-
-# Configures the init container used to wait on various deployments to be ready
-waiter:
-  image: deciphernow/k8s-waiter:latest
-  service_account: 
-    create: true
-    name: waiter-sa
-
+  # Global sidecar configuration (supports global version and envvars)
+  sidecar:
+    version: latest
+    
 dashboard:
   # Name used for the deployment and service resources
   name: dashboard
@@ -81,17 +77,12 @@ dashboard:
     server_ssl_key:
       type: "value"
       value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.key }}'
-  # Sidecar configuration overrides for dashboard
-  sidecar:
-    envvars:
-      xds_cluster:
-        type: value
-        value: '{{ .Values.dashboard.name }}'
 
-# Global sidecar configuration
-sidecar:
-  # GM Proxy version
-  version: latest
+# Sidecar configuration for dashboard
+sidecar_dashboard:
+  # Uses global.sidecar.version if set
+  version: '{{- $.Values.global.sidecar.version | default "latest" }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_dashboard.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -102,8 +93,12 @@ sidecar:
     secret_keys:
       ca: ca.crt
       cert: server.crt
-      key: server.key    
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+      key: server.key
+  # Overrides global.sidecar.envvars
+  envvars:
+    xds_cluster:
+      type: value
+      value: '{{ .Values.slo.name }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the sidecar
@@ -114,25 +109,6 @@ sidecar:
     requests:
       cpu: 100m
       memory: 128Mi
-  envvars:
-    proxy_dynamic:
-      type: 'value'
-      value: 'true'
-    xds_zone:
-      type: 'value'
-      value: '{{ .Values.global.zone }}'
-    xds_host:
-      type: 'value'
-      value: 'control.{{ .Release.Namespace }}.svc'
-    xds_port:
-      type: 'value'
-      value: '{{ .Values.global.control_port | quote }}'
-    xds_node_id:
-      type: 'value'
-      value: 'default'
-    envoy_admin_log_path:
-      type: 'value'
-      value: '/dev/stdout'
 
 prometheus:
   # Used by promethues-configmap.yaml to enable prometheus metrics scraping for sense
@@ -167,9 +143,37 @@ prometheus:
     limits:
       memory: "40Gi"
       cpu: "2"
-  # Sidecar configuration overrides for prometheus
+
+
+# Sidecar configuration for prometheus
+sidecar_prometheus:
+  # Uses global.sidecar.version if set
+  version: '{{- $.Values.global.sidecar.version | default "latest" }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
+  # Port where the proxy will listen
+  port: 10808
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
+  secret:
+    secret_name: sidecar-certs
+    mount_point: /etc/proxy/tls/sidecar
+    secret_keys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key
+  # Overrides global.sidecar.envvars
   sidecar:
     envvars:
       xds_cluster:
         type: value
         value: '{{ .Values.prometheus.name }}'
+  # When to pull images, used in the deployment
+  image_pull_policy: IfNotPresent
+  # CPU and memory limits for the sidecar
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

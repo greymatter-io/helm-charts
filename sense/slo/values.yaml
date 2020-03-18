@@ -14,14 +14,16 @@ global:
     port: 8500
   # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
   control_port: 50000                  
-
-# Configures the init container used to wait on various deployments to be ready
-waiter:
-  image: deciphernow/k8s-waiter:latest
-  service_account: 
-    create: true
-    name: waiter-sa
-
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:
+    image: deciphernow/k8s-waiter:latest
+    service_account: 
+      create: false
+      name: waiter-sa
+  # Global sidecar configuration (supports global version and envvars)
+  sidecar:
+    version: latest
+    
 slo:
   # SLO version
   version: 1.1.1
@@ -98,17 +100,11 @@ slo:
     ssl_1_way_ssl:
       type: value
       value: "{{- if .Values.postgres.rds.enabled }}true{{- else }}false{{- end }}"
-  # Sidecar configuration overrides for SLO
-  sidecar:
-    envvars:
-      xds_cluster:
-        type: value
-        value: '{{ .Values.slo.name }}'
 
-# Global sidecar configuration
+# Sidecar configuration for SLO
 sidecar:
-  # GM Proxy version
-  version: latest
+  version: '{{- $.Values.global.sidecar.version | default "latest" }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -120,8 +116,12 @@ sidecar:
     secret_keys:
       ca: ca.crt
       cert: server.crt
-      key: server.key    
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+      key: server.key
+  # Overrides global.sidecar.envvars
+  envvars:
+    xds_cluster:
+      type: value
+      value: '{{ .Values.slo.name }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the sidecar
@@ -132,39 +132,26 @@ sidecar:
     requests:
       cpu: 100m
       memory: 128Mi
-  envvars:
-    proxy_dynamic:
-      type: 'value'
-      value: 'true'
-    xds_zone:
-      type: 'value'
-      value: '{{ .Values.global.zone }}'
-    xds_host:
-      type: 'value'
-      value: 'control.{{ .Release.Namespace }}.svc'
-    xds_port:
-      type: 'value'
-      value: '{{ .Values.global.control_port }}'
-    xds_node_id:
-      type: 'value'
-      value: 'default'
-    envoy_admin_log_path:
-      type: 'value'
-      value: '/dev/stdout'
 
 postgres:
+  image: 'docker.io/centos/postgresql-10-centos7'
+  # Postgres username/password/database secret, used to configure slo envvars and postgres-slo-config.yaml
   credentials:
     secret_name: postgres-credentials
     username: greymatter
     database: greymatter
+  # Configuration to run an Amazon RDS instance of Postgres
   rds:
     enabled: false
     endpoint:
   data_mount_point: /var/lib/pgsql/data
-  image: 'docker.io/centos/postgresql-10-centos7'
+  # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
+  # Number of replicas for the deployment
   replica_count: 1
+  # If true, don't use the image pull secret
   private_image: false
+  # CPU and memory limits for the sidecar
   resources:
     limits:
       cpu: 200m
@@ -176,8 +163,9 @@ postgres:
   # This override is unique to OpenShift's postgresql container
   # https://github.com/sclorg/postgresql-container/tree/master/examples/custom-config
   overrides_mount_point: /opt/app-root/src/postgresql-cfg
+  # Secret that enables slo <-> postgres ssl
   secret:
-    enabled: false
+    enabled: true
     secret_name: postgres-ssl-certs
     mount_point: /certs
     secret_keys:

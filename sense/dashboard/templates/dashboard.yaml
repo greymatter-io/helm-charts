@@ -43,22 +43,24 @@ spec:
           mountPath: {{ .Values.dashboard.secret.mount_point }}
         {{- end }}
       - name: sidecar
-        image: '{{ tpl .Values.sidecar.image $ }}'
-        imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
+        image: '{{ tpl .Values.sidecar_dashboard.image $ }}'
+        imagePullPolicy: {{ .Values.sidecar_dashboard.image_pull_policy }}
         {{- if .Values.dashboard.resources }}
         resources:
-{{ toYaml .Values.sidecar.resources | indent 10 }}
+{{ toYaml .Values.sidecar_dashboard.resources | indent 10 }}
         {{- end }}
         ports:
         - name: proxy
-          containerPort: {{ .Values.sidecar.port }}
+          containerPort: {{ .Values.sidecar_dashboard.port }}
         - name: metrics
-          containerPort: {{ .Values.sidecar.metrics_port }}
+          containerPort: {{ .Values.sidecar_dashboard.metrics_port }}
         env:
-        {{- include "greymatter.envvars" (dict "overrides" .Values.dashboard.sidecar "top" .) | indent 8 }}
-        {{- if .Values.sidecar.secret }}
+        {{- include "greymatter.envvars-dashboard" . | indent 8 }}
+        {{- if .Values.sidecar_dashboard.secret }}
         volumeMounts:
-        {{- include "sidecar_volume_certs_mount" . | indent 8 }}
+        - name: sidecar-certs
+          mountPath: {{ .Values.sidecar_dashboard.secret.mount_point }}
+          readOnly: true
         {{- end }}
       {{- if .Values.global.consul.enabled }}
       {{- $data := dict "Values" .Values "ServiceName" "dashboard" }}
@@ -71,8 +73,10 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.sidecar.secret }}
-      {{- include "sidecar_certs_volumes" . | indent 6 }}
+      {{- if .Values.sidecar_dashboard.secret }}
+      - name: sidecar-certs
+        secret:
+          secretName: {{ .Values.sidecar_dashboard.secret.secret_name }}
       {{- end }}
       {{- if .Values.dashboard.secret }}
       - name: service-certs

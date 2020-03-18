@@ -1,123 +1,334 @@
+# Grey Matter Sense
+
 global:
-  imagePullSecret: docker.secret
-  environment: openshift
-  domain: staging.deciphernow.com
-  route_url_name: greymatter
-  remove_namespace_from_url: false
-  zone: zone-default-zone
-  mesh_tls:
-    enabled: true
-    use_provided_certs: true
-    # This is the DN of the cert being used in the mesh. The Helm charts will add whitelist the DN throughout the mesh
-    dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local
-  # Turns on tls for control api and configures control to talk to it using tls
-  control_api_tls: true
-  kafka:
-    replicas: 3
-  dashboard:
-    version: 3.3.1
-    sidecar:
-      version: latest
-    sidecar_prometheus:
-       version: latest
-  catalog:
-    version: latest
-    sidecar:
-      version: latest
-  sense:
-    enabled: false
-  consul:
+  # Used as imagePullSecrets value
+  image_pull_secret: docker.secret    
+  # Deployment environment, one of "eks", "kubernetes", or "openshift"
+  environment: openshift              
+  # Used to configure control and control-api environment variables
+  zone: zone-default-zone             
+  # Whether to use consul for service discovery
+  consul:                             
     enabled: false
     host: ''
     port: 8500
-  edge:
-    enableTLS: true
-    # This is the DN of the new certificate issued to the edge for internal mesh communication. It needs to be whitelisted by the proxies
-    egressDn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=edge
-    certPath: /etc/proxy/tls/edge
-    version: 1.1.1
-  spire:
-    enabled: false
+  # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
+  control_port: 50000                  
+  # Configures the init container used to wait on various deployments to be ready
   waiter:
-    serviceAccount:
-      create: false
-      name: waiter-sa
-  control:
-    # This specifies the service name that all XDS clients will try to connect to
-    name: control
-    port: 50000
-    version: latest
-  data:
-    jwt_prefix: '/jwt'
-  internal-data:
-    jwt_prefix: '/jwt'
+    image: deciphernow/k8s-waiter:latest
+    service_account: 
+      create: true
+  # Global sidecar configuration (supports global version and envvars)
   sidecar:
     version: latest
-  
-  services:
-    catalog:
-      egressTLS: true
-      mTLS: true
-      version: 1.0.3
-    dashboard:
-      egressTLS: true
-      mTLS: true
-    prometheus:
-      egressTLS: false
-      mTLS: true
-    data:
-      egressTLS: true
-      mTLS: true
-    internal-data:
-      egressTLS: true
-      mTLS: true
-    jwt:
-      egressTLS: true
-      mTLS: true
-    internal-jwt:
-      egressTLS: true
-      mTLS: true
-    slo:
-      egressTLS: true
-      mTLS: true
-    control:
-      egressTLS: false
-      mTLS: true
-    controlApi:
-      # This value must match global.control_api_tls
-      egressTLS: true
+    envvars:
+      proxy_dynamic:
+        type: 'value'
+        value: 'true'
+      xds_zone:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      xds_host:
+        type: 'value'
+        value: 'control.{{ .Release.Namespace }}.svc'
+      xds_port:
+        type: 'value'
+        value: '{{ .Values.global.control_port }}'
+      xds_node_id:
+        type: 'value'
+        value: 'default'
+      envoy_admin_log_path:
+        type: 'value'
+        value: '/dev/stdout'
+        name: waiter-sa
 
+slo:   
+  slo:
+    # SLO version
+    version: 1.1.1
+    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.1
+    # When to pull container images, used in the deployment
+    image_pull_policy: IfNotPresent
+    # CPU and memory limits for the SLO service
+    resources:
+      limits:
+        cpu: 250m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    # Secret used to template envvars
+    secret:
+      enabled: true
+      secret_name: slo-certs
+      mount_point: /service-certs
+      secret_keys:
+        ca: ca.crt
+        cert: service.crt
+        key: service.key
+    envvars:
+      postgresql_username:
+        type: secret
+        secret: '{{ .Values.postgres.credentials.secret_name }}'
+        key: username
+      postgresql_password:
+        type: secret
+        secret: '{{ .Values.postgres.credentials.secret_name }}'
+        key: password
+      postgresql_database:
+        type: secret
+        secret: '{{ .Values.postgres.credentials.secret_name }}'
+        key: database
+      # Postgresql endpoint - only templated if rds is enabled, otherwise the var isn't included at all
+      postgresql_endpoint:
+        type: "{{- if .Values.postgres.rds.enabled }}value{{- else }}null{{- end }}"
+        value: "{{ .Values.postgres.rds.endpoint }}"
+      service_port:
+        type: value
+        value: "1337"
+      # SSL for SLO <-> postgres connection. Enabled if posgres.secret.enabled is true. 
+      ssl_enabled:
+        type: value
+        value: "{{- if .Values.postgres.secret.enabled }}true{{- else }}false{{- end }}"
+      ssl_server_ca:
+        type: value
+        value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.ca }}"
+      ssl_server_cert:
+        type: value
+        value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.cert }}"
+      ssl_server_key:
+        type: value
+        value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.key }}"
+      # SSL for the SLO service. Enabled if slo.secret.enabled is true.
+      service_ssl_enabled:
+        type: value
+        value: "{{- if .Values.slo.secret.enabled }}true{{- else }}false{{- end }}"
+      service_ssl_ca:
+        type: value
+        value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.ca }}"
+      service_ssl_cert:
+        type: value
+        value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.cert }}"
+      service_ssl_key:
+        type: value
+        value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.key }}"
+      drop_schema:
+        type: value
+        value: "false"
+      # One way ssl between SLO <-> Postgres. Enabled if postgres.rds.enabled is true.
+      ssl_1_way_ssl:
+        type: value
+        value: "{{- if .Values.postgres.rds.enabled }}true{{- else }}false{{- end }}"
+    # Sidecar configuration overrides for SLO
+    sidecar:
+      envvars:
+        xds_cluster:
+          type: value
+          value: '{{ .Values.slo.name }}'
+
+  postgres:
+    image: 'docker.io/centos/postgresql-10-centos7'
+    # Postgres username/password/database secret, used to configure slo envvars and postgres-slo-config.yaml
+    credentials:
+      secret_name: postgres-credentials
+      username: greymatter
+      database: greymatter
+    # Configuration to run an Amazon RDS instance of Postgres
+    rds:
+      enabled: false
+      endpoint:
+    data_mount_point: /var/lib/pgsql/data
+    # When to pull images, used in the deployment
+    image_pull_policy: IfNotPresent
+    # Number of replicas for the deployment
+    replica_count: 1
+    # If true, don't use the image pull secret
+    private_image: false
+    # CPU and memory limits for the sidecar
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    conf_mount_point: /conf
+    # This override is unique to OpenShift's postgresql container
+    # https://github.com/sclorg/postgresql-container/tree/master/examples/custom-config
+    overrides_mount_point: /opt/app-root/src/postgresql-cfg
+    # Secret that enables slo <-> postgres ssl
+    secret:
+      enabled: true
+      secret_name: postgres-ssl-certs
+      mount_point: /certs
+      secret_keys:
+        ca: ca.pem
+        cert: server.crt
+        key: server.key
+    envvars:
+      postgresql_user:
+        type: secret
+        secret: postgres-credentials
+        key: username
+      postgresql_password:
+        type: secret
+        secret: postgres-credentials
+        key: password
+      postgres_user_cn:
+        type: value
+        value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
+      postgresql_database:
+        type: secret
+        secret: postgres-credentials
+        key: database
+
+dashboard:
+  dashboard:
+    # Name used for the deployment and service resources
+    name: dashboard
+    # Dashboard app version
+    version: "3.3.1"
+    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
+    # Port for the dashboard app
+    port: 1337
+    # When to pull container images, used in the deployment
+    image_pull_policy: IfNotPresent
+    # CPU and memory limits for the dashboard app
+    resources:
+      requests:
+        memory: '8Gi'
+        cpu: '1'
+      limits:
+        memory: '12Gi'
+        cpu: '2'
+    secret:
+      secret_name: dashboard-certs
+      mount_point: /certs
+      secret_keys:
+        ca: ca.crt
+        cert: service.crt
+        key: service.key
+    envvars:
+      fabric_server:
+        type: "value"
+        value: '/services/catalog/latest/'
+      config_server:
+        type: "value"
+        value: '/services/gm-control-api/latest/v1.0'
+      use_prometheus:
+        type: "value"
+        value: 'true'
+      objectives_server:
+        type: "value"
+        value: '/services/slo/latest/'
+      prometheus_server:
+        type: "value"
+        value: '/services/prometheus/latest/api/v1/'
+      base_url:
+        type: "value"
+        value: '/services/dashboard/{{ $.Values.dashboard.version }}/'
+      request_timeout:
+        type: "value"
+        value: '15000'
+      server_ssl_enabled:
+        type: "value"
+        value: "true"
+      server_ssl_ca:
+        type: "value"
+        value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.ca }}'
+      server_ssl_cert:
+        type: "value"
+        value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.cert }}'
+      server_ssl_key:
+        type: "value"
+        value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.key }}'
+    # Sidecar configuration overrides for dashboard
+    sidecar:
+      envvars:
+        xds_cluster:
+          type: value
+          value: '{{ .Values.dashboard.name }}'
+
+  prometheus:
+    # Used by promethues-configmap.yaml to enable prometheus metrics scraping for sense
+    sense_enabled: false
+    # Name used for the deployment and service resources
+    name: prometheus
+    # PVC size in Gb, used in prometheus.yaml volumeClaimTemplate
+    pvc_size: 80
+    image: 'prom/prometheus:v2.7.1'
+    # When to pull container images, used in the deployment
+    image_pull_policy: IfNotPresent
+    # Prometheus service version
+    version: '2.7.1'
+    # Number of replicas for the deployment
+    replica_count: 1
+    # Location where prometheus data should be mounted in the container
+    data_mount_point: /var/lib/prometheus/data
+    # Location where prometheus config should be mounted
+    config_mount_point: /etc/prometheus
+    # If true, don't use an image pull secret
+    private_image: false
+    # Command to start prometheus
+    start_cmd: /bin/prometheus
+    # Service account for prometheus
+    service_account:
+      create: true
+      name: prometheus-sa
+    resources:
+      requests:
+        memory: "20Gi"
+        cpu: "1"
+      limits:
+        memory: "40Gi"
+        cpu: "2"
+    # Sidecar configuration overrides for prometheus
+    sidecar:
+      envvars:
+        xds_cluster:
+          type: value
+          value: '{{ .Values.prometheus.name }}'
 
 catalog:
   catalog:
+    # Name used for the deployment and service resources
+    name: catalog
+    # GM Catalog version
+    version: latest
+    image: docker-dev.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
+    # When to pull container images, used in the deployment
+    image_pull_policy: IfNotPresent
+    # CPU and memory limits for the catalog service
+    resources:
+      limits:
+        cpu: 200m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    # Catalog service port
+    port: 9080
+    secret:
+      secret_name: sidecar-certs
+      mount_point: /etc/pki
+      secret_keys:
+        ca: ca.crt
+        cert: server.crt
+        key: server.key
     envvars:
       config_source:
         type: value
         value: 'gmdata'
       config_polling_interval:
         type: value
-        value: '30s'
-      instance_polling_interval:
-        type: value
-        value: '5s'
-      instance_max_silence:
-        type: value
-        value: '15s'
-      metrics_max_retries:
-        type: value
-        value: '3'
-      metrics_retry_delay:
-        type: value
-        value: '10s'
-      metrics_request_timeout:
-        type: value
-        value: '15s'
+        value: '300s'
       port:
         type: value
-        value: '9080'
+        value: '{{ $.Values.catalog.port }}'
       control_server_0_address:
         type: value
-        value: '{{ .Values.global.control.name }}.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}'
+        value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.control_port }}'
       control_server_0_zone_name:
         type: value
         value: '{{ .Values.global.zone }}'
@@ -129,13 +340,13 @@ catalog:
         value: 'true'
       ca_cert_path:
         type: value
-        value: '/etc/pki/ca.crt'
+        value: '/etc/pki/{{ .Values.catalog.secret.secret_keys.ca }}'
       server_cert_path:
         type: value
-        value: '/etc/pki/server.crt'
+        value: '/etc/pki/{{ .Values.catalog.secret.secret_keys.cert }}'
       server_key_path:
         type: value
-        value: '/etc/pki/server.key'
+        value: '/etc/pki/{{ .Values.catalog.secret.secret_keys.key }}'
       client_address:
         type: value
         value: localhost
@@ -174,217 +385,13 @@ catalog:
         value: 'world'
       client_identity:
         type: value
-        value: 'C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local'
+        value: 'CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US'
       client_email:
         type: value
-        value: 'engineering@deciphernow.com'
-
-    init:
-      image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
+        value: 'gm-control@deciphernow.com'
+    # Sidecar configuration overrides for catalog
+    sidecar:
       envvars:
-        debug:
+        xds_cluster:
           type: value
-          value: 'true'
-
-  sidecar:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-    create_sidecar_secret: false
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'catalog'      
-    secret:
-      secret_name: sidecar-certs
-      mountPoint: /etc/proxy/tls/sidecar
-      secret_keys:
-        ca: ca.crt
-        cert: server.crt
-        key: server.key
-
-
-dashboard:
-  dashboard:
-    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.global.dashboard.version }}'
-    port: 1337
-    # TODO: make these URLs dynamic based on the globally specified version
-    fabric_server: '/services/catalog/latest/'
-    use_prometheus: 'true'
-    objectives_server: '/services/slo/latest/'
-    config_server: '/services/gm-control-api/latest/v1.0'
-    prometheus_server: '/services/prometheus/latest/api/v1/'
-    base_url: '/services/dashboard/{{ $.Values.global.dashboard.version }}/'
-    requestTimeout: '15000'
-    version: 3.3.1
-    imagePullPolicy: IfNotPresent
-    secret:
-      secret_name: dashboard-certs
-      mountPoint: /certs
-      secret_keys:
-        ca: ca.crt
-        cert: service.crt
-        key: service.key
-
-  sidecar:
-    version: '{{- $.Values.global.dashboard.sidecar.version | default $.Values.global.sidecar.version }}'
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-    imagePullPolicy: IfNotPresent
-    resources:
-      limits:
-        cpu: 200m
-        memory: 512Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'dashboard'
-    secret:
-      secret_name: sidecar-certs
-      mountPoint: /etc/proxy/tls/sidecar
-      secret_keys:
-        ca: ca.crt
-        cert: server.crt
-        key: server.key
-
-  prometheus:
-    image: 'prom/prometheus:v2.7.1'
-    imagePullPolicy: IfNotPresent
-    zk_announce_path: '/services/prometheus/2.7.1'
-    version: '2.7.1'
-    replica_count: 1
-    data_mount_point: /var/lib/prometheus/data
-    config_mount_point: /etc/prometheus
-    start_cmd: /bin/prometheus
-    serviceAccount:
-      create: false
-      name: prometheus-sa
-    #Size is in GB
-    pvcSize: 80
-    serviceAccount:
-      create: false
-    resources:
-      requests:
-        memory: '8Gi'
-        cpu: '1'
-      limits:
-        memory: '12Gi'
-        cpu: '2'
-
-  sidecar_prometheus:
-    version: '{{- $.Values.global.dashboard.sidecar_prometheus.version | default $.Values.global.sidecar.version }}'
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
-    imagePullPolicy: IfNotPresent
-    resources:
-      limits:
-        cpu: 200m
-        memory: 512Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'prometheus'
-    secret:
-      secret_name: sidecar-certs
-      mountPoint: /etc/proxy/tls/sidecar
-      secret_keys:
-        ca: ca.crt
-        cert: server.crt
-        key: server.key
-          
-slo: 
-  slo:
-    version: 1.1.1
-    image: docker.production.deciphernow.com/deciphernow/gm-slo:1.1.1
-    imagePullPolicy: IfNotPresent
-    resources:
-      limits:
-        cpu: 250m
-        memory: 512Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
-    secret:
-      secret_name: slo-certs
-      mountPoint: /service-certs
-      secret_keys:
-        ca: ca.crt
-        cert: service.crt
-        key: service.key
-
-  sidecar:
-    version: '{{- $.Values.global.slo.sidecar.version | default $.Values.global.sidecar.version }}'
-    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-    metrics_key_function: depth
-    imagePullPolicy: IfNotPresent
-    secret:
-      secret_name: sidecar-certs
-      mountPoint: /etc/proxy/tls/sidecar
-      secret_keys:
-        ca: ca.crt
-        cert: service.crt
-        key: service.key
-    resources:
-      limits:
-        cpu: 200m
-        memory: 512Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'slo'
-
-  postgres:
-    credentials:
-      secret_name: postgres-credentials
-      username: greymatter
-      database: greymatter
-    rds:
-      enabled: false
-      endpoint:
-    data_mount_point: /var/lib/pgsql/data
-    openshift:
-      image: 'docker.io/centos/postgresql-10-centos7'
-    k8s:
-      image: 'docker.io/centos/postgresql-10-centos7'
-    imagePullPolicy: IfNotPresent
-    replica_count: 1
-    private_image: false
-    resources:
-      limits:
-        cpu: 200m
-        memory: 512Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
-    conf_mount_point: /conf
-    # This override is unique to OpenShift's postgresql container
-    # https://github.com/sclorg/postgresql-container/tree/master/examples/custom-config
-    overrides_mount_point: /opt/app-root/src/postgresql-cfg
-    secret:
-      secret_name: postgres-ssl-certs
-      mountPoint: /certs
-      secret_keys:
-        ca: ca.pem
-        cert: server.crt
-        key: server.key
-    envvars:
-      - type: secret
-        name: postgresql_user
-        secret: postgres-credentials
-        key: username
-      - type: secret
-        name: POSTGRESQL_PASSWORD
-        secret: postgres-credentials
-        key: password
-      - type: value
-        name: POSTGRES_USER_CN
-        value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
-      - type: secret
-        name: POSTGRESQL_DATABASE
-        secret: postgres-credentials
-        key: database
+          value: '{{ .Values.catalog.name }}'
