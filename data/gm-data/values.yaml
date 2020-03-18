@@ -18,12 +18,12 @@ global:
   consul:
     enabled: false
 
-# Configures the init container used to wait on various deployments to be ready
-waiter:
-  image: deciphernow/k8s-waiter:latest
-  service_account:
-    create: true
-    name: waiter-sa
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:
+    image: deciphernow/k8s-waiter:latest
+    service_account:
+      create: true
+      name: waiter-sa
 
 data:
   # Name used for the deployment and service resources
@@ -250,9 +250,8 @@ mongo:
     #  cert: cert_b64
     #  key: key_b64
 
-# Sets default sidecar configurations for all sidecars
 sidecar:
-  version: 'latest'
+  version: '{{ .Values.global.sidecar.version | default "latest" }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -274,29 +273,3 @@ sidecar:
     requests:
       cpu: 100m
       memory: 128Mi
-  envvars:
-    xds_cluster:
-      type: value
-      value: '{{ $.Values.data.name }}'
-    proxy_dynamic:
-      type: 'value'
-      value: 'true'
-    xds_zone:
-      type: 'value'
-      value: '{{ .Values.global.zone }}'
-    xds_cluster:
-      type: 'value'
-      value: ''
-    xds_host:
-      type: 'value'
-      value: 'control.{{ .Release.Namespace }}.svc'
-    xds_port:
-      type: 'value'
-      value: '{{ .Values.global.control_port }}'
-    xds_node_id:
-      type: 'value'
-      value: 'default'
-    envoy_admin_log_path:
-      type: 'value'
-      value: '/dev/stdout'
-

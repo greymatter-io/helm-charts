@@ -14,21 +14,43 @@ global:
   edge_port: 10808
   # Port for Grey Matter Control. Used in sidecar envvars
   control_port: 50000
-  # Whether to use spire
-  spire:
-    enabled: false
 
-# Configures the init container used to wait on various deployments to be ready
-waiter:
-  image: deciphernow/k8s-waiter:latest
-  service_account:
-    create: true
-    name: waiter-sa
+  # Overrides the default configurations for all sidecars in all subcharts
+  sidecar: 
+    version: '1.2.0'
+    envvars:
+      xds_cluster:
+        type: value
+        value: 'service'
+      proxy_dynamic:
+        type: 'value'
+        value: 'true'
+      xds_zone:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      xds_host:
+        type: 'value'
+        value: 'control.{{ .Release.Namespace }}.svc'
+      xds_port:
+        type: 'value'
+        value: '{{ .Values.global.control_port }}'
+      xds_node_id:
+        type: 'value'
+        value: 'default'
+      envoy_admin_log_path:
+        type: 'value'
+        value: '/dev/stdout'
+
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:
+    image: deciphernow/k8s-waiter:latest
+    service_account:
+      create: true
+      name: waiter-sa
 
 data:
   # Sidecar configuration overrides for data sidecar
   sidecar:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     envvars:
       xds_cluster:
         type: value
@@ -207,7 +229,6 @@ data:
 internal-data:
   # Sidecar configuration overrides for internal-data sidecar
   sidecar:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     envvars:
       xds_cluster:
         type: value
@@ -327,7 +348,6 @@ internal-data:
 jwt:
   # Sidecar configuration overrides for jwt sidecar
   sidecar:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     envvars:
       xds_cluster:
         type: value
@@ -392,7 +412,6 @@ jwt:
 internal-jwt:
   # Sidecar configuration overrides for internal-jwt sidecar
   sidecar:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
     envvars:
       xds_cluster:
         type: value
@@ -502,14 +521,3 @@ internal-jwt:
     secret:
       secret_name: internal-redis-password
 
-# Overrides the default configurations for all sidecars in all subcharts
-sidecar:
-  version: latest
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
-  secret:
-    secret_name: sidecar-certs
-    mount_point: /etc/proxy/tls/sidecar/
-    secret_keys:
-      ca: ca.crt
-      key: server.key
-      cert: server.cert 

@@ -188,7 +188,7 @@ redis:
 
 # Sets default sidecar configurations for all sidecars
 sidecar:
-  version: 'latest'
+  version: '{{ .Values.global.sidecar.version | default "latest" }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -235,3 +235,24 @@ sidecar:
     envoy_admin_log_path:
       type: 'value'
       value: '/dev/stdout'
+
+# Sets default sidecar configurations for all sidecars
+sidecar:
+  version: 'latest'
+  # Port where the proxy will listen
+  port: 10808
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
+  # If set, enables tls using the secret specified in secret_name
+  secret:
+    secret_name: sidecar-certs
+    mount_point: /etc/proxy/tls/sidecar
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image_pull_policy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

@@ -22,10 +22,10 @@ spec:
         fsGroup: {{ .Values.data.security_context.fs_group }}
       {{- end }}
       {{- end }}
-      serviceAccountName: {{ .Values.waiter.service_account.name }}
+      serviceAccountName: {{ .Values.global.waiter.service_account.name }}
       initContainers:
         - name: ensure-{{ .Values.data.name }}
-          image: {{ .Values.waiter.image }}
+          image: {{ .Values.global.waiter.image }}
           imagePullPolicy: {{ .Values.data.image_pull_policy }}
           env:
             - name: NAMESPACE
@@ -62,7 +62,7 @@ spec:
 {{ toYaml .Values.sidecar.resources | indent 10 }}
         {{- end }}
         env:
-        {{- include "greymatter.envvars" . | indent 8 }}
+        {{- include "sidecar.envvars" . | indent 8 }}
         ports:
         - containerPort: {{ .Values.sidecar.port }}
           name: proxy

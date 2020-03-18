@@ -41,7 +41,7 @@ spec:
         image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
         env:
-        {{- include "greymatter.envvars" . | indent 8 }}
+        {{- include "sidecar.envvars" . | indent 8 }}
         {{- if .Values.sidecar.resources }}
         resources:
 {{ toYaml .Values.sidecar.resources | indent 10 }}
