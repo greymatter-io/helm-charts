@@ -46,63 +46,58 @@ slo:
       cert: service.crt
       key: service.key
   envvars:
-    postgres_env:
-      postgresql_username:
-        type: secret
-        secret: '{{ .Values.postgres.credentials.secret_name }}'
-        key: username
-      postgresql_password:
-        type: secret
-        secret: '{{ .Values.postgres.credentials.secret_name }}'
-        key: password
-      postgresql_database:
-        type: secret
-        secret: '{{ .Values.postgres.credentials.secret_name }}'
-        key: database
-      # Postgresql endpoint - only templated if rds is enabled, otherwise the var isn't included at all
-      postgresql_endpoint:
-        type: "{{- if .Values.postgres.rds.enabled }}value{{- else }}null{{- end }}"
-        value: "{{ .Values.postgres.rds.endpoint }}"
-    slo_env:
-      database_uri:
-        type: value
-        value: '{{- if .Values.postgres.rds.enabled }}postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@$(POSTGRESQL_ENDPOINT):5432/$(POSTGRESQL_DATABASE){{- else }}postgres://$(POSTGRESQL_USERNAME):$(POSTGRESQL_PASSWORD)@postgres-slo.{{ .Release.Namespace }}.svc:5432/$(POSTGRESQL_DATABASE){{- end }}'
-      service_port:
-        type: value
-        value: "1337"
-      # SSL for SLO <-> postgres connection. Enabled if posgres.secret.enabled is true. 
-      ssl_enabled:
-        type: value
-        value: "{{- if .Values.postgres.secret.enabled }}true{{- else }}false{{- end }}"
-      ssl_server_ca:
-        type: value
-        value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.ca }}"
-      ssl_server_cert:
-        type: value
-        value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.cert }}"
-      ssl_server_key:
-        type: value
-        value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.key }}"
-      # SSL for the SLO service. Enabled if slo.secret.enabled is true.
-      service_ssl_enabled:
-        type: value
-        value: "{{- if .Values.slo.secret.enabled }}true{{- else }}false{{- end }}"
-      service_ssl_ca:
-        type: value
-        value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.ca }}"
-      service_ssl_cert:
-        type: value
-        value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.cert }}"
-      service_ssl_key:
-        type: value
-        value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.key }}"
-      drop_schema:
-        type: value
-        value: "false"
-      # One way ssl between SLO <-> Postgres. Enabled if postgres.rds.enabled is true.
-      ssl_1_way_ssl:
-        type: value
-        value: "{{- if .Values.postgres.rds.enabled }}true{{- else }}false{{- end }}"
+    postgresql_username:
+      type: secret
+      secret: '{{ .Values.postgres.credentials.secret_name }}'
+      key: username
+    postgresql_password:
+      type: secret
+      secret: '{{ .Values.postgres.credentials.secret_name }}'
+      key: password
+    postgresql_database:
+      type: secret
+      secret: '{{ .Values.postgres.credentials.secret_name }}'
+      key: database
+    # Postgresql endpoint - only templated if rds is enabled, otherwise the var isn't included at all
+    postgresql_endpoint:
+      type: "{{- if .Values.postgres.rds.enabled }}value{{- else }}null{{- end }}"
+      value: "{{ .Values.postgres.rds.endpoint }}"
+    service_port:
+      type: value
+      value: "1337"
+    # SSL for SLO <-> postgres connection. Enabled if posgres.secret.enabled is true. 
+    ssl_enabled:
+      type: value
+      value: "{{- if .Values.postgres.secret.enabled }}true{{- else }}false{{- end }}"
+    ssl_server_ca:
+      type: value
+      value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.ca }}"
+    ssl_server_cert:
+      type: value
+      value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.cert }}"
+    ssl_server_key:
+      type: value
+      value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.key }}"
+    # SSL for the SLO service. Enabled if slo.secret.enabled is true.
+    service_ssl_enabled:
+      type: value
+      value: "{{- if .Values.slo.secret.enabled }}true{{- else }}false{{- end }}"
+    service_ssl_ca:
+      type: value
+      value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.ca }}"
+    service_ssl_cert:
+      type: value
+      value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.cert }}"
+    service_ssl_key:
+      type: value
+      value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.key }}"
+    drop_schema:
+      type: value
+      value: "false"
+    # One way ssl between SLO <-> Postgres. Enabled if postgres.rds.enabled is true.
+    ssl_1_way_ssl:
+      type: value
+      value: "{{- if .Values.postgres.rds.enabled }}true{{- else }}false{{- end }}"
   # Sidecar configuration overrides for SLO
   sidecar:
     envvars:
