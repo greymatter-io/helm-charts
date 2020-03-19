@@ -1,4 +1,4 @@
-# Default values for gm-control-api.
+# Default values for control-api.
 global:
 
   imagePullSecret: docker.secret

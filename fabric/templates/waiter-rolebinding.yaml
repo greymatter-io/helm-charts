@@ -1,15 +1,15 @@
-{{- if .Values.global.waiter.serviceAccount.create }}
+{{- if .Values.global.waiter.service_account.create }}
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .Values.global.waiter.serviceAccount.name }}-rolebinding
+  name: {{ .Values.global.waiter.service_account.name }}-rolebinding
   namespace: {{ .Release.Namespace }}
 subjects:
 - kind: ServiceAccount
-  name: {{ .Values.global.waiter.serviceAccount.name }}
+  name: {{ .Values.global.waiter.service_account.name }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
-  name: {{ .Values.global.waiter.serviceAccount.name }}-role
+  name: {{ .Values.global.waiter.service_account.name }}-role
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
