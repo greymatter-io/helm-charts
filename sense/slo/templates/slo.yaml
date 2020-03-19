@@ -36,7 +36,7 @@ spec:
       {{- end }}
       containers:
       - name: slo
-        image: {{ .Values.slo.image | quote }}
+        image: {{ tpl .Values.slo.image . }}
         imagePullPolicy: {{ .Values.slo.image_pull_policy }}
         {{- if .Values.slo.resources }}
         resources:
