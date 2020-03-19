@@ -187,7 +187,7 @@ mesh_tls:
   enabled: true
 ```
 
-**Static mTLS** - this configures static mTLS between each proxy by mounting the appropriate certs and setting up the configuration in `gm-control-api`. Read [Control API](./Control%20API.md) for further details.
+**Static mTLS** - this configures static mTLS between each proxy by mounting the appropriate certs and setting up the configuration in `control-api`. Read [Control API](./Control%20API.md) for further details.
 
 To enable it just set the following in your `custom-greymatter.yaml` file:
 
@@ -199,7 +199,7 @@ mesh_tls:
 
 Currently, this uses the certificates mounted at the path `/etc/proxy/tls/sidecar/`, but in the future this path may be configurable.
 
-**SPIFFE/SPIRE mTLS** - enables the `spire` subchart, which creates the SPIRE agent and server. Also creates appropriate SPIRE registration entries automatically, and adds SPIRE secrets to the proxy and cluster configuration in `gm-control-api`
+**SPIFFE/SPIRE mTLS** - enables the `spire` subchart, which creates the SPIRE agent and server. Also creates appropriate SPIRE registration entries automatically, and adds SPIRE secrets to the proxy and cluster configuration in `control-api`
 
 To enable it, set the following in your `custom-greymatter.yaml`:
 

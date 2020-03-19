@@ -72,7 +72,7 @@ Certificate:
          70:b6:b9:ba:6c:41:0b:4b:18:e7:d9:05
 ```
 
-A naive/basic way of configuring the agents to trust the trust bundle would be to wait for the SPIRE server to start up and then export the trust bundle cert, and somehow mount it in the agent. In fact, a few SPIRE examples do this, and our SPIRE example in the [gm-control-api](https://github.com/DecipherNow/gm-control-api) repo also does this. However, this is an ineffective method. This is why SPIRE supports the `UpstreamCA` plugin type, which will take in a public and private key of an upstream (already trusted) CA and sign its trust bundle using that CA. This means that if your agent has the upstream CA's public key/cert and trusts it, then it will also trust the SPIRE trust bundle.
+A naive/basic way of configuring the agents to trust the trust bundle would be to wait for the SPIRE server to start up and then export the trust bundle cert, and somehow mount it in the agent. In fact, a few SPIRE examples do this, and our SPIRE example in the [control-api](https://github.com/DecipherNow/control-api) repo also does this. However, this is an ineffective method. This is why SPIRE supports the `UpstreamCA` plugin type, which will take in a public and private key of an upstream (already trusted) CA and sign its trust bundle using that CA. This means that if your agent has the upstream CA's public key/cert and trusts it, then it will also trust the SPIRE trust bundle.
 
 ### Agent
 
@@ -94,15 +94,15 @@ Additionally, the types of selectors used in each registration entry may be diff
 
 This means that for now, all registration entries need to be created by the SRE/DevOps team in the organization. However, this sort of manual configuration is exactly what these Helm charts hope to eliminate, so we provide a basic script to create registration entries for all the default Grey Matter services.
 
-In the future, gm-control and gm-control-api may communicate directly with the SPIRE server using the Registration API to create a set of sensible default registration entries for both Unix and Kubernetes environments.
+In the future, gm-control and control-api may communicate directly with the SPIRE server using the Registration API to create a set of sensible default registration entries for both Unix and Kubernetes environments.
 
-gm-control and gm-control-api will also need to provide a good API for route-based secret management and allowing/disallowing TLS to specific services/clusters.
+gm-control and control-api will also need to provide a good API for route-based secret management and allowing/disallowing TLS to specific services/clusters.
 
 ### mTLS/Proxy configuration
 
 Once they have SVIDs, the SPIRE agent automatically pushes them out as secrets through the Secret Discovery Service to the Envoy gm-proxy so that they can use the SVID certs as mTLS certs.
 
-They are discovered by a dynamic discovery mechanism which is configured in gm-control-api. Grey Matter assumes that the secrets (SVIDs) and thus the registration entries which allow access to the SVIDs already exist when Envoy tries to query them.
+They are discovered by a dynamic discovery mechanism which is configured in control-api. Grey Matter assumes that the secrets (SVIDs) and thus the registration entries which allow access to the SVIDs already exist when Envoy tries to query them.
 
 ## Caveats
 

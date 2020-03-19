@@ -1,41 +1,66 @@
-# Default values for gm-control
+# Grey Matter Control Defaults
+
 global:
-
-  imagePullSecret: docker.secret
-
-  environment: kubernetes
-  domain:
-  route_url_name:
-  control_api_tls: true
-  remove_namespace_from_url: ''
-  exhibitor:
-    replicas: 1
-  control:
-    version: latest
-    additionalNamespacesToControl: data-only
-  waiter:
+  # Used as imagePullSecrets value for each subchart
+  image_pull_secret: docker.secret    
+  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  environment: openshift              
+  # Used to configure control and control-api environment variables
+  zone: zone-default-zone             
+  # Whether to use consul for service discovery
+  consul:                             
+    enabled: false
+    host: ''
+    port: 8500
+  # Port for Grey Matter Control
+  control_port: 50000
+  # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
+  control_additional_namespaces:
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:                             
     image: deciphernow/k8s-waiter:latest
+    service_account: 
+      create: true
+      name: waiter-sa
 
 control:
+  # Name used for the deployment and service resources
   name: 'control'
-  port: 50000
-  # This represents the namespaces that the control server will be aware of and able to monitor.  It should be a comma delimited list.
-  # The namespace used for the deployment will be include by default For example, "projecta,projectb"
-  displayName: 'Control'
+  # Display name used for NOTES.txt
+  display_name: 'Control'
+  # Number of replicas for the deployment
   replicas: 1
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.global.control.version }}'
-  imagePullPolicy: IfNotPresent
+  # Version of control
+  version: 1.2.0
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
+  # When to pull images, used in the deployment
+  image_pull_policy: IfNotPresent
+  # Secret used to talk to control-api
   secret:
-    secret_name: controlapitls
-    mountPoint: /service-certs
+    enabled: true
+    secret_name: control-certs
+    mount_point: /service-certs
     insecure: true
-    secretKeys:
+    secret_keys:
       cert: server.crt
       key: server.key
-  serviceAccount:
+  # The name of the service account with access to pods and endpoints. Can be created if it doesn't exist.
+  service_account:
     create: true
     name: control-sa
   envvars:
+    gm_control_api_insecure:
+      type: 'value'
+      value: "{{ .Values.control.secret.insecure }}"
+    gm_control_api_ssl:
+      type: 'value'
+      value: "{{ .Values.control.secret.enabled }}"
+    gm_control_api_sslcert:
+      type: 'value'
+      value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.cert }}"
+    gm_control_api_sslkey:
+      type: 'value'
+      value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.key }}"
     gm_control_console_level:
       type: 'value'
       value: 'info'
@@ -45,21 +70,12 @@ control:
     gm_control_api_zone_name:
       type: 'value'
       value: '{{ .Values.global.zone }}'
-    gm_control_api_ssl:
-      type: 'value'
-      value: 'false'
     gm_control_api_host:
       type: 'value'
-      value: 'gm-control-api:5555'
+      value: 'control-api:5555'
     gm_control_cmd:
       type: 'value'
       value: 'kubernetes'
-    # gm_control_file_format:
-    #   type: 'value'
-    #   value: 'yaml'
-    # gm_control_file_filename:
-    #   type: 'value'
-    #   value: '/app/routes.yaml'
     gm_control_xds_resolve_dns:
       type: 'value'
       value: 'true'
@@ -68,25 +84,21 @@ control:
       value: 'true'
     gm_control_kubernetes_cluster_label:
       type: 'value'
-      value: 'app'
+      value: 'gm.proxy'
     gm_control_kubernetes_port_name:
       type: 'value'
       value: 'proxy'
     gm_control_kubernetes_namespaces:
       type: 'value'
       value: '{{ include "control.namespaces" . }}'
-    # gm_control_diff_dry_run:
-    #   type: 'value'
-    #   value: 'true'
-  resources:
-    {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+    # The following values are not applied. Change the 'type' to 'value' to use these variables.
+    gm_control_diff_dry_run:
+      type: 'null'
+      value: 'true'
+    gm_control_file_format:
+      type: 'null'
+      value: 'yaml'
+    gm_control_file_filename:
+      type: 'null'
+      value: '/app/routes.yaml'
+  resources:  {}

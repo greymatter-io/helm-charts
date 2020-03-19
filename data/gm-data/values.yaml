@@ -282,7 +282,6 @@ mongo:
   
   credentials:
     secret_name: 'mongo-password'
-
     root_username: 'mongo'
     root_password: 'mongo'
     database: 'gmdata'

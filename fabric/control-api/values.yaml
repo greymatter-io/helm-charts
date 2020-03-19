@@ -1,0 +1,113 @@
+# Grey Matter Control API Defaults
+
+global:
+  # Used as imagePullSecrets value for each subchart
+  image_pull_secret: docker.secret    
+  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  environment: openshift              
+  # Used to configure control and control-api environment variables
+  zone: zone-default-zone             
+  # Whether to use consul for service discovery
+  consul:                             
+    enabled: false
+    host: ''
+    port: 8500
+  # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
+  control_port: 50000                  
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:                             
+    image: deciphernow/k8s-waiter:latest
+    service_account: 
+      create: true
+      name: waiter-sa
+  # Global sidecar configuration
+  sidecar:
+    version: 1.2.0
+   
+controlApi:
+  # Name used for the deployment and service resources
+  name: control-api                   
+  # Display name used for NOTES.txt
+  display_name: control-api            
+  # Number of replicas for the deployment
+  replicas: 1                         
+  version: 1.2.0
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
+  # When to pull images, used in the deployment
+  image_pull_policy: IfNotPresent       
+  # Port exposed by the control-api container
+  container_port: 5555                                 
+  # Location to persist control-api's configuration store
+  pvc_mount_point: '/app/control-api/data/backend.json' 
+  secret:
+    enabled: true
+    secret_name: controlapi-certs
+    mount_point: /service-certs
+    secret_keys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key
+  envvars:
+    gm_control_api_use_tls:
+      type: 'value'
+      value: "{{ .Values.controlApi.secret.enabled }}"
+    gm_control_api_ca_cert_path:
+      type: 'value'
+      value: "{{ .Values.controlApi.secret.mount_point}}/{{ .Values.controlApi.secret.secret_keys.ca }}"
+    gm_control_api_server_cert_path:
+      type: 'value'
+      value: "{{ .Values.controlApi.secret.mount_point}}/{{ .Values.controlApi.secret.secret_keys.cert }}"
+    gm_control_api_server_key_path:
+      type: 'value'
+      value: "{{ .Values.controlApi.secret.mount_point}}/{{ .Values.controlApi.secret.secret_keys.key }}"
+    gm_control_api_log_level:
+      type: 'value'
+      value: 'debug'
+    gm_control_api_address:
+      type: 'value'
+      value: '0.0.0.0:5555'
+    gm_control_api_org_key:
+      type: 'value'
+      value: 'deciphernow'
+    gm_control_api_zone_key:
+      type: 'value'
+      value: '{{ .Values.global.zone }}'
+    gm_control_api_zone_name:
+      type: 'value'
+      value: '{{ .Values.global.zone }}'
+    gm_control_api_persister_type:
+      type: value
+      value: 'file'
+    gm_control_api_persister_path:
+      type: value
+      value: '{{ .Values.controlApi.pvc_mount_point }}'
+  resources:
+  pvc:
+    size: 1Gi
+     
+# Sidecar configuration for Control Api
+sidecar:
+  version: '{{- $.Values.global.sidecar.version | default "latest" }}'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  # Port where the proxy will listen
+  port: 10808
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
+  secret:
+    enabled: true
+    secret_name: sidecar-certs
+    mount_point: /etc/proxy/tls/sidecar
+    secret_keys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key
+  # When to pull images, used in the deployment
+  image_pull_policy: IfNotPresent
+  # CPU and memory limits for the sidecar
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

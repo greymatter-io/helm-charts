@@ -7,36 +7,26 @@ spec:
   replicas: {{ .Values.control.replicas }}
   selector:
     matchLabels:
-      app: {{ .Values.control.name }}
+      gm.proxy: {{ .Values.control.name }}
       deployment: {{ .Values.control.name }}
   template:
     metadata:
       labels:
-        app: {{ .Values.control.name }}
+        gm.proxy: {{ .Values.control.name }}
         deployment: {{ .Values.control.name }}
         run: {{ .Values.control.name }}
     spec:
-      # This serviceaccount must have read access to both pods and endpoints, because gm-control uses the kubernetes API to do service discovery, and the waiter init container needs access to service endpoints to wait on gm-control-api
-      serviceAccountName: {{ .Values.control.serviceAccount.name }}
+      # This service_account must have read access to both pods and endpoints, because gm-control uses the kubernetes API to do service discovery, and the waiter init container needs access to service endpoints to wait on control-api
+      serviceAccountName: {{ .Values.control.service_account.name }}
       containers:
         - name: {{ .Values.control.name }}
           image: {{ tpl .Values.control.image $ }}
-          imagePullPolicy: {{ .Values.control.imagePullPolicy }}
+          imagePullPolicy: {{ .Values.control.image_pull_policy }}
           env:
             {{- include "envvars" (dict "envvar" .Values.control.envvars "top" $) | indent 10 }}
-          {{- if .Values.control.secret }}
-          - name: GM_CONTROL_API_INSECURE
-            value: {{ .Values.control.secret.insecure | quote }}
-          - name: GM_CONTROL_API_SSL
-            value: "true"
-          - name: GM_CONTROL_API_SSLCERT
-            value: {{ .Values.control.secret.mountPoint }}/{{ .Values.control.secret.secretKeys.cert }}
-          - name: GM_CONTROL_API_SSLKEY
-            value: {{ .Values.control.secret.mountPoint }}/{{ .Values.control.secret.secretKeys.key }}
-          {{- end }}
           ports:
             - name: grpc
-              containerPort: 50000
+              containerPort: {{ .Values.global.control_port }}
               protocol: TCP
           livenessProbe:
             tcpSocket:
@@ -45,24 +35,24 @@ spec:
           resources: {{- toYaml .Values.resources | nindent 12 }}
         {{- if .Values.control.secret }}
           volumeMounts:
-            - name: control-api-certs
-              mountPath: {{ .Values.control.secret.mountPoint }}
+            - name: controlapi-certs
+              mountPath: {{ .Values.control.secret.mount_point }}
         {{- end }}
       initContainers:
-        - name: ensure-gm-control-api
+        - name: ensure-control-api
           image: {{ .Values.global.waiter.image }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
             - name: SERVICE
-              value: gm-control-api
+              value: control-api
             - name: POST_DELAY
               value: '10'
       imagePullSecrets:
-      - name: {{ .Values.global.imagePullSecret }}
+      - name: {{ .Values.global.image_pull_secret }}
       {{- if .Values.control.secret }}
       volumes:
-        - name: control-api-certs
+        - name: controlapi-certs
           secret:
             secretName: {{ .Values.control.secret.secret_name }}
             defaultMode: 0777

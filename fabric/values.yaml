@@ -1,126 +1,215 @@
-global:
+# Grey Matter Fabric Chart Overrides
 
-  imagePullSecret: docker.secret
-  
-  environment: openshift
-  domain: staging.deciphernow.com
-  route_url_name: greymatter
-  remove_namespace_from_url: false
-  zone: zone-default-zone
-  mesh_tls:
-    enabled: true
-    use_provided_certs: true
-    # This is the DN of the cert being used in the mesh. The Helm charts will add whitelist the DN throughout the mesh
-    dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local
-  # Turns on tls for control api and configures control to talk to it using tls
-  control_api_tls: false
-  kafka:
-    replicas: 3
-  dashboard:
-    version: 3.3.1
-    sidecar:
-      version: latest
-  catalog:
-    version: latest
-    sidecar:
-      version: latest
-  sense:
-    enabled: false
-  consul:
+global:
+  # Used as imagePullSecrets value for each subchart
+  image_pull_secret: docker.secret    
+  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  environment: openshift              
+  # Used to configure control and control-api environment variables
+  zone: zone-default-zone             
+  # Whether to use consul for service discovery
+  consul:                             
     enabled: false
     host: ''
     port: 8500
-  edge:
-    enableTLS: true
-    # This is the DN of the new certificate issued to the edge for internal mesh communication. It needs to be whitelisted by the proxies
-    egressDn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=edge
-    certPath: /etc/proxy/tls/edge
-    version: 1.1.1
-  spire:
-    enabled: false
-  waiter:
-    serviceAccount:
+  # Port for Grey Matter Control. Used in control-api and sidecar envvars.
+  control_port: 50000 
+  # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
+  control_additional_namespaces:
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:                               
+    image: deciphernow/k8s-waiter:latest
+    service_account: 
       create: true
       name: waiter-sa
-  control:
-    # This specifies the service name that all XDS clients will try to connect to
-    name: control
-    port: 50000
-    version: latest
-  data:
-    jwt_prefix: '/jwt'
-  internal-data:
-    jwt_prefix: '/jwt'
-
+  # Sidecar configuration (Control-api is the only service in this chart with a proxy)
   sidecar:
-    version: latest
+    # GM Proxy version, used by control-api
+    version: 1.2.0
     envvars:
-      # You can customize the sidecar environment variables mesh-wide to enable features in the mesh
-      # All the sidecar envvars are documented in `./greymatter/README.md`, and the custom service-level defaults are documented in the services `configuration.md` files.
-      # These are sorted by how different the values are for the sidecars running on different services. The options are "all the same", "all except XDS". and "different"
-      # TODO: update each service to use default global values and only set the ones that are different.
-      # All the same
+      xds_cluster:
+        type: value
+        value: 'control-api'
       proxy_dynamic:
         type: 'value'
         value: 'true'
       xds_zone:
         type: 'value'
         value: '{{ .Values.global.zone }}'
-      xds_cluster:
-        type: 'value'
-        value: ''
       xds_host:
         type: 'value'
         value: 'control.{{ .Release.Namespace }}.svc'
       xds_port:
         type: 'value'
-        value: '{{ .Values.global.control.port }}'
+        value: '{{ .Values.global.control_port | quote }}'
       xds_node_id:
         type: 'value'
         value: 'default'
       envoy_admin_log_path:
         type: 'value'
         value: '/dev/stdout'
-      # There may be more sidecar environment variables, but we haven't added them here yet.
-      # However, to use an env var with the sidecar, even if it doesn't have a global default,
-      # it needs to be set globally as either a value or a secret
 
 control:
   control:
-    # Configures certs for control to talk to control api via tls. Only used when global.control_api_tls=true.
-    secret:
-      secret_name: controlapitls
-      mountPoint: /service-certs
+    # Name used for the deployment and service resources
+    name: 'control'
+    # Display name used for NOTES.txt
+    display_name: 'Control'
+    # Number of replicas for the deployment
+    replicas: 1
+    # Version of control
+    version: 1.2.0
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
+    # When to pull images, used in the deployment
+    image_pull_policy: IfNotPresent
+    # Secret used to talk to control-api
+    secret:                      
+      enabled: true
+      secret_name: control-certs
+      mount_point: /service-certs
       insecure: true
-      secretKeys:
+      secret_keys:
         cert: server.crt
         key: server.key
-    serviceAccount:
+    # The name of the service account with access to pods and endpoints. Can be created if it doesn't exist.
+    service_account:
       create: true
-    image: docker-dev.production.deciphernow.com/deciphernow/gm-control:latest
+      name: control-sa
     envvars:
       gm_control_console_level:
         type: 'value'
         value: 'info'
-      #gm_control_cmd:
-      #  type: 'value'
-      #  value: 'consul'
-      #gm_control_consul_dc:
-      #  type: 'value'
-      #  value: 'dc1'
-      #gm_control_consul_hostport:
-      #  type: 'value'
-      #  value: '{{ .Values.global.consul.host }}:{{ .Values.global.consul.port }}'
+      gm_control_api_key:
+        type: 'value'
+        value: 'xxx'
+      gm_control_api_zone_name:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      gm_control_api_insecure:
+        type: 'value'
+        value: "{{ .Values.control.secret.insecure }}"
+      gm_control_api_ssl:
+        type: 'value'
+        value: "{{ .Values.control.secret.enabled }}"
+      gm_control_api_sslcert:
+        type: 'value'
+        value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.cert }}"
+      gm_control_api_sslkey:
+        type: 'value'
+        value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.key }}"
+      gm_control_api_host:
+        type: 'value'
+        value: 'control-api:5555'
+      gm_control_cmd:
+        type: 'value'
+        value: 'kubernetes'
+      gm_control_xds_resolve_dns:
+        type: 'value'
+        value: 'true'
+      gm_control_xds_ads_enabled:
+        type: 'value'
+        value: 'true'
+      gm_control_kubernetes_cluster_label:
+        type: 'value'
+        value: 'gm.proxy'
+      gm_control_kubernetes_port_name:
+        type: 'value'
+        value: 'proxy'
+      gm_control_kubernetes_namespaces:
+        type: 'value'
+        value: '{{ include "control.namespaces" . }}'
+      # The following values are not applied. Change the type to 'value' to use these variables.
+      gm_control_diff_dry_run:
+        type: 'null'
+        value: 'true'
+      gm_control_file_format:
+        type: 'null'
+        value: 'yaml'
+      gm_control_file_filename:
+        type: 'null'
+        value: '/app/routes.yaml'
+    resources:
+      {}
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
 
-gm-control-api:
-  gmControlApi:
-    secret:
-      secret_name: controlapitls
-      mountPoint: /service-certs
-      insecure: true
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:latest'
-    zone: '{{ .Values.global.zone }}'
-    init:
-      image: docker-dev.production.deciphernow.com/deciphernow/greymatter:latest
-  sidecar:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:latest'
+control-api:
+  controlApi:
+    # Name used for the deployment and service resources
+    name: control-api                   
+    # Display name used for NOTES.txt
+    display_name: control-api            
+    # Number of replicas for the deployment
+    replicas: 1                         
+    # Gm Control API version
+    version: 1.2.0                     
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
+    # When to pull images, used in the deployment
+    image_pull_policy: IfNotPresent       
+    # Port exposed by the control-api container
+    container_port: 5555                           
+    # Location to persist control-api's configuration store
+    pvc_mount_point: '/app/control-api/data/backend.json' 
+    secret:                             
+      enabled: true
+      secret_name: controlapi-certs
+      mount_point: /service-certs
+      secret_keys:
+        ca: ca.crt
+        cert: server.crt
+        key: server.key
+    envvars:
+      gm_control_api_use_tls:
+        type: 'value'
+        value: "{{ .Values.controlApi.secret.enabled }}"
+      gm_control_api_ca_cert_path:
+        type: 'value'
+        value: "{{ .Values.controlApi.secret.mount_point}}/{{ .Values.controlApi.secret.secret_keys.ca }}"
+      gm_control_api_server_cert_path:
+        type: 'value'
+        value: "{{ .Values.controlApi.secret.mount_point}}/{{ .Values.controlApi.secret.secret_keys.cert }}"
+      gm_control_api_server_key_path:
+        type: 'value'
+        value: "{{ .Values.controlApi.secret.mount_point}}/{{ .Values.controlApi.secret.secret_keys.key }}"
+      gm_control_api_log_level:
+        type: 'value'
+        value: 'debug'
+      gm_control_api_address:
+        type: 'value'
+        value: '0.0.0.0:5555'
+      gm_control_api_org_key:
+        type: 'value'
+        value: 'deciphernow'
+      gm_control_api_zone_key:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      gm_control_api_zone_name:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      gm_control_api_persister_type:
+        type: value
+        value: 'file'
+      gm_control_api_persister_path:
+        type: value
+        value: '{{ .Values.controlApi.pvc_mount_point }}'
+    resources:
+      # We usually recommend not to specify default resources and to leave this as a conscious
+      # choice for the user. This also increases chances charts run on environments with little
+      # resources, such as Minikube. If you do want to specify resources, uncomment the following
+      # lines, and adjust them as necessary.
+      # limits:
+      #   cpu: 500m
+      #   memory: 1Gi
+      # requests:
+      #   cpu: 250m
+      #   memory: 256Mi
+    pvc:
+      size: 1Gi
