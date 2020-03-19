@@ -19,13 +19,13 @@ global:
     enabled: false
 
   sidecar:
-    version:
+    version: 1.2.0
 
 jwt:
   # Name used for the deployment and service resources
   name: jwt-security
-  version: '1.0.0'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
+  version: '1.0.1'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [

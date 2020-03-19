@@ -18,13 +18,13 @@ global:
   consul:
     enabled: false
   sidecar:
-    version:
+    version: 1.2.0
 
 jwt:
-  version: '1.0.0'
+  version: '1.0.1'
   # If true, uses aac for auth control
   use_aac: true
-  image: 'docker-gov.production.deciphernow.com/deciphernow/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
