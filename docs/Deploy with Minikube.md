@@ -326,7 +326,7 @@ voyager-operator        1               Thu Sep 12 11:19:01 2019        DEPLOYED
 
 There are two pods which control our ingress:
 
-- `edge` validates client-facing certificates and gets routing rules from `gm-control-api`.
+- `edge` validates client-facing certificates and gets routing rules from `control-api`.
 - `voyager-edge` is our ingress controller. Edge isn't exposed to the outside world, and in a real deployment we need to tie our cluster ingress to an IP address. This points to `edge`.
 
 To hit our cluster, we can access voyager-edge:
@@ -335,7 +335,7 @@ To hit our cluster, we can access voyager-edge:
 $ minikube -p gm-deploy service --https=true voyager-edge
 |-----------|--------------|--------------------------------|
 | NAMESPACE   | NAME           | URL                              |
-| ----------- | -------------- | -------------------------------- |
+|-------------|----------------|----------------------------------|
 | default     | voyager-edge   | http://192.168.99.102:30001      |
 |             |                | http://192.168.99.102:30000      |
 | ----------- | -------------- | -------------------------------- |
@@ -356,7 +356,7 @@ EC2 >> (Network & Security) Security Groups >> Your Minikube Security Group >> I
 Select the security group you're using and edit the following:
 
 | Parameter      | Value                                                |
-| -------------- | ---------------------------------------------------- |
+|----------------|------------------------------------------------------|
 | **Type**       | TCP                                                  |
 | **Protocol**   | 30263 (the voyager-edge port from the previous step) |
 | **Port Range** | Custom                                               |

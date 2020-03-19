@@ -13,8 +13,8 @@ keywords:
   - service mesh
   - fabric
 dependencies:
-  - name: gm-control-api
-    repository: file://./gm-control-api
+  - name: control-api
+    repository: file://./control-api
     version: '2.1.6'
 
   - name: control

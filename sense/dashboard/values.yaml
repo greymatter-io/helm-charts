@@ -40,7 +40,7 @@ dashboard:
   fabric_server: '/services/catalog/latest/'
   use_prometheus: 'true'
   objectives_server: '/services/slo/latest/'
-  config_server: '/services/gm-control-api/latest/v1.0'
+  config_server: '/services/control-api/latest/v1.0'
   prometheus_server: '/services/prometheus/latest/api/v1/'
   base_url: '/services/dashboard/{{ $.Values.global.dashboard.version }}/'
   requestTimeout: '15000'
