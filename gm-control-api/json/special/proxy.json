@@ -5,8 +5,22 @@
   "listener_keys": ["edge-listener"],
   "name": "edge",
   "listeners": null,
-  "active_proxy_filters": ["gm.metrics", "gm.inheaders"],
+  "active_proxy_filters": [
+    {{- if .Values.global.services.edge.observablesEnabled }}
+    "gm.observables",
+  {{- end }}
+    "gm.metrics",
+    "gm.inheaders"
+  ],
   "proxy_filters": {
+    {{-  if .Values.global.services.edge.observablesEnabled }}
+    "gm_observables": {
+      "useKafka": true,
+      "topic": "{{ .Values.global.services.edge.serviceName }}",
+      "eventTopic": "{{ .Values.global.observables.topic }}",
+      "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"
+    },
+    {{- end }}
     "gm_metrics": {
       "metrics_port": 8081,
       "metrics_host": "0.0.0.0",
