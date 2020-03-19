@@ -1,3 +1,21 @@
+{{- define "envvars" }}
+  {{- $e := index . "envvar" }}
+  {{- $t := index . "top" }}
+  {{- range $name, $envvar := $e }}
+    {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+      {{- if eq $envvar.type "secret" }}
+- name: {{ $envName }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ tpl $envvar.secret $t }}
+      key: {{ $envvar.key }}
+      {{- else if eq $envvar.type "value" }}
+- name: {{ $envName }}
+  value: {{ tpl $envvar.value $t | quote }}
+      {{- end }}
+  {{- end }}
+{{- end }}
+
 
 {{/* envvar take a dictionary of name, value, and top as arguments, and generates a single environment variable from it. */}}
 {{/* Top must be the scope of the top of a named template or any scope which includes the default values, namely .Template (since we use the `tpl` function in this template, .Template.BasePath is required for some reason) */}}
