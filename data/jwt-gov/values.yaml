@@ -23,13 +23,13 @@ global:
 jwt:
   version: '1.0.1'
   # If true, uses aac for auth control
-  use_aac: true
+  use_aac: false
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
       '-c',
-      'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./certs/aac ]]; then mkdir -p ./certs/aac; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /app/gm-jwt-security-gov.linux',
+      'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./certs/aac ]]; then mkdir -p ./certs/aac; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /gm-jwt-security-gov/gm-jwt-security-gov',
 
     ]
   # If set, enables tls using the secret specified in secret_name
@@ -37,7 +37,8 @@ jwt:
   #  secret_name: jwt-certs
   #  mount_point: /gm-jwt-security/certs
   # Location to mount the information specified in users_cg_name in the container
-  users_mount_point: /gm-jwt-security/etc
+  users_mount_point: /gm-jwt-security-gov/etc
+  users_cg_name: jwt-users
   image_pull_policy: IfNotPresent
   resources:
     limits:
@@ -95,7 +96,7 @@ jwt:
       key: password
     demo_mode:
       type: value
-      value: '{{- if .Values.jwt.use_acc }}false{{- else }}true{{- end }}'
+      value: '{{- if .Values.jwt.use_aac }}false{{- else }}true{{- end }}'
 
   # Provides a list of authorized users for the JWT service
   users: |-
