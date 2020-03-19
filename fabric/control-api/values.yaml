@@ -22,7 +22,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
-    version: latest
+    version: 1.2.0
    
 controlApi:
   # Name used for the deployment and service resources
@@ -31,7 +31,7 @@ controlApi:
   display_name: control-api            
   # Number of replicas for the deployment
   replicas: 1                         
-  version: latest
+  version: 1.2.0
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent       
@@ -88,7 +88,7 @@ controlApi:
 # Sidecar configuration for Control Api
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics

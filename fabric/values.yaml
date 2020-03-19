@@ -25,7 +25,7 @@ global:
   # Sidecar configuration (Control-api is the only service in this chart with a proxy)
   sidecar:
     # GM Proxy version, used by control-api
-    version: latest
+    version: 1.2.0
     envvars:
       xds_cluster:
         type: value
@@ -58,7 +58,7 @@ control:
     # Number of replicas for the deployment
     replicas: 1
     # Version of control
-    version: latest
+    version: 1.2.0
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
@@ -150,7 +150,7 @@ control-api:
     # Number of replicas for the deployment
     replicas: 1                         
     # Gm Control API version
-    version: latest                     
+    version: 1.2.0                     
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent       
