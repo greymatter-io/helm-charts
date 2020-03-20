@@ -119,6 +119,8 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 10
 
+      imagePullSecrets:
+      - name: {{ .Values.data.imagePullSecret | default "docker.secret" }}
       volumes:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul
