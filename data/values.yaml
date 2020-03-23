@@ -42,8 +42,8 @@ data:
   client_jwt_endpoint_use_tls: 'true'
   base_path: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version | trunc 3 }}
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
-  certs_mount_point: /certs
   imagePullSecret: docker.secret
+  certs_mount_point: /certs
   imagePullPolicy: IfNotPresent
   use_tls: true
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
