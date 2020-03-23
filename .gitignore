@@ -7,7 +7,7 @@ greymatter/charts
 charts.txt
 *.log
 .DS_Store
-**/Chart.lock
+*/Chart.lock
 
 # Allow admins to store credentials in a file so no passwords leak to bash history
 creds
