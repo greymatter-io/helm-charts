@@ -43,13 +43,10 @@ data:
   base_path: /services/{{ $.Values.data.name | lower }}/{{ $.Values.data.version | trunc 3 }}
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
   certs_mount_point: /certs
+  imagePullSecret: docker.secret
   imagePullPolicy: IfNotPresent
   use_tls: true
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
-  user: 'gmdata-user'
-  pwd: 'mongopassword'
-  role: 'root'
-  db: 'admin'
   pvc:
     #size:
     mountPath: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
