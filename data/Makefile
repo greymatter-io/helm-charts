@@ -13,9 +13,9 @@ gm-data:
 jwt:
 	helm install data jwt --set=global.environment=kubernetes $(FLAG)
 
-# .PHONY: jwt
-# jwt-gov:
-# 	helm install data jwt-gov --set=global.environment=kubernetes
+.PHONY: jwt-gov
+jwt-gov:
+	helm install data jwt-gov --set=global.environment=kubernetes $(FLAG)
 
 .PHONY: package-data
 package-data:

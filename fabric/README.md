@@ -49,3 +49,13 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```sh
 helm install greymatter --name <my-release> -f custom.yaml
 ```
+
+## Makefile
+
+| command        | description                          | comments |
+| -------------- | ------------------------------------ | -------- |
+| control        | install standalone control           |          |
+| api            | install standalone control-api       |          |
+| package-fabric | package fabric                       |          |
+| fabric         | package and install fabric component |          |
+| remove-fabric  | uninstalls fabric component          |          |

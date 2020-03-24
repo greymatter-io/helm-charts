@@ -49,3 +49,14 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```sh
 helm install sense --name <my-release> -f custom.yaml
 ```
+
+## Makefile
+
+| command       | description                         | comments |
+| ------------- | ----------------------------------- | -------- |
+| catalog       | install standalone catalog          |          |
+| dashboard     | install standalone dashboard        |          |
+| slo           | install standalone slo              |          |
+| package-sense | package sense                       |          |
+| sense         | package and install sense component |          |
+| remove-sense  | uninstalls sense component          |          |

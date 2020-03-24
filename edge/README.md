@@ -49,3 +49,10 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```sh
 helm install edge --name <my-release> -f custom.yaml
 ```
+
+## Makefile
+
+| command     | description     | comments |
+| ----------- | --------------- | -------- |
+| edge        | install edge    |          |
+| remove-edge | uninstalls edge |          |
