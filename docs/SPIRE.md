@@ -1,5 +1,7 @@
 # SPIRE
 
+> TODO: full update of these docs when spire is implemented
+
 This Helm chart deploys the spire server and agent following the guidelines of the [`spire-tutorials`](https://github.com/spiffe/spire-tutorials) example Kubernetes template (described in the ["Getting Started Guide for Kubernetes"](https://spiffe.io/spire/getting-started-k8s/)).
 
 ## General Architecture

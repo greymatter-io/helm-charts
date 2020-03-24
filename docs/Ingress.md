@@ -1,12 +1,13 @@
 # Ingress
 
-- [Set the ingress URL](#set-the-ingress-url)
-- [Set up ingress](#set-up-ingress)
-  - [Kubernetes](#kubernetes)
-    - [With Voyager](#with-voyager)
-    - [With Nginx Ingress Controller](#with-nginx-ingress-controller)
-    - [With another Ingress Controller](#with-another-ingress-controller)
-  - [OpenShift](#openshift)
+- [Ingress](#ingress)
+  - [Set the ingress URL](#set-the-ingress-url)
+  - [Set up ingress](#set-up-ingress)
+    - [Kubernetes](#kubernetes)
+      - [With Voyager](#with-voyager)
+      - [With Nginx Ingress Controller](#with-nginx-ingress-controller)
+      - [With another Ingress Controller](#with-another-ingress-controller)
+    - [OpenShift](#openshift)
 
 >Grey Matter requires that the Edge service perform TLS termination.  Therefore, any ingress options need to be configured for TLS passthrough.
 
@@ -34,21 +35,39 @@ As of this writing, there is [an issue](https://github.com/appscode/voyager/issu
 export PROVIDER=minikube
 helm repo add appscode https://charts.appscode.com/stable/
 helm repo update
-helm install appscode/voyager --name voyager-operator --version 10.0.0 \
+helm install appscode/voyager --name voyager-operator --version v12.0.0-rc.0 \
   --namespace kube-system \
   --set cloudProvider=$PROVIDER \
   --set enableAnalytics=false \
   --set apiserver.enableAdmissionWebhook=false
-...
-NOTES:
-Set cloudProvider for installing Voyager
-
-To verify that Voyager has started, run:
-
-  kubectl --namespace=kube-system get deployments -l "release=voyager-operator, app=voyager"
 ```
 
-Now you're all set. When you deploy the Edge service, the voyager-operator will create a custom `Ingress` resource. For Kubernetes, a [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) service type will be deployed, which exposes the service on the edge node's IP and static port. For, the EKS cloud provider, a [LoadBalancer](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer) service type will expose the service using EKS's load balancer. You can run `kubectl get svc voyager-edge` to see the cluster IP and port.
+Edge ingress is created using the values configured in `.Values.edge.ingress`, the default values will set up voyager ingress:
+
+```yaml
+edge:
+  ingress:
+    apiVersion: voyager.appscode.com/v1beta1
+    annotations:
+      kubernetes.io/ingress.class: 'voyager'
+      ingress.appscode.com/ssl-passthrough: 'true'
+      ingress.appscode.com/type: NodePort
+    rules:
+      - tcp:
+          port: '80'
+          nodePort: '30001'
+          backend:
+            serviceName: edge
+            servicePort: 10808
+      - tcp:
+          port: '443'
+          nodePort: '30000'
+          backend:
+            serviceName: edge
+            servicePort: 10808
+```
+
+Now you're all set. When you deploy the Edge service, the voyager-operator will create a custom `Ingress` resource. For Kubernetes, a [NodePort](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport) service type will be deployed, which exposes the service on the edge node's IP and static port. For the EKS cloud provider, a [LoadBalancer](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer) service type will expose the service using EKS's load balancer - you must change `.Values.edge.ingress.annotations.ingress.appscode.com/type` to `LoadBalancer` in this case. You can run `kubectl get svc voyager-edge` to see the cluster IP and port.
 
 #### With Nginx Ingress Controller
 
@@ -74,12 +93,10 @@ edge:
             - path: /
               backend:
                 serviceName: edge
-                servicePort: 8080
+                servicePort: 10808
 ```
 
-This configuration routes SSL traffic to the Grey Matter Edge sidecar, indicated by the `edge` service name, running on port 8080.
-
-
+This configuration routes SSL traffic to the Grey Matter Edge sidecar, indicated by the `edge` service name, running on port 10808.
 
 #### With another Ingress Controller
 
