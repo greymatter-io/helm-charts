@@ -39,8 +39,8 @@ dev-dep: clean
 	helm dep up data/ --skip-refresh
 	helm dep up sense/ --skip-refresh
 
-dep: clean
-	helm dep up greymatter/
+# dep: clean
+# 	helm dep up greymatter/
 
 install: dev-dep
 	@echo "installing greymatter helm charts"
