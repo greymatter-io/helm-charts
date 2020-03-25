@@ -9,26 +9,14 @@ $(BUILD_NUMBER_FILE):
 	@if ! test -f $(BUILD_NUMBER_FILE); then echo 0 > $(BUILD_NUMBER_FILE); fi
 	@echo $$(($$(cat $(BUILD_NUMBER_FILE)) + 1)) > $(BUILD_NUMBER_FILE)
 
-clean:
-	rm -rf greymatter/charts
-
-dev-dep: clean
-	helm dep up greymatter/ --skip-refresh
-
-dep: clean
-	helm dep up greymatter/
-
-install: dev-dep
-	@echo "installing greymatter helm charts"
-	helm install greymatter -f ./custom.yaml --name gm-deploy
-
 credentials:
 	./ci/scripts/build-credentials.sh
 
 fresh: credentials
 	./ci/scripts/minikube.sh
 
-dev:
+.PHONY: minikube
+minikube:
 	./ci/scripts/minikube.sh
 	
 # For reference equivalent to ./ci/scripts/minikube.sh but without extra aws handling
@@ -39,8 +27,24 @@ dev:
 #   helm install greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy	
 #   ./ci/scripts/show-voyager.sh
 
-prod:
-	./ci/scripts/minikube.sh --prod
+clean:
+	rm -rf fabric/charts
+	rm -rf edge/charts
+	rm -rf data/charts
+	rm -rf sense/charts
+
+dev-dep: clean
+	helm dep up fabric/ --skip-refresh
+	helm dep up edge/ --skip-refresh
+	helm dep up data/ --skip-refresh
+	helm dep up sense/ --skip-refresh
+
+dep: clean
+	helm dep up greymatter/
+
+install: dev-dep
+	@echo "installing greymatter helm charts"
+	helm install greymatter -f ./custom.yaml --name gm-deploy
 
 destroy:
 	minikube delete

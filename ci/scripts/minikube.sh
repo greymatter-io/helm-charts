@@ -17,18 +17,21 @@ if [ $LC -ge 4 ]; then
     sudo chown -R ubuntu /home/ubuntu/.kube /home/ubuntu/.minikube
 fi
 
-./ci/scripts/install-voyager.sh
+# ./ci/scripts/install-voyager.sh
 
-if [ "$1" == "--prod" ]; then
-    echo "Installing production charts"
-    REPO=decipher/greymatter
-else
-    # Default to installing local charts
-    echo "Installing local charts"
-    REPO=greymatter
-    helm dep up greymatter
-fi
+# if [ "$1" == "--prod" ]; then
+#     echo "Installing production charts"
+#     REPO=decipher/greymatter
+# else
+#     # Default to installing local charts
+#     echo "Installing local charts"
+#     REPO=greymatter
+#     helm dep up greymatter
+#     # helm dep up edge fabric sense data
+#     # helm install edge
+#     # helm instal
+# fi
 
-helm install $REPO -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy
-./ci/scripts/show-voyager.sh
+# helm install $REPO -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy
+# ./ci/scripts/show-voyager.sh
 
