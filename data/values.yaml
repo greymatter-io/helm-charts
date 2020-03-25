@@ -45,7 +45,7 @@ global:
   waiter:
     image: deciphernow/k8s-waiter:latest
     service_account:
-      create: false
+      create: true
       name: waiter-sa
 
 data:
