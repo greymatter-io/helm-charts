@@ -1,5 +1,6 @@
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
+include ./edge/Makefile
 include ./voyager/Makefile
 
 BUILD_NUMBER_FILE=build-number.txt
