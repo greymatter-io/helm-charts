@@ -12,7 +12,7 @@ global:
     enabled: false
     host: ''
     port: 8500
-  # TODO: REFACTOR THIS
+  # Observables configuration, used to build Control API objects (see control-api/json)
   observables:
     topic: "greymatter"
   # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
