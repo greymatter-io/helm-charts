@@ -123,7 +123,6 @@ spec:
       - name: service-certs
         secret:
           secretName: {{ .Values.controlApi.secret.secret_name }}
-          defaultMode: 0640
       {{- end }}
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

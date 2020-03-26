@@ -69,7 +69,6 @@ spec:
       - name: certificates
         secret:
           secretName: {{ .Values.postgres.secret.secret_name }}
-          defaultMode: 0640
       {{- end }}
   volumeClaimTemplates:
   - metadata:
