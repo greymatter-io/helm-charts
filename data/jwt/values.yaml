@@ -4,7 +4,7 @@ global:
   # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
-  environment: kubernetes
+  environment: openshift
   exhibitor:
     replicas: 1
   # Port for Grey Matter Control. Used in sidecar envvars
