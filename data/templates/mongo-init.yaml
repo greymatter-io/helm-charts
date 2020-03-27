@@ -13,8 +13,8 @@ stringData:
         pwd: {{ quote .gmdata_password }},
         roles: [
         {
-            role: 'root',
-            db: 'admin',
+            role: {{ quote .gmdata_role }},
+            db: {{ quote .database }},
         },
         ],
     });

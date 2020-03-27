@@ -250,8 +250,9 @@ mongo:
     root_username: 'mongo'
     root_password: 'mongo'
     database: 'gmdata'
-    gmdata_username: 'mongo'
-    gmdata_password: 'mongo'
+    gmdata_username: 'gmdata'
+    gmdata_password: 'gmdata_password'
+    gmdata_role: 'readWrite'
 
   ssl:
     enabled: false
