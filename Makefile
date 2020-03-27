@@ -2,6 +2,7 @@
 
 include ./secrets/Makefile
 include ./fabric/Makefile
+include ./data/Makefile
 include ./edge/Makefile
 include ./voyager/Makefile
 
