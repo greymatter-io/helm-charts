@@ -1,5 +1,6 @@
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
+include ./secrets/Makefile
 include ./edge/Makefile
 include ./voyager/Makefile
 
@@ -12,11 +13,11 @@ $(BUILD_NUMBER_FILE):
 	@if ! test -f $(BUILD_NUMBER_FILE); then echo 0 > $(BUILD_NUMBER_FILE); fi
 	@echo $$(($$(cat $(BUILD_NUMBER_FILE)) + 1)) > $(BUILD_NUMBER_FILE)
 
-credentials:
-	./ci/scripts/build-credentials.sh
+# credentials:
+# 	./ci/scripts/build-credentials.sh
 
-fresh: credentials
-	./ci/scripts/minikube.sh
+# fresh: credentials
+# 	./ci/scripts/minikube.sh
 
 .PHONY: minikube
 minikube:
