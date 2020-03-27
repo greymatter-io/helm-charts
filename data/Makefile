@@ -1,48 +1,34 @@
-WAITERSACHECK=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "present"}')
-ifeq (${WAITERSACHECK},present)
-	FLAG=--set=global.waiter.service_account.create=false
-else
-	FLAG=--set=global.waiter.service_account.create=true
-endif
+NAME-DATA:=data
+CHART_DATA := .
 
-pwd_name := $(notdir $(PWD))
 
-NAME:=data
-CHART := .
-
-ifeq ($(pwd_name),helm-charts)
-	CHART=$@
-	INSTALLDIR := data/
-	DEPUPDIR := data
-endif
-ifeq ($(pwd_name),data)
-	CHART= .
-	INSTALLDIR := 
-	DEPUPDIR := .
-endif
-
+wsa-data:
+	$(eval WAITERSACHECK-DATA=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
+	echo $(WAITERSACHECK-DATA)
 
 .PHONY: gm-data
-gm-data:
-	helm install $(NAME) $(INSTALLDIR)$(CHART) --set=global.environment=kubernetes $(FLAG)
+gm-data: wsa-data
+	helm install $(NAME-DATA) gm-data --set=global.environment=kubernetes $(WAITERSACHECK-DATA)
 
 .PHONY: jwt
-jwt:
-	helm install $(NAME) $(INSTALLDIR)$(CHART) --set=global.environment=kubernetes $(FLAG)
+jwt: wsa-data
+	helm install jwt-$(NAME-DATA) jwt --set=global.environment=kubernetes $(WAITERSACHECK-DATA)
 
 .PHONY: jwt-gov
-jwt-gov:
-	helm install $(NAME) $(INSTALLDIR)$(CHART) --set=global.environment=kubernetes $(FLAG)
+jwt-gov: wsa-data
+	helm install $(NAME-DATA) jwt-gov --set=global.environment=kubernetes $(WAITERSACHECK-DATA)
 
-.PHONY: package-data
-package-data:
-	rm -f $(CHART)/charts/*
-	helm dep up $(DEPUPDIR)
+clean-data:
+	rm -f ./charts/*
+
+package-data: clean-data
+	echo "target hit package-data"
+	helm dep up .
 
 .PHONY: data
-data: package-data
-	helm install $(NAME) $(CHART) --set=global.environment=kubernetes $(FLAG)
+data: package-data wsa-data
+	helm install $(NAME-DATA) . --set=global.environment=kubernetes $(WAITERSACHECK-DATA)
 
 .PHONY: remove-data
 remove-data:
-	helm uninstall $(NAME)
+	helm uninstall $(NAME-DATA)

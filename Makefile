@@ -1,10 +1,6 @@
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
-include ./secrets/Makefile
-include ./fabric/Makefile
-include ./data/Makefile
-include ./edge/Makefile
-include ./voyager/Makefile
+include secrets/Makefile
 
 BUILD_NUMBER_FILE=build-number.txt
 
@@ -33,24 +29,27 @@ minikube:
 #   helm install greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy	
 #   ./ci/scripts/show-voyager.sh
 
-clean:
-	rm -rf fabric/charts
-	rm -rf edge/charts
-	rm -rf data/charts
-	rm -rf sense/charts
+clean: 
+	(cd fabric && make clean-fabric)
+	(cd data && make clean-data)
+	(cd sense && make clean-sense)
 
 dev-dep: clean
-	helm dep up fabric/ --skip-refresh
-	helm dep up edge/ --skip-refresh
-	helm dep up data/ --skip-refresh
-	helm dep up sense/ --skip-refresh
-
-# dep: clean
-# 	helm dep up greymatter/
+	(cd fabric && make package-fabric)
+	(cd data && make package-data)
+	(cd sense && make package-sense)
 
 install: dev-dep
-	@echo "installing greymatter helm charts"
-	helm install greymatter -f ./custom.yaml --name gm-deploy
+	(cd fabric && make fabric)
+	(cd data && make data)
+	(cd sense && make sense)
+	(cd edge && make edge)
+
+uninstall:
+	(cd fabric && make remove-fabric)
+	(cd data && make remove-data)
+	(cd sense && make remove-sense)
+	(cd edge && make remove-edge)
 
 destroy:
 	minikube delete
@@ -64,6 +63,8 @@ template: dev-dep $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
 	helm template greymatter -f ./custom.yaml --name gm-deploy > $(OUTPUT_PATH)/helm-$(BN).yaml
 
-delete:
-	@echo "purging greymatter helm release"
-	helm del --purge gm-deploy
+delete: uninstall remove-pvc
+	@echo "purged greymatter helm release"
+	
+remove-pvc:
+	kubectl delete pvc $$(kubectl get pvc | awk '{print $$1}' | tail -n +2)

@@ -1,43 +1,29 @@
-WAITERSACHECK=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "present"}')
-ifeq (${WAITERSACHECK},present)
-	FLAG=--set=global.waiter.service_account.create=false
-else
-	FLAG=--set=global.waiter.service_account.create=true
-endif
 
-pwd_name := $(notdir $(PWD))
+NAME-FABRIC:=fabric
+CHART-FABRIC := .
 
-NAME:=fabric
-CHART := .
-
-ifeq ($(pwd_name),helm-charts)
-	CHART=$@
-	INSTALLDIR := fabric/
-	DEPUPDIR := data
-endif
-ifeq ($(pwd_name),fabric)
-	CHART = .
-	INSTALLDIR := 
-	DEPUPDIR := .
-endif
+wsa-fabric:
+	$(eval WAITERSACHECK-FABRIC=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
 
 .PHONY: control
-control:
-	helm install $(NAME) $(INSTALLDIR)$(CHART) --set=global.environment=kubernetes $(FLAG)
+control: wsa-fabric
+	helm install $(NAME-FABRIC) control --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC)
 
 .PHONY: control-api
-control-api:
-	helm install $(NAME) $(INSTALLDIR)$(CHART)  --set=global.environment=kubernetes $(FLAG)
+control-api: wsa-fabric
+	helm install control-api-$(NAME-FABRIC) control-api  --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC)
 
-.PHONY: package-fabric
-package-fabric:
-	rm -f $(CHART)/charts/*
-	helm dep up $(DEPUPDIR)
+clean-fabric:
+	rm -f ./charts/*
+
+package-fabric: clean-fabric
+	echo "target hit package-fabric"
+	helm dep up .
 
 .PHONY: fabric
-fabric: package-fabric
-	helm install $(NAME) $(CHART) --set=global.environment=kubernetes $(FLAG)
+fabric: package-fabric wsa-fabric
+	helm install $(NAME-FABRIC) . --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC)
 
 .PHONY: remove-fabric
 remove-fabric:
-	helm uninstall $(NAME)
+	helm uninstall $(NAME-FABRIC)

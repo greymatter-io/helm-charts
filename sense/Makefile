@@ -1,32 +1,33 @@
+NAME-SENSE:=sense
+CHART-SENSE := .
 
-WAITERSACHECK=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "present"}')
-ifeq (${WAITERSACHECK},present)
-	FLAG=--set=global.waiter.service_account.create=false
-else
-	FLAG=--set=global.waiter.service_account.create=true
-endif
+wsa-sense:
+	$(eval WAITERSACHECK-SENSE=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
+	echo $(WAITERSACHECK-SENSE)
 
 .PHONY: catalog
-catalog:
-	helm install sense catalog --set=global.environment=kubernetes $(FLAG)
+catalog: wsa-sense
+	helm install $(NAME-SENSE) catalog --set=global.environment=kubernetes $(WAITERSACHECK-SENSE)
 
 .PHONY: dashboard
-dashboard:
-	helm install sense dashboard --set=global.environment=kubernetes $(FLAG)
+dashboard: wsa-sense
+	helm install $(NAME-SENSE) dashboard --set=global.environment=kubernetes $(WAITERSACHECK-SENSE)
 
 .PHONY: slo
-slo:
-	helm install sense slo --set=global.environment=kubernetes $(FLAG)
+slo: wsa-sense
+	helm install $(NAME-SENSE) slo --set=global.environment=kubernetes $(WAITERSACHECK-SENSE)
 
-.PHONY: package-sense
-package-sense:
-	rm charts/*
+clean-sense:
+	rm -f ./charts/*
+
+package-sense: clean-sense
+	echo "target hit package-sense"
 	helm dep up .
 
 .PHONY: sense
-sense: package-sense
-	helm install sense . --set=global.environment=kubernetes $(FLAG)
+sense: package-sense wsa-sense
+	helm install $(NAME-SENSE) . --set=global.environment=kubernetes $(WAITERSACHECK-SENSE)
 
 .PHONY: remove-sense
 remove-sense:
-	helm uninstall sense
+	helm uninstall $(NAME-SENSE)
