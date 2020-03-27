@@ -1,6 +1,7 @@
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
 include ./secrets/Makefile
+include ./fabric/Makefile
 include ./edge/Makefile
 include ./voyager/Makefile
 

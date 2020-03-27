@@ -5,23 +5,39 @@ else
 	FLAG=--set=global.waiter.service_account.create=true
 endif
 
+pwd_name := $(notdir $(PWD))
+
+NAME:=fabric
+CHART := .
+
+ifeq ($(pwd_name),helm-charts)
+	CHART=$@
+	INSTALLDIR := fabric/
+	DEPUPDIR := data
+endif
+ifeq ($(pwd_name),fabric)
+	CHART = .
+	INSTALLDIR := 
+	DEPUPDIR := .
+endif
+
 .PHONY: control
 control:
-	helm install fabric control --set=global.environment=kubernetes $(FLAG)
+	helm install $(NAME) $(INSTALLDIR)$(CHART) --set=global.environment=kubernetes $(FLAG)
 
-.PHONY: api
-api:
-	helm install fabric control-api --set=global.environment=kubernetes $(FLAG)
+.PHONY: control-api
+control-api:
+	helm install $(NAME) $(INSTALLDIR)$(CHART)  --set=global.environment=kubernetes $(FLAG)
 
 .PHONY: package-fabric
 package-fabric:
-	rm charts/*
-	helm dep up .
+	rm -f $(CHART)/charts/*
+	helm dep up $(DEPUPDIR)
 
 .PHONY: fabric
 fabric: package-fabric
-	helm install fabric . --set=global.environment=kubernetes $(FLAG)
+	helm install $(NAME) $(CHART) --set=global.environment=kubernetes $(FLAG)
 
 .PHONY: remove-fabric
 remove-fabric:
-	helm uninstall fabric
+	helm uninstall $(NAME)
