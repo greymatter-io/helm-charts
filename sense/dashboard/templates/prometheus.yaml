@@ -17,13 +17,11 @@ spec:
         deployment: {{ .Values.prometheus.name }}
     spec:
       serviceAccountName: {{ .Values.prometheus.service_account.name }}
-      {{- if ((ne .Values.global.environment "openshift")) }}
-      # Pod security contexts are propagated to their children volumes to allow r/w permissions
-      # We only do this in openshift when spire is enabled because then it is running with a more relaxed security context constraint
+      {{- if eq .Values.global.environment "openshift"}}
       securityContext:
-        fsGroup: 65534
-      {{- end }}  
-      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+        # Adding the user to root group.
+        runAsGroup: 0
+      {{- else }}
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
