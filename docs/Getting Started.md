@@ -94,8 +94,6 @@ Read [Ingress](./Ingress.md) for further details.
 
 ### Observables
 
-> TODO: update here
-
 The Grey Matter Helm chart provides the ability to enable observables in the mesh, but they are disabled by default.  To enable observables, modify the following settings in your local custom values file.  The `kafkaServerConnection` should be a reference to a Kafka ensemble that is available in the mesh.  The format is `<host1>:<port1>,<host2>:<port2>`
 
 These are global settings for all observables:
@@ -170,11 +168,9 @@ data:
 
 ### SPIRE
 
-> TODO: expand this when spire is implemented
-
 We also support using SPIFFE/SPIRE as a way to enable zero-trust attestation of different "workloads" (services).
 
-Read [SPIRE](./SPIRE.md) for further details.
+Read the [spire docs](./spire/configuration.md) for further details.
 
 ### TLS Options
 
