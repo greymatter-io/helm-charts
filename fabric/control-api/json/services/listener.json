@@ -27,16 +27,14 @@
       "certPath": "{{ .service.secret.mount_point }}/server.crt",
       "keyPath": "{{ .service.secret.mount_point }}/server.key",
       "insecureSkipVerify": true
-    },
-    {{-  if (.service.observablesEnabled) }}	
+    }{{-  if (.service.observablesEnabled) }},
     "gm_observables": {	
       "useKafka": true,	
       "topic": "{{.service.serviceName}}",	
       "eventTopic": "{{ .Values.global.observables.topic }}",	
       "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"	
-    },	
-    {{- end }}	
-    {{- if .service.secret.enabled }}	
+    }
+    {{- end }}{{- if .service.secret.enabled }},
     "gm_impersonation": {	
       "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{ .Values.global.sidecar.dn }}{{- end -}}"	
     }
