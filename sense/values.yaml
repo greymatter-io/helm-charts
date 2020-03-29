@@ -326,7 +326,7 @@ catalog:
         value: 'gmdata'
       config_polling_interval:
         type: value
-        value: '300s'
+        value: '30s'
       port:
         type: value
         value: '{{ $.Values.catalog.port }}'
