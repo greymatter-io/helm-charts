@@ -285,12 +285,13 @@ dashboard:
       limits:
         memory: "40Gi"
         cpu: "2"
-    # Sidecar configuration overrides for prometheus
-    sidecar:
-      envvars:
-        xds_cluster:
-          type: value
-          value: '{{ .Values.prometheus.name }}'
+        
+  # Sidecar configuration overrides for prometheus
+  sidecar_prometheus:
+    envvars:
+      xds_cluster:
+        type: value
+        value: '{{ .Values.prometheus.name }}'
 
 catalog:
   catalog:

@@ -164,11 +164,10 @@ sidecar_prometheus:
       cert: server.crt
       key: server.key
   # Overrides global.sidecar.envvars
-  sidecar:
-    envvars:
-      xds_cluster:
-        type: value
-        value: '{{ .Values.prometheus.name }}'
+  envvars:
+    xds_cluster:
+      type: value
+      value: '{{ .Values.prometheus.name }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the sidecar
