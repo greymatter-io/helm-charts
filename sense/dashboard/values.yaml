@@ -18,7 +18,7 @@ global:
   control_additional_namespaces:            
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.2.1
+    version: 1.2.2
     
 dashboard:
   # Name used for the deployment and service resources
