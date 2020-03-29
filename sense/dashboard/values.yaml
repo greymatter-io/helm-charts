@@ -51,7 +51,7 @@ dashboard:
       value: '/services/catalog/latest/'
     config_server:
       type: "value"
-      value: '/services/gm-control-api/latest/v1.0'
+      value: '/services/control-api/latest/v1.0'
     use_prometheus:
       type: "value"
       value: 'true'
