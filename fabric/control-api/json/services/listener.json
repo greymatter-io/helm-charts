@@ -21,12 +21,12 @@
     "gm_jwtsecurity": {
       "apiKey": "{{ .Values.global.jwt_api_key }}",
       "endpoint": "https://localhost:10909/jwt",
-      "jwtHeaderName": "userpolicy",
+      "jwtHeaderName": "userpolicy"{{- if .service.secret.enabled }},
       "useTls": true,
       "caPath": "{{ .service.secret.mount_point }}/ca.crt",
       "certPath": "{{ .service.secret.mount_point }}/server.crt",
       "keyPath": "{{ .service.secret.mount_point }}/server.key",
-      "insecureSkipVerify": true
+      "insecureSkipVerify": true{{- end }}
     }{{-  if (.service.observablesEnabled) }},
     "gm_observables": {	
       "useKafka": true,	
