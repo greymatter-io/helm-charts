@@ -1,0 +1,21 @@
+{
+  "cluster_key": "catalog-to-data-internal-cluster",
+  "zone_key": "zone-default-zone",
+  "name": "data-internal",
+  "require_tls": true,
+  "secret": {
+    "secret_key": "secret-data-internal-secret",
+    "secret_name": "spiffe://quickstart.greymatter.io/catalog",
+    "secret_validation_name": "spiffe://quickstart.greymatter.io",
+    "subject_names": null,
+    "ecdh_curves": [
+      "X25519:P-256:P-521:P-384"
+    ],
+    "set_current_client_cert_details": {
+      "uri": false
+    }
+  },
+  "circuit_breakers": null,
+  "outlier_detection": null,
+  "health_checks": []
+}

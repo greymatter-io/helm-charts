@@ -1,0 +1,16 @@
+{
+  "domain_key": "domain-{{.service.serviceName}}-local",
+  "zone_key": "{{.Values.global.zone}}",
+  "name": "localhost",
+  "port": 10818,
+  "redirects": null,
+  "gzip_enabled": false,
+  "cors_config": null,
+  "aliases": null,
+  "custom_headers": [
+    {
+      "key": "X-FORWARDED-PROTO",
+      "value": "https"
+    }
+  ]
+}
