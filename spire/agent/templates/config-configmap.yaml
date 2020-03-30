@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agent-config
+  namespace: {{ .Values.global.spire.namespace }}
+data:
+  agent.conf: |-
+    agent {
+      data_dir = "/run/spire"
+      log_level = "info"
+      server_address = "server"
+      server_port = "8443"
+      socket_path = "/run/spire/socket/agent.sock"
+      trust_bundle_path = "/run/spire/bundle/bundle.crt"
+      trust_domain = "quickstart.greymatter.io"
+      enable_sds = true
+    }
+
+    plugins {
+      NodeAttestor "k8s_psat" {
+        plugin_data {
+          cluster = "quickstart"
+          token_path = "/run/spire/token/agent"
+        }
+      }
+
+      KeyManager "memory" {
+        plugin_data {
+        }
+      }
+
+      WorkloadAttestor "k8s" {
+        plugin_data {
+          skip_kubelet_verification = true
+        }
+      }
+
+      WorkloadAttestor "unix" {
+          plugin_data {
+          }
+      }
+    }

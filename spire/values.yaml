@@ -1,57 +1,53 @@
-# Default values for control-api.
 global:
-
-  imagePullSecret: docker.secret
-  
-  environment: kubernetes
-  domain:
-  route_url_name:
-  remove_namespace_from_url: ''
-  exhibitor:
-    replicas: 1
   spire:
-    enabled: true
-    trustDomain: deciphernow.com
-  waiter:
-    image: deciphernow/k8s-waiter:latest
+    trust_domain: quickstart.greymatter.io
+    registration_api_path: '/run/spire/socket/registration.sock'
+    cluster_name: quickstart
+    namespace: spire
 
-spire:
-  clusterName: k8s
+server:
   server:
-    name: spire-server
+    image: gcr.io/spiffe-io/spire-server:0.9.3
+    config_file_path: /run/spire/config/server.conf
+    config_file_dir: /run/spire/config
+    certs:
+      bootstrap:
+        key: |-
+          -----BEGIN EC PRIVATE KEY-----
+          MIGkAgEBBDAg2LbulXzQX1NF+2Di0RKzMWfEGioBhh/fFpx7yOEqka//TpaeU3O5
+          QJRZXdWHKuagBwYFK4EEACKhZANiAARaMH6dIZLEhiLOdvzjG7lYYNmPzScvtbVz
+          fN/jxaHLSZrtjuYIErN9CSuAOC4jiPRn7T+0Mf+vyC060susim4zBYeh7i9tUEW1
+          7W+Ppe3pZ4TyVfBwK8uz+Zya8+pUr2M=
+          -----END EC PRIVATE KEY-----
 
-    # This spire Docker registry requires an explicit version, it doesn't have a tag latest
-    image: gcr.io/spiffe-io/spire-server:0.8.1 #0.7.3
-    # Registration API UDS location
-    registrationAPIPath: /tmp/spire/registration/registration.sock
-    registrationAPIDir: /tmp/spire/registration
-    # Spire server config file location
-    configFilePath: /run/spire/config/server.conf
-    configFileDir: /run/spire/config
-    # The spire server ServiceAccount is used to validate Kubernetes tokens using the Token Review API
-    serviceAccount:
-      create: true
-      name: spire-server-sa
-  agent:
-    image: gcr.io/spiffe-io/spire-agent:0.8.1
-    # The spire agent ServiceAccount is used by the spire agent to read all the properties of pods to create Kubernetes selectors used for attesting the identity of workloads
-    serviceAccount:
-      create: true
-      name: spire-agent-sa
-
-  certs:
-    # This certificate must match the trust domain specified above
-    bootstrap:
-      # TODO: add support for joining upstream CA
-      # ca: |-
-      #   -----BEGIN CERTIFICATE-----
-      #   ...
-      #   -----END CERTIFICATE-----
-      crt: |-
-        -----BEGIN CERTIFICATE-----
-        ...
-        -----END CERTIFICATE-----
-      key: |-
-        -----BEGIN RSA PRIVATE KEY-----
-        ...
-        -----END RSA PRIVATE KEY-----
+  # Services list
+  gm_services:
+    catalog:
+      serviceName: 'catalog'
+  
+    dashboard:
+      serviceName: 'dashboard'
+  
+    prometheus:
+      serviceName: 'prometheus'
+  
+    data:
+      serviceName: 'data'
+  
+    internal-data:
+      serviceName: 'data-internal'
+  
+    jwt:
+      serviceName: 'jwt-security'
+  
+    internal-jwt:
+      serviceName: 'internal-jwt-security'
+  
+    controlApi:
+      serviceName: 'control-api'
+  
+    edge:
+      serviceName: 'edge'
+  
+    slo:
+      serviceName: 'slo'

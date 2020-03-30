@@ -1,0 +1,52 @@
+global:
+  spire:
+    trust_domain: quickstart.greymatter.io
+    registration_api_path: /run/spire/socket/registration.sock
+    cluster_name: quickstart
+    namespace: spire
+
+server:
+  image: gcr.io/spiffe-io/spire-server:0.9.3
+  config_file_path: /run/spire/config/server.conf
+  config_file_dir: /run/spire/config
+  certs:
+    bootstrap:
+      key: |-
+        -----BEGIN EC PRIVATE KEY-----
+        MIGkAgEBBDAg2LbulXzQX1NF+2Di0RKzMWfEGioBhh/fFpx7yOEqka//TpaeU3O5
+        QJRZXdWHKuagBwYFK4EEACKhZANiAARaMH6dIZLEhiLOdvzjG7lYYNmPzScvtbVz
+        fN/jxaHLSZrtjuYIErN9CSuAOC4jiPRn7T+0Mf+vyC060susim4zBYeh7i9tUEW1
+        7W+Ppe3pZ4TyVfBwK8uz+Zya8+pUr2M=
+        -----END EC PRIVATE KEY-----
+
+# Services list used to create Grey Matter configuration objects in control-api/config
+gm_services:
+  catalog:
+    serviceName: 'catalog'
+
+  dashboard:
+    serviceName: 'dashboard'
+
+  prometheus:
+    serviceName: 'prometheus'
+
+  data:
+    serviceName: 'data'
+
+  internal-data:
+    serviceName: 'data-internal'
+
+  jwt:
+    serviceName: 'jwt-security'
+
+  internal-jwt:
+    serviceName: 'internal-jwt-security'
+
+  controlApi:
+    serviceName: 'control-api'
+
+  edge:
+    serviceName: 'edge'
+
+  slo:
+    serviceName: 'slo'

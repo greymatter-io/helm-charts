@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: service-list
-data:
-  services.txt: |
-    {{ range $name, $service := .Values.global.services }}{{$service.serviceName}} {{ end }}

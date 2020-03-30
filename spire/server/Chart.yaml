@@ -1,7 +1,7 @@
 apiVersion: v2
 appVersion: 1.2
-description: A Helm chart to deploy Spire
-name: spire
+description: A Helm chart to deploy the Spire Server
+name: server
 version: 1.2.0
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
@@ -12,12 +12,4 @@ keywords:
   - Grey Matter
   - service mesh
   - spire
-  - spiffe
-dependencies:
-  - name: agent
-    repository: file://./agent
-    version: '1.2.0'
-
-  - name: server
-    repository: file://./server
-    version: '1.2.0'
+  - server

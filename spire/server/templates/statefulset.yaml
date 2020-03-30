@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: server
+    cluster: spire.server
+  name: server
+  namespace: {{ .Values.global.spire.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+      cluster: spire.server
+  serviceName: server
+  template:
+    metadata:
+      labels:
+        app: server
+        cluster: spire.server
+      name: server
+      namespace: {{ .Values.global.spire.namespace }}
+    spec:
+      serviceAccountName: server
+      shareProcessNamespace: true
+      containers:
+        - name: registrar
+          image: gcr.io/spiffe-io/k8s-workload-registrar:0.9.3
+          args:
+            - -config
+            - /run/spire/config/registrar.conf
+          ports:
+            - name: registrar
+              containerPort: 8444
+          volumeMounts:
+            - name: server-config
+              mountPath: /run/spire/config
+              readOnly: true
+            - name: server-socket
+              mountPath: /run/spire/socket
+              readOnly: false
+            - name: server-tls
+              mountPath: /run/spire/tls
+              readOnly: true
+        - name: server
+          image:  {{ .Values.server.image }}
+          args:
+            - -config
+            - /run/spire/config/server.conf
+          ports:
+            - name: server
+              containerPort: 8443
+          volumeMounts:
+            - name: server-config
+              mountPath: {{ .Values.server.config_file_dir }}
+              readOnly: true
+            - name: server-data
+              mountPath: /run/spire/data
+              readOnly: false
+            - name: server-ca
+              mountPath: /run/spire/ca
+              readOnly: true
+            - name: server-socket
+              mountPath: /run/spire/socket
+              readOnly: false
+          livenessProbe:
+            exec:
+              command:
+                - /opt/spire/bin/spire-server
+                - healthcheck
+                - --registrationUDSPath=/run/spire/socket/registration.sock
+            failureThreshold: 2
+            initialDelaySeconds: 15
+            periodSeconds: 60
+            timeoutSeconds: 3
+      volumes:
+        - name: server-socket
+          emptyDir:
+            medium: Memory
+        - name: server-ca
+          secret:
+            secretName: server-ca
+        - name: server-config
+          configMap:
+            name: server-config
+        - name: server-tls
+          secret:
+            secretName: server-tls
+  volumeClaimTemplates:
+    - metadata:
+        name: server-data
+        namespace: spire
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
