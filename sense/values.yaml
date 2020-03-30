@@ -14,6 +14,10 @@ global:
     port: 8500
   # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
   control_port: 50000
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: false
+    trust_domain: quickstart.greymatter.io
   # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
   control_additional_namespaces:                   
   # Configures the init container used to wait on various deployments to be ready
@@ -44,6 +48,10 @@ global:
         type: 'value'
         value: '/dev/stdout'
         name: waiter-sa
+      # SPIRE: If spire is enabled, uncomment spire_path
+      #spire_path:
+      #  type: 'value'
+      #  value: '/run/spire/socket/agent.sock'
 
 slo:   
   slo:

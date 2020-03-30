@@ -10,8 +10,5 @@
     "listener-{{.service.serviceName}}",
     "listener-{{ .service.serviceName}}-egress"
   ],
-  "listeners": null,
-  "active_proxy_filters": [],
-  "proxy_filters": {
-  }
+  "listeners": null
 }

@@ -16,6 +16,10 @@ global:
   jwt_api_key: dm9sY2Fuby1lcGlkZW1pYy10d2VsZnRoLXRhbWFsZQ==
   # Port for Grey Matter Control. Used in control-api and sidecar envvars.
   control_port: 50000 
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: false
+    trust_domain: quickstart.greymatter.io
   # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
   control_additional_namespaces:
   # Configures the init container used to wait on various deployments to be ready
@@ -50,6 +54,10 @@ global:
       envoy_admin_log_path:
         type: 'value'
         value: '/dev/stdout'
+      # SPIRE: If spire is enabled, uncomment spire_path
+      #spire_path:
+      #  type: 'value'
+      #  value: '/run/spire/socket/agent.sock'
 
 control:
   control:

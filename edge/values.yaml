@@ -24,6 +24,10 @@ global:
     port: 8500
   # Port for Grey Matter Control. Used in edge envvars
   control_port: 50000
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: false
+    trust_domain: quickstart.greymatter.io
 
 edge:
   version: '1.2.2'
@@ -55,6 +59,10 @@ edge:
     envoy_admin_log_path:
       type: 'value'
       value: '/dev/stdout'
+    # SPIRE: If spire is enabled, uncomment spire_path
+    #spire_path:
+    #  type: 'value'
+    #  value: '/run/spire/socket/agent.sock'
 
   # Optional resource options    
   resources:

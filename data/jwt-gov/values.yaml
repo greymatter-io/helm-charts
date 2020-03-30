@@ -11,9 +11,10 @@ global:
   control_port: 50000
   # Zone for Grey Matter objects. Used in sidecar envvars
   zone: zone-default-zone
-  # Whether or not to use spire
+  # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: false
+    trust_domain: quickstart.greymatter.io
   # Whether to register services with Consul and where to find the Consul server
   consul:
     enabled: false

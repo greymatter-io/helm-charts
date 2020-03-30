@@ -9,7 +9,6 @@
     "aliases": null{{ if .Values.services.edge.secret.enabled }},
     "force_https": true,
     "ssl_config": {
-        "protocols": ["SSLv3", "SSLv2", "TLSv1", "TLSv1.1", "TLSv1.2"],
         "require_client_certs": true,
         "trust_file": "{{ .Values.services.edge.secret.mount_point }}/ca.crt",
         "cert_key_pairs": [

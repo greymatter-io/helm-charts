@@ -18,7 +18,11 @@ global:
   observables:
     topic: "greymatter"
   # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
-  control_port: 50000                  
+  control_port: 50000  
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: false
+    trust_domain: quickstart.greymatter.io                
   # Configures the init container used to wait on various deployments to be ready
   waiter:                             
     image: deciphernow/k8s-waiter:latest

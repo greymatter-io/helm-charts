@@ -14,6 +14,10 @@ global:
   edge_port: 10808
   # Port for Grey Matter Control. Used in sidecar envvars
   control_port: 50000
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: false
+    trust_domain: quickstart.greymatter.io
 
   # Default configuration for all sidecars in all subcharts
   sidecar: 
@@ -40,6 +44,10 @@ global:
       envoy_admin_log_path:
         type: 'value'
         value: '/dev/stdout'
+      # SPIRE: If spire is enabled, uncomment spire_path
+      #spire_path:
+      #  type: 'value'
+      #  value: '/run/spire/socket/agent.sock'
 
   # Configures the init container used to wait on various deployments to be ready
   waiter:
