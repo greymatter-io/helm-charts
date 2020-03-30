@@ -199,10 +199,10 @@ dashboard:
     # CPU and memory limits for the dashboard app
     resources:
       requests:
-        memory: '8Gi'
+        memory: '2Gi'
         cpu: '1'
       limits:
-        memory: '12Gi'
+        memory: '6Gi'
         cpu: '2'
     secret:
       secret_name: dashboard-certs
@@ -280,10 +280,10 @@ dashboard:
       name: prometheus-sa
     resources:
       requests:
-        memory: "20Gi"
+        memory: "8Gi"
         cpu: "1"
       limits:
-        memory: "40Gi"
+        memory: "12Gi"
         cpu: "2"
         
   # Sidecar configuration overrides for prometheus
