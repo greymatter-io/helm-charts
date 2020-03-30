@@ -107,7 +107,7 @@ spec:
       {{- else if .Values.sidecar.secret.enabled }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
-      {{- if .Values.data.secret }}
+      {{- if .Values.data.secret.enabled }}
       - name: data
         secret:
           secretName: {{ .Values.data.secret.secret_name }}

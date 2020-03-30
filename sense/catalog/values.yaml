@@ -165,6 +165,7 @@ sidecar:
   # Port where the proxy will expose metrics
   metrics_port: 8081
   secret:
+    enabled: true
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar
     secret_keys:

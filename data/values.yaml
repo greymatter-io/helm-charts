@@ -74,6 +74,7 @@ data:
       enabled: false
     # If set, enables tls using the secret specified in secret_name
     secret:
+      enabled: true
       secret_name: data-secrets
     envvars:
       uses3:
@@ -250,6 +251,7 @@ internal-data:
     image: 'docker.production.deciphernow.com/deciphernow/gm-data:{{ .Values.data.version }}'
     # If set, enables tls using the secret specified in secret_name
     secret:
+      enabled: true
       secret_name: internal-data-secrets
     # Security context for the statefulset if enabled
     security_context:

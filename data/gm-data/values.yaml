@@ -37,6 +37,7 @@ data:
   replicas: 1
   # If set, enables tls using the secret specified in secret_name
   secret:
+    enabled: true
     secret_name: data-secrets
   image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
   image_pull_secret: '{{ .Values.global.image_pull_secret }}'
@@ -265,6 +266,7 @@ sidecar:
   metrics_port: 8081
   # If set, enables tls using the secret specified in secret_name
   secret:
+    enabled: true
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar/
     secret_keys:

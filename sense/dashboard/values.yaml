@@ -43,6 +43,7 @@ dashboard:
       memory: '6Gi'
       cpu: '2'
   secret:
+    enabled: true
     secret_name: dashboard-certs
     mount_point: /certs
     secret_keys:
@@ -94,6 +95,7 @@ sidecar_dashboard:
   # Port where the proxy will expose metrics
   metrics_port: 8081
   secret:
+    enabled: true
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar
     secret_keys:

@@ -196,8 +196,13 @@ sidecar:
   metrics_port: 8081
   # If set, enables tls using the secret specified in secret_name
   secret:
+    enabled: true
     secret_name: sidecar-certs
-    mount_point: /etc/proxy/tls/sidecar
+    mount_point: /etc/proxy/tls/sidecar/
+    secret_keys:
+      ca: ca.crt
+      key: server.key
+      cert: server.crt
   image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:

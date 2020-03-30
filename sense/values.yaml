@@ -213,6 +213,7 @@ dashboard:
         memory: '6Gi'
         cpu: '2'
     secret:
+      enabled: true
       secret_name: dashboard-certs
       mount_point: /certs
       secret_keys:
