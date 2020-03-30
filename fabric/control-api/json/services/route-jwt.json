@@ -1,5 +1,5 @@
 {
-  "route_key": "route-{{.service.serviceName}}-jwt-slash",
+  "route_key": "route-{{.service.serviceName}}-jwt",
   "domain_key": "domain-{{.service.serviceName}}-egress",
   "zone_key": "{{ .Values.global.zone}}",
   "path": "/jwt",

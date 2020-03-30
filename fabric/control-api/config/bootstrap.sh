@@ -112,7 +112,7 @@ for d in */; do
 
     # Create JWT egress routes for each proxy
     create_or_update route route-jwt-slash.json
-    create_or_update route route-jwt-slash.json
+    create_or_update route route-jwt.json
 
     cd $MESH_CONFIG_DIR/services
 done
