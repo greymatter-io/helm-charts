@@ -49,7 +49,7 @@ slo:
   slo:
     # SLO version
     version: 1.1.2
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-slo:{{ $.Values.slo.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-slo:{{ $.Values.slo.version }}'
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the SLO service
@@ -191,7 +191,7 @@ dashboard:
     name: dashboard
     # Dashboard app version
     version: "3.3.2"
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
     # Port for the dashboard app
     port: 1337
     # When to pull container images, used in the deployment
@@ -299,7 +299,7 @@ catalog:
     name: catalog
     # GM Catalog version
     version: latest
-    image: docker-dev.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
+    image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the catalog service
