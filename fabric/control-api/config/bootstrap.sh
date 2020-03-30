@@ -54,6 +54,11 @@ for d in */; do
     names="domain cluster listener proxy shared_rules route"
     for name in $names; do
         echo "Creating mesh object: $name."
+        if [ "$name" == "domain" ]; then
+            create_or_update $name domain-egress.json
+        elif [ "$name" == "listener" ]; then
+            create_or_update $name listener-egress.json
+        fi
         create_or_update $name
         sleep $delay
     done
@@ -66,7 +71,9 @@ done
 cd $MESH_CONFIG_DIR/special
 echo "Creating special configuration objects (domain, edge listener + proxy)"
 create_or_update "domain"
+create_or_update "domain" domain-egress.json
 create_or_update "listener"
+create_or_update "listener" listener-egress.json
 create_or_update "proxy"
 create_or_update "cluster"
 create_or_update "shared_rules"
@@ -94,6 +101,20 @@ for d in */; do
     done
 
     cd $MESH_CONFIG_DIR/edge
+done
+
+cd $MESH_CONFIG_DIR/services
+# After all service + edge objects have been created, we need to add egress jwt routes to each service proxy
+# This is done in another loop because it references internal-jwt & edge keys
+for d in */; do
+    echo "Found service: $d"
+    cd $d
+
+    # Create JWT egress routes for each proxy
+    create_or_update route route-jwt-slash.json
+    create_or_update route route-jwt.json
+
+    cd $MESH_CONFIG_DIR/services
 done
 
 cd $MESH_CONFIG_DIR/special

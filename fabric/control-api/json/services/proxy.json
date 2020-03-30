@@ -3,44 +3,15 @@
   "zone_key": "{{ .Values.global.zone}}",
   "name": "{{.service.serviceName}}",
   "domain_keys": [
-    "domain-{{.service.serviceName}}"
+    "domain-{{.service.serviceName}}",
+    "domain-{{ .service.serviceName}}-egress"
   ],
   "listener_keys": [
-      "listener-{{.service.serviceName}}"
+    "listener-{{.service.serviceName}}",
+    "listener-{{ .service.serviceName}}-egress"
   ],
   "listeners": null,
-  "active_proxy_filters": [
-  {{- if (.service.observablesEnabled) }}
-    "gm.observables",
-  {{- end }}
-  {{- if .service.secret.enabled }}
-    "gm.impersonation",
-  {{- end }}
-    "gm.metrics"
-  ],
+  "active_proxy_filters": [],
   "proxy_filters": {
-    {{-  if (.service.observablesEnabled) }}
-    "gm_observables": {
-      "useKafka": true,
-      "topic": "{{.service.serviceName}}",
-      "eventTopic": "{{ .Values.global.observables.topic }}",
-      "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"
-    },
-    {{- end }}
-    {{- if .service.secret.enabled }}
-    "gm_impersonation": {
-      "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{ .Values.global.sidecar.dn }}{{- end -}}"
-    },
-    {{- end }}
-    "gm_metrics": {
-      "metrics_port": 8081,
-      "metrics_host": "0.0.0.0",
-      "metrics_dashboard_uri_path": "/metrics",
-      "metrics_prometheus_uri_path": "/prometheus",
-      "prometheus_system_metrics_interval_seconds": 15,
-      "metrics_ring_buffer_size": 4096,
-      "metrics_key_function": "depth",
-      "metrics_key_depth": "1"
-    }
   }
 }

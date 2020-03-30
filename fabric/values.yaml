@@ -12,6 +12,8 @@ global:
     enabled: false
     host: ''
     port: 8500
+  # API Key used to configure the gm_jwtsecurity filter. Refactor this to use the jwt-certs secret.
+  jwt_api_key: dm9sY2Fuby1lcGlkZW1pYy10d2VsZnRoLXRhbWFsZQ==
   # Port for Grey Matter Control. Used in control-api and sidecar envvars.
   control_port: 50000 
   # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
@@ -25,7 +27,7 @@ global:
   # Sidecar configuration (Control-api is the only service in this chart with a proxy)
   sidecar:
     # GM Proxy version, used by control-api
-    version: 1.2.0
+    version: 1.2.2
     envvars:
       xds_cluster:
         type: value
@@ -58,8 +60,8 @@ control:
     # Number of replicas for the deployment
     replicas: 1
     # Version of control
-    version: 1.2.1
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
+    version: 1.2.2
+    image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Secret used to talk to control-api
@@ -111,7 +113,7 @@ control:
         value: 'true'
       gm_control_kubernetes_cluster_label:
         type: 'value'
-        value: 'gm.proxy'
+        value: 'gmproxy'
       gm_control_kubernetes_port_name:
         type: 'value'
         value: 'proxy'
@@ -150,8 +152,8 @@ control-api:
     # Number of replicas for the deployment
     replicas: 1                         
     # Gm Control API version
-    version: 1.2.0                     
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
+    version: 1.2.1                
+    image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent       
     # Port exposed by the control-api container
@@ -404,7 +406,7 @@ services:
     capability: 'Mesh'
     documentation:
     owner: 'Decipher'
-    version: '1.2.0'
+    version: '1.2'
     routes:
       - '/services/control-api/{{ $.Values.services.controlApi.version }}'
       - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
@@ -434,7 +436,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.2.0'
+    version: '1.2'
     secret:          
       enabled: true 
       egressTLS: true

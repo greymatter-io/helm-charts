@@ -47,7 +47,7 @@ data:
           regex: 'metrics'
           action: 'keep'
         # Relabel Jobs to the service name and version of the zk path
-        - source_labels: ['__meta_kubernetes_pod_label_app']
+        - source_labels: ['__meta_kubernetes_pod_label_gmproxy']
           regex: '(.*)'
           target_label:  'job'
           #replacement:   '${1}'
@@ -67,7 +67,7 @@ data:
           regex: 'metrics'
           action: 'keep'
         # Relabel Jobs to the service name and version of the zk path
-        - source_labels: ['__meta_kubernetes_pod_label_app']
+        - source_labels: ['__meta_kubernetes_pod_label_gmproxy']
           regex: '(.*)'
           target_label:  'job'
           #replacement:   '${1}'

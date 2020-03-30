@@ -19,13 +19,13 @@ global:
     enabled: false
 
   sidecar:
-    version: 1.2.0
+    version: 1.2.2
 
 jwt:
   # Name used for the deployment and service resources
   name: jwt-security
   version: '1.0.1'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
@@ -84,36 +84,78 @@ jwt:
   users: |-
     {
       "users": [
-        {
-          "label": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
-          "values": {
-            "email": [
-              "quickstart@deciphernow.com"
-            ],
-            "org": [
-              "www.deciphernow.com"
-            ],
-            "privilege": [
-              "root"
-            ]
-          }
-        },
-        {
-          "label": "CN=localuser,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
-          "values": {
-            "email": [
-              "localuser@deciphernow.com"
-            ],
-            "org": [
-              "www.deciphernow.com"
-            ],
-            "privilege": [
-              "root"
-            ]
-          }
+          {
+        "label": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
+        "values": {
+          "email": [
+            "quickstart@deciphernow.com"
+          ],
+          "org": [
+            "www.deciphernow.com"
+          ],
+          "privilege": [
+            "root"
+          ]
         }
-      ]
+      },
+      {
+        "label": "CN=localuser,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+        "values": {
+          "email": [
+            "localuser@deciphernow.com"
+          ],
+          "org": [
+            "www.deciphernow.com"
+          ],
+          "privilege": [
+            "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+        "values": {
+          "email": [
+              "gm-control@deciphernow.com"
+          ],
+          "org": [
+              "www.deciphernow.com"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=gm-catalog,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+        "values": {
+          "email": [
+              "engineering@deciphernow.com"
+          ],
+          "org": [
+              "www.deciphernow.com"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=greymatter,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
+        "values": {
+          "email": [
+              "engineering@deciphernow.com"
+          ],
+          "org": [
+              "www.deciphernow.com"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      }]
     }
+
 
 redis:
   # Name used for the redis deployment and service resources
@@ -155,7 +197,7 @@ sidecar:
   secret:
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:

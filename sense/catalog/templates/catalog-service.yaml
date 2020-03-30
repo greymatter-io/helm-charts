@@ -4,7 +4,7 @@ metadata:
   name: catalog
 spec:
   selector:
-    gm.proxy: catalog
+    gmproxy: catalog
   ports:
     - name: catalog
       port: {{ .Values.catalog.port }}

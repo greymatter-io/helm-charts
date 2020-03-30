@@ -2,7 +2,7 @@ kind: StatefulSet
 apiVersion: apps/v1
 metadata:
   labels:
-    gm.proxy: {{ .Values.mongo.name }}
+    gmproxy: {{ .Values.mongo.name }}
   name: {{ .Values.mongo.name }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -11,12 +11,12 @@ spec:
   replicas: {{ .Values.mongo.replicas }}
   selector:
     matchLabels:
-      gm.proxy: {{ .Values.mongo.name }}
+      gmproxy: {{ .Values.mongo.name }}
   serviceName: {{ .Values.mongo.name }}
   template:
     metadata:
       labels:
-        gm.proxy: {{ .Values.mongo.name }}
+        gmproxy: {{ .Values.mongo.name }}
     spec:
       {{- if and .Values.global.environment (eq .Values.global.environment "eks") }}
       securityContext:

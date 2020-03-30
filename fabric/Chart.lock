@@ -1,9 +1,0 @@
-dependencies:
-- name: control-api
-  repository: file://./control-api
-  version: 2.1.6
-- name: control
-  repository: file://./control
-  version: 2.1.4
-digest: sha256:d56ab8a5db77b143f5c0712d85f08aa1f0e6f66572c4889fdc419dd358b88668
-generated: "2020-03-25T10:20:52.043193-04:00"

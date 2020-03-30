@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   labels:
-    gm.proxy: {{ .Values.redis.name | default "redis" }}
+    gmproxy: {{ .Values.redis.name | default "redis" }}
   name: {{ .Values.redis.name | default "redis" }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -10,7 +10,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      gm.proxy: {{ .Values.redis.name | default "redis" }}
+      gmproxy: {{ .Values.redis.name | default "redis" }}
       deployment: {{ .Values.redis.name | default "redis" }}
   strategy:
     rollingUpdate:
@@ -22,7 +22,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        gm.proxy: {{ .Values.redis.name | default "redis" }}
+        gmproxy: {{ .Values.redis.name | default "redis" }}
         deployment: {{ .Values.redis.name | default "redis" }}
     spec:
       containers:

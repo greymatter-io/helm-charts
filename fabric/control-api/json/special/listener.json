@@ -1,10 +1,34 @@
 {
-    "zone_key": "{{ .Values.global.zone}}",
-    "listener_key": "edge-listener",
-    "domain_keys": ["edge"],
-    "name": "edge",
-    "ip": "0.0.0.0",
-    "port": 10808,
-    "protocol": "http_auto",
-    "tracing_config": null
+  "zone_key": "{{ .Values.global.zone}}",
+  "listener_key": "edge-listener",
+  "domain_keys": ["edge", "edge-egress"],
+  "name": "edge",
+  "ip": "0.0.0.0",
+  "port": 10808,
+  "protocol": "http_auto",
+  "tracing_config": null,
+  "active_http_filters": ["gm.metrics", "gm.inheaders", "gm.jwtsecurity"],
+  "http_filters": {
+    "gm_inheaders": {},
+    "gm_metrics": {
+      "metrics_port": 8081,
+      "metrics_host": "0.0.0.0",
+      "metrics_dashboard_uri_path": "/metrics",
+      "metrics_prometheus_uri_path": "/prometheus",
+      "metrics_ring_buffer_size": 4096,
+      "prometheus_system_metrics_interval_seconds": 15,
+      "metrics_key_function": "depth",
+      "metrics_key_depth": "5"
+    },
+    "gm_jwtsecurity": {
+      "apiKey": "{{ .Values.global.jwt_api_key }}",
+      "endpoint": "https://localhost:10909/jwt",
+      "jwtHeaderName": "userpolicy",
+      "useTls": true,
+      "caPath": "{{ .Values.services.edge.secret.mount_point }}/ca.crt",
+      "certPath": "{{ .Values.services.edge.secret.mount_point }}/server.crt",
+      "keyPath": "{{ .Values.services.edge.secret.mount_point }}/server.key",
+      "insecureSkipVerify": true
+    }
+  }
 }

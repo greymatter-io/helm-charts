@@ -27,7 +27,7 @@ global:
       create: true
       name: waiter-sa
   sidecar:
-    version: 1.2.0
+    version: 1.2.2
 
 data:
   # Name used for the deployment and service resources
@@ -37,7 +37,7 @@ data:
   # If set, enables tls using the secret specified in secret_name
   secret:
     secret_name: data-secrets
-  image: docker-dev.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
+  image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
   image_pull_secret: '{{ .Values.global.image_pull_secret }}'
   image_pull_policy: IfNotPresent
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
@@ -137,9 +137,10 @@ data:
     client_jwt_endpoint_address:
       type: value
       value: localhost
+    # Use data's egress listener port
     client_jwt_endpoint_port:
       type: value
-      value: '10808'
+      value: '10909'
     client_jwt_endpoint_prefix:
       type: value
       value: '/jwt'
@@ -269,7 +270,7 @@ sidecar:
       ca: ca.crt
       key: server.key
       cert: server.crt
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:

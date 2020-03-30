@@ -1,15 +1,12 @@
 {
-  "cluster_key": "cluster-{{.service.serviceName}}",
+  "domain_key": "domain-{{.service.serviceName}}-egress",
   "zone_key": "{{ .Values.global.zone}}",
-  "name": "{{.service.serviceName}}-service",
-  "instances": [
-    {
-        "host": "0.0.0.0",
-        "port": {{ .service.port | default 10808 }}
-    }
-  ],
-  {{- if .service.secret.egressTLS }}
-  "require_tls": true,
+  "name": "*",
+  "port": 10909,
+  "redirects": null,
+  "gzip_enabled": false,
+  "cors_config": null,
+  "aliases": null{{- if .service.secret.enabled }},
   "ssl_config": {
       "protocols": [
         "SSLv3",
@@ -27,8 +24,6 @@
       }
     ]
   },
+  "force_https": true
   {{- end }}
-  "circuit_breakers": null,
-  "outlier_detection": null,
-  "health_checks": []
 }

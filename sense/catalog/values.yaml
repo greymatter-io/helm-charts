@@ -21,14 +21,14 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.2.0
+    version: 1.2.2
 
 catalog:
   # Name used for the deployment and service resources
   name: catalog
   # GM Catalog version
   version: latest
-  image: docker-dev.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
+  image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the catalog service
@@ -53,9 +53,12 @@ catalog:
     config_source:
       type: value
       value: 'gmdata'
+    instance_polling_interval:
+      type: value
+      value: '5s'
     config_polling_interval:
       type: value
-      value: '300s'
+      value: '30s'
     port:
       type: value
       value: '{{ $.Values.catalog.port }}'
@@ -124,7 +127,7 @@ catalog:
       value: 'gm-control@deciphernow.com'
 
   init:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
     imagePullPolicy: IfNotPresent
     envvars:
       debug:
@@ -152,7 +155,7 @@ catalog:
 # Sidecar configuration for Catalog
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics

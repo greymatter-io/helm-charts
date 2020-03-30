@@ -12,6 +12,8 @@ global:
     enabled: false
     host: ''
     port: 8500
+  # API Key used to configure the gm_jwtsecurity filter. Refactor this to use the jwt-certs secret.
+  jwt_api_key: dm9sY2Fuby1lcGlkZW1pYy10d2VsZnRoLXRhbWFsZQ==
   # Observables configuration, used to build Control API objects (see control-api/json)
   observables:
     topic: "greymatter"
@@ -25,9 +27,9 @@ global:
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
-    version: 1.2.0
+    version: 1.2.2
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
-   
+  
 controlApi:
   # Name used for the deployment and service resources
   name: control-api                   
@@ -35,8 +37,8 @@ controlApi:
   display_name: control-api            
   # Number of replicas for the deployment
   replicas: 1                         
-  version: 1.2.0
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
+  version: 1.2.1
+  image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent       
   # Port exposed by the control-api container
@@ -90,7 +92,7 @@ controlApi:
     size: 1Gi
 
   init:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.2.0'
+    image: 'docker.production.deciphernow.com/deciphernow/greymatter:1.2'
     image_pull_policy: IfNotPresent
     envvars:
       greymatter_console_level:
@@ -121,10 +123,11 @@ controlApi:
         type: value
         value: '{{ .Values.controlApi.secret.mount_point }}/{{ .Values.controlApi.secret.secret_keys.key }}'
 
+
 # Sidecar configuration for Control Api
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -149,7 +152,7 @@ sidecar:
 
   
 bootstrap:
-  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.2.0'
+  image: 'docker.production.deciphernow.com/deciphernow/greymatter:1.2'
   image_pull_policy: IfNotPresent
   secret:          
     enabled: true  
@@ -378,7 +381,7 @@ services:
     capability: 'Mesh'
     documentation:
     owner: 'Decipher'
-    version: '1.2.0'
+    version: '1.2'
     routes:
       - '/services/control-api/{{ $.Values.services.controlApi.version }}'
       - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
@@ -408,7 +411,7 @@ services:
     capability: 'Mesh'
     documentatio: ''
     owner: 'Decipher'
-    version: '1.2.0'
+    version: '1.2'
     secret:          
       enabled: true 
       egressTLS: true

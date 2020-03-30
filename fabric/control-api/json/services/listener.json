@@ -1,10 +1,43 @@
 {
-  "listener_key": "listener-{{.service.serviceName}}",
+  "listener_key": "listener-{{ .service.serviceName}}",
   "zone_key": "{{ .Values.global.zone}}",
-  "name": "{{.service.serviceName}}",
+  "name": "{{ .service.serviceName}}",
   "ip": "0.0.0.0",
   "port": 10808,
   "protocol": "http_auto",
-  "domain_keys": ["domain-{{.service.serviceName}}"],
-  "tracing_config": null
+  "domain_keys": ["domain-{{ .service.serviceName}}"],
+  "tracing_config": null,
+  "active_http_filters": ["gm.metrics"{{- if .service.secret.enabled }}, "gm.impersonation"{{- end }}{{- if and (ne .service.serviceName "jwt-security") (ne .service.serviceName "internal-jwt-security") }}, "gm.jwtsecurity"{{- end}}{{- if (.service.observablesEnabled) }}, "gm.observables"{{- end }}],
+  "http_filters": {
+    "gm_metrics": {
+      "metrics_port": 8081,
+      "metrics_host": "0.0.0.0",
+      "metrics_dashboard_uri_path": "/metrics",
+      "metrics_prometheus_uri_path": "/prometheus",
+      "metrics_ring_buffer_size": 4096,
+      "prometheus_system_metrics_interval_seconds": 15,
+      "metrics_key_function": "none"
+    },
+    "gm_jwtsecurity": {
+      "apiKey": "{{ .Values.global.jwt_api_key }}",
+      "endpoint": "https://localhost:10909/jwt",
+      "jwtHeaderName": "userpolicy"{{- if .service.secret.enabled }},
+      "useTls": true,
+      "caPath": "{{ .service.secret.mount_point }}/ca.crt",
+      "certPath": "{{ .service.secret.mount_point }}/server.crt",
+      "keyPath": "{{ .service.secret.mount_point }}/server.key",
+      "insecureSkipVerify": true{{- end }}
+    }{{-  if (.service.observablesEnabled) }},
+    "gm_observables": {	
+      "useKafka": true,	
+      "topic": "{{.service.serviceName}}",	
+      "eventTopic": "{{ .Values.global.observables.topic }}",	
+      "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"	
+    }
+    {{- end }}{{- if .service.secret.enabled }},
+    "gm_impersonation": {	
+      "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{ .Values.global.sidecar.dn }}{{- end -}}"	
+    }
+    {{- end }}
+  }
 }

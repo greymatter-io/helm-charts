@@ -1,6 +1,6 @@
 {
   "route_key": "catalog-internal-data-route-slash",
-  "domain_key": "domain-catalog",
+  "domain_key": "domain-catalog-egress",
   "zone_key": "{{ .Values.global.zone}}",
   "path": "{{ .Values.services.catalog.data_prefix }}",
   "prefix_rewrite": "{{ .Values.services.catalog.data_prefix }}/",

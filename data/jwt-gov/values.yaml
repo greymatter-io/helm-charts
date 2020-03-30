@@ -18,13 +18,13 @@ global:
   consul:
     enabled: false
   sidecar:
-    version: 1.2.0
+    version: 1.2.2
 
 jwt:
   version: '1.0.1'
   # If true, uses aac for auth control
   use_aac: false
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
@@ -210,7 +210,7 @@ sidecar:
   secret:
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:
