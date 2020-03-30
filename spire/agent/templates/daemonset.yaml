@@ -10,13 +10,13 @@ spec:
   selector:
     matchLabels:
       app: agent
-      gm.proxy: agent
+      gmproxy: agent
       cluster: spire.agent
   template:
     metadata:
       namespace: {{ .Values.global.spire.namespace }}
       labels:
-        gm.proxy: agent
+        gmproxy: agent
         app: agent
         cluster: spire.agent
     spec:

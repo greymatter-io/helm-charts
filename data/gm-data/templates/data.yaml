@@ -70,14 +70,8 @@ spec:
         - containerPort: {{ .Values.sidecar.metrics_port }}
           name: metrics
           protocol: TCP
-        volumeMounts:
-        {{- if .Values.sidecar.secret }}
-        {{- include "sidecar_volume_certs_mount" . | indent 8 }}
-        {{- end}}
-      {{- if .Values.global.consul.enabled }}
-      {{- $data := dict "Values" .Values "ServiceName" .Values.data.name }}
-      {{- include "consul.agent" $data | nindent 6 }}
-      {{- end }}
+        {{- if .Values.global.spire.enabled }}
+        {{- else if .Values.sidecar.secret.enabled }}
         readinessProbe:
           exec:
             command:
@@ -86,6 +80,18 @@ spec:
               - "curl -k --cacert {{ .Values.sidecar.secret.mount_point }}{{ .Values.sidecar.secret.secret_keys.ca }} --key {{ .Values.sidecar.secret.mount_point }}{{ .Values.sidecar.secret.secret_keys.key }} --cert {{ .Values.sidecar.secret.mount_point }}{{ .Values.sidecar.secret.secret_keys.cert }} https://localhost:8181/list/1/"
           initialDelaySeconds: 20
           periodSeconds: 5
+        {{- end }}
+        volumeMounts:
+        {{- if .Values.global.spire.enabled }}
+        {{- include "spire_volume_mount" . | indent 8 }}
+        {{- else if .Values.sidecar.secret.enabled }}
+        {{- include "sidecar_volume_certs_mount" . | indent 8 }}
+        {{- end}}
+      {{- if .Values.global.consul.enabled }}
+      {{- $data := dict "Values" .Values "ServiceName" .Values.data.name }}
+      {{- include "consul.agent" $data | nindent 6 }}
+      {{- end }}
+
 
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret | default "docker.secret" }}
@@ -96,7 +102,9 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.sidecar.secret }}
+      {{- if .Values.global.spire.enabled }}
+      {{- include "spire_volumes" . | indent 6 }}
+      {{- else if .Values.sidecar.secret.enabled }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       {{- if .Values.data.secret }}

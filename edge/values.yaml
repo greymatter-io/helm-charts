@@ -68,11 +68,13 @@ edge:
   # If set, enables egress TLS from the edge proxy using the secret specified in secret_name
   egress:
     secret:
+      enabled: true
       secret_name: greymatter-edge-egress
       mount_point: /etc/proxy/tls/sidecar/
   # If set, enables ingress TLS on the edge proxy using the secret specified in secret_name
   ingress:
     secret:
+      enabled: true
       secret_name: greymatter-edge-ingress
       mount_point: /etc/proxy/tls/edge/
 

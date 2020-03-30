@@ -21,6 +21,22 @@ spec:
         resources:
 {{ toYaml .Values.dashboard.resources | indent 10 }}
         {{- end }}
+        {{- if .Values.global.spire.enabled }}
+        readinessProbe:
+          httpGet:
+            path: "/#/?ascending=true"
+            port: {{ .Values.dashboard.port | default 1337 }}
+            scheme: HTTP
+          initialDelaySeconds: 20
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: "/#/?ascending=true"
+            port: {{ .Values.dashboard.port | default 1337 }}
+            scheme: HTTP
+          initialDelaySeconds: 20
+          periodSeconds: 5
+        {{- else if .Values.dashboard.secret.enabled }}
         readinessProbe:
           httpGet:
             path: "/#/?ascending=true"
@@ -35,9 +51,10 @@ spec:
             scheme: HTTPS
           initialDelaySeconds: 20
           periodSeconds: 5
+        {{- end }}
         env:
         {{- include "envvars" (dict "envvar" .Values.dashboard.envvars "top" $) | indent 10 }}
-        {{- if .Values.dashboard.secret }}
+        {{- if .Values.dashboard.secret.enabled }}
         volumeMounts:
         - name: service-certs
           mountPath: {{ .Values.dashboard.secret.mount_point }}
@@ -56,8 +73,10 @@ spec:
           containerPort: {{ .Values.sidecar_dashboard.metrics_port }}
         env:
         {{- include "sidecar.envvars-dashboard" . | indent 8 }}
-        {{- if .Values.sidecar_dashboard.secret }}
         volumeMounts:
+        {{- if .Values.global.spire.enabled }}
+        {{- include "spire_volume_mount" . | indent 8 }}
+        {{- else if .Values.sidecar_dashboard.secret.enabled }}
         - name: sidecar-certs
           mountPath: {{ .Values.sidecar_dashboard.secret.mount_point }}
           readOnly: true
@@ -73,12 +92,14 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.sidecar_dashboard.secret }}
+      {{- if .Values.global.spire.enabled }}
+      {{- include "spire_volumes" . | indent 6 }}
+      {{- else if .Values.sidecar_dashboard.secret.enabled }}
       - name: sidecar-certs
         secret:
           secretName: {{ .Values.sidecar_dashboard.secret.secret_name }}
       {{- end }}
-      {{- if .Values.dashboard.secret }}
+      {{- if .Values.dashboard.secret.enabled }}
       - name: service-certs
         secret:
           secretName: {{ .Values.dashboard.secret.secret_name }}
