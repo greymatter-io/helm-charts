@@ -7,12 +7,12 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      gm.proxy: edge
+      gmproxy: edge
       deployment: edge
   template:
     metadata:
       labels:
-        gm.proxy: edge
+        gmproxy: edge
         deployment: edge
     spec:
       containers:

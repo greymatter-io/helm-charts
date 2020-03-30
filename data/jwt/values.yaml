@@ -25,7 +25,7 @@ jwt:
   # Name used for the deployment and service resources
   name: jwt-security
   version: '1.0.1'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
@@ -197,7 +197,7 @@ sidecar:
   secret:
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:

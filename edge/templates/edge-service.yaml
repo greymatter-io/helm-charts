@@ -4,7 +4,7 @@ metadata:
   name: edge
   namespace: {{ .Release.Namespace }}
   labels:
-    gm.proxy: edge
+    gmproxy: edge
 spec:
   ports:
     - name: proxy
@@ -12,4 +12,6 @@ spec:
     - name: metrics
       port: 8081
   selector:
-    gm.proxy: edge
+    gmproxy: edge
+  sessionAffinity: None
+  type: LoadBalancer

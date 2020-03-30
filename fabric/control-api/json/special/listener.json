@@ -17,7 +17,8 @@
       "metrics_prometheus_uri_path": "/prometheus",
       "metrics_ring_buffer_size": 4096,
       "prometheus_system_metrics_interval_seconds": 15,
-      "metrics_key_function": "none"
+      "metrics_key_function": "depth",
+      "metrics_key_depth": "5"
     },
     "gm_jwtsecurity": {
       "apiKey": "{{ .Values.global.jwt_api_key }}",

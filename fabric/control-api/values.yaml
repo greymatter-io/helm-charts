@@ -38,7 +38,7 @@ controlApi:
   # Number of replicas for the deployment
   replicas: 1                         
   version: 1.2.1
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent       
   # Port exposed by the control-api container
@@ -92,7 +92,7 @@ controlApi:
     size: 1Gi
 
   init:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.2.0'
+    image: 'docker.production.deciphernow.com/deciphernow/greymatter:1.2'
     image_pull_policy: IfNotPresent
     envvars:
       greymatter_console_level:
@@ -127,7 +127,7 @@ controlApi:
 # Sidecar configuration for Control Api
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -152,7 +152,7 @@ sidecar:
 
   
 bootstrap:
-  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.2.0'
+  image: 'docker.production.deciphernow.com/deciphernow/greymatter:1.2'
   image_pull_policy: IfNotPresent
   secret:          
     enabled: true  
@@ -381,7 +381,7 @@ services:
     capability: 'Mesh'
     documentation:
     owner: 'Decipher'
-    version: '1.2.0'
+    version: '1.2'
     routes:
       - '/services/control-api/{{ $.Values.services.controlApi.version }}'
       - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
@@ -411,7 +411,7 @@ services:
     capability: 'Mesh'
     documentatio: ''
     owner: 'Decipher'
-    version: '1.2.0'
+    version: '1.2'
     secret:          
       enabled: true 
       egressTLS: true

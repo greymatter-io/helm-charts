@@ -49,7 +49,7 @@ slo:
   slo:
     # SLO version
     version: 1.1.2
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-slo:{{ $.Values.slo.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-slo:{{ $.Values.slo.version }}'
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the SLO service
@@ -191,7 +191,7 @@ dashboard:
     name: dashboard
     # Dashboard app version
     version: "3.3.2"
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
     # Port for the dashboard app
     port: 1337
     # When to pull container images, used in the deployment
@@ -298,8 +298,8 @@ catalog:
     # Name used for the deployment and service resources
     name: catalog
     # GM Catalog version
-    version: latest
-    image: docker-dev.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
+    version: 1.0.3
+    image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the catalog service
@@ -321,12 +321,21 @@ catalog:
         cert: server.crt
         key: server.key
     envvars:
+      debug: 
+        type: value
+        value: 'true'
       config_source:
         type: value
         value: 'gmdata'
       config_polling_interval:
         type: value
-        value: '300s'
+        value: '30s'
+      instance_polling_interval:
+        type: value
+        value: '5s'
+      instance_max_silence:
+        type: value
+        value: '15s'
       port:
         type: value
         value: '{{ $.Values.catalog.port }}'

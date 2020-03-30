@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.controlApi.name }}
 spec:
   selector:
-    gm.proxy: {{ .Values.controlApi.name }}
+    gmproxy: {{ .Values.controlApi.name }}
   ports:
   - port: {{ .Values.controlApi.container_port }}
     targetPort: {{ .Values.controlApi.container_port }}

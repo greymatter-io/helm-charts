@@ -5,12 +5,12 @@ metadata:
   name: postgres-slo
   namespace: {{ .Release.Namespace }}
   labels:
-    gm.proxy: postgres-slo
+    gmproxy: postgres-slo
 spec:
   ports:
   - name: postgres
     port: 5432
   selector:
-    gm.proxy: postgres-slo
+    gmproxy: postgres-slo
   type: ClusterIP
 {{- end }}
