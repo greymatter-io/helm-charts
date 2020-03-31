@@ -58,6 +58,13 @@ for d in */; do
             create_or_update $name domain-egress.json
         elif [ "$name" == "listener" ]; then
             create_or_update $name listener-egress.json
+        elif [ "$name" == "cluster" ]; then
+            create_or_update $name cluster-internal-jwt.json
+        elif [ "$name" == "shared_rules" ]; then
+            create_or_update $name shared_rules-internal-jwt.json
+        elif [ "$name" == "route" ]; then
+            create_or_update $name route-jwt.json
+            create_or_update $name route-jwt-slash.json
         fi
         create_or_update $name
         sleep $delay
@@ -103,25 +110,30 @@ for d in */; do
     cd $MESH_CONFIG_DIR/edge
 done
 
-cd $MESH_CONFIG_DIR/services
-# After all service + edge objects have been created, we need to add egress jwt routes to each service proxy
-# This is done in another loop because it references internal-jwt & edge keys
-for d in */; do
-    echo "Found service: $d"
-    cd $d
-
-    # Create JWT egress routes for each proxy
-    create_or_update route route-jwt-slash.json
-    create_or_update route route-jwt.json
-
-    cd $MESH_CONFIG_DIR/services
-done
-
 cd $MESH_CONFIG_DIR/special
+
+if $SPIRE_ENABLED; then
+    echo "Adding internal clusters"
+    for cl in $(ls internal-cluster-*.json); do
+        create_or_update "cluster" $cl
+    done
+
+    echo "Adding internal shared_rules"
+    for sr in $(ls internal-shared-rules-*.json); do
+        create_or_update "shared_rules" $sr
+    done
+fi
+
 echo "Adding additional Special Routes"
 for rte in $(ls route-*.json); do
     create_or_update "route" $rte
 done
+
+if $SPIRE_ENABLED; then
+    for rte in $(ls local-route-*.json); do
+        create_or_update "route" $rte
+    done
+fi
 
 # greymatter create route < route-data-jwt-slash.json
 # greymatter create route < route-data-jwt.json

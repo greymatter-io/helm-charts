@@ -1,7 +1,7 @@
 {
   "domain_key": "domain-{{.service.serviceName}}-egress",
   "zone_key": "{{ .Values.global.zone}}",
-  "name": "localhost",
+  "name": "*",
   "port": 10909,
   "redirects": null,
   "gzip_enabled": false,

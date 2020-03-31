@@ -6,7 +6,14 @@
     "redirects": null,
     "gzip_enabled": false,
     "cors_config": null,
-    "aliases": null{{- if and .Values.services.edge.egress.secret.enabled (not .Values.global.spire.enabled)}},
+    "aliases": null{{- if .Values.global.spire.enabled }},
+    "force_https": false,
+    "custom_headers": [
+      {
+        "key": "X-FORWARDED-PROTO",
+        "value": "https"
+      }
+    ]{{- else if .Values.services.edge.egress.secret.enabled }},
     "force_https": true,
     "ssl_config": {
         "require_client_certs": true,

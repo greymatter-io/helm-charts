@@ -19,7 +19,7 @@
     "set_current_client_cert_details": {
         "uri": true
     }
-  }
+  },
   {{- end }}
   "active_http_filters": [
     "gm.metrics"{{- if and .service.secret.enabled (not .Values.global.spire.enabled) }},
@@ -62,7 +62,6 @@
     {{- end }}{{- if and (not .Values.global.spire.enabled) (.service.secret.enabled) }},
     "gm_impersonation": {	
       "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{ .Values.global.sidecar.dn }}{{- end -}}"	
-    }
-    {{- end }}
+    }{{- end }}
   }
 }

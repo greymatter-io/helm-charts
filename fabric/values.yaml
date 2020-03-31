@@ -18,7 +18,7 @@ global:
   control_port: 50000 
   # Whether or not to use spire for cert management and the trust domain
   spire:
-    enabled: false
+    enabled: true
     trust_domain: quickstart.greymatter.io
   # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
   control_additional_namespaces:
@@ -55,9 +55,9 @@ global:
         type: 'value'
         value: '/dev/stdout'
       # SPIRE: If spire is enabled, uncomment spire_path
-      #spire_path:
-      #  type: 'value'
-      #  value: '/run/spire/socket/agent.sock'
+      spire_path:
+        type: 'value'
+        value: '/run/spire/socket/agent.sock'
 
 control:
   control:
@@ -179,7 +179,7 @@ control-api:
     envvars:
       gm_control_api_use_tls:
         type: 'value'
-        value: "{{ .Values.controlApi.secret.enabled }}"
+        value: "{{- if .Values.global.spire.enabled }}false{{- else}}{{ .Values.controlApi.secret.enabled }}{{- end }}"
       gm_control_api_ca_cert_path:
         type: 'value'
         value: "{{ .Values.controlApi.secret.mount_point}}/{{ .Values.controlApi.secret.secret_keys.ca }}"
@@ -225,14 +225,14 @@ control-api:
       size: 1Gi
 
   # SPIRE: If spire is enabled, uncomment these bootstrap envvars
-  #bootstrap:
-  #  envvars:
-  #    greymatter_api_ssl:
-  #      type: value
-  #      value: '{{ not .Values.global.spire.enabled }}'
-  #    spire_enabled:
-  #      type: 'value'
-  #      value: '{{ .Values.global.spire.enabled }}'
+  bootstrap:
+    envvars:
+      greymatter_api_ssl:
+        type: value
+        value: '{{ not .Values.global.spire.enabled }}'
+      spire_enabled:
+        type: 'value'
+        value: '{{ .Values.global.spire.enabled }}'
 
 
 # Services list used to create Grey Matter configuration objects in control-api/config
@@ -466,7 +466,7 @@ services:
           cert: server.crt
           key: server.key
           ca: ca.crt
-          
+
   slo:
     catalogEnabled: true
     controlEnabled: true
