@@ -154,6 +154,20 @@ jwt:
               "root"
           ]
         }
+      },
+      {
+        "label": "O=SPIRE,C=US",
+        "values": {
+          "email": [
+              "engineering@deciphernow.com"
+          ],
+          "org": [
+              "www.deciphernow.com"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
       }]
     }
 
