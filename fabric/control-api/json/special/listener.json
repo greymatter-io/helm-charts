@@ -21,14 +21,20 @@
       "metrics_key_depth": "5"
     },
     "gm_jwtsecurity": {
+      {{- if .Values.global.spire.enabled }}
+      "apiKey": "{{ .Values.global.jwt_api_key }}",
+      "endpoint": "http://localhost:10909/jwt",
+      "jwtHeaderName": "userpolicy"
+      {{- else }}
       "apiKey": "{{ .Values.global.jwt_api_key }}",
       "endpoint": "https://localhost:10909/jwt",
-      "jwtHeaderName": "userpolicy",
+      "jwtHeaderName": "userpolicy"{{- if .service.secret.enabled }},
       "useTls": true,
-      "caPath": "{{ .Values.services.edge.secret.mount_point }}/ca.crt",
-      "certPath": "{{ .Values.services.edge.secret.mount_point }}/server.crt",
-      "keyPath": "{{ .Values.services.edge.secret.mount_point }}/server.key",
-      "insecureSkipVerify": true
+      "caPath": "{{ .service.secret.mount_point }}/ca.crt",
+      "certPath": "{{ .service.secret.mount_point }}/server.crt",
+      "keyPath": "{{ .service.secret.mount_point }}/server.key",
+      "insecureSkipVerify": true{{- end }}
+      {{- end }}
     }
   }
 }

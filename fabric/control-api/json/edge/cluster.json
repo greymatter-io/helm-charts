@@ -4,8 +4,18 @@
   "name": "{{.service.serviceName}}",
   "instances": [],
   "circuit_breakers": null,
-  "outlier_detection": null,
-  "health_checks": []{{- if .service.secret.enabled }},
+  "health_checks": [],
+  {{- if .Values.global.spire.enabled }}
+  "require_tls": true,
+  "secret": {
+    "secret_key": "secret-{{.service.serviceName}}-secret",
+    "secret_name": "spiffe://{{ .Values.global.spire.trust_domain}}/edge",
+    "secret_validation_name": "spiffe://{{ .Values.global.spire.trust_domain}}",
+    "ecdh_curves": [
+        "X25519:P-256:P-521:P-384"
+    ]
+  },
+  {{- else if .service.secret.enabled }}
   "require_tls": true,
   "ssl_config": {
     "require_client_certs": true,
@@ -16,6 +26,7 @@
         "key_path": "/etc/proxy/tls/sidecar/server.key"
       }
     ]
-  }
+  },
   {{- end }}
+  "outlier_detection": null
 }

@@ -7,7 +7,9 @@
   "port": 10909,
   "protocol": "http_auto",
   "tracing_config": null,
+  {{- if not .Values.global.spire.enabled }}
   "active_http_filters": ["gm.inheaders"],
+  {{- end }}
   "http_filters": {
     "gm_inheaders": {},
     "gm_metrics": {

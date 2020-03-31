@@ -6,15 +6,15 @@
     "redirects": null,
     "gzip_enabled": false,
     "cors_config": null,
-    "aliases": null{{ if .Values.services.edge.secret.enabled }},
+    "aliases": null{{ if .Values.services.edge.ingress.secret.enabled }},
     "force_https": true,
     "ssl_config": {
         "require_client_certs": true,
-        "trust_file": "{{ .Values.services.edge.secret.mount_point }}/ca.crt",
+        "trust_file": "{{ .Values.services.edge.ingress.secret.mount_point }}/ca.crt",
         "cert_key_pairs": [
             {
-                "certificate_path": "{{ .Values.services.edge.secret.mount_point }}/server.crt",
-                "key_path": "{{ .Values.services.edge.secret.mount_point }}/server.key"
+                "certificate_path": "{{ .Values.services.edge.ingress.secret.mount_point }}/server.crt",
+                "key_path": "{{ .Values.services.edge.ingress.secret.mount_point }}/server.key"
             }
         ]
     }

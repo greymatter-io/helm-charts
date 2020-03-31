@@ -8,7 +8,7 @@
         "port": {{ .service.port | default 10808 }}
     }
   ],
-  {{- if .service.secret.egressTLS }}
+  {{- if and (.service.secret.enabled) (not .Values.global.spire.enabled) }}
   "require_tls": true,
   "ssl_config": {
     "require_client_certs": true,

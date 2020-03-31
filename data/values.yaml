@@ -63,6 +63,9 @@ data:
       xds_cluster:
         type: value
         value: 'data'
+      envoy_log_level:
+        type: value
+        value: 'debug'
 
   data:
     # Name used for the deployment and service resources
@@ -126,7 +129,11 @@ data:
         key: database
       gmdata_use_tls:
         type: value
-        value: 'true'
+        value: '{{ not .Values.global.spire.enabled }}'
+      # SPIRE: If spire is enabled, use bind_address
+      #bind_address:
+      #  type: value
+      #  value: 127.0.0.1
       gmdata_cert:
         type: secret
         secret: jwt-certs
@@ -151,13 +158,13 @@ data:
       # Use data's egress listener port
       client_jwt_endpoint_port:
         type: value
-        value: '10909'
+        value: '{{- if .Values.global.spire.enabled }}10909{{- else }}10808{{- end }}'
       client_jwt_endpoint_prefix:
         type: value
         value: /jwt
       client_jwt_endpoint_use_tls:
         type: value
-        value: 'true'
+        value: '{{ not .Values.global.spire.enabled }}'
       client_jwt_endpoint_cert:
         type: secret
         secret: jwt-certs
@@ -280,7 +287,11 @@ internal-data:
         value: greymatter
       gmdata_use_tls:
         type: value
-        value: 'true'
+        value: '{{ not .Values.global.spire.enabled }}'
+      # SPIRE: If spire is enabled, use bind_address
+      #bind_address:
+      #  type: value
+      #  value: 127.0.0.1
       jwt_pub:
         type: secret
         secret: internal-jwt-security-secret
@@ -289,6 +300,26 @@ internal-data:
         type: secret
         secret: internal-jwt-security-secret
         key: jwt.api_key
+      # SPIRE: If spire is enabled, uncomment the client env vars
+      #client_prefix:
+      #  type: value
+      #  value: /services/data/1.0.0
+      #client_jwt_prefix:
+      #  type: value
+      #  value: /jwt
+      #client_jwt_endpoint_address:
+      #  type: value
+      #  value: localhost
+      #client_jwt_endpoint_port:
+      #  type: value
+      #  value: '{{- if .Values.global.spire.enabled }}10818{{- else }}10808{{- end }}'
+      #client_jwt_endpoint_prefix:
+      #  type: value
+      #  value: /jwt
+      #client_jwt_endpoint_use_tls:
+      #  type: value
+      #  value: '{{ not .Values.global.spire.enabled }}'
+
 
   mongo:
     # Name used for the mongo deployment and service resources
@@ -389,7 +420,7 @@ jwt:
         key: jwt.api_key
       enable_tls:
         type: value
-        value: 'true'
+        value: '{{ not .Values.global.spire.enabled }}'
       zerolog_level:
         type: value
         value: 'info'
@@ -402,9 +433,13 @@ jwt:
       redis_db:
         type: value
         value: "0"
+      # SPIRE: If spire is enabled, don't set https_port, set http_port
       https_port:
         type: value
         value: '3000'
+      #http_port:
+      #  type: value
+      #  value: '3000'
       server_trust:
         type: secret
         secret: jwt-certs
@@ -429,6 +464,10 @@ internal-jwt:
       xds_cluster:
         type: value
         value: 'internal-jwt-security'
+      envoy_log_level:
+        type: value
+        value: 'debug'
+
   jwt:
     # Name used for the deployment and service resources
     name: internal-jwt-security
@@ -449,7 +488,7 @@ internal-jwt:
         key: jwt.api_key
       enable_tls:
         type: value
-        value: 'true'
+        value: '{{ not .Values.global.spire.enabled }}'
       zerolog_level:
         type: value
         value: 'info'
@@ -462,9 +501,13 @@ internal-jwt:
       redis_db:
         type: value
         value: "0"
+      # SPIRE: If spire is enabled, don't set https_port, set http_port
       https_port:
         type: value
         value: '3000'
+      #http_port:
+      #  type: value
+      #  value: '3000'
       server_trust:
         type: secret
         secret: jwt-certs

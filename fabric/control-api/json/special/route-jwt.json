@@ -5,7 +5,7 @@
   "path": "/jwt",
   "prefix_rewrite": "/jwt/",
   "redirects": null,
-  "shared_rules_key": "edge-jwt-security-shared-rules",
+  "shared_rules_key": "edge-internal-jwt-security-shared-rules",
   "rules": null,
   "response_data": {},
   "cohort_seed": null,

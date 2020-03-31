@@ -95,39 +95,6 @@ controlApi:
   pvc:
     size: 1Gi
 
-  init:
-    image: 'docker.production.deciphernow.com/deciphernow/greymatter:1.2'
-    image_pull_policy: IfNotPresent
-    envvars:
-      greymatter_console_level:
-        value: 'debug'
-        type: 'value'
-      greymatter_api_host:
-        value: '{{ .Values.controlApi.name }}:{{ .Values.controlApi.container_port }}'
-        type: 'value'
-      greymatter_api_key:
-        value: 'xxx'
-        type: 'value'
-      greymatter_api_ssl:
-        value: 'false'
-        type: 'value'
-      basic_object_path:
-        value: '/tmp/mesh/basic_objects'
-        type: 'value'
-      greymatter_api_ssl:
-        type: value
-        value: 'true'
-      greymatter_api_insecure:
-        type: value
-        value: 'true'
-      greymatter_api_sslcert:
-        type: value
-        value: '{{ .Values.controlApi.secret.mount_point }}/{{ .Values.controlApi.secret.secret_keys.cert }}'
-      greymatter_api_sslkey:
-        type: value
-        value: '{{ .Values.controlApi.secret.mount_point }}/{{ .Values.controlApi.secret.secret_keys.key }}'
-
-
 # Sidecar configuration for Control Api
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
@@ -137,6 +104,7 @@ sidecar:
   # Port where the proxy will expose metrics
   metrics_port: 8081
   secret:
+    enabled: true
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar
     secret_keys:
@@ -183,6 +151,9 @@ bootstrap:
     basic_object_path:
       value: '/tmp/mesh/basic_objects'
       type: 'value'
+    spire_enabled:
+      type: 'value'
+      value: '{{ .Values.global.spire.enabled }}'
     greymatter_api_ssl:
       type: value
       value: '{{ .Values.bootstrap.secret.enabled }}'
@@ -214,7 +185,6 @@ services:
     minInstances: 1
     maxInstances: 1
     secret:          
-      egressTLS: true
       enabled: true  
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
@@ -250,7 +220,6 @@ services:
       - '/services/dashboard/latest'
       - '/services/dashboard/latest/'
     secret:          
-      egressTLS: true
       enabled: true  
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
@@ -269,7 +238,7 @@ services:
     observablesEnabled: false
     port: 9090
     secret:          
-      egressTLS: false
+      enabled: false
 
   data:
     catalogEnabled: true
@@ -289,7 +258,6 @@ services:
       - '/services/data/{{ $.Values.services.data.version }}'
       - '/services/data/{{ $.Values.services.data.version }}/'
     secret:          
-      egressTLS: true
       enabled: true  
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
@@ -315,7 +283,6 @@ services:
     version: 1.0.0
     jwt_prefix: /jwt
     secret:          
-      egressTLS: true
       enabled: true  
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
@@ -341,7 +308,6 @@ services:
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
     secret:          
-      egressTLS: true
       enabled: true  
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
@@ -364,8 +330,7 @@ services:
     owner: 'Decipher'
     version: '0.2.0'
     secret:          
-      enabled: true  
-      egressTLS: true
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -390,8 +355,7 @@ services:
       - '/services/control-api/{{ $.Values.services.controlApi.version }}'
       - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
     secret:          
-      enabled: true  
-      egressTLS: true
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -413,19 +377,27 @@ services:
     removeListenerSecret: true
     enableInstanceMetrics: 'true'
     capability: 'Mesh'
-    documentatio: ''
+    documentation: ''
     owner: 'Decipher'
     version: '1.2'
-    secret:          
-      enabled: true 
-      egressTLS: true
-      secret_name: sidecar-certs
-      mount_point: /etc/proxy/tls/edge
-      insecure: true
-      secret_keys:
-        cert: server.crt
-        key: server.key
-        ca: ca.crt
+    ingress:
+      secret:
+        enabled: true
+        secret_name: greymatter-edge-ingress
+        mount_point: /etc/proxy/tls/edge
+        secret_keys:
+          cert: server.crt
+          key: server.key
+          ca: ca.crt
+    egress:
+      secret:
+        enabled: false
+        secret_name: greymatter-edge-egress
+        mount_point: /etc/proxy/tls/sidecar
+        secret_keys:
+          cert: server.crt
+          key: server.key
+          ca: ca.crt
 
   slo:
     catalogEnabled: true
@@ -443,8 +415,7 @@ services:
       - '/services/slo/{{ $.Values.services.slo.version }}'
       - '/services/slo/{{ $.Values.services.slo.version }}/'
     secret:          
-      enabled: true  
-      egressTLS: true
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true

@@ -25,6 +25,7 @@ global:
     image: deciphernow/k8s-waiter:latest
     service_account: 
       create: true
+      name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
     version: 1.2.2
@@ -47,7 +48,6 @@ global:
       envoy_admin_log_path:
         type: 'value'
         value: '/dev/stdout'
-        name: waiter-sa
       # SPIRE: If spire is enabled, uncomment spire_path
       #spire_path:
       #  type: 'value'
@@ -113,7 +113,7 @@ slo:
       # SSL for the SLO service. Enabled if slo.secret.enabled is true.
       service_ssl_enabled:
         type: value
-        value: "{{- if .Values.slo.secret.enabled }}true{{- else }}false{{- end }}"
+        value: "{{- if .Values.global.spire.enabled }}false{{- else if .Values.slo.secret.enabled }}true{{- else }}false{{- end }}"
       service_ssl_ca:
         type: value
         value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.ca }}"
@@ -244,7 +244,7 @@ dashboard:
         value: '15000'
       server_ssl_enabled:
         type: "value"
-        value: "true"
+        value: "{{ not .Values.global.spire.enabled }}"
       server_ssl_ca:
         type: "value"
         value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.ca }}'
@@ -350,7 +350,7 @@ catalog:
         value: 'edge'
       use_tls:
         type: value
-        value: 'true'
+        value: '{{ not .Values.global.spire.enabled }}'
       ca_cert_path:
         type: value
         value: '/etc/pki/{{ .Values.catalog.secret.secret_keys.ca }}'
@@ -363,6 +363,7 @@ catalog:
       client_address:
         type: value
         value: localhost
+      # IS THIS RIGHT? with spire - conncet to plaintext 10909
       client_port:
         type: value
         value: '10909'
@@ -371,7 +372,7 @@ catalog:
         value: '/data'
       client_use_tls:
         type: value
-        value: 'true'
+        value: '{{ not .Values.global.spire.enabled }}'
       client_cert:
         type: secret
         secret: sidecar-certs
@@ -409,6 +410,13 @@ catalog:
           type: value
           value: '{{ .Values.catalog.name }}'
 
+    # SPIRE: If spire is enabled, uncomment to set init job use_tls to false
+    #init:
+    #  envvars:
+    #    use_tls:
+    #      type: value
+    #      value: 'false'
+
 # Services list used to configure Catalog, which populates service metadata for GM Dashboard
 services:
   catalog:
@@ -426,9 +434,8 @@ services:
     minInstances: 1
     maxInstances: 1
     data_prefix: "/data"
-    secret:          
-      egressTLS: false
-      enabled: true  
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/pki
       insecure: true
@@ -462,9 +469,8 @@ services:
     routes:
       - '/services/dashboard/latest'
       - '/services/dashboard/latest/'
-    secret:          
-      egressTLS: false
-      enabled: true  
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -481,8 +487,8 @@ services:
     serviceName: 'prometheus'
     observablesEnabled: false
     port: 9090
-    secret:          
-      egressTLS: false
+    secret:
+      enabled: false
 
   data:
     catalogEnabled: true
@@ -499,9 +505,8 @@ services:
     routes:
       - '/services/data/{{ $.Values.services.data.version }}'
       - '/services/data/{{ $.Values.services.data.version }}/'
-    secret:          
-      egressTLS: false
-      enabled: true  
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -523,9 +528,8 @@ services:
     name: 'Grey Matter Internal Data'
     owner: 'Decipher'
     version: 1.0.0
-    secret:          
-      egressTLS: false
-      enabled: true  
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -549,9 +553,8 @@ services:
     routes:
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
-    secret:          
-      egressTLS: false
-      enabled: true  
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -572,9 +575,8 @@ services:
     documentation: ''
     owner: 'Decipher'
     version: '0.2.0'
-    secret:          
-      enabled: true  
-      egressTLS: false
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -598,9 +600,8 @@ services:
     routes:
       - '/services/control-api/{{ $.Values.services.controlApi.version }}'
       - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
-    secret:          
-      enabled: true  
-      egressTLS: false
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -625,9 +626,8 @@ services:
     documentatio: ''
     owner: 'Decipher'
     version: '1.0.0'
-    secret:          
-      enabled: true  
-      egressTLS: false
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/edge
       insecure: true
@@ -651,9 +651,8 @@ services:
     routes:
       - '/services/slo/{{ $.Values.services.slo.version }}'
       - '/services/slo/{{ $.Values.services.slo.version }}/'
-    secret:          
-      enabled: true  
-      egressTLS: false
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true

@@ -5,7 +5,11 @@
   "path": "{{ .Values.services.catalog.data_prefix }}/",
   "prefix_rewrite": "/",
   "redirects": null,
+  {{- if .Values.global.spire.enabled }}
+  "shared_rules_key": "catalog-data-internal-shared-rules",
+  {{- else }}
   "shared_rules_key": "edge-data-internal-shared-rules",
+  {{- end }}
   "rules": null,
   "response_data": {},
   "cohort_seed": null,

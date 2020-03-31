@@ -6,7 +6,7 @@
   "redirects": null,
   "gzip_enabled": false,
   "cors_config": null,
-  "aliases": null{{- if .service.secret.enabled }},
+  "aliases": null{{- if and (not.Values.global.spire.enabled) (.service.secret.enabled) }},
   "ssl_config": {
     "require_client_certs": true,
     "trust_file": "/etc/proxy/tls/sidecar/ca.crt",

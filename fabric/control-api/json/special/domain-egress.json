@@ -6,7 +6,7 @@
     "redirects": null,
     "gzip_enabled": false,
     "cors_config": null,
-    "aliases": null{{ if .Values.services.edge.secret.enabled }},
+    "aliases": null{{- if and .Values.services.edge.egress.secret.enabled (not .Values.global.spire.enabled)}},
     "force_https": true,
     "ssl_config": {
         "require_client_certs": true,

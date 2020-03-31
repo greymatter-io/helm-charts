@@ -7,7 +7,26 @@
   "protocol": "http_auto",
   "domain_keys": ["domain-{{ .service.serviceName}}"],
   "tracing_config": null,
-  "active_http_filters": ["gm.metrics"{{- if .service.secret.enabled }}, "gm.impersonation"{{- end }}{{- if and (ne .service.serviceName "jwt-security") (ne .service.serviceName "internal-jwt-security") }}, "gm.jwtsecurity"{{- end}}{{- if (.service.observablesEnabled) }}, "gm.observables"{{- end }}],
+  {{- if .Values.global.spire.enabled }}
+  "secret": {
+    "secret_key": "secret-{{.service.serviceName}}-secret",
+    "secret_name": "spiffe://{{ .Values.global.spire.trust_domain}}/{{.service.serviceName}}",
+    "secret_validation_name": "spiffe://{{ .Values.global.spire.trust_domain}}",
+    "ecdh_curves": [
+        "X25519:P-256:P-521:P-384"
+    ],
+    "forward_client_cert_details": "SANITIZE_SET",
+    "set_current_client_cert_details": {
+        "uri": true
+    }
+  }
+  {{- end }}
+  "active_http_filters": [
+    "gm.metrics"{{- if and .service.secret.enabled (not .Values.global.spire.enabled) }},
+    "gm.impersonation"{{- end }}{{- if and (ne .service.serviceName "jwt-security") (ne .service.serviceName "internal-jwt-security") }},
+    "gm.jwtsecurity"{{- end}}{{- if (.service.observablesEnabled) }},
+    "gm.observables"{{- end }}
+  ],
   "http_filters": {
     "gm_metrics": {
       "metrics_port": 8081,
@@ -19,6 +38,11 @@
       "metrics_key_function": "none"
     },
     "gm_jwtsecurity": {
+      {{- if .Values.global.spire.enabled }}
+      "apiKey": "{{ .Values.global.jwt_api_key }}",
+      "endpoint": "http://localhost:10909/jwt",
+      "jwtHeaderName": "userpolicy"
+      {{- else }}
       "apiKey": "{{ .Values.global.jwt_api_key }}",
       "endpoint": "https://localhost:10909/jwt",
       "jwtHeaderName": "userpolicy"{{- if .service.secret.enabled }},
@@ -27,6 +51,7 @@
       "certPath": "{{ .service.secret.mount_point }}/server.crt",
       "keyPath": "{{ .service.secret.mount_point }}/server.key",
       "insecureSkipVerify": true{{- end }}
+      {{- end }}
     }{{-  if (.service.observablesEnabled) }},
     "gm_observables": {	
       "useKafka": true,	
@@ -34,7 +59,7 @@
       "eventTopic": "{{ .Values.global.observables.topic }}",	
       "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"	
     }
-    {{- end }}{{- if .service.secret.enabled }},
+    {{- end }}{{- if and (not .Values.global.spire.enabled) (.service.secret.enabled) }},
     "gm_impersonation": {	
       "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{ .Values.global.sidecar.dn }}{{- end -}}"	
     }
