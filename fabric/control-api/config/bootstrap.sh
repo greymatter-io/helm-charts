@@ -58,13 +58,6 @@ for d in */; do
             create_or_update $name domain-egress.json
         elif [ "$name" == "listener" ]; then
             create_or_update $name listener-egress.json
-        elif [ "$name" == "cluster" ]; then
-            create_or_update $name cluster-internal-jwt.json
-        elif [ "$name" == "shared_rules" ]; then
-            create_or_update $name shared_rules-internal-jwt.json
-        elif [ "$name" == "route" ]; then
-            create_or_update $name route-jwt.json
-            create_or_update $name route-jwt-slash.json
         fi
         create_or_update $name
         sleep $delay
