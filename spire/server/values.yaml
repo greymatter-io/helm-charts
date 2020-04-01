@@ -9,12 +9,3 @@ server:
   image: gcr.io/spiffe-io/spire-server:0.9.3
   config_file_path: /run/spire/config/server.conf
   config_file_dir: /run/spire/config
-  certs:
-    bootstrap:
-      key: |-
-        -----BEGIN EC PRIVATE KEY-----
-        MIGkAgEBBDAg2LbulXzQX1NF+2Di0RKzMWfEGioBhh/fFpx7yOEqka//TpaeU3O5
-        QJRZXdWHKuagBwYFK4EEACKhZANiAARaMH6dIZLEhiLOdvzjG7lYYNmPzScvtbVz
-        fN/jxaHLSZrtjuYIErN9CSuAOC4jiPRn7T+0Mf+vyC060susim4zBYeh7i9tUEW1
-        7W+Ppe3pZ4TyVfBwK8uz+Zya8+pUr2M=
-        -----END EC PRIVATE KEY-----
