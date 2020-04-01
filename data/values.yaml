@@ -152,7 +152,6 @@ data:
       client_jwt_endpoint_address:
         type: value
         value: localhost
-      # Use data's egress listener port TODO see if this is right for spire
       client_jwt_endpoint_port:
         type: value
         value: '10909'
@@ -248,9 +247,7 @@ internal-data:
       xds_cluster:
         type: value
         value: 'data-internal'
-      envoy_log_level:
-        type: value
-        value: 'debug'
+
   data:
     # Name used for the deployment and service resources
     name: data-internal
@@ -464,9 +461,6 @@ internal-jwt:
       xds_cluster:
         type: value
         value: 'internal-jwt-security'
-      envoy_log_level:
-        type: value
-        value: 'debug'
 
   jwt:
     # Name used for the deployment and service resources

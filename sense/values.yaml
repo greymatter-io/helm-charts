@@ -363,7 +363,6 @@ catalog:
       client_address:
         type: value
         value: localhost
-      # IS THIS RIGHT? with spire - conncet to plaintext 10909
       client_port:
         type: value
         value: '10909'
@@ -409,9 +408,6 @@ catalog:
         xds_cluster:
           type: value
           value: '{{ .Values.catalog.name }}'
-        envoy_log_level:
-          type: value
-          value: 'debug'
 
     # SPIRE: If spire is enabled, uncomment to set init job use_tls to false
     init:

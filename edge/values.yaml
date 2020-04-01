@@ -63,9 +63,6 @@ edge:
     spire_path:
       type: 'value'
       value: '/run/spire/socket/agent.sock'
-    envoy_log_level:
-      type: 'value'
-      value: 'debug'
 
   # Optional resource options    
   resources:
