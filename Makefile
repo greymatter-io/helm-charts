@@ -1,6 +1,8 @@
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
 include secrets/Makefile
+# `make credentials` to build out credentials with user input
+# `make secrets` deploys the credentials
 
 BUILD_NUMBER_FILE=build-number.txt
 
@@ -11,8 +13,6 @@ $(BUILD_NUMBER_FILE):
 	@if ! test -f $(BUILD_NUMBER_FILE); then echo 0 > $(BUILD_NUMBER_FILE); fi
 	@echo $$(($$(cat $(BUILD_NUMBER_FILE)) + 1)) > $(BUILD_NUMBER_FILE)
 
-# credentials:
-# 	./ci/scripts/build-credentials.sh
 
 # fresh: credentials
 # 	./ci/scripts/minikube.sh
@@ -20,6 +20,10 @@ $(BUILD_NUMBER_FILE):
 .PHONY: minikube
 minikube:
 	./ci/scripts/minikube.sh
+
+.PHONY: k3d
+k3d:
+	./ci/scripts/k3d.sh
 	
 # For reference equivalent to ./ci/scripts/minikube.sh but without extra aws handling
 #   minikube start --memory 6144 --cpus 6		
