@@ -24,6 +24,11 @@ minikube:
 .PHONY: k3d
 k3d:
 	./ci/scripts/k3d.sh
+
+destroy:
+	minikube delete || k3d delete --name greymatter
+
+
 	
 # For reference equivalent to ./ci/scripts/minikube.sh but without extra aws handling
 #   minikube start --memory 6144 --cpus 6		
@@ -56,9 +61,6 @@ uninstall:
 	(cd data && make remove-data)
 	(cd sense && make remove-sense)
 
-
-destroy:
-	minikube delete
 
 OUTPUT_PATH=./logs
 
