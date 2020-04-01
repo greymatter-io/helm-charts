@@ -1,4 +1,4 @@
-
+SHELL := /bin/bash
 NAME-FABRIC:=fabric
 CHART-FABRIC := .
 

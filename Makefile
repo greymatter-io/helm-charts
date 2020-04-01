@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
 include secrets/Makefile
@@ -13,10 +14,6 @@ $(BUILD_NUMBER_FILE):
 	@if ! test -f $(BUILD_NUMBER_FILE); then echo 0 > $(BUILD_NUMBER_FILE); fi
 	@echo $$(($$(cat $(BUILD_NUMBER_FILE)) + 1)) > $(BUILD_NUMBER_FILE)
 
-
-# fresh: credentials
-# 	./ci/scripts/minikube.sh
-
 .PHONY: minikube
 minikube:
 	./ci/scripts/minikube.sh
@@ -28,15 +25,6 @@ k3d:
 destroy:
 	minikube delete && k3d delete --name greymatter
 
-
-	
-# For reference equivalent to ./ci/scripts/minikube.sh but without extra aws handling
-#   minikube start --memory 6144 --cpus 6		
-#   helm init --wait	
-#   ./ci/scripts/install-voyager.sh	
-#   helm dep up greymatter
-#   helm install greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy	
-#   ./ci/scripts/show-voyager.sh
 
 clean: 
 	(cd fabric && make clean-fabric)

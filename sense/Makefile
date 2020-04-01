@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 NAME-SENSE:=sense
 CHART-SENSE := .
 

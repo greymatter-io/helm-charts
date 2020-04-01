@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 NAME-DATA:=data
 CHART_DATA := .
 

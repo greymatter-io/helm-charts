@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 export PROVIDER=minikube
 
 .PHONY: voyager
