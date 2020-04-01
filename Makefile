@@ -41,15 +41,17 @@ dev-dep: clean
 
 install: dev-dep
 	(cd fabric && make fabric)
+	(cd edge && make edge)
 	(cd data && make data)
 	(cd sense && make sense)
-	(cd edge && make edge)
+
 
 uninstall:
 	(cd fabric && make remove-fabric)
+	(cd edge && make remove-edge)
 	(cd data && make remove-data)
 	(cd sense && make remove-sense)
-	(cd edge && make remove-edge)
+
 
 destroy:
 	minikube delete
@@ -68,3 +70,6 @@ delete: uninstall remove-pvc
 	
 remove-pvc:
 	kubectl delete pvc $$(kubectl get pvc | awk '{print $$1}' | tail -n +2)
+
+remove-pods:
+	kubectl delete pods $$(kubectl get pods | awk '{print $$1'} | tail -n +2)
