@@ -17,7 +17,25 @@ spec:
   wildcardPolicy: None
 
 {{- else }}
-{{- with .Values.edge.ingress }}
+{{- with .Values.edge.ingress.nginx }}
+
+
+{{- if .use_voyager -}}
+
+# with voyager
+apiVersion: {{ .apiVersion }}
+kind: Ingress
+metadata:
+  name: edge
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+{{ toYaml .annotations | indent 4 }}
+spec:
+  rules:
+{{ toYaml .rules | indent 4 }}
+
+{{- else }}
+# with nginx
 
 apiVersion: {{ .apiVersion }}
 kind: Ingress
@@ -29,5 +47,8 @@ metadata:
 spec:
   rules:
 {{ toYaml .rules | indent 4 }}
+
 {{- end }}
+
+{{- end }} #end with ingress
 {{- end }}
