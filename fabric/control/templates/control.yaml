@@ -55,5 +55,4 @@ spec:
         - name: controlapi-certs
           secret:
             secretName: {{ .Values.control.secret.secret_name }}
-            defaultMode: 0777
       {{- end }}

@@ -97,13 +97,11 @@ spec:
       - name: postgres-certs
         secret:
           secretName: {{ .Values.postgres.secret.secret_name }}
-          defaultMode: 0600
       {{- end }}
       {{- if .Values.slo.secret.enabled }}
       - name: service-certs
         secret:
           secretName: {{ .Values.slo.secret.secret_name }}
-          defaultMode: 0600
       {{- end }}
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

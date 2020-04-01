@@ -69,7 +69,8 @@ spec:
       - name: certificates
         secret:
           secretName: {{ .Values.postgres.secret.secret_name }}
-          defaultMode: 0400
+          # If you do not spedify, default is 644. Postgres crashes and burns if it's readable by the world.
+          defaultMode: 0640
       {{- end }}
   volumeClaimTemplates:
   - metadata:

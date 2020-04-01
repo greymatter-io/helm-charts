@@ -53,7 +53,6 @@ spec:
         - name: service-certs
           secret:
             secretName: {{ .Values.bootstrap.secret.secret_name }}
-            defaultMode: 0600
         {{- end }}
         {{- range $name, $service := .Values.services }}
         {{- if $service.controlEnabled }}

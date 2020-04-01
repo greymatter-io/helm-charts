@@ -103,7 +103,6 @@ spec:
       - name: service-certs
         secret:
           secretName: {{ .Values.dashboard.secret.secret_name }}
-          defaultMode: 0600
       {{- end }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}

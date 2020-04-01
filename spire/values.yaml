@@ -1,4 +1,12 @@
 global:
+  imagePullSecret: docker.secret
+  
+  environment: kubernetes
+  domain:
+  route_url_name:
+  remove_namespace_from_url: ''
+  exhibitor:
+    replicas: 1
   spire:
     trust_domain: quickstart.greymatter.io
     registration_api_path: '/run/spire/socket/registration.sock'
