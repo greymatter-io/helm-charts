@@ -1,12 +1,12 @@
 {
-    "shared_rules_key": "shared-rules-{{.service.serviceName}}-to-internal-jwt",
-    "name": "{{.service.serviceName}}",
+    "shared_rules_key": "shared-rules-data-internal-to-internal-jwt",
+    "name": "data-internal",
     "zone_key": "{{ .Values.global.zone}}",
     "default": {
       "light": [
         {
           "constraint_key": "",
-          "cluster_key": "{{.service.serviceName}}-to-internal-jwt-cluster",
+          "cluster_key": "data-internal-to-internal-jwt-cluster",
           "metadata": null,
           "properties": null,
           "response_data": {},
@@ -22,4 +22,3 @@
     "properties": null,
     "retry_policy": null
   }
-  

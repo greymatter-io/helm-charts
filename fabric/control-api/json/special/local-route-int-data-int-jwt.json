@@ -1,0 +1,14 @@
+{
+    "route_key": "route-data-internal-internal-jwt",
+    "domain_key": "domain-data-internal-egress",
+    "zone_key": "{{ .Values.global.zone}}",
+    "path": "/jwt",
+    "prefix_rewrite": "/jwt/",
+    "redirects": null,
+    "shared_rules_key": "shared-rules-data-internal-to-internal-jwt",
+    "rules": null,
+    "response_data": {},
+    "cohort_seed": null,
+    "retry_policy": null
+  }
+  

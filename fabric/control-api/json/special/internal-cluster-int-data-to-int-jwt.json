@@ -1,11 +1,11 @@
 {
-    "cluster_key": "{{.service.serviceName}}-to-internal-jwt-cluster",
+    "cluster_key": "data-internal-to-internal-jwt-cluster",
     "zone_key": "zone-default-zone",
     "name": "internal-jwt-security",
     "require_tls": true,
     "secret": {
       "secret_key": "secret-internal-jwt-security-secret",
-      "secret_name": "spiffe://quickstart.greymatter.io/{{.service.serviceName}}",
+      "secret_name": "spiffe://quickstart.greymatter.io/data-internal",
       "secret_validation_name": "spiffe://quickstart.greymatter.io",
       "subject_names": null,
       "ecdh_curves": [

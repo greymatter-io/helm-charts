@@ -399,7 +399,7 @@ catalog:
         value: 'world'
       client_identity:
         type: value
-        value: 'C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter'
+        value: 'CN=greymatter,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US'
       client_email:
         type: value
         value: 'engineering@deciphernow.com'

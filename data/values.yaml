@@ -303,7 +303,7 @@ internal-data:
       # SPIRE: If spire is enabled, uncomment the client env vars
       client_prefix:
         type: value
-        value: /services/data/1.0.0
+        value: /services/data-internal/1.0.0
       client_jwt_prefix:
         type: value
         value: /jwt
@@ -464,6 +464,9 @@ internal-jwt:
       xds_cluster:
         type: value
         value: 'internal-jwt-security'
+      envoy_log_level:
+        type: value
+        value: 'debug'
 
   jwt:
     # Name used for the deployment and service resources

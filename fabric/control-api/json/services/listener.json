@@ -29,9 +29,7 @@
   },
   {{- end }}
   "active_http_filters": [
-    "gm.metrics",
-    "gm.impersonation"{{- if and (ne .service.serviceName "jwt-security") (ne .service.serviceName "internal-jwt-security") }},
-    "gm.jwtsecurity"{{- end}}{{- if (.service.observablesEnabled) }},
+    "gm.metrics"{{- if (.service.observablesEnabled) }},
     "gm.observables"{{- end }}
   ],
   "http_filters": {
@@ -43,22 +41,6 @@
       "metrics_ring_buffer_size": 4096,
       "prometheus_system_metrics_interval_seconds": 15,
       "metrics_key_function": "none"
-    },
-    "gm_jwtsecurity": {
-      {{- if .Values.global.spire.enabled }}
-      "apiKey": "{{ .Values.global.jwt_api_key }}",
-      "endpoint": "http://localhost:10909/jwt",
-      "jwtHeaderName": "userpolicy"
-      {{- else }}
-      "apiKey": "{{ .Values.global.jwt_api_key }}",
-      "endpoint": "https://localhost:10909/jwt",
-      "jwtHeaderName": "userpolicy"{{- if .service.secret.enabled }},
-      "useTls": true,
-      "caPath": "{{ .service.secret.mount_point }}/ca.crt",
-      "certPath": "{{ .service.secret.mount_point }}/server.crt",
-      "keyPath": "{{ .service.secret.mount_point }}/server.key",
-      "insecureSkipVerify": true{{- end }}
-      {{- end }}
     }{{-  if (.service.observablesEnabled) }},
     "gm_observables": {	
       "useKafka": true,	
@@ -66,13 +48,6 @@
       "eventTopic": "{{ .Values.global.observables.topic }}",	
       "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"	
     }
-    {{- end }}{{- if (.service.secret.enabled) }},
-    "gm_impersonation": {	
-      {{- if .Values.global.spire.enabled }}
-      "servers": "O=SPIRE,C=US"
-      {{- else }}
-      "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{ .Values.global.sidecar.dn }}{{- end -}}"	
-      {{- end }}
-    }{{- end }}
+    {{- end }}
   }
 }
