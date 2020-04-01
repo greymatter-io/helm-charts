@@ -26,7 +26,7 @@ k3d:
 	./ci/scripts/k3d.sh
 
 destroy:
-	minikube delete || k3d delete --name greymatter
+	minikube delete && k3d delete --name greymatter
 
 
 	
