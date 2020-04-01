@@ -62,7 +62,7 @@
     {{- end }}{{- if (.service.secret.enabled) }},
     "gm_impersonation": {	
       {{- if .Values.global.spire.enabled }}
-      "server": "O=SPIRE,C=US"
+      "servers": "O=SPIRE,C=US"
       {{- else }}
       "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{ .Values.global.sidecar.dn }}{{- end -}}"	
       {{- end }}
