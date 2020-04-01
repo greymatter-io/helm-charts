@@ -7,9 +7,10 @@
   "gzip_enabled": false,
   "cors_config": null,
   "aliases": null{{- if .Values.global.spire.enabled }},
+  "force_https": false,
   "custom_headers": [
     {
-      "key": "X-FORWARDED-PROTO",
+      "key": "x-forwarded-proto",
       "value": "https"
     }
   ]{{- else if .service.secret.enabled }},

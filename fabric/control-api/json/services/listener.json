@@ -22,8 +22,8 @@
   },
   {{- end }}
   "active_http_filters": [
-    "gm.metrics"{{- if and .service.secret.enabled (not .Values.global.spire.enabled) }},
-    "gm.impersonation"{{- end }}{{- if and (ne .service.serviceName "jwt-security") (ne .service.serviceName "internal-jwt-security") }},
+    "gm.metrics",
+    "gm.impersonation"{{- if and (ne .service.serviceName "jwt-security") (ne .service.serviceName "internal-jwt-security") }},
     "gm.jwtsecurity"{{- end}}{{- if (.service.observablesEnabled) }},
     "gm.observables"{{- end }}
   ],
@@ -59,9 +59,13 @@
       "eventTopic": "{{ .Values.global.observables.topic }}",	
       "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"	
     }
-    {{- end }}{{- if and (not .Values.global.spire.enabled) (.service.secret.enabled) }},
+    {{- end }}{{- if (.service.secret.enabled) }},
     "gm_impersonation": {	
+      {{- if .Values.global.spire.enabled }}
+      "server": "O=SPIRE,C=US"
+      {{- else }}
       "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{ .Values.global.sidecar.dn }}{{- end -}}"	
+      {{- end }}
     }{{- end }}
   }
 }

@@ -10,7 +10,7 @@
     "force_https": false,
     "custom_headers": [
       {
-        "key": "X-FORWARDED-PROTO",
+        "key": "x-forwarded-proto",
         "value": "https"
       }
     ]{{- else if .Values.services.edge.egress.secret.enabled }},
