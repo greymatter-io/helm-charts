@@ -15,6 +15,13 @@
     "ecdh_curves": [
         "X25519:P-256:P-521:P-384"
     ],
+    {{- if ne .service.serviceName "internal-jwt-security" }}
+    "subject_names": [
+      "spiffe://{{ .Values.global.spire.trust_domain}}/edge"{{- if eq .service.serviceName "jwt-security" }},
+      "spiffe://{{ .Values.global.spire.trust_domain}}/data"{{- else if eq .service.serviceName "data-internal"}},
+      "spiffe://{{ .Values.global.spire.trust_domain}}/catalog"{{- end }}
+    ],
+    {{- end }}
     "forward_client_cert_details": "SANITIZE_SET",
     "set_current_client_cert_details": {
         "uri": true
