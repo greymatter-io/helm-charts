@@ -70,7 +70,7 @@ which opens up a browser. I could not login as developer, but kubeadmin credenti
 
 
 
-Then run Run the  `crc oc-env`  command to add the appropriate  `oc`  binary to your  `PATH`.
+Then run the  `crc oc-env`  command to add the appropriate  `oc`  binary to your  `PATH`.
 
 ```
 $ eval $(crc oc-env)
