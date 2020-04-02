@@ -183,7 +183,7 @@ oc expose svc/edge
 ```
 
 ### Debugging containers that won't start
-https://cookbook.openshift.org/logging-monitoring-and-debugging/how-do-i-debug-an-application-that-fails-to-start-up.html
+<https://cookbook.openshift.org/logging-monitoring-and-debugging/how-do-i-debug-an-application-that-fails-to-start-up.html>
 ```
 oc debug <name of the pod>
 ```
