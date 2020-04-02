@@ -2,6 +2,7 @@ SHELL := /bin/bash
 NAME-DATA:=data
 CHART_DATA := .
 
+include ../output.mk
 
 wsa-data:
 	$(eval WAITERSACHECK-DATA=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
@@ -25,6 +26,10 @@ clean-data:
 package-data: clean-data
 	echo "target hit package-data"
 	helm dep up .
+
+template-data: package-data $(BUILD_NUMBER_FILE)
+	mkdir -p $(OUTPUT_PATH)
+	helm template $(NAME-DATA) . --set=global.environment=kubernetes $(WAITERSACHECK-DATA) > $(OUTPUT_PATH)/helm-$(BN).yaml
 
 .PHONY: data
 data: package-data wsa-data

@@ -4,6 +4,8 @@ current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
 
 pwd_name := $(notdir $(PWD))
 
+include ../output.mk
+
 .PHONY: edge
 edge:
 	if [ "$(pwd_name)" == "edge" ]; then \
@@ -17,3 +19,7 @@ edge:
 .PHONY: remove-edge
 remove-edge:
 	helm uninstall edge
+	
+template-edge: $(BUILD_NUMBER_FILE)
+	mkdir -p $(OUTPUT_PATH)
+	helm template edge . --set=global.environment=kubernetes > $(OUTPUT_PATH)/helm-$(BN).yaml

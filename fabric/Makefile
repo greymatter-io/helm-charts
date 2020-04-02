@@ -2,6 +2,8 @@ SHELL := /bin/bash
 NAME-FABRIC:=fabric
 CHART-FABRIC := .
 
+include ../output.mk
+
 wsa-fabric:
 	$(eval WAITERSACHECK-FABRIC=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
 
@@ -19,6 +21,10 @@ clean-fabric:
 package-fabric: clean-fabric
 	echo "target hit package-fabric"
 	helm dep up .
+
+template-fabric: package-fabric $(BUILD_NUMBER_FILE)
+	mkdir -p $(OUTPUT_PATH)
+	helm template $(NAME-FABRIC) . --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) > $(OUTPUT_PATH)/helm-$(BN).yaml
 
 .PHONY: fabric
 fabric: package-fabric wsa-fabric
