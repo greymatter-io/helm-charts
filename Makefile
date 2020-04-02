@@ -14,6 +14,9 @@ minikube:
 k3d:
 	./ci/scripts/k3d.sh
 
+reveal-endpoint:
+	./ci/scripts/show-voyager.sh
+
 .IGNORE= destroy
 destroy:
 	-(make delete)
@@ -34,6 +37,7 @@ dev-dep: clean
 	(cd data && make package-data)
 	(cd sense && make package-sense)
 
+.PHONY: check-secrets
 check-secrets:
 	$(eval SECRET_CHECK=$(shell helm ls | grep secrets | awk '{if ($$1 == "secrets") print "present"; else print "not-present"}'))
 	echo $(SECRET_CHECK)
@@ -42,18 +46,21 @@ check-secrets:
 		(make secrets);\
 	fi
 
+.PHONY: install
 install: dev-dep check-secrets
 	(cd fabric && make fabric)
 	(cd edge && make edge)
 	(cd data && make data)
 	(cd sense && make sense)
+	(make reveal-endpoint)
 
-
+.IGNORE: uninstall
+.PHONY: uninstall
 uninstall:
-	(cd fabric && make remove-fabric)
-	(cd edge && make remove-edge)
-	(cd data && make remove-data)
-	(cd sense && make remove-sense)
+	-(cd fabric && make remove-fabric)
+	-(cd edge && make remove-edge)
+	-(cd data && make remove-data)
+	-(cd sense && make remove-sense)
 
 delete: uninstall remove-pvc remove-pods
 	@echo "purged greymatter helm release"
