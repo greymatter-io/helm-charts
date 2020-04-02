@@ -118,7 +118,7 @@ Double check the credentials.yaml and make sure it's pointing to `docker-dev.pro
 
 ### Actual steps:
 
-`overrides/codeready.yaml` will reduce the resource required drastically which may cause functionality to work properly. If you run into issues, please adjust the cpu and memory limit of both CRC itself and in `overrides/codeready.yaml` to suit your needs.
+`overrides/codeready.yaml` drastically reduces resource limits for the core Grey Matter services, which may cause problems. If you run into issues, please adjust the cpu and memory limits for CRC itself and for services listed in `overrides/codeready.yaml` to suit your needs.
 
 
 
