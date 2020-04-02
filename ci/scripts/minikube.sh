@@ -2,6 +2,8 @@
 
 cd $(dirname "${BASH_SOURCE[0]}")/../..
 
+unset KUBECONFIG
+
 MINI=minikube
 # Determine if we are on AWS or not
 LC=$(curl -s -m 2 169.254.169.254/latest/meta-data | wc -l )
