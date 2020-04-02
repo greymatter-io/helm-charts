@@ -5,7 +5,7 @@
 
 
 1. [Create RedHat account](https://www.redhat.com/wapps/ugc/register.html?_flowId=register-flow&_flowExecutionKey=e2s1)
-2. [Download CodeReady containers](https://developers.redhat.com/products/codeready-containers/overview), there is a download button on this page at the time of writing. It will take you to a login page which you can use the account you creatred in step 1.
+2. [Download CodeReady containers](https://developers.redhat.com/products/codeready-containers/overview), there is a download button on this page at the time of writing. It will take you to a page where you can login using the account you created in step 1.
 
 [Official Doc](https://access.redhat.com/documentation/en-us/red_hat_codeready_containers/1.7/) for more details.
 
