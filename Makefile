@@ -42,7 +42,15 @@ dev-dep: clean
 	(cd data && make package-data)
 	(cd sense && make package-sense)
 
-install: dev-dep
+check-secrets:
+	$(eval SECRET_CHECK=$(shell helm ls | grep secrets | awk '{if ($$1 == "secrets") print "present"; else print "not-present"}'))
+	echo $(SECRET_CHECK)
+	if [[ "$(SECRET_CHECK)" != "present" ]]; then \
+		echo "present" ;\
+		(make secrets);\
+	fi
+
+install: dev-dep check-secrets
 	(cd fabric && make fabric)
 	(cd edge && make edge)
 	(cd data && make data)
