@@ -15,9 +15,10 @@
 ### Grey Matter Commands
 
 - Create Credentials `make credentials`
+  - To manually add credentials to mesh run `make secrets` this will be done automatically by the install target
 - Install Grey Matter `make install`
   - Individual child-charts can be installed by navigating to those specific directories and using `make <chart-name>` ex: `make fabric`
   - Packaging sub charts can be accomplished with `make package-<chart-name>` ex: `make package-fabric`
 - Uninstall Grey Matter `make uninstall`
   - To remove individual child-charts run `make remove-<chart-name>` ex: `make remove-fabric`
-  - `make delete` will proform an uninstall but will also purge pvc and pods typically spared by helm
+  - `make delete` will preform an uninstall but will also purge pvc and pods typically spared by helm.  Leaves secrets/credentials.
