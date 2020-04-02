@@ -24,7 +24,7 @@ package-fabric: clean-fabric
 
 template-fabric: package-fabric $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template $(NAME-FABRIC) . --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) > $(OUTPUT_PATH)/helm-$(BN).yaml
+	helm template $(NAME-FABRIC) . --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) > $(OUTPUT_PATH)/helm-$(NAME-FABRIC)$(BN).yaml
 
 .PHONY: fabric
 fabric: package-fabric wsa-fabric

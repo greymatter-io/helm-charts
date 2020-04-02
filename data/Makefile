@@ -29,7 +29,7 @@ package-data: clean-data
 
 template-data: package-data $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template $(NAME-DATA) . --set=global.environment=kubernetes $(WAITERSACHECK-DATA) > $(OUTPUT_PATH)/helm-$(BN).yaml
+	helm template $(NAME-DATA) . --set=global.environment=kubernetes $(WAITERSACHECK-DATA) > $(OUTPUT_PATH)/helm-$(NAME-DATA)$(BN).yaml
 
 .PHONY: data
 data: package-data wsa-data

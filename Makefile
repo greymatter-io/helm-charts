@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
-include ../output.mk
+include output.mk
 include secrets/Makefile
 # `make credentials` to build out credentials with user input
 # `make secrets` deploys the credentials
@@ -70,4 +70,7 @@ OUTPUT_PATH=./logs
 template: dev-dep $(BUILD_NUMBER_FILE)
 	@echo "Templating the greymatter helm charts"
 	mkdir -p $(OUTPUT_PATH)
-	helm template greymatter -f ./custom.yaml --name gm-deploy > $(OUTPUT_PATH)/helm-$(BN).yaml
+	(cd fabric && make template-fabric && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
+	(cd edge && make template-edge && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
+	(cd data && make template-data && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
+	(cd sense && make template-sense && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)	
