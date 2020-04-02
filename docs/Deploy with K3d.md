@@ -22,3 +22,5 @@
 - Uninstall Grey Matter `make uninstall`
   - To remove individual child-charts run `make remove-<chart-name>` ex: `make remove-fabric`
   - `make delete` will preform an uninstall but will also purge pvc and pods typically spared by helm.  Leaves secrets/credentials.
+- To template Grey Matter `make template`
+  - Templating sub charts can be accomplished with `make template-<chart-name>` ex: `helm template-fabric`
