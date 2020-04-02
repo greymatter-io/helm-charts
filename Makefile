@@ -23,7 +23,8 @@ k3d:
 	./ci/scripts/k3d.sh
 
 .IGNORE= destroy
-destroy: delete
+destroy:
+	-(make delete)
 	-minikube delete
 	-k3d delete --name greymatter
 
