@@ -98,7 +98,7 @@ We'll use helm3. Install or update if you haven't done so.
 $ brew install helm
 ```
 
-If you wish to use locally built chart, you can do:
+If you wish to use locally built charts, you can do:
 
 ```
 $ git clone git@github.com:DecipherNow/helm-charts.git
