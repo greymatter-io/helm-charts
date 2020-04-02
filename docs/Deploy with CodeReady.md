@@ -54,7 +54,7 @@ INFO To login as an admin, run 'oc login -u kubeadmin -p xxxx https://api.crc.te
 
 
 
-Login as admin accordingly to the password given in the previous step:
+Login as admin according to the password given in the previous step:
 
 ```
 $ oc login -u kubeadmin xxxx https://api.crc.testing:6443
