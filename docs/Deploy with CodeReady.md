@@ -174,36 +174,7 @@ crc delete
 You can also stop it by running `crc stop` but it has never stopped cleanly and always ends up force stopping it.
 
 
-## Some of the issues observed
-
-### Pods fail to start up due to inaccessible certs:
-A lot of the pods do not run as "root" hence manually setting the permission to `600` will make certificates not accessible. If you do not specify, the default is `644` which is suitable in most cases (except for Prometheus which will crash if the file is readable by the world).
-
-
-### Postgres says:
-
-it does not start up when certs has the default permission of 644
-
-### Prometheus says:
-
-level=error ts=2020-03-27T13:33:54.613113959Z caller=main.go:688 err="opening storage failed: mkdir /var/lib/prometheus/data/data: permission denied"
-
-https://docs.openshift.com/container-platform/4.3/authentication/managing-security-context-constraints.html
-
-https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/
-
-​	
-Ended up adding:
-
-```
-      {{- if eq .Values.global.environment "openshift"}}
-      securityContext:
-        # Adding the user to root group.
-        runAsGroup: 0
-```
-
-
-
+## Additional Information
 
 ### How to expose ingress to Edge manually
 
