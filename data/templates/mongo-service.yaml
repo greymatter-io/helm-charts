@@ -1,3 +1,4 @@
+{{- if (not (.Values.mongo.external.use)) }}
 kind: Service
 apiVersion: v1
 metadata:
@@ -13,3 +14,4 @@ spec:
     app: {{ .Values.mongo.name }}
   sessionAffinity: None
   type: ClusterIP
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if (not (.Values.mongo.external.use)) }}
 kind: Secret
 apiVersion: v1
 metadata:
@@ -19,3 +20,4 @@ stringData:
         ],
     });
   {{- end }}
+{{- end }}

@@ -49,7 +49,11 @@ spec:
         env:
           {{- include "data.envvars" (dict "envvar" .Values.data.envvars "top" $) | indent 8 }}
         - name: MONGOHOST
+          {{- if .Values.mongo.external.use }}
+          value: {{ .Values.mongo.external.url }}
+          {{- else }}
           value: {{ template "greymatter.mongo.address" . }}
+          {{- end }}
         
         {{- if .Values.mongo.ssl.enabled }}
         - name: MONGO_USE_TLS

@@ -1,3 +1,4 @@
+{{- if (not (.Values.mongo.external.use)) }}
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
@@ -75,3 +76,4 @@ spec:
       storageClassName: "{{ .Values.mongo.storage.storageClass }}"
     {{- end }}
     {{- end }}
+{{- end }}
