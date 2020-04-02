@@ -12,7 +12,7 @@
 
 ## After installation
 
-Extracted `crc` binary to `~/.local/bin/crc`. You will likely get a security error like this:
+Extract the `crc` binary to `~/.local/bin/crc`. You will likely get a security error like this:
 ![](img/codeready1.png) 
 
 which you can get by like so:
