@@ -3,7 +3,7 @@
   "listener_key": "edge-listener-egress",
   "domain_keys": ["edge", "edge-egress"],
   "name": "edge",
-  "ip": "0.0.0.0",
+  "ip": "127.0.0.1",
   "port": 10909,
   "protocol": "http_auto",
   "tracing_config": null,
