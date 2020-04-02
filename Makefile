@@ -23,10 +23,13 @@ k3d:
 	./ci/scripts/k3d.sh
 
 .IGNORE= destroy
-destroy:
+destroy: delete
 	-minikube delete
 	-k3d delete --name greymatter
 
+
+# Grey Matter Specific targets
+# To target individual sub charts you can go the directory and use the make targets there.
 
 clean: 
 	(cd fabric && make clean-fabric)
@@ -51,17 +54,7 @@ uninstall:
 	(cd data && make remove-data)
 	(cd sense && make remove-sense)
 
-
-OUTPUT_PATH=./logs
-
-BN=$$(cat $(BUILD_NUMBER_FILE))
-
-template: dev-dep $(BUILD_NUMBER_FILE)
-	@echo "templating the greymatter helm charts"
-	mkdir -p $(OUTPUT_PATH)
-	helm template greymatter -f ./custom.yaml --name gm-deploy > $(OUTPUT_PATH)/helm-$(BN).yaml
-
-delete: uninstall remove-pvc
+delete: uninstall remove-pvc remove-pods
 	@echo "purged greymatter helm release"
 	
 remove-pvc:
@@ -69,3 +62,13 @@ remove-pvc:
 
 remove-pods:
 	kubectl delete pods $$(kubectl get pods | awk '{print $$1'} | tail -n +2)
+
+
+OUTPUT_PATH=./logs
+
+BN=$$(cat $(BUILD_NUMBER_FILE))
+
+template: dev-dep $(BUILD_NUMBER_FILE)
+	@echo "Templating the greymatter helm charts"
+	mkdir -p $(OUTPUT_PATH)
+	helm template greymatter -f ./custom.yaml --name gm-deploy > $(OUTPUT_PATH)/helm-$(BN).yaml
