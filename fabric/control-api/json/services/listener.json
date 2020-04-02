@@ -20,11 +20,7 @@
       "spiffe://{{ .Values.global.spire.trust_domain}}/data"{{- else if eq .service.serviceName "data-internal"}},
       "spiffe://{{ .Values.global.spire.trust_domain}}/catalog"{{- else if eq .service.serviceName "internal-jwt-security"}},
       "spiffe://{{ .Values.global.spire.trust_domain}}/data-internal"{{- end }}
-    ],
-    "forward_client_cert_details": "SANITIZE_SET",
-    "set_current_client_cert_details": {
-        "uri": true
-    }
+    ]
   },
   {{- end }}
   "active_http_filters": [
