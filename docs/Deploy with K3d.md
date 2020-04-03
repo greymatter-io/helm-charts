@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Docker
+- Docker  (must have at least 13Gb of memory allocated)
 - Helm 3
 
 ## Usage
