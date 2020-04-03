@@ -22,7 +22,7 @@ destroy:
 	-(make delete)
 	-minikube delete
 	-k3d delete --name greymatter
-	-$(eval unset KUBECONFIG)
+	-(eval unset KUBECONFIG)
 
 
 # Grey Matter Specific targets
