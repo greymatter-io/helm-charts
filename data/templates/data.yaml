@@ -116,7 +116,7 @@ spec:
             - /bin/sh
             - -c
             - curl localhost:8001/clusters | grep 'xds_cluster.*healthy'
-          initialDelaySeconds: 10
+          initialDelaySeconds: 30
           periodSeconds: 10
 
       imagePullSecrets:
