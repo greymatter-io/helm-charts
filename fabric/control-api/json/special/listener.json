@@ -7,7 +7,7 @@
   "port": 10808,
   "protocol": "http_auto",
   "tracing_config": null,
-  "active_http_filters": ["gm.metrics", "gm.inheaders", "gm.jwtsecurity"],
+  "active_http_filters": ["gm.metrics", "gm.inheaders", "gm.jwtsecurity", "envoy.rbac"],
   "http_filters": {
     "gm_inheaders": {},
     "gm_metrics": {
@@ -20,6 +20,35 @@
       "metrics_key_function": "depth",
       "metrics_key_depth": "5"
     },
+    "envoy_rbac": {
+      "rules": {
+          "action": 0,
+          "policies": {
+              "service-admin": {
+                  "permissions": [{
+                      "any": true
+                  }],
+                  "principals": [{
+                      "header": {
+                          "name": "user_dn",
+                          "exact_match": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US"
+                      }
+                  }]
+              },
+              "product-viewer": {
+                  "permissions": [{
+                      "header": {
+                          "name": ":method",
+                          "exact_match": "GET"
+                      }
+                  }],
+                  "principals": [{
+                      "any": true
+                  }]
+              }
+          }
+      }
+  },
     "gm_jwtsecurity": {
       {{- if .Values.global.spire.enabled }}
       "apiKey": "{{ .Values.global.jwt_api_key }}",

@@ -12,6 +12,10 @@
     "secret_key": "secret-{{.service.serviceName}}-secret",
     "secret_name": "spiffe://{{ .Values.global.spire.trust_domain}}/{{.service.serviceName}}",
     "secret_validation_name": "spiffe://{{ .Values.global.spire.trust_domain}}",
+    "forward_client_cert_details": "APPEND_FORWARD",
+    "set_current_client_cert_details": {
+      "uri": true
+    },
     "ecdh_curves": [
         "X25519:P-256:P-521:P-384"
     ],
@@ -24,10 +28,56 @@
   },
   {{- end }}
   "active_http_filters": [
-    "gm.metrics"{{- if (.service.observablesEnabled) }},
-    "gm.observables"{{- end }}
+    "gm.metrics",{{- if (.service.observablesEnabled) }},
+    "gm.observables",{{- end }}
+    "envoy.rbac"
   ],
   "http_filters": {
+    "envoy_rbac": {
+      "rules": {
+          "action": 0,
+          "policies": {
+              "service-admin": {
+                  "permissions": [{
+                      "any": true
+                  }],
+                  "principals": [{
+                      "header": {
+                          "name": "user_dn",
+                          "exact_match": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US"
+                      }
+                }]
+              },
+              "services": {
+                "permissions": [
+                  {
+                    "any": true
+                  }
+                ],
+                "principals": [
+                  {
+                    "authenticated": {
+                      "principal_name": {
+                        "regex": "spiffe:\/\/quickstart.greymatter.io\/(.+)"
+                      }
+                    }
+                  }
+                ]
+              },    
+              "product-viewer": {
+                  "permissions": [{
+                      "header": {
+                          "name": ":method",
+                          "exact_match": "GET"
+                      }
+                  }],
+                  "principals": [{
+                      "any": true
+                  }]
+              }
+          }
+      }
+  },
     "gm_metrics": {
       "metrics_port": 8081,
       "metrics_host": "0.0.0.0",
