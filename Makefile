@@ -28,12 +28,14 @@ destroy:
 # Grey Matter Specific targets
 # To target individual sub charts you can go the directory and use the make targets there.
 
-clean: 
+clean:
+	(cd spire && make clean-spire)
 	(cd fabric && make clean-fabric)
 	(cd data && make clean-data)
 	(cd sense && make clean-sense)
 
 dev-dep: clean
+	(cd spire && make package-spire)
 	(cd fabric && make package-fabric)
 	(cd data && make package-data)
 	(cd sense && make package-sense)
@@ -49,6 +51,7 @@ check-secrets:
 
 .PHONY: install
 install: dev-dep check-secrets
+	(cd spire && make spire)
 	(cd fabric && make fabric)
 	(cd edge && make edge)
 	(cd data && make data)
@@ -58,6 +61,7 @@ install: dev-dep check-secrets
 .IGNORE: uninstall
 .PHONY: uninstall
 uninstall:
+	-(cd spire && make remove-spire)
 	-(cd fabric && make remove-fabric)
 	-(cd edge && make remove-edge)
 	-(cd data && make remove-data)
@@ -78,6 +82,7 @@ OUTPUT_PATH=./logs
 template: dev-dep $(BUILD_NUMBER_FILE)
 	@echo "Templating the greymatter helm charts"
 	mkdir -p $(OUTPUT_PATH)
+	(cd spire && make template-spire && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd fabric && make template-fabric && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd edge && make template-edge && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd data && make template-data && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)

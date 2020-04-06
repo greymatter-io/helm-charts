@@ -1,0 +1,36 @@
+SHELL := /bin/bash
+NAME-SPIRE:=spire
+CHART-SPIRE := .
+
+include ../output.mk
+
+wsa-spire:
+	$(eval WAITERSACHECK-SPIRE=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
+	echo $(WAITERSACHECK-SPIRE)
+
+.PHONY: server
+server: wsa-spire
+	helm install $(NAME-SPIRE)-server server --set=global.environment=kubernetes $(WAITERSACHECK-SPIRE)
+
+.PHONY: agent
+agent: wsa-spire
+	helm install $(NAME-SPIRE)-agent agent --set=global.environment=kubernetes $(WAITERSACHECK-SPIRE)
+
+clean-spire:
+	rm -f ./charts/*
+
+package-spire: clean-spire
+	echo "target hit package-spire"
+	helm dep up .
+
+template-spire: package-spire $(BUILD_NUMBER_FILE)
+	mkdir -p $(OUTPUT_PATH)
+	helm template $(NAME-SPIRE) . --set=global.environment=kubernetes $(WAITERSACHECK-SPIRE) > $(OUTPUT_PATH)/helm-$(NAME-SPIRE)$(BN).yaml
+
+.PHONY: spire
+spire: package-spire wsa-spire
+	helm install $(NAME-SPIRE) . --set=global.environment=kubernetes $(WAITERSACHECK-SPIRE)
+
+.PHONY: remove-spire
+remove-spire:
+	helm uninstall $(shell helm ls | grep spire | awk '{print $$1}')
