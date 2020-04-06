@@ -13,3 +13,15 @@ minikube start -p gm-deploy --memory 26384 --cpus 6 \
     --extra-config=apiserver.authorization-mode=Node,RBAC \
     --extra-config=kubelet.authentication-token-webhook=true
 ```
+
+## Makefile
+
+| command        | description                         | comments |
+| -------------- | ----------------------------------- | -------- |
+| server         | install standalone spire server     |          |
+| agent          | install standalone spire agent      |          |
+| clean-spire    | remove charts/*                     |          |
+| package-spire  | package spire                       |          |
+| template-spire | template spire with values          |          |
+| spire          | package and install spire component |          |
+| remove-spire   | uninstalls spire component          |          |
