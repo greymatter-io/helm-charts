@@ -28,7 +28,7 @@ dashboard:
   # Name used for the deployment and service resources
   name: dashboard
   # Dashboard app version
-  version: 3.3.2
+  version: 3.4.0
   image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
   # Port for the dashboard app
   port: 1337

@@ -283,7 +283,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 3.3.1
+    version: 3.4.0
     routes:
       - '/services/dashboard/latest'
       - '/services/dashboard/latest/'

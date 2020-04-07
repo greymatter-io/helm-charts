@@ -1,8 +1,8 @@
 apiVersion: v2
-appVersion: 3.3.1
+appVersion: 3.4.0
 description: A Helm chart to deploy Grey Matter Dashboard
 name: dashboard
-version: 2.1.5
+version: 2.1.6
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
   - name: Decipher Technology Studios Engineering
