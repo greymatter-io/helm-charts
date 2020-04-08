@@ -1,0 +1,26 @@
+global:
+  # Used as imagePullSecrets value for each subchart
+  image_pull_secret: docker.secret    
+  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  environment: kubernetes
+  # Used to configure control and control-api environment variables
+  zone: zone-default-zone
+  # Whether to use consul for service discovery
+  consul:       
+    enabled: false
+    host: ''
+    port: 8500
+  # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
+  control_port: 50000
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: true
+    trust_domain: quickstart.greymatter.io
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:                             
+    image: deciphernow/k8s-waiter:latest
+    service_account:
+      name: waiter-sa
+  # Global sidecar config (supports version and envvars)
+  sidecar:
+    version: 1.2.2
