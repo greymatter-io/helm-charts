@@ -29,7 +29,7 @@ template-spire: package-spire $(BUILD_NUMBER_FILE)
 
 .PHONY: spire
 spire: package-spire wsa-spire
-	helm install $(NAME-SPIRE) . --set=global.environment=kubernetes $(WAITERSACHECK-SPIRE)
+	(make server && sleep 20 && make agent)
 
 .PHONY: remove-spire
 remove-spire:
