@@ -10,15 +10,15 @@ wsa-sense:
 
 .PHONY: catalog
 catalog: wsa-sense
-	helm install $(NAME-SENSE) catalog --set=global.environment=kubernetes $(WAITERSACHECK-SENSE)
+	helm install $(NAME-SENSE) catalog --set=global.environment=kubernetes $(WAITERSACHECK-SENSE) -f ../global.yaml
 
 .PHONY: dashboard
 dashboard: wsa-sense
-	helm install $(NAME-SENSE) dashboard --set=global.environment=kubernetes $(WAITERSACHECK-SENSE)
+	helm install $(NAME-SENSE) dashboard --set=global.environment=kubernetes $(WAITERSACHECK-SENSE) -f ../global.yaml
 
 .PHONY: slo
 slo: wsa-sense
-	helm install $(NAME-SENSE) slo --set=global.environment=kubernetes $(WAITERSACHECK-SENSE)
+	helm install $(NAME-SENSE) slo --set=global.environment=kubernetes $(WAITERSACHECK-SENSE) -f ../global.yaml
 
 clean-sense:
 	rm -f ./charts/*
@@ -33,7 +33,7 @@ template-sense: package-sense $(BUILD_NUMBER_FILE)
 
 .PHONY: sense
 sense: package-sense wsa-sense
-	helm install $(NAME-SENSE) . --set=global.environment=kubernetes $(WAITERSACHECK-SENSE)
+	helm install $(NAME-SENSE) . --set=global.environment=kubernetes $(WAITERSACHECK-SENSE) -f ../global.yaml
 
 .PHONY: remove-sense
 remove-sense:
