@@ -10,15 +10,15 @@ wsa-data:
 
 .PHONY: gm-data
 gm-data: wsa-data
-	helm install $(NAME-DATA) gm-data --set=global.environment=kubernetes $(WAITERSACHECK-DATA)
+	helm install $(NAME-DATA) gm-data --set=global.environment=kubernetes $(WAITERSACHECK-DATA) -f ../global.yaml
 
 .PHONY: jwt
 jwt: wsa-data
-	helm install jwt-$(NAME-DATA) jwt --set=global.environment=kubernetes $(WAITERSACHECK-DATA)
+	helm install jwt-$(NAME-DATA) jwt --set=global.environment=kubernetes $(WAITERSACHECK-DATA) -f ../global.yaml
 
 .PHONY: jwt-gov
 jwt-gov: wsa-data
-	helm install $(NAME-DATA) jwt-gov --set=global.environment=kubernetes $(WAITERSACHECK-DATA)
+	helm install $(NAME-DATA) jwt-gov --set=global.environment=kubernetes $(WAITERSACHECK-DATA) -f ../global.yaml
 
 clean-data:
 	rm -f ./charts/*
@@ -33,7 +33,7 @@ template-data: package-data $(BUILD_NUMBER_FILE)
 
 .PHONY: data
 data: package-data wsa-data
-	helm install $(NAME-DATA) . --set=global.environment=kubernetes $(WAITERSACHECK-DATA)
+	helm install $(NAME-DATA) . --set=global.environment=kubernetes $(WAITERSACHECK-DATA) -f ../global.yaml
 
 .PHONY: remove-data
 remove-data:
