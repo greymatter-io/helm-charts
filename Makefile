@@ -53,8 +53,11 @@ check-secrets:
 install: dev-dep check-secrets
 	(cd spire && make spire)
 	(cd fabric && make fabric)
+	sleep 20
 	(cd edge && make edge)
+	sleep 20
 	(cd data && make data)
+	sleep 20
 	(cd sense && make sense)
 	(make reveal-endpoint)
 
