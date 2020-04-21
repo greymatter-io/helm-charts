@@ -15,7 +15,7 @@ keywords:
 dependencies:
   - name: catalog
     repository: file://./catalog
-    version: '2.1.6'
+    version: '2.1.7'
 
   - name: dashboard
     repository: file://./dashboard
