@@ -14,12 +14,11 @@ data:
       - "/etc/prometheus/recording_rules.yaml"
 
     scrape_configs:
-
       - job_name: 'prometheus'
         static_configs:
           - targets: ['localhost:9090']
       {{- if .Values.global.consul.enabled }}
-      - job_name: consul
+      - job_name: 'gm-metrics-consul'
         metrics_path: /prometheus
         consul_sd_configs:
         - server: '{{ .Values.global.consul.host }}:{{ .Values.global.consul.port }}'
@@ -33,8 +32,22 @@ data:
             target_label: __address__
           - source_labels: ['__meta_consul_service']
             target_label: job
+      - job_name: 'envoy-metrics-consul'
+        metrics_path: /stats/prometheus
+        consul_sd_configs:
+        - server: '{{ .Values.global.consul.host }}:{{ .Values.global.consul.port }}'
+        relabel_configs:
+          - source_labels: ['__meta_consul_service_metadata_metrics']
+            regex: '(\d+)'
+            action: 'keep'
+          - source_labels: ['__meta_consul_service_address', '__meta_consul_service_metadata_metrics']
+            regex: '(.*);(\d+)'
+            replacement: '${1}:8001'
+            target_label: __address__
+          - source_labels: ['__meta_consul_service']
+            target_label: job
       {{- else }}
-      - job_name: kubernetes
+      - job_name: 'gm-metrics-kubernetes'
         metrics_path: /prometheus
         kubernetes_sd_configs:
           - role: pod
@@ -52,9 +65,7 @@ data:
           target_label:  'job'
           #replacement:   '${1}'
           replacement:   '${1}'
-      {{- end }}
-      {{- if .Values.prometheus.sense_enabled }}
-      - job_name: sense
+      - job_name: 'envoy-metrics-kubernetes'
         metrics_path: /stats/prometheus
         kubernetes_sd_configs:
           - role: pod
@@ -72,7 +83,11 @@ data:
           target_label:  'job'
           #replacement:   '${1}'
           replacement:   '${1}'
-      {{- end }}  
+        - source_labels: ['__address__']
+          regex: '(.*):(.*)'
+          target_label:  '__address__'
+          replacement:   '${1}:8001'
+      {{- end }}
 
   # Copied from https://github.com/DecipherNow/gm-dashboard/blob/master/docker/prometheus/recording_rules.yml
   recording_rules.yaml: |-
