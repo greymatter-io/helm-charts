@@ -54,7 +54,7 @@ data:
           replacement:   '${1}'
       {{- end }}
       - job_name: 'gm-metrics'
-        metrics_path: /stats/prometheus
+        metrics_path: /prometheus
         kubernetes_sd_configs:
           - role: pod
             namespaces:
