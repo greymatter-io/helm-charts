@@ -20,7 +20,7 @@ jobs:
             wget -q -O - https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
             k3d create --workers 4 --name greymatter
             sleep 10
-            cp $(k3d get-kubeconfig --name='greymatter') ./.circleci/kubectl
+            cp $(k3d get-kubeconfig --name='greymatter') ./.circleci/kubeconfig
             docker build -t kubectl .circleci/kubectl
   build-staging:
     machine: true
