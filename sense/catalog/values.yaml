@@ -318,7 +318,7 @@ services:
     port: 3000
     enableInstanceMetrics: 'true'
     capability: 'Security'
-    documentation: '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
+    documentation: '/services/jwt-security/latest/'
     owner: 'Decipher'
     version: '0.2.0'
     routes:
@@ -365,7 +365,7 @@ services:
     port: 5555
     enableInstanceMetrics: 'true'
     capability: 'Mesh'
-    documentation: '/services/control-api/{{ $.Values.services.controlApi.version }}/'
+    documentation: '/services/control-api/latest/'
     owner: 'Decipher'
     version: '1.1.0'
     routes:
@@ -416,7 +416,7 @@ services:
     port: 1337
     enableInstanceMetrics: 'true'
     capability: 'Sense'
-    documentation: '/services/slo/{{ $.Values.services.slo.version }}/'
+    documentation: '/services/slo/latest/'
     owner: 'Decipher'
     version: '1.1.1'
     routes:
