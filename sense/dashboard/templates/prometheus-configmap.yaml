@@ -53,8 +53,7 @@ data:
           #replacement:   '${1}'
           replacement:   '${1}'
       {{- end }}
-      {{- if .Values.prometheus.sense_enabled }}
-      - job_name: sense
+      - job_name: 'gm-metrics'
         metrics_path: /stats/prometheus
         kubernetes_sd_configs:
           - role: pod
@@ -72,7 +71,28 @@ data:
           target_label:  'job'
           #replacement:   '${1}'
           replacement:   '${1}'
-      {{- end }}  
+      - job_name: 'envoy-metrics'
+        metrics_path: /stats/prometheus
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+{{ include "greymatter.dashboard.prometheus_namespaces" . | indent 16 }}
+        relabel_configs:
+        # Drop all named ports that are not "metrics"
+        - source_labels: ['__meta_kubernetes_pod_container_port_name']
+          regex: 'metrics'
+          action: 'keep'
+        # Relabel Jobs to the service name and version of the zk path
+        - source_labels: ['__meta_kubernetes_pod_label_gmproxy']
+          regex: '(.*)'
+          target_label:  'job'
+          #replacement:   '${1}'
+          replacement:   '${1}'
+        - source_labels: ['__address__']
+          regex: '(.*):(.*)'
+          target_label:  '__address__'
+          replacement:   '${1}:8001'
 
   # Copied from https://github.com/DecipherNow/gm-dashboard/blob/master/docker/prometheus/recording_rules.yml
   recording_rules.yaml: |-
