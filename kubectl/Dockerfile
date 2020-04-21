@@ -1,2 +1,13 @@
-FROM deciphernow/helm-packager:v3.1.1
+FROM bitnami/kubectl:latest
 ADD --chown=1001:1001 kubeconfig ./.kube/config
+
+ARG HELM_VERSION=v3.1.1
+ENV HELM_HOME=/usr/local/helm
+
+RUN apk -v --update --no-cache add \
+    ca-certificates \
+    bash \
+    curl
+
+RUN wget -q https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > /usr/local/bin/helm && \
+    chmod +x /usr/local/bin/helm
