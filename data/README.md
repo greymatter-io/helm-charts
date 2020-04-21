@@ -55,8 +55,6 @@ helm install sense --name <my-release> -f custom.yaml
 | command      | description                        | comments |
 | ------------ | ---------------------------------- | -------- |
 | gm-data      | install standalone data            |          |
-| jwt          | install standalone jwt             |          |
-| jwt-gov      | install standalone jwt-gov         |          |
 | package-data | package data                       |          |
 | data         | package and install data component |          |
 | remove-data  | uninstalls data component          |          |

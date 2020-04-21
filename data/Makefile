@@ -12,14 +12,6 @@ wsa-data:
 gm-data: wsa-data
 	helm install $(NAME-DATA) gm-data --set=global.environment=kubernetes $(WAITERSACHECK-DATA) -f ../global.yaml
 
-.PHONY: jwt
-jwt: wsa-data
-	helm install jwt-$(NAME-DATA) jwt --set=global.environment=kubernetes $(WAITERSACHECK-DATA) -f ../global.yaml
-
-.PHONY: jwt-gov
-jwt-gov: wsa-data
-	helm install $(NAME-DATA) jwt-gov --set=global.environment=kubernetes $(WAITERSACHECK-DATA) -f ../global.yaml
-
 clean-data:
 	rm -f ./charts/*
 

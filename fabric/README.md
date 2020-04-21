@@ -56,6 +56,8 @@ helm install greymatter --name <my-release> -f custom.yaml
 | -------------- | ------------------------------------ | -------- |
 | control        | install standalone control           |          |
 | api            | install standalone control-api       |          |
+| jwt            | install standalone jwt               |          |
+| jwt-gov        | install standalone jwt-gov           |          |
 | package-fabric | package fabric                       |          |
 | fabric         | package and install fabric component |          |
 | remove-fabric  | uninstalls fabric component          |          |
