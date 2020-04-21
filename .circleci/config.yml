@@ -8,6 +8,19 @@
 version: 2
 
 jobs:
+  prepare-k3d:
+    docker:
+      - image: circleci/golang
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Set up K3d
+          command: |
+            wget -q -O - https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
+            k3d create --workers 4 --name greymatter
+            cp $(k3d get-kubeconfig --name='greymatter') ./kubectl/kubeconfig
+            docker build -t kubectl kubectl
   build-staging:
     machine: true
     steps:
@@ -190,6 +203,7 @@ workflows:
   version: 2
   build-and-publish:
     jobs:
+      - prepare-k3d
       - build-staging:
           filters:
             tags:
