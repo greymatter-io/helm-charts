@@ -25,7 +25,7 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.2.2
+    version: 1.3.0
 
 catalog:
   # Name used for the deployment and service resources
