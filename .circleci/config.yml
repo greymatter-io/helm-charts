@@ -21,7 +21,9 @@ jobs:
             k3d create --workers 4 --name greymatter
             sleep 10
             cp $(k3d get-kubeconfig --name='greymatter') ./.circleci/kubeconfig
-            docker build -t kubectl .circleci/kubectl
+            cd .circleci
+            docker build -t kubectl kubectl
+            cd ..
   build-staging:
     machine: true
     steps:
