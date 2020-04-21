@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: 1.2
 description: A Helm chart to deploy Grey Matter Data
 name: data
-version: 3.0.0
+version: 2.2.0
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
   - name: Decipher Technology Studios Engineering
@@ -15,19 +15,19 @@ keywords:
 dependencies:
   - name: gm-data
     repository: file://./gm-data
-    version: '2.1.7'
+    version: '2.2.0'
     alias: data
 
   - name: gm-data
     repository: file://./gm-data
-    version: '2.1.7'
+    version: '2.2.0'
     alias: internal-data
 
   - name: jwt
     repository: file://./jwt
-    version: '2.1.2'
+    version: '2.2.0'
 
   - name: jwt
     repository: file://./jwt
-    version: '2.1.2'
+    version: '2.2.0'
     alias: internal-jwt

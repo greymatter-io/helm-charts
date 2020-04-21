@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: 1.2
 description: A Helm chart to deploy Grey Matter Fabric
 name: fabric
-version: 3.0.0
+version: 2.2.0
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
   - name: Decipher Technology Studios Engineering
@@ -15,8 +15,8 @@ keywords:
 dependencies:
   - name: control-api
     repository: file://./control-api
-    version: '2.1.6'
+    version: '2.2.0'
 
   - name: control
     repository: file://./control
-    version: '2.1.4'
+    version: '2.2.0'

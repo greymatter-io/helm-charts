@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: 1.2
 description: A Helm chart to deploy Grey Matter Sense
 name: sense
-version: 3.0.2
+version: 2.2.0
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
   - name: Decipher Technology Studios Engineering
@@ -15,12 +15,16 @@ keywords:
 dependencies:
   - name: catalog
     repository: file://./catalog
-    version: '2.1.6'
+    version: '2.2.0'
 
   - name: dashboard
     repository: file://./dashboard
+<<<<<<< HEAD
     version: '2.1.7'
+=======
+    version: '2.2.0'
+>>>>>>> update all charts to 2.2
 
   - name: slo
     repository: file://./slo
-    version: '2.1.3'
+    version: '2.2.0'
