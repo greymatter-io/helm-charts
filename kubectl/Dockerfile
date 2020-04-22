@@ -1,5 +1,5 @@
 FROM bitnami/kubectl:latest
-# ADD --chown=1001:1001 kubeconfig ./.kube/config
+ADD --chown=1001:1001 kubeconfig ./.kube/config
 
 ARG HELM_VERSION=v3.1.1
 ENV HELM_HOME=/usr/local/helm
