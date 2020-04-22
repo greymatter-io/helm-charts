@@ -29,7 +29,7 @@ jobs:
       - run:
           name: Run helm ls 
           command: |
-            docker run --entrypoint "/usr/local/helm ls" --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD kubectl
+            docker run --entrypoint "/usr/local/helm" --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD kubectl
 
   build-staging:
     machine: true
