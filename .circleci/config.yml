@@ -26,6 +26,7 @@ jobs:
           command: |
             wget -q -O - https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
             make k3d
+            echo "time to export tooooooo"
             export KUBECONFIG="$(k3d get-kubeconfig --name='greymatter')"
       - run:
           name: Set Environment Variable
@@ -38,6 +39,7 @@ jobs:
       - run:
           name: Run kc get nodes
           command: |
+            kubectl cluster-info
             kubectl get nodes
   build-staging:
     machine: true
