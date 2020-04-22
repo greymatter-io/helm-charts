@@ -27,10 +27,13 @@ jobs:
           command: |
             echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-staging/" >> $BASH_ENV
       - run:
-          name: Run helm ls 
+          name: Run helm 
           command: |
             docker run --entrypoint "/usr/local/bin/helm" --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD kubectl
-
+      - run:
+          name: Run kc get nodes
+          command: |
+            docker run --entrypoint "/opt/bitnami/kubectl/bin/kubectl" --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD kubectl get nodes
   build-staging:
     machine: true
     steps:
