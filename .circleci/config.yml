@@ -15,6 +15,13 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
+          name: install kubernetes
+          command: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            sudo mv ./kubectl /usr/local/bin/kubectl
+            kubectl version --client
+      - run:
           name: Set up K3d
           command: |
             wget -q -O - https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
@@ -22,6 +29,7 @@ jobs:
             sleep 10
             cp $(k3d get-kubeconfig --name='greymatter') ./kubectl/kubeconfig
             docker build -t kubectl kubectl
+
       - run:
           name: Set Environment Variable
           command: |

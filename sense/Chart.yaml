@@ -19,11 +19,7 @@ dependencies:
 
   - name: dashboard
     repository: file://./dashboard
-<<<<<<< HEAD
-    version: '2.1.7'
-=======
     version: '2.2.0'
->>>>>>> update all charts to 2.2
 
   - name: slo
     repository: file://./slo
