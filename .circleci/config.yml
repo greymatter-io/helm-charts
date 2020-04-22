@@ -29,6 +29,8 @@ jobs:
             echo "time to export tooooooo"
             export KUBECONFIG="$(k3d get-kubeconfig --name='greymatter')"
             echo "kubeconfig is set to $KUBECONFIG"
+            kubectl cluster-info
+            kubectl get nodes
       - run:
           name: Set Environment Variable
           command: |
@@ -37,11 +39,6 @@ jobs:
       #     name: Run helm 
       #     command: |
       #       docker run --entrypoint "/usr/local/bin/helm" --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD kubectl
-      - run:
-          name: Run kc get nodes
-          command: |
-            kubectl cluster-info
-            kubectl get nodes
   build-staging:
     machine: true
     steps:
