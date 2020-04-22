@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Run kc get nodes
           command: |
-            docker run --entrypoint "/opt/bitnami/kubectl/bin/kubectl" --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD kubectl get nodes
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD kubectl get nodes
   build-staging:
     machine: true
     steps:
