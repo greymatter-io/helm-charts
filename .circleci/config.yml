@@ -28,6 +28,7 @@ jobs:
             make k3d
             echo "time to export tooooooo"
             export KUBECONFIG="$(k3d get-kubeconfig --name='greymatter')"
+            echo "kubeconfig is set to $KUBECONFIG"
       - run:
           name: Set Environment Variable
           command: |
