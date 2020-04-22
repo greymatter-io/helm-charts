@@ -25,10 +25,8 @@ jobs:
           name: Set up K3d
           command: |
             wget -q -O - https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
-            k3d create --workers 4 --name greymatter
-            sleep 10
-            cp $(k3d get-kubeconfig --name='greymatter') ./kubectl/kubeconfig
-            docker build -t kubectl kubectlDockerfile
+            make k3d
+            export KUBECONFIG="$(k3d get-kubeconfig --name='greymatter')"
       - run:
           name: Set Environment Variable
           command: |
@@ -37,10 +35,10 @@ jobs:
       #     name: Run helm 
       #     command: |
       #       docker run --entrypoint "/usr/local/bin/helm" --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD kubectl
-      # - run:
-      #     name: Run kc get nodes
-      #     command: |
-      #       docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD kubectl get nodes
+      - run:
+          name: Run kc get nodes
+          command: |
+            kubectl get nodes
   build-staging:
     machine: true
     steps:
