@@ -58,7 +58,10 @@
                   {
                     "authenticated": {
                       "principal_name": {
-                        "regex": "spiffe:\/\/quickstart.greymatter.io\/(.+)"
+                        "safe_regex": {
+                          "google_re2": {},
+                          "regex": "spiffe:\/\/quickstart.greymatter.io\/(.+)"
+                        },
                       }
                     }
                   }
