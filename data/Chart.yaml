@@ -22,12 +22,3 @@ dependencies:
     repository: file://./gm-data
     version: '2.2.0'
     alias: internal-data
-
-  - name: jwt
-    repository: file://./jwt
-    version: '2.2.0'
-
-  - name: jwt
-    repository: file://./jwt
-    version: '2.2.0'
-    alias: internal-jwt

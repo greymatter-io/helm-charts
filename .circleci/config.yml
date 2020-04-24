@@ -39,11 +39,11 @@ jobs:
       - run:
           name: Package and Publish JWT
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/jwt
       - run:
           name: Package and Publish JWT Gov
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt-gov
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/jwt-gov
       - run:
           name: Package and Publish Edge
           command: |
@@ -130,11 +130,11 @@ jobs:
       - run:
           name: Package and Publish JWT
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/jwt
       - run:
           name: Package and Publish JWT Gov
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt-gov
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/jwt-gov
       - run:
           name: Package and Publish Edge
           command: |
