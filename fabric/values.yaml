@@ -513,7 +513,7 @@ jwt:
     # Location to mount the information specified in users_cg_name in the container
     users_mount_point: /gm-jwt-security/etc
     version: 1.0.1
-    image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
     envvars:
       private_key:
         type: secret
@@ -578,7 +578,7 @@ internal-jwt:
     #  secret_name: internal-jwt-certs
     #  mount_point: /gm-jwt-security/certs
     version: 1.0.1
-    image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
     envvars:
       private_key:
         type: secret
