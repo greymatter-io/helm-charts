@@ -15,6 +15,14 @@ control: wsa-fabric
 control-api: wsa-fabric
 	helm install control-api-$(NAME-FABRIC) control-api  --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC)
 
+.PHONY: jwt
+jwt: wsa-data
+	helm install jwt-$(NAME-FABRIC) jwt --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) -f ../global.yaml
+
+.PHONY: jwt-gov
+jwt-gov: wsa-data
+	helm install $(NAME-FABRIC) jwt-gov --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) -f ../global.yaml
+
 clean-fabric:
 	rm -f ./charts/*
 

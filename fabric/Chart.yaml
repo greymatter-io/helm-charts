@@ -20,3 +20,12 @@ dependencies:
   - name: control
     repository: file://./control
     version: '2.2.0'
+    
+  - name: jwt
+    repository: file://./jwt
+    version: '2.2.0'
+
+  - name: jwt
+    repository: file://./jwt
+    version: '2.2.0'
+    alias: internal-jwt
