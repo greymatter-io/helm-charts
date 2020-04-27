@@ -108,7 +108,7 @@ slo:
 # Sidecar configuration for SLO
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.io/deciphernow/gm-proxy:test'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
