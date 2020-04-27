@@ -61,7 +61,7 @@
                         "safe_regex": {
                           "google_re2": {},
                           "regex": "spiffe:\/\/quickstart.greymatter.io\/(.+)"
-                        },
+                        }
                       }
                     }
                   }
