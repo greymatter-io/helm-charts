@@ -5,7 +5,16 @@
 - Docker  (must have at least 13Gb of memory allocated)
 - Helm 3
 
-## Usage
+## Local Usage
+
+
+1. `make k3d` - start a kubernetes cluster locally.
+1. `export KUBECONFIG="$(k3d get-kubeconfig --name='greymatter')" ` - configures `kubectl` to use the local k3d cluster.
+1. `make secrets` - creates a git ignored file `credentials.yaml` 
+1.  `make credentials` - inserts data from `credentials.yaml` into the cluster as secrets
+1. `make install` installs each helm chart (spire, fabric, edge, data, sense). This will take about 1.5 minutes.
+1. Open up https://localhost:30000 using the certificate `./certs/quickstart.p12`. The password is "password"
+1. When you're ready, uninstall Grey Matter with `make uninstall`
 
 ### Cluster Command
 
