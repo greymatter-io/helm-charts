@@ -129,7 +129,11 @@ spec:
       {{- if .Values.controlApi.secret.enabled }}
       - name: service-certs
         secret:
+          {{- if .Values.global.global_certs.enabled }}
+          secretName: global-certs
+          {{- else }}
           secretName: {{ .Values.controlApi.secret.secret_name }}
+          {{- end }}
       {{- end }}
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

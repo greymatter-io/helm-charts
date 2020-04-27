@@ -54,5 +54,9 @@ spec:
       volumes:
         - name: controlapi-certs
           secret:
+            {{- if .Values.global.global_certs.enabled }}
+            secretName: global-certs
+            {{- else }}
             secretName: {{ .Values.control.secret.secret_name }}
+            {{- end }}
       {{- end }}

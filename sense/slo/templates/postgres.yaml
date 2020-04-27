@@ -68,7 +68,11 @@ spec:
       {{- if .Values.postgres.secret.enabled }}
       - name: certificates
         secret:
+          {{- if .Values.global.global_certs.enabled }}
+          secretName: global-certs
+          {{- else }}
           secretName: {{ .Values.postgres.secret.secret_name }}
+          {{- end }}
           # If you do not spedify, default is 644. Postgres crashes and burns if it's readable by the world.
           defaultMode: 0640
       {{- end }}

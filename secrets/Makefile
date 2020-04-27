@@ -29,11 +29,11 @@ copy-credentials:
 secrets: copy-credentials
 	@if [ "$(pwd_name)" == "helm-charts" ]; then \
 		echo "in helm-charts"; \
-		helm install secrets secrets -f credentials.yaml; \
+		helm install secrets secrets -f credentials.yaml -f global.yaml; \
 		rm secrets/credentials.yaml; \
 	elif [ "$(pwd_name)" == "secrets" ]; then \
 		echo "in secrets"; \
-		helm install secrets . -f credentials.yaml; \
+		helm install secrets . -f credentials.yaml -f ../global.yaml; \
 		rm credentials.yaml; \
 	else \
 		echo "Make sure you are running this from helm-charts or secrets makefile"; \

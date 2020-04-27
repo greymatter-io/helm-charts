@@ -100,12 +100,20 @@ spec:
       {{- if .Values.postgres.secret.enabled }}
       - name: postgres-certs
         secret:
+          {{- if .Values.global.global_certs.enabled }}
+          secretName: global-certs
+          {{- else }}
           secretName: {{ .Values.postgres.secret.secret_name }}
+          {{- end }}
       {{- end }}
       {{- if .Values.slo.secret.enabled }}
       - name: service-certs
         secret:
+          {{- if .Values.global.global_certs.enabled }}
+          secretName: global-certs
+          {{- else }}
           secretName: {{ .Values.slo.secret.secret_name }}
+          {{- end }}
       {{- end }}
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

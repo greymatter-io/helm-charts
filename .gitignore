@@ -14,3 +14,5 @@ creds
 requirements.lock
 build-number.txt
 logs/
+
+*.helm-version
