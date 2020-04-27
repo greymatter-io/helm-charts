@@ -9,11 +9,11 @@ wsa-fabric:
 
 .PHONY: control
 control: wsa-fabric
-	helm install $(NAME-FABRIC) control --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC)
+	helm install $(NAME-FABRIC) control --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
 .PHONY: control-api
 control-api: wsa-fabric
-	helm install control-api-$(NAME-FABRIC) control-api  --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC)
+	helm install control-api-$(NAME-FABRIC) control-api  --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
 .PHONY: jwt
 jwt: wsa-data
@@ -36,7 +36,7 @@ template-fabric: package-fabric $(BUILD_NUMBER_FILE)
 
 .PHONY: fabric
 fabric: package-fabric wsa-fabric
-	helm install $(NAME-FABRIC) . --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC)
+	helm install $(NAME-FABRIC) . --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
 .PHONY: remove-fabric
 remove-fabric:
