@@ -47,7 +47,7 @@ global:
         value: 'control.{{ .Release.Namespace }}.svc'
       xds_port:
         type: 'value'
-        value: '{{ .Values.global.control_port | quote }}'
+        value: '{{ .Values.global.control_port }}'
       xds_node_id:
         type: 'value'
         value: 'default'
