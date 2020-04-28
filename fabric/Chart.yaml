@@ -15,17 +15,17 @@ keywords:
 dependencies:
   - name: control-api
     repository: file://./control-api
-    version: '2.2.0'
+    version: '2.2.1'
 
   - name: control
     repository: file://./control
-    version: '2.2.0'
+    version: '2.2.1'
     
   - name: jwt
     repository: file://./jwt
-    version: '2.2.0'
+    version: '2.2.1'
 
   - name: jwt
     repository: file://./jwt
-    version: '2.2.0'
+    version: '2.2.1'
     alias: internal-jwt

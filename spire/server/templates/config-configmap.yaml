@@ -3,6 +3,10 @@ kind: ConfigMap
 metadata:
   name: server-config
   namespace: {{ .Values.global.spire.namespace }}
+  labels:
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
 data:
   registrar.conf: |-
     log_level = "info"
@@ -15,7 +19,7 @@ data:
     key_path = "/run/spire/tls/registrar.spire.svc.key"
     cacert_path = "/run/spire/tls/ca.crt"
     insecure_skip_client_verification	= true
-    pod_label = "gmproxy"
+    pod_label = "{{ .Values.global.control_cluster_label }}"
   server.conf: |-
     server {
       bind_address = "0.0.0.0"

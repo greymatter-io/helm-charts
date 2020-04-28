@@ -3,6 +3,7 @@ kind: Service
 metadata:
   labels:
     run: {{ .Values.control.name }}
+    {{ .Values.global.control_cluster_label }}: {{ .Values.control.name }}
   name: {{ .Values.control.name }}
   namespace: {{ .Release.Namespace }}
 spec:

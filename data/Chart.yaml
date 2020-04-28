@@ -15,10 +15,10 @@ keywords:
 dependencies:
   - name: gm-data
     repository: file://./gm-data
-    version: '2.2.0'
+    version: '2.2.1'
     alias: data
 
   - name: gm-data
     repository: file://./gm-data
-    version: '2.2.0'
+    version: '2.2.1'
     alias: internal-data

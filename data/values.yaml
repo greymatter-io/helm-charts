@@ -14,6 +14,8 @@ global:
   edge_port: 10808
   # Port for Grey Matter Control. Used in sidecar envvars
   control_port: 50000
+  # The label Control uses to find pods to include in the mesh
+  control_cluster_label: greymatter.io/control
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: true

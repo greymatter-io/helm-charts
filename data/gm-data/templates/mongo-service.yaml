@@ -10,6 +10,6 @@ spec:
       protocol: TCP
       targetPort: 27017
   selector:
-    gmproxy: {{ .Values.mongo.name }}
+    {{ .Values.global.control_cluster_label }}: {{ .Values.mongo.name }}
   sessionAffinity: None
   type: ClusterIP

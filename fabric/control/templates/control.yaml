@@ -7,12 +7,12 @@ spec:
   replicas: {{ .Values.control.replicas }}
   selector:
     matchLabels:
-      gmproxy: {{ .Values.control.name }}
+      {{ .Values.global.control_cluster_label }}: {{ .Values.control.name }}
       deployment: {{ .Values.control.name }}
   template:
     metadata:
       labels:
-        gmproxy: {{ .Values.control.name }}
+        {{ .Values.global.control_cluster_label }}: {{ .Values.control.name }}
         deployment: {{ .Values.control.name }}
         run: {{ .Values.control.name }}
     spec:

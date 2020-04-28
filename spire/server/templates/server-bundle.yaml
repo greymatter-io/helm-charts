@@ -3,3 +3,7 @@ kind: ConfigMap
 metadata:
   name: server-bundle
   namespace: spire
+  labels:
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"

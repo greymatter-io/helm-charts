@@ -4,19 +4,22 @@ metadata:
   name: agent
   namespace: {{ .Values.global.spire.namespace }}
   labels:
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
     app: agent
     cluster: spire.agent
 spec:
   selector:
     matchLabels:
       app: agent
-      gmproxy: agent
+      {{ .Values.global.control_cluster_label }}: agent
       cluster: spire.agent
   template:
     metadata:
       namespace: {{ .Values.global.spire.namespace }}
       labels:
-        gmproxy: agent
+        {{ .Values.global.control_cluster_label }}: agent
         app: agent
         cluster: spire.agent
     spec:

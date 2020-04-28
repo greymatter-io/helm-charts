@@ -16,6 +16,8 @@ global:
   control_port: 50000
   # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
   control_additional_namespaces:
+  # The label Control uses to find pods to include in the mesh
+  control_cluster_label: greymatter.io/control
   # Configures the init container used to wait on various deployments to be ready
   waiter:                             
     image: deciphernow/k8s-waiter:latest
@@ -84,7 +86,7 @@ control:
       value: 'true'
     gm_control_kubernetes_cluster_label:
       type: 'value'
-      value: 'gmproxy'
+      value: "{{ .Values.global.control_cluster_label }}"
     gm_control_kubernetes_port_name:
       type: 'value'
       value: 'proxy'

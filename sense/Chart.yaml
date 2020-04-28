@@ -15,12 +15,12 @@ keywords:
 dependencies:
   - name: catalog
     repository: file://./catalog
-    version: '2.2.0'
+    version: '2.2.1'
 
   - name: dashboard
     repository: file://./dashboard
-    version: '2.2.0'
+    version: '2.2.1'
 
   - name: slo
     repository: file://./slo
-    version: '2.2.0'
+    version: '2.2.1'

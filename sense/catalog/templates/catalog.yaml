@@ -6,13 +6,13 @@ metadata:
 spec:
   selector:
     matchLabels:
-      gmproxy: catalog
+      {{ .Values.global.control_cluster_label }}: catalog
       deployment: catalog
   replicas: 1
   template:
     metadata:
       labels:
-        gmproxy: catalog
+        {{ .Values.global.control_cluster_label }}: catalog
         deployment: catalog
     spec:
       serviceAccountName: {{ .Values.global.waiter.service_account.name }}

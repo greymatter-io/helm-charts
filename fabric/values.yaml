@@ -16,6 +16,8 @@ global:
   jwt_api_key: dm9sY2Fuby1lcGlkZW1pYy10d2VsZnRoLXRhbWFsZQ==
   # Port for Grey Matter Control. Used in control-api and sidecar envvars.
   control_port: 50000 
+  # The label Control uses to find pods to include in the mesh
+  control_cluster_label: greymatter.io/control
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: true
@@ -118,7 +120,7 @@ control:
         value: 'true'
       gm_control_kubernetes_cluster_label:
         type: 'value'
-        value: 'gmproxy'
+        value: "{{ .Values.global.control_cluster_label }}"
       gm_control_kubernetes_port_name:
         type: 'value'
         value: 'proxy'

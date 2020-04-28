@@ -6,12 +6,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      gmproxy: dashboard
+      {{ .Values.global.control_cluster_label }}: dashboard
   replicas: 1
   template:
     metadata:
       labels:
-        gmproxy: dashboard
+        {{ .Values.global.control_cluster_label }}: dashboard
     spec:
       containers:
       - name: dashboard

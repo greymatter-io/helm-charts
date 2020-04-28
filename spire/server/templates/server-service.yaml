@@ -3,6 +3,10 @@ kind: Service
 metadata:
   name: server
   namespace: {{ .Values.global.spire.namespace }}
+  labels:
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
 spec:
   type: NodePort
   ports:

@@ -60,7 +60,7 @@ data:
           regex: 'metrics'
           action: 'keep'
         # Relabel Jobs to the service name and version of the zk path
-        - source_labels: ['__meta_kubernetes_pod_label_gmproxy']
+        - source_labels: ['__meta_kubernetes_pod_label_{{ .Values.global.control_cluster_label | replace "." "_"  | replace "-" "_" | replace "/" "_" }}']
           regex: '(.*)'
           target_label:  'job'
           #replacement:   '${1}'
@@ -78,7 +78,7 @@ data:
           regex: 'metrics'
           action: 'keep'
         # Relabel Jobs to the service name and version of the zk path
-        - source_labels: ['__meta_kubernetes_pod_label_gmproxy']
+        - source_labels: ['__meta_kubernetes_pod_label_{{ .Values.global.control_cluster_label | replace "." "_" | replace "-" "_" | replace "/" "_" }}']
           regex: '(.*)'
           target_label:  'job'
           #replacement:   '${1}'

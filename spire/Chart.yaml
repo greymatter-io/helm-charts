@@ -16,8 +16,8 @@ keywords:
 dependencies:
   - name: agent
     repository: file://./agent
-    version: '2.2.0'
+    version: '2.2.1'
 
   - name: server
     repository: file://./server
-    version: '2.2.0'
+    version: '2.2.1'

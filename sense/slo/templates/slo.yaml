@@ -6,13 +6,13 @@ metadata:
 spec:
   selector:
     matchLabels:
-      gmproxy: slo
+      {{ .Values.global.control_cluster_label }}: slo
       deployment: slo
   replicas: 1
   template:
     metadata:
       labels:
-        gmproxy: slo
+        {{ .Values.global.control_cluster_label }}: slo
         deployment: slo
     spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}

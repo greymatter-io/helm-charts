@@ -8,12 +8,12 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      gmproxy: {{ .Values.jwt.name | default "jwt-security"  }}
+      {{ .Values.global.control_cluster_label }}: {{ .Values.jwt.name | default "jwt-security"  }}
       deployment: {{ .Values.jwt.name | default "jwt-security"  }}
   template:
     metadata:
       labels:
-        gmproxy: {{ .Values.jwt.name | default "jwt-security"  }}
+        {{ .Values.global.control_cluster_label }}: {{ .Values.jwt.name | default "jwt-security"  }}
         deployment: {{ .Values.jwt.name | default "jwt-security"  }}
     spec:
       containers:
