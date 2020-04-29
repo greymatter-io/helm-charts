@@ -249,7 +249,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.0.1
+    version: 1.0.6
     minInstances: 1
     maxInstances: 1
     secret:
@@ -320,7 +320,7 @@ services:
     jwt_prefix: '/jwt'
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
-    version: 1.0.0
+    version: 1.1
     jwt_prefix: /jwt
     routes:
       - '/services/data/{{ $.Values.services.data.version }}'
@@ -348,7 +348,7 @@ services:
     documentation: '/services/data/latest/static/ui/index.html'
     name: 'Grey Matter Internal Data'
     owner: 'Decipher'
-    version: 1.0.0
+    version: 1.1
     jwt_prefix: /jwt
     secret:
       enabled: true  
@@ -371,7 +371,7 @@ services:
     capability: 'Security'
     documentation: ''
     owner: 'Decipher'
-    version: '0.2.0'
+    version: '1.0.1'
     routes:
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
@@ -396,7 +396,7 @@ services:
     capability: 'Grey Matter'
     documentation: ''
     owner: 'Decipher'
-    version: '0.2.0'
+    version: '1.0.1'
     secret:
       enabled: true
       secret_name: sidecar-certs
