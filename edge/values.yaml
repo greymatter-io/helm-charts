@@ -90,6 +90,7 @@ edge:
     # If global.environment is openshift, a passthrough Route is configured with host set from the values specified in global.domain, global.route_url_name, and global.remove_namespace_from_url
     # If global.environment is not openshift, an ingress object is created with the specified apiVersion, annotations, and rules
     
+    # If use_voyager is true make sure voyager is already installed
     use_voyager: false
     voyager:
       apiVersion: voyager.appscode.com/v1beta1

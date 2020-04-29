@@ -1,3 +1,22 @@
+{{/*
+Defines the edge ingress.  can be reused by passing in annotations, rules, and apiVersion
+*/}}
+{{- define "edge-ingress" }}
+{{- $ingress := index . "ingress" }}
+{{- $root := index . "root" }}
+apiVersion: {{ $ingress.apiVersion }}
+kind: Ingress
+metadata:
+  name: edge
+  namespace: {{ $root.Release.Namespace }}
+  annotations:
+{{ toYaml $ingress.annotations | indent 4 }}
+spec:
+  rules:
+{{ toYaml $ingress.rules | indent 4 }}
+{{- end }}
+
+
 {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
 kind: Route
 apiVersion: route.openshift.io/v1
@@ -17,38 +36,17 @@ spec:
   wildcardPolicy: None
 
 {{- else }}
-{{- with .Values.edge.ingress.nginx }}
 
-
-{{- if .use_voyager -}}
-
-# with voyager
-apiVersion: {{ .apiVersion }}
-kind: Ingress
-metadata:
-  name: edge
-  namespace: {{ $.Release.Namespace }}
-  annotations:
-{{ toYaml .annotations | indent 4 }}
-spec:
-  rules:
-{{ toYaml .rules | indent 4 }}
+# Create nginx or voyager ingress using template
+{{- $root := . }}
+{{- if .Values.edge.ingress.use_voyager }}
+{{- $ingress := .Values.edge.ingress.voyager }}
+{{- include "edge-ingress" (dict "ingress" $ingress "root" $root) }}
 
 {{- else }}
-# with nginx
+{{- $ingress := .Values.edge.ingress.nginx}}
+{{- include "edge-ingress" (dict "ingress" $ingress "root" $root) }}
 
-apiVersion: {{ .apiVersion }}
-kind: Ingress
-metadata:
-  name: edge
-  namespace: {{ $.Release.Namespace }}
-  annotations:
-{{ toYaml .annotations | indent 4 }}
-spec:
-  rules:
-{{ toYaml .rules | indent 4 }}
+{{- end }} 
 
-{{- end }}
-
-{{- end }} #end with ingress
 {{- end }}
