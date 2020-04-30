@@ -67,7 +67,7 @@ data:
   data:
     # Name used for the deployment and service resources
     name: data
-    version: latest
+    version: 1.1
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-data:{{ .Values.data.version }}'
     # Security context for the statefulset if enabled
     security_context:

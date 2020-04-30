@@ -6,7 +6,7 @@ pwd_name := $(notdir $(PWD))
 
 .PHONY: credentials
 credentials:
-	if [ "$(pwd_name)" == "helm-charts" ]; then \
+	@if [ "$(pwd_name)" == "helm-charts" ]; then \
 		./ci/scripts/build-credentials.sh; \
 	elif [ "$(pwd_name)" == "secrets" ]; then \
 		./../ci/scripts/build-credentials.sh; \
@@ -15,7 +15,7 @@ credentials:
 	fi
 
 copy-credentials:
-	if [ "$(pwd_name)" == "helm-charts" ]; then \
+	@if [ "$(pwd_name)" == "helm-charts" ]; then \
 		echo "in helm-charts"; \
 		cp ./credentials.yaml ./secrets/credentials.yaml; \
 	elif [ "$(pwd_name)" == "secrets" ]; then \
@@ -27,7 +27,7 @@ copy-credentials:
 
 .PHONY: secrets
 secrets: copy-credentials
-	if [ "$(pwd_name)" == "helm-charts" ]; then \
+	@if [ "$(pwd_name)" == "helm-charts" ]; then \
 		echo "in helm-charts"; \
 		helm install secrets secrets -f credentials.yaml; \
 		rm secrets/credentials.yaml; \
