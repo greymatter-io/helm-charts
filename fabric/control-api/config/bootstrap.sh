@@ -122,12 +122,6 @@ for rte in $(ls route-*.json); do
     create_or_update "route" $rte
 done
 
-if $SPIRE_ENABLED; then
-    for rte in $(ls local-route-*.json); do
-        create_or_update "route" $rte
-    done
-fi
-
 # greymatter create route < route-data-jwt-slash.json
 # greymatter create route < route-data-jwt.json
 # greymatter create route < route-dashboard-slash.json

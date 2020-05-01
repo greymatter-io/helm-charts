@@ -1,6 +1,10 @@
 {
   "route_key": "data-jwt-route-slash",
+  {{- if .Values.global.spire.enabled }}
+  "domain_key": "domain-data-egress",
+  {{- else }}
   "domain_key": "domain-data",
+  {{- end }}
   "zone_key": "{{ .Values.global.zone}}",
   "path": "{{ .Values.services.data.jwt_prefix }}",
   "prefix_rewrite": "{{ .Values.services.data.jwt_prefix }}/",

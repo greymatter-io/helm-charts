@@ -28,9 +28,9 @@
   },
   {{- end }}
   "active_http_filters": [
-    "gm.metrics",{{- if (.service.observablesEnabled) }},
-    "gm.observables",{{- end }}
-    "envoy.rbac"
+    "gm.metrics"{{- if (.service.observablesEnabled) }},
+    "gm.observables"{{- end }}{{- if .Values.global.spire.enabled }},
+    "envoy.rbac"{{- end }}
   ],
   "http_filters": {
     "envoy_rbac": {

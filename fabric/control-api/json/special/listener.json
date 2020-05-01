@@ -57,11 +57,11 @@
       {{- else }}
       "apiKey": "{{ .Values.global.jwt_api_key }}",
       "endpoint": "https://localhost:10909/jwt",
-      "jwtHeaderName": "userpolicy"{{- if .service.secret.enabled }},
+      "jwtHeaderName": "userpolicy"{{- if .Values.services.edge.egress.secret.enabled }},
       "useTls": true,
-      "caPath": "{{ .service.secret.mount_point }}/ca.crt",
-      "certPath": "{{ .service.secret.mount_point }}/server.crt",
-      "keyPath": "{{ .service.secret.mount_point }}/server.key",
+      "caPath": "{{ .Values.services.edge.egress.secret.mount_point }}/ca.crt",
+      "certPath": "{{ .Values.services.edge.egress.secret.mount_point }}/server.crt",
+      "keyPath": "{{ .Values.services.edge.egress.secret.mount_point }}/server.key",
       "insecureSkipVerify": true{{- end }}
       {{- end }}
     }

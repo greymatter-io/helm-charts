@@ -16,7 +16,7 @@ global:
   control_port: 50000
   # Whether or not to use spire for cert management and the trust domain
   spire:
-    enabled: true
+    enabled: false
     trust_domain: quickstart.greymatter.io
   # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
   control_additional_namespaces:                   
@@ -49,9 +49,9 @@ global:
         type: 'value'
         value: '/dev/stdout'
       # SPIRE: If spire is enabled, uncomment spire_path
-      spire_path:
-        type: 'value'
-        value: '/run/spire/socket/agent.sock'
+      #spire_path:
+      #  type: 'value'
+      #  value: '/run/spire/socket/agent.sock'
 
 slo:   
   slo:
@@ -365,7 +365,7 @@ catalog:
         value: localhost
       client_port:
         type: value
-        value: '10909'
+        value: '{{- if .Values.global.spire.enabled }}10909{{- else}}10808{{- end }}'
       client_prefix:
         type: value
         value: '/data'
@@ -410,11 +410,11 @@ catalog:
           value: '{{ .Values.catalog.name }}'
 
     # SPIRE: If spire is enabled, uncomment to set init job use_tls to false
-    init:
-      envvars:
-        use_tls:
-          type: value
-          value: 'false'
+    #init:
+    #  envvars:
+    #    use_tls:
+    #      type: value
+    #      value: 'false'
 
 # Services list used to configure Catalog, which populates service metadata for GM Dashboard
 services:

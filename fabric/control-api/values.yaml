@@ -391,7 +391,7 @@ services:
           ca: ca.crt
     egress:
       secret:
-        enabled: false
+        enabled: '{{- not .Values.global.spire.enabled }}'
         secret_name: greymatter-edge-egress
         mount_point: /etc/proxy/tls/sidecar
         secret_keys:
