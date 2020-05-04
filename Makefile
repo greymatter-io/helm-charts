@@ -49,9 +49,16 @@ check-secrets:
 		(make secrets);\
 	fi
 
+.PHONY: install-spire
+install-spire:
+	@read -p "Would you like to install Spire? [y/N] " response; \
+	if [ "$$response" = "y" ]; then \
+        echo "Installing spire"; \
+		(cd spire && make spire); \
+    fi
+
 .PHONY: install
-install: dev-dep check-secrets
-	(cd spire && make spire)
+install: dev-dep check-secrets install-spire
 	(cd fabric && make fabric)
 	sleep 20
 	(cd edge && make edge)
