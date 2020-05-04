@@ -32,7 +32,7 @@ global:
     certificates:
       # if from file is true the there must be a ca.crt, server.crt, and server.key files in the secrets/<$path> directory
       from_file:
-        enabled: true
+        enabled: false
         path: files/certs/global
       ca: |-
         -----BEGIN CERTIFICATE-----
