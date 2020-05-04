@@ -60,7 +60,7 @@
                       "principal_name": {
                         "safe_regex": {
                           "google_re2": {},
-                          "regex": "spiffe:\/\/quickstart.greymatter.io\/(.+)"
+                          "regex": "spiffe:\/\/{{ .Values.global.spire.trust_domain }}\/(.+)"
                         }
                       }
                     }
