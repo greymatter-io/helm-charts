@@ -53,9 +53,9 @@ check-secrets:
 install-spire:
 	@read -p "Would you like to install Spire? [y/N] " response; \
 	if [ "$$response" = "y" ]; then \
-        echo "Installing spire"; \
+		echo "Installing spire"; \
 		(cd spire && make spire); \
-    fi
+	fi
 
 .PHONY: install
 install: dev-dep check-secrets install-spire
