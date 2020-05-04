@@ -16,7 +16,7 @@ global:
   control_port: 50000
   # Whether or not to use spire for cert management and the trust domain
   spire:
-    enabled: false
+    enabled: true
     trust_domain: quickstart.greymatter.io
 
   # Default configuration for all sidecars in all subcharts
@@ -45,9 +45,9 @@ global:
         type: 'value'
         value: '/dev/stdout'
       # SPIRE: If spire is enabled, uncomment spire_path
-      #spire_path:
-      #  type: 'value'
-      #  value: '/run/spire/socket/agent.sock'
+      spire_path:
+        type: 'value'
+        value: '/run/spire/socket/agent.sock'
 
   # Configures the init container used to wait on various deployments to be ready
   waiter:
@@ -128,9 +128,9 @@ data:
         type: value
         value: '{{ not .Values.global.spire.enabled }}'
       # SPIRE: If spire is enabled, use bind_address
-      #bind_address:
-      #  type: value
-      #  value: 127.0.0.1
+      bind_address:
+        type: value
+        value: 127.0.0.1
       gmdata_cert:
         type: secret
         secret: jwt-certs
@@ -286,9 +286,9 @@ internal-data:
         type: value
         value: '{{ not .Values.global.spire.enabled }}'
       # SPIRE: If spire is enabled, use bind_address
-      #bind_address:
-      #  type: value
-      #  value: 127.0.0.1
+      bind_address:
+        type: value
+        value: 127.0.0.1
       jwt_pub:
         type: secret
         secret: internal-jwt-security-secret
@@ -298,24 +298,24 @@ internal-data:
         secret: internal-jwt-security-secret
         key: jwt.api_key
       # SPIRE: If spire is enabled, uncomment the client env vars
-      #client_prefix:
-      #  type: value
-      #  value: /services/data-internal/1.0.0
-      #client_jwt_prefix:
-      #  type: value
-      #  value: /jwt
-      #client_jwt_endpoint_address:
-      #  type: value
-      #  value: localhost
-      #client_jwt_endpoint_port:
-      #  type: value
-      #  value: '10909'
-      #client_jwt_endpoint_prefix:
-      #  type: value
-      #  value: /jwt
-      #client_jwt_endpoint_use_tls:
-      #  type: value
-      #  value: '{{ not .Values.global.spire.enabled }}'
+      client_prefix:
+        type: value
+        value: /services/data-internal/1.0.0
+      client_jwt_prefix:
+        type: value
+        value: /jwt
+      client_jwt_endpoint_address:
+        type: value
+        value: localhost
+      client_jwt_endpoint_port:
+        type: value
+        value: '10909'
+      client_jwt_endpoint_prefix:
+        type: value
+        value: /jwt
+      client_jwt_endpoint_use_tls:
+        type: value
+        value: '{{ not .Values.global.spire.enabled }}'
 
 
   mongo:

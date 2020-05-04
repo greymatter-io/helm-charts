@@ -18,7 +18,7 @@ global:
   control_port: 50000 
   # Whether or not to use spire for cert management and the trust domain
   spire:
-    enabled: false
+    enabled: true
     trust_domain: quickstart.greymatter.io
   # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
   control_additional_namespaces:
@@ -55,9 +55,9 @@ global:
         type: 'value'
         value: '/dev/stdout'
       # SPIRE: If spire is enabled, uncomment spire_path
-      #spire_path:
-      #  type: 'value'
-      #  value: '/run/spire/socket/agent.sock'
+      spire_path:
+        type: 'value'
+        value: '/run/spire/socket/agent.sock'
 
 control:
   control:
@@ -69,7 +69,7 @@ control:
     replicas: 1
     # Version of control
     version: noalpn
-    image: 'deciphernow/gm-control:noalpn'
+    image: 'deciphernow/gm-control:noalpns'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Secret used to talk to control-api
@@ -539,12 +539,12 @@ jwt:
         type: value
         value: "0"
       # SPIRE: If spire is enabled, don't set https_port, set http_port
-      https_port:
-        type: value
-        value: '3000'
-      #http_port:
+      #https_port:
       #  type: value
       #  value: '3000'
+      http_port:
+        type: value
+        value: '3000'
       server_trust:
         type: secret
         secret: jwt-certs
@@ -604,12 +604,12 @@ internal-jwt:
         type: value
         value: "0"
       # SPIRE: If spire is enabled, don't set https_port, set http_port
-      https_port:
-        type: value
-        value: '3000'
-      #http_port:
+      #https_port:
       #  type: value
       #  value: '3000'
+      http_port:
+        type: value
+        value: '3000'
       server_trust:
         type: secret
         secret: jwt-certs

@@ -26,7 +26,7 @@ global:
   control_port: 50000
   # Whether or not to use spire for cert management and the trust domain
   spire:
-    enabled: false
+    enabled: true
     trust_domain: quickstart.greymatter.io
 
 edge:
@@ -60,9 +60,9 @@ edge:
       type: 'value'
       value: '/dev/stdout'
     # SPIRE: If spire is enabled, uncomment spire_path
-    #spire_path:
-    #  type: 'value'
-    #  value: '/run/spire/socket/agent.sock'
+    spire_path:
+      type: 'value'
+      value: '/run/spire/socket/agent.sock'
 
   # Optional resource options    
   resources:
