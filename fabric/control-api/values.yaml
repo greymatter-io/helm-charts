@@ -33,6 +33,7 @@ global:
   sidecar:
     version: 1.3.0
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
+  # Global rbac configuration for service admin principal.
   rbac:
     admin:
       header_name: user_dn
