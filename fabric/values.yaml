@@ -68,8 +68,8 @@ control:
     # Number of replicas for the deployment
     replicas: 1
     # Version of control
-    version: noalpn
-    image: 'deciphernow/gm-control:noalpns'
+    version: 1.3.0
+    image: 'deciphernow/gm-control:latest'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Secret used to talk to control-api
