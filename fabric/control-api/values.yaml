@@ -2,13 +2,13 @@
 
 global:
   # Used as imagePullSecrets value for each subchart
-  image_pull_secret: docker.secret    
+  image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
-  environment: openshift              
+  environment: openshift
   # Used to configure control and control-api environment variables
-  zone: zone-default-zone             
+  zone: zone-default-zone
   # Whether to use consul for service discovery
-  consul:                             
+  consul:
     enabled: false
     host: ''
     port: 8500
@@ -18,37 +18,43 @@ global:
   observables:
     topic: "greymatter"
   # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
-  control_port: 50000  
+  control_port: 50000
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: false
-    trust_domain: quickstart.greymatter.io                
+    trust_domain: quickstart.greymatter.io
   # Configures the init container used to wait on various deployments to be ready
-  waiter:                             
+  waiter:
     image: deciphernow/k8s-waiter:latest
-    service_account: 
+    service_account:
       create: true
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
     version: 1.3.0
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
-  
+  # Global rbac configuration for service admin principal.
+  rbac:
+    admin:
+      header_name: user_dn
+      match_type: exact_match
+      header_value: CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US
+
 controlApi:
   # Name used for the deployment and service resources
-  name: control-api                   
+  name: control-api
   # Display name used for NOTES.txt
-  display_name: control-api            
+  display_name: control-api
   # Number of replicas for the deployment
-  replicas: 1                         
+  replicas: 1
   version: 1.3.0
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
-  image_pull_policy: IfNotPresent       
+  image_pull_policy: IfNotPresent
   # Port exposed by the control-api container
-  container_port: 5555                                 
+  container_port: 5555
   # Location to persist control-api's configuration store
-  pvc_mount_point: '/app/control-api/data/backend.json' 
+  pvc_mount_point: '/app/control-api/data/backend.json'
   secret:
     enabled: true
     secret_name: controlapi-certs
@@ -122,12 +128,12 @@ sidecar:
       cpu: 100m
       memory: 128Mi
 
-  
+
 bootstrap:
   image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.3'
   image_pull_policy: IfNotPresent
-  secret:          
-    enabled: true  
+  secret:
+    enabled: true
     secret_name: sidecar-certs
     mount_point: /certs
     insecure: true
@@ -184,8 +190,8 @@ services:
     version: 1.0.1
     minInstances: 1
     maxInstances: 1
-    secret:          
-      enabled: true  
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -219,8 +225,8 @@ services:
     routes:
       - '/services/dashboard/latest'
       - '/services/dashboard/latest/'
-    secret:          
-      enabled: true  
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -237,7 +243,7 @@ services:
     serviceName: 'prometheus'
     observablesEnabled: false
     port: 9090
-    secret:          
+    secret:
       enabled: false
 
   data:
@@ -257,8 +263,8 @@ services:
     routes:
       - '/services/data/{{ $.Values.services.data.version }}'
       - '/services/data/{{ $.Values.services.data.version }}/'
-    secret:          
-      enabled: true  
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -274,7 +280,7 @@ services:
     serviceName: 'data-internal'
     observablesEnabled: false
     port: 8181
-    enableInstanceMetrics: "true" 
+    enableInstanceMetrics: "true"
     capability: 'Data'
     jwt_prefix: '/jwt'
     documentation: '/services/data/latest/static/ui/index.html'
@@ -282,8 +288,8 @@ services:
     owner: 'Decipher'
     version: 1.0.0
     jwt_prefix: /jwt
-    secret:          
-      enabled: true  
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -307,8 +313,8 @@ services:
     routes:
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
-    secret:          
-      enabled: true  
+    secret:
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -329,7 +335,7 @@ services:
     documentation: ''
     owner: 'Decipher'
     version: '0.2.0'
-    secret:          
+    secret:
       enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
@@ -354,7 +360,7 @@ services:
     routes:
       - '/services/control-api/{{ $.Values.services.controlApi.version }}'
       - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
-    secret:          
+    secret:
       enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
@@ -414,7 +420,7 @@ services:
     routes:
       - '/services/slo/{{ $.Values.services.slo.version }}'
       - '/services/slo/{{ $.Values.services.slo.version }}/'
-    secret:          
+    secret:
       enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar

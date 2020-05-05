@@ -43,8 +43,8 @@
                   }],
                   "principals": [{
                       "header": {
-                          "name": "user_dn",
-                          "exact_match": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US"
+                          "name": "{{ .Values.global.rbac.admin.header_name }}",
+                          "{{ .Values.global.rbac.admin.match_type }}": "{{ .Values.global.rbac.admin.header_value }}"
                       }
                 }]
               },
@@ -60,13 +60,13 @@
                       "principal_name": {
                         "safe_regex": {
                           "google_re2": {},
-                          "regex": "spiffe:\/\/quickstart.greymatter.io\/(.+)"
+                          "regex": "spiffe:\/\/{{ .Values.global.spire.trust_domain }}\/(.+)"
                         }
                       }
                     }
                   }
                 ]
-              },    
+              },
               "product-viewer": {
                   "permissions": [{
                       "header": {
@@ -90,11 +90,11 @@
       "prometheus_system_metrics_interval_seconds": 15,
       "metrics_key_function": "none"
     }{{-  if (.service.observablesEnabled) }},
-    "gm_observables": {	
-      "useKafka": true,	
-      "topic": "{{.service.serviceName}}",	
-      "eventTopic": "{{ .Values.global.observables.topic }}",	
-      "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"	
+    "gm_observables": {
+      "useKafka": true,
+      "topic": "{{.service.serviceName}}",
+      "eventTopic": "{{ .Values.global.observables.topic }}",
+      "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"
     }
     {{- end }}
   }
