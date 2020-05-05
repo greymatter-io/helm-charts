@@ -33,4 +33,5 @@ spire: package-spire wsa-spire
 
 .PHONY: remove-spire
 remove-spire:
-	helm uninstall $(shell helm ls | grep spire | awk '{print $$1}')
+	helm uninstall $(shell helm ls | grep agent | awk '{print $$1}')
+	helm uninstall $(shell helm ls | grep server | awk '{print $$1}')

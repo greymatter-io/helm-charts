@@ -201,7 +201,7 @@ services:
     documentation: '/services/catalog/latest/'
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
-    version: 1.0.1
+    version: 1.0.6
     minInstances: 1
     maxInstances: 1
     data_prefix: "/data"
@@ -272,7 +272,7 @@ services:
     capability: 'Data'
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
-    version: 1.0.0
+    version: 1.1.0
     routes:
       - '/services/data/{{ $.Values.services.data.version }}'
       - '/services/data/{{ $.Values.services.data.version }}/'
@@ -298,7 +298,7 @@ services:
     documentation: '/services/data/latest/static/ui/index.html'
     name: 'Grey Matter Internal Data'
     owner: 'Decipher'
-    version: 1.0.0
+    version: 1.1.0
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -320,7 +320,7 @@ services:
     capability: 'Security'
     documentation: '/services/jwt-security/latest/'
     owner: 'Decipher'
-    version: '0.2.0'
+    version: '1.0.1'
     routes:
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
@@ -345,7 +345,7 @@ services:
     capability: 'Grey Matter'
     documentation: ''
     owner: 'Decipher'
-    version: '0.2.0'
+    version: '1.0.1'
     secret:          
       enabled: true
       secret_name: sidecar-certs
@@ -367,7 +367,7 @@ services:
     capability: 'Mesh'
     documentation: '/services/control-api/latest/'
     owner: 'Decipher'
-    version: '1.1.0'
+    version: '1.3.0'
     routes:
       - '/services/control-api/{{ $.Values.services.controlApi.version }}'
       - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
@@ -396,7 +396,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.0.0'
+    version: '1.3.0'
     secret:
       enabled: true
       secret_name: sidecar-certs

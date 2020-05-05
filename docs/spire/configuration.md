@@ -220,7 +220,7 @@ verify error:num=20:unable to get local issuer certificate
 A sidecar that is using Spire is reading from a Unix Socket.  The use of a Unix Socket helps to attest that this is the rightful owner of the certificates that it would pull off of this socket.
 
 ```bash
-ubuntu@ip-172-31-23-183:~/helm-charts$ sudo docker exec -ti k8s_sidecar_data-0_default_32e31d2a-68c9-4ae3-9b4f-87b7bc336a53_0 ls -al /run/spire/sockets
+ubuntu@ip-172-31-23-183:~/helm-charts$ sudo docker exec -ti k8s_sidecar_data-0_default_32e31d2a-68c9-4ae3-9b4f-87b7bc336a53_0 ls -al /run/spire/socket
 total 4
 drwxr-xr-x    2 root     root            60 Dec 17 19:50 .
 drwxr-xr-x    3 root     root          4096 Dec 17 19:50 ..
