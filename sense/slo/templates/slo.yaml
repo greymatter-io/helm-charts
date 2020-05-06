@@ -75,6 +75,10 @@ spec:
           containerPort: 8081
         env:
         {{- include "sidecar.envvars" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
         volumeMounts:
         {{- if .Values.global.spire.enabled }}
         {{- include "spire_volume_mount" . | indent 8 }}

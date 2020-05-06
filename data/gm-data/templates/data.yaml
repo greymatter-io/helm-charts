@@ -63,6 +63,10 @@ spec:
         {{- end }}
         env:
         {{- include "sidecar.envvars" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
         ports:
         - containerPort: {{ .Values.sidecar.port }}
           name: proxy

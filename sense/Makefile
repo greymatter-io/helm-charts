@@ -29,7 +29,7 @@ package-sense: clean-sense
 
 template-sense: package-sense $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template $(NAME-SENSE) . --set=global.environment=kubernetes $(WAITERSACHECK-SENSE) > $(OUTPUT_PATH)/helm-$(NAME-SENSE)$(BN).yaml
+	helm template $(NAME-SENSE) . --set=global.environment=kubernetes $(WAITERSACHECK-SENSE)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SENSE)$(BN).yaml
 
 .PHONY: sense
 sense: package-sense wsa-sense

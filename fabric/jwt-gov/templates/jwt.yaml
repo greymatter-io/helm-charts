@@ -45,6 +45,10 @@ spec:
       - name: sidecar
         env:
         {{- include "sidecar.envvars" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
         image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
         ports:

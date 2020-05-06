@@ -25,7 +25,7 @@ package-spire: clean-spire
 
 template-spire: package-spire $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template $(NAME-SPIRE) . --set=global.environment=kubernetes $(WAITERSACHECK-SPIRE) > $(OUTPUT_PATH)/helm-$(NAME-SPIRE)$(BN).yaml
+	helm template $(NAME-SPIRE) . --set=global.environment=kubernetes $(WAITERSACHECK-SPIRE)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SPIRE)$(BN).yaml
 
 .PHONY: spire
 spire: package-spire wsa-spire

@@ -80,6 +80,10 @@ spec:
           containerPort: {{ .Values.sidecar_prometheus.metrics_port }}
         env:   
         {{- include "sidecar.envvars-prometheus" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       volumes:

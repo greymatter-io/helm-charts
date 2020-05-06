@@ -15,6 +15,7 @@ global:
   spire:
     enabled: false
     trust_domain: quickstart.greymatter.io
+    path: '/run/spire/socket/agent.sock'
   # Whether to register services with Consul and where to find the Consul server
   consul:
     enabled: false

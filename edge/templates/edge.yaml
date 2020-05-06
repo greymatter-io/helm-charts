@@ -25,6 +25,10 @@ spec:
         {{- end }}
         env:
         {{- include "edge.envvars" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
         ports:
         - name: proxy
           containerPort: {{ .Values.edge.port }}
