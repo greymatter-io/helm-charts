@@ -569,7 +569,7 @@ internal-jwt:
     #  mount_point: /gm-jwt-security/certs
     version: 1.0.1
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
-    port: '3000'
+    port: 3000
     envvars:
       private_key:
         type: secret

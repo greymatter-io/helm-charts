@@ -297,7 +297,7 @@ internal-data:
         value: localhost
       client_jwt_endpoint_port:
         type: value
-        value: '10909'
+        value: '{{- if .Values.global.spire.enabled }}10909{{- else}}10808{{- end }}'
       client_jwt_endpoint_prefix:
         type: value
         value: /jwt

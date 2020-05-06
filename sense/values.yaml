@@ -410,7 +410,7 @@ catalog:
       envvars:
         use_tls:
           type: value
-          value: 'false'
+          value: '{{ not .Values.global.spire.enabled }}'
 
 # Services list used to configure Catalog, which populates service metadata for GM Dashboard
 services:
