@@ -33,6 +33,13 @@ spec:
 
         env:
         {{- include "jwt.envvars" (dict "envvar" .Values.jwt.envvars "top" $) | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: HTTP_PORT
+          value: '{{ .Values.jwt.port }}'
+        {{- else }}
+        - name: HTTPS_PORT
+          value: '{{ .Values.jwt.port }}'
+        {{- end }}
         volumeMounts:
         - name: jwt-users
           mountPath: {{ .Values.jwt.users_mount_point }}
@@ -42,6 +49,10 @@ spec:
         imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
         env:
         {{- include "sidecar.envvars" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
         {{- if .Values.sidecar.resources }}
         resources:
 {{ toYaml .Values.sidecar.resources | indent 10 }}

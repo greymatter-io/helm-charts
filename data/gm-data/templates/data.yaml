@@ -48,7 +48,11 @@ spec:
         {{- end }}
         {{- end }}
         env:
-          {{- include "data.envvars" (dict "envvar" .Values.data.envvars "top" $) | indent 8 }}
+        {{- include "data.envvars" (dict "envvar" .Values.data.envvars "top" $) | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: BIND_ADDRESS
+          value: {{ .Values.global.spire.bind_address }}
+        {{- end }}
         {{- if  (eq .Values.data.envvars.uses3.value  "false") }}
         volumeMounts:
           - name: data-pvc
@@ -63,6 +67,10 @@ spec:
         {{- end }}
         env:
         {{- include "sidecar.envvars" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
         ports:
         - containerPort: {{ .Values.sidecar.port }}
           name: proxy

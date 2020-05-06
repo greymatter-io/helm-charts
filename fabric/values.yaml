@@ -20,6 +20,7 @@ global:
   spire:
     enabled: true
     trust_domain: quickstart.greymatter.io
+    path: '/run/spire/socket/agent.sock'
   # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
   control_additional_namespaces:
   # Configures the init container used to wait on various deployments to be ready
@@ -54,10 +55,6 @@ global:
       envoy_admin_log_path:
         type: 'value'
         value: '/dev/stdout'
-      # SPIRE: If spire is enabled, uncomment spire_path
-      spire_path:
-        type: 'value'
-        value: '/run/spire/socket/agent.sock'
 
 control:
   control:
@@ -538,13 +535,6 @@ jwt:
       redis_db:
         type: value
         value: "0"
-      # SPIRE: If spire is enabled, don't set https_port, set http_port
-      #https_port:
-      #  type: value
-      #  value: '3000'
-      http_port:
-        type: value
-        value: '3000'
       server_trust:
         type: secret
         secret: jwt-certs
@@ -579,6 +569,7 @@ internal-jwt:
     #  mount_point: /gm-jwt-security/certs
     version: 1.0.1
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    port: 3000
     envvars:
       private_key:
         type: secret
@@ -603,13 +594,6 @@ internal-jwt:
       redis_db:
         type: value
         value: "0"
-      # SPIRE: If spire is enabled, don't set https_port, set http_port
-      #https_port:
-      #  type: value
-      #  value: '3000'
-      http_port:
-        type: value
-        value: '3000'
       server_trust:
         type: secret
         secret: jwt-certs

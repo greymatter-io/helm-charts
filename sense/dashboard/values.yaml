@@ -18,6 +18,7 @@ global:
   spire:
     enabled: false
     trust_domain: quickstart.greymatter.io 
+    path: '/run/spire/socket/agent.sock'
   # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
   control_additional_namespaces:            
   # Global sidecar configuration (supports global version and envvars)

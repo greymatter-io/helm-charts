@@ -33,6 +33,13 @@ spec:
         
         env:
         {{- include "jwt.envvars" (dict "envvar" .Values.jwt.envvars "top" $) | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: HTTP_PORT
+          value: {{ .Values.jwt.port }}
+        {{- else }}
+        - name: HTTPS_PORT
+          value: {{ .Values.jwt.port }}
+        {{- end }}
         ports:
         - containerPort: 3000
           name: http
@@ -45,6 +52,10 @@ spec:
       - name: sidecar
         env:
         {{- include "sidecar.envvars" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
         image: {{ tpl .Values.sidecar.image $ | quote }}
         imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
         ports:

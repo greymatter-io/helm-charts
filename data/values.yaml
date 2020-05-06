@@ -18,7 +18,8 @@ global:
   spire:
     enabled: true
     trust_domain: quickstart.greymatter.io
-
+    path: '/run/spire/socket/agent.sock'
+    bind_address: '127.0.0.1'
   # Default configuration for all sidecars in all subcharts
   sidecar: 
     version: '1.3.0'
@@ -44,11 +45,6 @@ global:
       envoy_admin_log_path:
         type: 'value'
         value: '/dev/stdout'
-      # SPIRE: If spire is enabled, uncomment spire_path
-      spire_path:
-        type: 'value'
-        value: '/run/spire/socket/agent.sock'
-
   # Configures the init container used to wait on various deployments to be ready
   waiter:
     image: deciphernow/k8s-waiter:latest
@@ -127,10 +123,6 @@ data:
       gmdata_use_tls:
         type: value
         value: '{{ not .Values.global.spire.enabled }}'
-      # SPIRE: If spire is enabled, use bind_address
-      bind_address:
-        type: value
-        value: 127.0.0.1
       gmdata_cert:
         type: secret
         secret: jwt-certs
@@ -285,10 +277,6 @@ internal-data:
       gmdata_use_tls:
         type: value
         value: '{{ not .Values.global.spire.enabled }}'
-      # SPIRE: If spire is enabled, use bind_address
-      bind_address:
-        type: value
-        value: 127.0.0.1
       jwt_pub:
         type: secret
         secret: internal-jwt-security-secret
@@ -309,7 +297,7 @@ internal-data:
         value: localhost
       client_jwt_endpoint_port:
         type: value
-        value: '10909'
+        value: '{{- if .Values.global.spire.enabled }}10909{{- else}}10808{{- end }}'
       client_jwt_endpoint_prefix:
         type: value
         value: /jwt

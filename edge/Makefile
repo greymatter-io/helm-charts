@@ -22,4 +22,4 @@ remove-edge:
 	
 template-edge: $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template edge . --set=global.environment=kubernetes > $(OUTPUT_PATH)/helm-edge$(BN).yaml
+	helm template edge . --set=global.environment=kubernetes  -f ../global.yaml > $(OUTPUT_PATH)/helm-edge$(BN).yaml

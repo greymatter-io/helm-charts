@@ -17,7 +17,8 @@ global:
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: false
-    trust_domain: quickstart.greymatter.io                
+    trust_domain: quickstart.greymatter.io
+    path: '/run/spire/socket/agent.sock'                
   # Configures the init container used to wait on various deployments to be ready
   waiter:
     image: deciphernow/k8s-waiter:latest
