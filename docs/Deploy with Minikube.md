@@ -196,7 +196,7 @@ scp -i <path-to-keyfile> custom-greymatter-secrets.yaml custom-greymatter.yaml u
 
 ### Docker Credentials
 
-Helm needs valid Docker credentials to pull and run Grey Matter containers. Add your Docker credentials to the `custom-greymatter-secrets.yaml` file. If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
+Helm needs valid Docker credentials to pull and run Grey Matter containers. Add your Docker credentials to the `custom-greymatter-secrets.yaml` file. If you need credentials please contact [Grey Matter Support](https://support.greymatter.io).
 
 ```yaml
 dockerCredentials:

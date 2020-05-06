@@ -120,7 +120,7 @@ Observables can be enabled or disabled for each service.  You can enable observa
 
 ### Docker credentials
 
-At the top of your `custom-greymatter-secrets.yaml` file set your Docker credentials so Helm can pull the necessary Grey Matter images. If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
+At the top of your `custom-greymatter-secrets.yaml` file set your Docker credentials so Helm can pull the necessary Grey Matter images. If you need credentials please contact [Grey Matter Support](https://support.greymatter.io).
 
 ```yaml
 dockerCredentials:
@@ -132,7 +132,7 @@ dockerCredentials:
 
 ### AWS credentials (optional)
 
-Set AWS credentials for gm-data to authenticate and push content to S3. This step is **optional** because gm-data stores files on disk or in S3. If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
+Set AWS credentials for gm-data to authenticate and push content to S3. This step is **optional** because gm-data stores files on disk or in S3. If you need credentials please contact [Grey Matter Support](https://support.greymatter.io).
 
 ```yaml
 data:
