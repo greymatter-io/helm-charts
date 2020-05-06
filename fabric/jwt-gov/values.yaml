@@ -51,9 +51,6 @@ jwt:
       memory: 64Mi
 
   envvars:
-    https_port:
-      type: value
-      value: '3000'
     private_key:
       type: secret
       secret: jwt-security

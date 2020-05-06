@@ -535,13 +535,6 @@ jwt:
       redis_db:
         type: value
         value: "0"
-      # SPIRE: If spire is enabled, don't set https_port, set http_port
-      #https_port:
-      #  type: value
-      #  value: '3000'
-      http_port:
-        type: value
-        value: '3000'
       server_trust:
         type: secret
         secret: jwt-certs
@@ -576,6 +569,7 @@ internal-jwt:
     #  mount_point: /gm-jwt-security/certs
     version: 1.0.1
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    port: '3000'
     envvars:
       private_key:
         type: secret
@@ -600,13 +594,6 @@ internal-jwt:
       redis_db:
         type: value
         value: "0"
-      # SPIRE: If spire is enabled, don't set https_port, set http_port
-      #https_port:
-      #  type: value
-      #  value: '3000'
-      http_port:
-        type: value
-        value: '3000'
       server_trust:
         type: secret
         secret: jwt-certs
