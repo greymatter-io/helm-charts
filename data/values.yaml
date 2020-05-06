@@ -19,6 +19,7 @@ global:
     enabled: true
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
+    bind_address: '127.0.0.1'
   # Default configuration for all sidecars in all subcharts
   sidecar: 
     version: '1.3.0'
@@ -122,10 +123,6 @@ data:
       gmdata_use_tls:
         type: value
         value: '{{ not .Values.global.spire.enabled }}'
-      # SPIRE: If spire is enabled, use bind_address
-      bind_address:
-        type: value
-        value: 127.0.0.1
       gmdata_cert:
         type: secret
         secret: jwt-certs
@@ -280,10 +277,6 @@ internal-data:
       gmdata_use_tls:
         type: value
         value: '{{ not .Values.global.spire.enabled }}'
-      # SPIRE: If spire is enabled, use bind_address
-      bind_address:
-        type: value
-        value: 127.0.0.1
       jwt_pub:
         type: secret
         secret: internal-jwt-security-secret
