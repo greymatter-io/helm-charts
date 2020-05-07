@@ -30,7 +30,7 @@ global:
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
 edge:
-  version: '1.3.0'
+  version: '1.4.0'
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.edge.version $ }}'
   image_pull_policy: IfNotPresent
   # Port where the edge proxy will listen
