@@ -51,8 +51,8 @@ dashboard:
     mount_point: /certs
     secret_keys:
       ca: ca.crt
-      cert: service.crt
-      key: service.key
+      cert: server.crt
+      key: server.key
   envvars:
     fabric_server:
       type: "value"
