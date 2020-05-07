@@ -33,7 +33,7 @@ template-sense: package-sense $(BUILD_NUMBER_FILE)
 
 .PHONY: sense
 sense: package-sense wsa-sense
-	helm install $(NAME-SENSE) . --set=global.environment=kubernetes $(WAITERSACHECK-SENSE) -f ../global.yaml
+	helm install $(NAME-SENSE) . --set=global.environment=kubernetes $(WAITERSACHECK-SENSE) -f ../global.yaml --timeout 10m
 
 .PHONY: remove-sense
 remove-sense:
