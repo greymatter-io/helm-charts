@@ -42,7 +42,7 @@ dockerCredentials:
 
 ### Global Certificates
 
-Enabling global certificates by setting `global.global_certs.enabled=true` in the `global.yaml` file.  This will simplify the deployment by using one set of certificates for many of the services. (certificates can be defined in global.yaml or pulled from a file)
+Enable global certificates by setting `global.global_certs.enabled=true` in the `global.yaml` file.  This will simplify the deployment by using one set of certificates for many of the services. (certificates can be defined in global.yaml or pulled from a file)
 
 ### From values.yaml
 
@@ -50,7 +50,7 @@ Secrets and certificates may be defined in the values file.  These values will b
 
 ### From File
 
-All certificates (and jwt secrets) can be defined either by an entry in the values file or by placing a file in the appropriate subdirectory of `./files/`.  The default is to use values defined in the `values.yaml` file.  However if `from_file.enabled=true` and `from_file.path` specifies a path to desired files then the those files will be sourced for the secret during `make secrets`.  *Note: this is done per certification so each service will need these two values specified*.
+All certificates (and jwt secrets) can be defined either by an entry in the values file or by placing a file in the appropriate subdirectory of `./files/`.  The default is to use values defined in the `values.yaml` file.  However if `from_file.enabled=true` and `from_file.path` specifies a path to desired files then the those files will be sourced for the secret during `make secrets`.  *Note: this is done per certificate so each service will need these two values specified*.
 
 ```yaml
 from_file:
