@@ -53,8 +53,9 @@ check-secrets:
 
 .PHONY: install-spire
 install-spire:
-	@read -p "Would you like to install Spire? [y/N] " response; \
-	if [ "$$response" = "y" ]; then \
+	$(eval IS=$(shell grep -A3 'spire:' global.yaml | grep enabled: | awk '{print $$2}'))
+	echo $(IS)
+	if [ "$(IS)" = "true" ]; then \
 		echo "Installing spire"; \
 		(cd spire && make spire); \
 	fi
