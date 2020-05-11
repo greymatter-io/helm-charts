@@ -51,7 +51,7 @@ check-secrets:
 
 .PHONY: install-spire
 install-spire:
-	$(eval IS=$(shell grep -A3 'spire:' global.yaml | grep enabled: | awk '{print $$2}'))
+	$(eval IS=$(shell cat global.yaml | grep -A3 'spire:'| grep enabled: | awk '{print $$2}'))
 	if [ "$(IS)" = "true" ]; then \
 		(cd spire && make spire); \
 	fi
