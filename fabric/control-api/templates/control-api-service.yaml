@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.controlApi.name }}
 spec:
   selector:
-    {{ .Values.global.control_cluster_label }}: {{ .Values.controlApi.name }}
+    {{ .Values.global.control.cluster_label }}: {{ .Values.controlApi.name }}
   ports:
   - port: {{ .Values.controlApi.container_port }}
     targetPort: {{ .Values.controlApi.container_port }}

@@ -6,13 +6,13 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{ .Values.global.control_cluster_label }}: catalog
+      {{ .Values.global.control.cluster_label }}: catalog
       deployment: catalog
   replicas: 1
   template:
     metadata:
       labels:
-        {{ .Values.global.control_cluster_label }}: catalog
+        {{ .Values.global.control.cluster_label }}: catalog
         deployment: catalog
     spec:
       serviceAccountName: {{ .Values.global.waiter.service_account.name }}

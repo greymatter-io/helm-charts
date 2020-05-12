@@ -10,6 +10,6 @@ spec:
       protocol: TCP
       targetPort: 6379
   selector:
-    {{ .Values.global.control_cluster_label }}: {{ .Values.redis.name | default "redis" }}
+    {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name | default "redis" }}
   sessionAffinity: None
   type: ClusterIP

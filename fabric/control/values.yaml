@@ -12,12 +12,13 @@ global:
     enabled: false
     host: ''
     port: 8500
-  # Port for Grey Matter Control
-  control_port: 50000
-  # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
-  control_additional_namespaces:
-  # The label Control uses to find pods to include in the mesh
-  control_cluster_label: greymatter.io/control
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
+    # Comma delimited string of namespaces for control to monitor. Also used by prometheus. 
+    additional_namespaces:
   # Configures the init container used to wait on various deployments to be ready
   waiter:                             
     image: deciphernow/k8s-waiter:latest
@@ -86,7 +87,7 @@ control:
       value: 'true'
     gm_control_kubernetes_cluster_label:
       type: 'value'
-      value: "{{ .Values.global.control_cluster_label }}"
+      value: "{{ .Values.global.control.cluster_label }}"
     gm_control_kubernetes_port_name:
       type: 'value'
       value: 'proxy'

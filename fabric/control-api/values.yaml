@@ -17,10 +17,11 @@ global:
   # Observables configuration, used to build Control API objects (see control-api/json)
   observables:
     topic: "greymatter"
-  # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
-  control_port: 50000  
-  # The label Control uses to find pods to include in the mesh
-  control_cluster_label: greymatter.io/control
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: false

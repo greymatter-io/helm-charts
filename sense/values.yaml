@@ -12,17 +12,18 @@ global:
     enabled: false
     host: ''
     port: 8500
-  # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
-  control_port: 50000
-  # The label Control uses to find pods to include in the mesh
-  control_cluster_label: greymatter.io/control
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
+    # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
+    additional_namespaces:       
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: true
     trust_domain: quickstart.greymatter.io
-    path: '/run/spire/socket/agent.sock'
-  # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
-  control_additional_namespaces:                   
+    path: '/run/spire/socket/agent.sock' 
   # Configures the init container used to wait on various deployments to be ready
   waiter:
     image: deciphernow/k8s-waiter:latest
@@ -44,7 +45,7 @@ global:
         value: 'control.{{ .Release.Namespace }}.svc'
       xds_port:
         type: 'value'
-        value: '{{ .Values.global.control_port }}'
+        value: '{{ .Values.global.control.port }}'
       xds_node_id:
         type: 'value'
         value: 'default'
@@ -339,7 +340,7 @@ catalog:
         value: '{{ $.Values.catalog.port }}'
       control_server_0_address:
         type: value
-        value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control_port }}'
+        value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
       control_server_0_zone_name:
         type: value
         value: '{{ .Values.global.zone }}'

@@ -5,12 +5,12 @@ metadata:
   name: postgres-slo
   namespace: {{ .Release.Namespace }}
   labels:
-    {{ .Values.global.control_cluster_label }}: postgres-slo
+    {{ .Values.global.control.cluster_label }}: postgres-slo
 spec:
   ports:
   - name: postgres
     port: 5432
   selector:
-    {{ .Values.global.control_cluster_label }}: postgres-slo
+    {{ .Values.global.control.cluster_label }}: postgres-slo
   type: ClusterIP
 {{- end }}

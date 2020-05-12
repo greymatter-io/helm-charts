@@ -7,13 +7,13 @@ spec:
   serviceName: {{ .Values.prometheus.name }}
   selector:
     matchLabels:
-      {{ .Values.global.control_cluster_label }}: {{ .Values.prometheus.name }}
+      {{ .Values.global.control.cluster_label }}: {{ .Values.prometheus.name }}
       deployment: {{ .Values.prometheus.name }}
   replicas: {{ .Values.prometheus.replica_count }}
   template:
     metadata:
       labels:
-        {{ .Values.global.control_cluster_label }}: {{ .Values.prometheus.name }}
+        {{ .Values.global.control.cluster_label }}: {{ .Values.prometheus.name }}
         deployment: {{ .Values.prometheus.name }}
     spec:
       serviceAccountName: {{ .Values.prometheus.service_account.name }}

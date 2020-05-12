@@ -12,10 +12,11 @@ global:
     enabled: false
     host: ''
     port: 8500
-  # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
-  control_port: 50000
-  # The label Control uses to find pods to include in the mesh
-  control_cluster_label: greymatter.io/control
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: false
@@ -71,7 +72,7 @@ catalog:
       value: '{{ $.Values.catalog.port }}'
     control_server_0_address:
       type: value
-      value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.control_port }}'
+      value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
     control_server_0_zone_name:
       type: value
       value: '{{ .Values.global.zone }}'
