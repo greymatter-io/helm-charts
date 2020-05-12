@@ -1,0 +1,64 @@
+{
+    "originatorToken" => [
+        [0] "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+        [1] "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US"
+    ],
+      "schemaVersion" => "1.0",
+         "eventChain" => [
+        [0] "ea8c83e4-42d2-11ea-8399-0a580a810295"
+    ],
+    "xForwardedForIp" => "10.129.0.1",
+               "tags" => [
+        [0] "_geoip_lookup_failure"
+    ],
+             "action" => "GET",
+           "systemIp" => "10.129.2.149",
+            "eventId" => "ea8c83e4-42d2-11ea-8399-0a580a810295",
+          "eventType" => "fibonaccitopic",
+           "@version" => "1",
+         "@timestamp" => 2020-01-29T20:07:06.626Z,
+          "timestamp" => 1580328423,
+            "payload" => {
+            "response" => {
+               "code" => 200,
+            "headers" => {
+                               "content-length" => "10",
+                                      ":status" => "200",
+                                 "content-type" => "text/plain; charset=utf-8",
+                                         "date" => "Wed, 29 Jan 2020 20:07:06 GMT",
+                "x-envoy-upstream-service-time" => "3235"
+            }
+        },
+             "request" => {
+            "endpoint" => "/fibonacci/44",
+             "headers" => {
+                                "content-length" => "0",
+                                     "x-gm-rule" => "DEFAULT",
+                                "sec-fetch-user" => "?1",
+                                   "x-gm-domain" => "*:8080",
+                                       ":method" => "GET",
+                                     "x-real-ip" => "10.129.0.1",
+                               "x-forwarded-for" => "10.129.0.1",
+                                    ":authority" => "gm-quick-2.jaic.jhuapl.edu",
+                                       "user_dn" => "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+                         "x-envoy-original-path" => "/services/fibonacci/1.0/fibonacci/44",
+                             "x-forwarded-proto" => "https",
+                              "x-envoy-internal" => "true",
+                                    "x-gm-route" => "edge-fibonacci-route-slash",
+                                        "accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                                  "x-request-id" => "8ac49e98-7542-45b1-aa6b-1504ceb261ed",
+                                "sec-fetch-site" => "none",
+                               "ssl_client_s_dn" => "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+                             "x-gm-shared-rules" => "fibonacci",
+                               "accept-language" => "en-US,en;q=0.9",
+                                    "user-agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36",
+                                         ":path" => "/fibonacci/44",
+                                "sec-fetch-mode" => "navigate",
+                               "accept-encoding" => "gzip, deflate, br",
+                     "upgrade-insecure-requests" => "1",
+                "x-envoy-expected-rq-timeout-ms" => "60000"
+            }
+        },
+        "isSuccessful" => true
+    }
+}

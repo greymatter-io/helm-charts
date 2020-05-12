@@ -1,0 +1,15 @@
+{
+  "cluster_key": "cluster-kibana-observables-proxy",
+  "zone_key": "zone-default-zone",
+  "name": "kibana-observables",
+  "instances": [
+    {
+      "host": "kibana-kibana.observables.svc.cluster.local",
+      "port": 5601
+    }
+  ],
+  "require_tls": false,
+  "circuit_breakers": null,
+  "outlier_detection": null,
+  "health_checks": []
+}

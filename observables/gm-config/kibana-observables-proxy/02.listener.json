@@ -1,0 +1,10 @@
+{
+  "listener_key": "listener-kibana-observables-proxy",
+  "zone_key": "zone-default-zone",
+  "name": "kibana-observables-proxy",
+  "ip": "0.0.0.0",
+  "port": 9080,
+  "protocol": "http_auto",
+  "domain_keys": ["domain-kibana-observables-proxy"],
+  "tracing_config": null
+}

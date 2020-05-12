@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  labels:
+    app: {{ .Values.name }}
+    type: service
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      containers:
+        - name: sidecar
+          image: {{ tpl $.Values.sidecar.image $ | quote }}
+          imagePullPolicy: {{ .Values.sidecar.imagePullPolicy | quote }}
+          env:
+          {{- include "envvars" (dict "envvar" .Values.sidecar.envvars "top" $) | indent 12 }}
+          ports:
+          - containerPort: 9080
+            protocol: TCP
+            name: proxy
+          - containerPort: 8081
+            protocol: TCP
+            name: metrics
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /etc/proxy/tls/sidecar
+              name: sidecar-certs
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      volumes:
+        - name: sidecar-certs
+          secret:
+            defaultMode: 420
+            optional: false
+            secretName: sidecar-certs

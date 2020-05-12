@@ -1,0 +1,30 @@
+
+name: proxy
+
+imagePullSecrets:
+  - name: docker-greymatter-ro
+
+sidecar:
+  version: 1.0.0
+  image: 'docker-greymatter.di2e.net/greymatter/gm-proxy:{{ $.Values.sidecar.version }}'
+  imagePullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  envvars:
+    proxy_dynamic:
+      type: 'value'
+      value: 'true'
+    xds_cluster:
+      type: 'value'
+      value: '{{ .Values.name }}'
+    xds_host:
+      type: 'value'
+      value: 'control.greymatter3.svc.cluster.local'
+    xds_port:
+      type: 'value'
+      value: '50000'

@@ -1,0 +1,20 @@
+{
+  "clusterName": "kibana-observables-proxy",
+  "zoneName": "zone-default-zone",
+  "name": "Kibana-observables",
+  "version": "7.1.0",
+  "owner": "Audit",
+  "capability": "Apps",
+  "runtime": "GO",
+  "documentation": "/services/kibana-observables/7.1.0/",
+  "prometheusJob": "kibana-observables-proxy",
+  "minInstances": 1,
+  "maxInstances": 1,
+  "authorized": true,
+  "clusterID": "",
+  "meshID": "",
+  "enableInstanceMetrics": true,
+  "enableHistoricalMetrics": true,
+  "metricsTemplate": "",
+  "metricsPort": 8081
+}

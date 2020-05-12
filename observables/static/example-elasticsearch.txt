@@ -1,0 +1,4 @@
+green  open fib-test-2020.01.29      DlOGZRLKSVu6rzdGw6Lj6Q 1 1 5 0 175.1kb 175.1kb
+green  open .kibana_task_manager_1   Mugzk9WWQbSHxAjc3YwQcg 1 0 2 0  41.2kb  41.2kb
+green  open .apm-agent-configuration CKxiKO1RTwqoGYjgzA6iIQ 1 0 0 0    283b    283b
+green  open .kibana_1                AvKZmGiPQgKg-Jc1Ved-Sg 1 0 8 0  45.7kb  45.7kb

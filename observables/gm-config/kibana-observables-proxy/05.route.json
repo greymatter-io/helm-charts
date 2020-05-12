@@ -1,0 +1,13 @@
+{
+  "route_key": "route-kibana-observables-proxy",
+  "domain_key": "domain-kibana-observables-proxy",
+  "zone_key": "zone-default-zone",
+  "path": "/",
+  "prefix_rewrite": "/",
+  "redirects": null,
+  "shared_rules_key": "shared-rules-kibana-observables-proxy",
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "retry_policy": null
+}

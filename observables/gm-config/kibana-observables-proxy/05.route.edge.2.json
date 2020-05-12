@@ -1,0 +1,13 @@
+{
+  "route_key": "edge-kibana-observables-proxy-route-2",
+  "domain_key": "edge",
+  "zone_key": "zone-default-zone",
+  "path": "/services/kibana-observables/7.1.0",
+  "prefix_rewrite": "/services/kibana-observables/7.1.0/",
+  "redirects": null,
+  "shared_rules_key": "edge-kibana-observables-proxy-shared-rules",
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "retry_policy": null
+}

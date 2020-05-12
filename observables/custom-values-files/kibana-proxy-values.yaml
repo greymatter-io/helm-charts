@@ -1,0 +1,12 @@
+name: kibana-observables-proxy
+
+imagePullSecrets:
+  - name: docker.secret
+
+sidecar:
+  version: 1.0.0
+  image: 'docker-greymatter.di2e.net/greymatter/gm-proxy:1.0.0'
+  envvars:
+    xds_host:
+      type: 'value'
+      value: 'control.greymatter3.svc.cluster.local'
