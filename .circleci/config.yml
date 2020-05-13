@@ -88,6 +88,12 @@ jobs:
           name: Package and Publish Fabric
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
+      # package fabric gov
+      - run:
+          name: Package and Publish Fabric-gov
+          command: |
+            sed -e "s|name: jwt|name: jwt-gov|" $(pwd)/fabric/Chart.yaml
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric-gov
       - run:
           name: Package and Publish Sense
           command: |
@@ -184,6 +190,12 @@ jobs:
           name: Package and Publish Fabric
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
+      # package fabric gov
+      - run:
+          name: Package and Publish Fabric-gov
+          command: |
+            sed -e "s|name: jwt|name: jwt-gov|" $(pwd)/fabric/Chart.yaml
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric-gov
       - run:
           name: Package and Publish Sense
           command: |
