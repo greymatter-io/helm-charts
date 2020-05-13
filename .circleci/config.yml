@@ -204,7 +204,7 @@ workflows:
             tags:
               ignore: /.*/
             branches:
-              ignore: /release-2.2/
+              ignore: /release-2.3/
               only: /release-.*/
       - package-and-publish-greymatter-hosted:
           requires:
