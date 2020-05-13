@@ -24,6 +24,7 @@ dependencies:
   - name: jwt
     repository: file://./jwt
     version: '2.2.1'
+    alias: jwt
 
   - name: jwt
     repository: file://./jwt
