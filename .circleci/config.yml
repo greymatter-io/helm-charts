@@ -199,7 +199,7 @@ jobs:
             sed -e "s|name: jwt|name: jwt-gov|" $(pwd)/fabric/Chart.yaml
             sed -e "s|name: fabric|name: fabric-gov|" $(pwd)/fabric/Chart.yaml
             sed -e "s|Grey Matter Fabric|Grey Matter Fabric-gov|" $(pwd)/fabric/Chart.yaml
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric-gov
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
       - run:
           name: Package and Publish Sense
           command: |
