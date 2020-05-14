@@ -1,5 +1,5 @@
 # These are the expected environment variables
-#
+# 
 # The Nexus information is so that the build can push the packaged charts to the Decipher Helm repo
 # NEXUS_URL
 # NEXUS_PASSWORD
@@ -16,6 +16,7 @@ jobs:
           name: Set Environment Variable
           command: |
             echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-staging/" >> $BASH_ENV
+            source $BASH_ENV
       - run:
           name: Package and Publish Catalog
           command: |
@@ -72,6 +73,7 @@ jobs:
           name: Set Environment Variable
           command: |
             echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-staging/" >> $BASH_ENV
+            source $BASH_ENV
       - run:
           name: Change Grey Matter (fabric, sense, data, spire, secrets) Requirements from local to helm-staging
           command: |
@@ -88,11 +90,11 @@ jobs:
           name: Package and Publish Fabric
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
-      # package fabric gov
       - run:
           name: Package and Publish Fabric-gov
           command: |
             sed -i.bak-gov -e "s|name: jwt|name: jwt-gov|" -e "s|name: fabric|name: fabric-gov|" -e "s|Grey Matter Fabric|Grey Matter Fabric-gov|" $(pwd)/fabric/Chart.yaml
+            cat "$(pwd)/fabric/Chart.yaml"
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
             mv $(pwd)/fabric/Chart.yaml.bak-gov $(pwd)/fabric/Chart.yaml
       - run:
@@ -131,6 +133,7 @@ jobs:
           name: Set Environment Variable
           command: |
             echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
+            source $BASH_ENV
       - run:
           name: Package and Publish Catalog
           command: |
@@ -187,6 +190,7 @@ jobs:
           name: Set Environment Variable
           command: |
             echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
+            source $BASH_ENV
       - run:
           name: Change Grey Matter (fabric, sense, data, spire) Requirements from local to helm-hosted
           command: |
@@ -199,13 +203,12 @@ jobs:
           name: Package and Publish Fabric
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
-      # package fabric gov
       - run:
           name: Package and Publish Fabric-gov
           command: |
             sed -i.bak -e "s|name: jwt|name: jwt-gov|" -e "s|name: fabric|name: fabric-gov|" -e "s|Grey Matter Fabric|Grey Matter Fabric-gov|" $(pwd)/fabric/Chart.yaml
+            cat "$(pwd)/fabric/Chart.yaml"
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
-            mv $(pwd)/fabric/Chart.yaml.bak $(pwd)/fabric/Chart.yaml
       - run:
           name: Package and Publish Sense
           command: |
