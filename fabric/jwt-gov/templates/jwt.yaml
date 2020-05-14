@@ -35,10 +35,10 @@ spec:
         {{- include "jwt.envvars" (dict "envvar" .Values.jwt.envvars "top" $) | indent 8 }}
         {{- if .Values.global.spire.enabled }}
         - name: HTTP_PORT
-          value: {{ .Values.jwt.port }}
+          value: '{{ .Values.jwt.port }}'
         {{- else }}
         - name: HTTPS_PORT
-          value: {{ .Values.jwt.port }}
+          value: '{{ .Values.jwt.port }}'
         {{- end }}
         ports:
         - containerPort: 3000
