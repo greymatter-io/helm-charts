@@ -50,14 +50,18 @@ spec:
           mountPath: {{ .Values.jwt.users_mount_point }}
         {{- end }}
       - name: sidecar
+        image: {{ tpl .Values.sidecar.image $ | quote }}
+        imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
         env:
         {{- include "sidecar.envvars" . | indent 8 }}
         {{- if .Values.global.spire.enabled }}
         - name: SPIRE_PATH
           value: {{ .Values.global.spire.path }}
         {{- end }}
-        image: {{ tpl .Values.sidecar.image $ | quote }}
-        imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
+{{- if .Values.sidecar.resources }}
+        resources:
+{{ toYaml .Values.sidecar.resources | indent 10 }}
+        {{- end }}
         ports:
         - containerPort: {{ .Values.sidecar.port }}
           name: proxy
@@ -71,6 +75,10 @@ spec:
         {{- else if .Values.sidecar.secret.enabled }}
         {{- include "sidecar_volume_certs_mount" . | indent 10 }}
         {{- end }}
+      {{- if .Values.global.consul.enabled }}
+      {{- $data := dict "Values" .Values "ServiceName"  (default "jwt-security"  .Values.jwt.name) }}
+      {{- include "consul.agent" $data | nindent 6 }}
+      {{- end }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       volumes:
@@ -84,6 +92,9 @@ spec:
           configMap:
             name: {{ .Values.jwt.users_cg_name }}
         {{- end }}
-        - name: edge
-          secret:
-            secretName: edge
+        {{- if .Values.global.consul.enabled }}
+        - name: data-consul
+          emptyDir: {}
+        - name: config-consul
+          emptyDir: {}
+        {{- end }}
