@@ -1,12 +1,12 @@
 global:
   # Used as imagePullSecrets value for each subchart
-  image_pull_secret: docker.secret    
+  image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
   environment: kubernetes
   # Used to configure control and control-api environment variables
   zone: zone-default-zone
   # Whether to use consul for service discovery
-  consul:       
+  consul:
     enabled: false
     host: ''
     port: 8500
@@ -20,13 +20,14 @@ global:
     enabled: true
     trust_domain: quickstart.greymatter.io
   # Configures the init container used to wait on various deployments to be ready
-  waiter:                             
+  waiter:
     image: deciphernow/k8s-waiter:latest
     service_account:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
     version: 1.4.0
+
   # Configure services to use the same certs
   global_certs:
     enabled: false

@@ -1,5 +1,7 @@
 SHELL := /bin/bash
 
+include ../output.mk
+
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
 pwd_name := $(notdir $(PWD))
@@ -22,6 +24,10 @@ copy-credentials:
 	else \
 		echo "Make sure you are running this from helm-charts or secrets makefile"; \
 	fi
+
+template-secrets: $(BUILD_NUMBER_FILE)
+	mkdir -p $(OUTPUT_PATH)
+	helm template secrets . --set=global.environment=kubernetes   -f ../credentials.yaml -f ../global.yaml > $(OUTPUT_PATH)/helm-secrets$(BN).yaml
 
 .PHONY: secrets
 secrets: copy-credentials
