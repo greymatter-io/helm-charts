@@ -43,7 +43,7 @@ These link a sidecar proxy to its service. The edge proxy has the following:
 
  `control` periodically queries the Kubernetes API to look for pods with the following two characteristics:
 
-1. The pods have a label (by default `gm.proxy`) with a value corresponding to the `name` key of the `control-api` cluster object which it should be associated with.
+1. The pods have a label (by default `greymatter.io/control`) with a value corresponding to the `name` key of the `control-api` cluster object which it should be associated with.
 2. The pod has a named port (by default `proxy`) with a defined port value which `control` adds to the `Instance` and adds it to the cluster mentioned above.
 
 These two things: both the pod's label and the port name can be configured using two environment variables on  `control`: `GM_CONTROL_KUBERNETES_CLUSTER_LABEL` and `GM_CONTROL_KUBERNETES_PORT_NAME`

@@ -186,15 +186,19 @@ scp -i <path-to-keyfile> custom-greymatter-secrets.yaml custom-greymatter.yaml u
 
 ### Docker Credentials
 
-Helm needs valid Docker credentials to pull and run Grey Matter containers. Add your Docker credentials to the `custom-greymatter-secrets.yaml` file. If you need credentials please contact [Grey Matter Support](https://support.greymatter.io).
+Helm needs valid Docker credentials to pull and run Grey Matter containers. Run `make credentials` to add your Docker credentials. If you need credentials please contact [Grey Matter Support](https://support.greymatter.io).
+
+The `credentials.yaml` file generated should generate your docker credentials in the following form:
 
 ```yaml
 dockerCredentials:
-  registry: docker.production.deciphernow.com
-  email:
-  username:
-  password:
+  - registry: docker.production.deciphernow.com
+    email:
+    username:
+    password:
 ```
+
+To add credentials for another docker registry, simply add another registry block and its credentials to the list.
 
 ## Setup Helm
 
@@ -221,24 +225,16 @@ This will prompt you for your docker credentials to pull and run Grey Matter con
 To install the secrets, run:
 
 ```bash
-helm dep up secrets
-helm install secrets secrets -f credentials.yaml
+make secrets
 ```
 
 ### Configure Voyager Ingress
 
-For Kubernetes, we use the [Voyager Ingress Controller](https://appscode.com/products/voyager/), which automatically provisions a load balancer from a variety of supported cloud providers like EKS in AWS. This allows you to access the cluster at the provided load balancer URL.
-
-At present, there's [an issue](https://github.com/appscode/voyager/issues/1415) specifying Voyager as a dependency so we need to manually configure Voyager ingress as a prerequisite. This can be done with following commands:
+By default, the Helm Charts use nginx ingress in k3d.  If you want to use [a voyager ingress controller](https://appscode.com/products/voyager/), run the following commands and in the `edge/values.yaml` file set `edge.ingress.use_voyager` to true before running `make install`:
 
 ```sh
-export PROVIDER=minikube
-helm repo add appscode https://charts.appscode.com/stable/
-helm repo update
-helm install voyager-operator appscode/voyager \
---version v12.0.0-rc.0   \
---namespace kube-system   \
---set cloudProvider=minikube
+cd voyager
+make voyager
 ```
 
 You should see that the voyager-operator is now running in the namespace `kube-system` by running `kubectl get pods -n kube-system`.
@@ -249,6 +245,13 @@ Describe ingress is also a useful command for debugging:
 
 ```sh
 kubectl describe ingress.voyager.appscode.com -n <namespace> <ingress-name>
+```
+
+To use nginx instead of voyager (the default), you can remove voyager with:
+
+```bash
+cd voyager
+make remove-voyager
 ```
 
 See [Ingress](./Ingress.md) for more details.
@@ -268,10 +271,6 @@ Once the repository has successfully been added to your `helm` CLI, and our envi
 
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
-```sh
-helm install gm decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes
-```
-
 ### Local Helm charts
 
 If you are modifying charts or want to run development versions of charts you'll need to clone this repository.
@@ -282,26 +281,10 @@ If you are modifying charts or want to run development versions of charts you'll
 git clone git@github.com:DecipherNow/helm-charts.git
 ```
 
-Then, you can run the following command to update the local charts one by one and install them.  The `helm install` command for helm3 takes `helm install <release name> <chart> -f <optional config overrides>`.  To install all of the Grey Matter charts at once, follow the `make minikube` script.
+Then, you can run the following command to update the local charts one by one and install them.  The `helm install` command for helm3 takes `helm install <release name> <chart> -f <optional config overrides>`.  To install all of the Grey Matter charts at once, run:
 
-```sh
-helm dep up fabric
-helm install fabric fabric --set=global.environment=kubernetes
-```
-
-```sh
-helm dep up edge
-helm install edge edge --set=global.environment=kubernetes
-```
-
-```sh
-helm dep up data
-helm install data data --set=global.environment=kubernetes
-```
-
-```sh
-helm dep up sense
-helm install sense sense --set=global.environment=kubernetes
+```bash
+make install
 ```
 
 ### Verification
@@ -310,16 +293,16 @@ It may take a few minutes for the installation to become stable. You can watch t
 
 We can run `helm ls` to see all our current deployments and `helm uninstall <release name>` to delete deployments. If you need to make changes, you can run `helm upgrade <release name> <chart> -f <optional config overrides>` to update your release in place.
 
-You should also load the appropriate user p12 file according to the certs you configured when deploying Greymatter. The default certs correspond to the quickstart certificates and the `quickstart.p12` file can be found at `certs/quickstart.p12`. You will want to follow your browser specific instructions to load in this user pki. 
+You should also load the appropriate user p12 file according to the certs you configured when deploying Greymatter. The default certs correspond to the quickstart certificates and the `quickstart.p12` file can be found at `certs/quickstart.p12`. You will want to follow your browser specific instructions to load in this user pki.
 [Firefox](https://www.sslsupportdesk.com/how-to-import-a-certificate-into-firefox/) and [Chrome](https://support.globalsign.com/customer/en/portal/articles/1211541-install-client-digital-certificate---windows-using-chrome) instructions.
 
 ```sh
 NAME   	NAMESPACE	REVISION	UPDATED                                	STATUS  	CHART        	APP VERSION
-data   	default  	1       	2020-03-24 12:22:21.014995832 +0000 UTC	deployed	data-3.0.0   	1.2        
-edge   	default  	1       	2020-03-24 12:21:53.372236561 +0000 UTC	deployed	edge-2.1.6   	1.0.0      
-fabric 	default  	3       	2020-03-24 15:26:40.20025539 +0000 UTC 	deployed	fabric-3.0.0 	1.2        
-secrets	default  	1       	2020-03-23 21:27:58.104710704 +0000 UTC	deployed	secrets-1.0.0	           
-sense  	default  	1       	2020-03-24 14:34:27.931518189 +0000 UTC	deployed	sense-3.0.0  	1.2 
+data   	default  	1       	2020-03-24 12:22:21.014995832 +0000 UTC	deployed	data-3.0.0   	1.2
+edge   	default  	1       	2020-03-24 12:21:53.372236561 +0000 UTC	deployed	edge-2.1.6   	1.0.0
+fabric 	default  	3       	2020-03-24 15:26:40.20025539 +0000 UTC 	deployed	fabric-3.0.0 	1.2
+secrets	default  	1       	2020-03-23 21:27:58.104710704 +0000 UTC	deployed	secrets-1.0.0
+sense  	default  	1       	2020-03-24 14:34:27.931518189 +0000 UTC	deployed	sense-3.0.0  	1.2
 ```
 
 ### Ingress
