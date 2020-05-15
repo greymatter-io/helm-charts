@@ -1,0 +1,89 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: {{ .Values.jwt.name | default "jwt-security"  }}
+    namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.global.exhibitor.replicas | default 1 }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      {{ .Values.global.control.cluster_label }}: {{ .Values.jwt.name | default "jwt-security"  }}
+      deployment: {{ .Values.jwt.name | default "jwt-security"  }}
+  template:
+    metadata:
+      labels:
+        {{ .Values.global.control.cluster_label }}: {{ .Values.jwt.name | default "jwt-security"  }}
+        deployment: {{ .Values.jwt.name | default "jwt-security"  }}
+    spec:
+      containers:
+      - name: jwt-security
+        image: {{ tpl $.Values.jwt.image $ | quote }}
+        imagePullPolicy: {{ .Values.jwt.image_pull_policy }}
+        {{- if .Values.jwt.resources }}
+        resources:
+{{ toYaml .Values.jwt.resources | indent 10 }}
+        {{- end }}
+        {{- if .Values.jwt.command }}
+        command:
+{{ toYaml .Values.jwt.command | indent 8 }}
+        args:
+{{ toYaml .Values.jwt.args | indent 8 }}
+        {{- end }}
+        
+        env:
+        {{- include "jwt.envvars" (dict "envvar" .Values.jwt.envvars "top" $) | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: HTTP_PORT
+          value: '{{ .Values.jwt.port }}'
+        {{- else }}
+        - name: HTTPS_PORT
+          value: '{{ .Values.jwt.port }}'
+        {{- end }}
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        {{- if not .Values.jwt.use_aac }}
+        volumeMounts:
+        - name: jwt-users
+          mountPath: {{ .Values.jwt.users_mount_point }}
+        {{- end }}
+      - name: sidecar
+        env:
+        {{- include "sidecar.envvars" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
+        image: {{ tpl .Values.sidecar.image $ | quote }}
+        imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
+        ports:
+        - containerPort: {{ .Values.sidecar.port }}
+          name: proxy
+          protocol: TCP
+        - containerPort: {{ .Values.sidecar.metrics_port }}
+          name: metrics
+          protocol: TCP
+        volumeMounts:
+        {{- if .Values.global.spire.enabled }}
+        {{- include "spire_volume_mount" . | indent 10 }}
+        {{- else if .Values.sidecar.secret.enabled }}
+        {{- include "sidecar_volume_certs_mount" . | indent 10 }}
+        {{- end }}
+      imagePullSecrets:
+      - name: {{ .Values.global.image_pull_secret }}
+      volumes:
+      {{- if .Values.global.spire.enabled }}
+      {{- include "spire_volumes" . | indent 8 }}
+      {{- else if .Values.sidecar.secret.enabled }}
+      {{- include "sidecar_certs_volumes" . | indent 8 }}
+      {{- end }}
+        {{- if not .Values.jwt.use_aac }}
+        - name: jwt-users
+          configMap:
+            name: {{ .Values.jwt.users_cg_name }}
+        {{- end }}
+        - name: edge
+          secret:
+            secretName: edge

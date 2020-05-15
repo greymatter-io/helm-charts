@@ -1,0 +1,20 @@
+{{- $top := . }}
+{{- /* We loop over all the services to create the individual service objects */}}
+{{- /*range $index, $service := .Values.catalog.services */}}
+{{- range $name, $service := .Values.services }}
+{{- if .catalogEnabled }}
+---
+{{- $scope := set $top "service" $service }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-{{.serviceName}}-catalog-api-config
+  namespace: {{ $.Release.Namespace }}
+data:
+{{- range $path, $bytes := $top.Files.Glob "json/services/**.json" }}
+  {{ base $path }}: |-
+{{ tpl ($top.Files.Get $path) $scope | indent 4 }}
+{{- end }}
+...
+{{- end }}
+{{- end}}

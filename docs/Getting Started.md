@@ -130,7 +130,7 @@ data:
 
 ### AWS credentials (optional)
 
-Set AWS credentials for gm-data to authenticate and push content to S3. This step is **optional** because gm-data stores files on disk or in S3. If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
+Set AWS credentials for gm-data to authenticate and push content to S3. This step is **optional** because gm-data stores files on disk or in S3. If you need credentials please contact [Grey Matter Support](https://support.greymatter.io).
 
 ```yaml
 data:

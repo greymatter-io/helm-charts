@@ -4,16 +4,21 @@ global:
   # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
-  environment: kubernetes
+  environment: openshift
   exhibitor:
     replicas: 1
-  # Port for Grey Matter Control. Used in sidecar envvars
-  control_port: 50000
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
   # Zone for Grey Matter objects. Used in sidecar envvars
   zone: zone-default-zone
-  # Whether or not to use spire
+  # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: false
+    trust_domain: quickstart.greymatter.io
+    path: '/run/spire/socket/agent.sock'
   # Whether to register services with Consul and where to find the Consul server
   consul:
     enabled: false
@@ -27,7 +32,7 @@ global:
       create: true
       name: waiter-sa
   sidecar:
-    version: 1.2.0
+    version: 1.4.0
 
 data:
   # Name used for the deployment and service resources
@@ -36,6 +41,7 @@ data:
   replicas: 1
   # If set, enables tls using the secret specified in secret_name
   secret:
+    enabled: true
     secret_name: data-secrets
   image: docker-dev.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
   image_pull_secret: '{{ .Values.global.image_pull_secret }}'
@@ -137,9 +143,10 @@ data:
     client_jwt_endpoint_address:
       type: value
       value: localhost
+    # Use data's egress listener port
     client_jwt_endpoint_port:
       type: value
-      value: '10808'
+      value: '{{- if .Values.global.spire.enabled }}10909{{- else}}10808{{- end }}'
     client_jwt_endpoint_prefix:
       type: value
       value: '/jwt'
@@ -263,6 +270,7 @@ sidecar:
   metrics_port: 8081
   # If set, enables tls using the secret specified in secret_name
   secret:
+    enabled: true
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar/
     secret_keys:

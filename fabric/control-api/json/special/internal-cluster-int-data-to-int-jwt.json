@@ -1,0 +1,21 @@
+{
+    "cluster_key": "data-internal-to-internal-jwt-cluster",
+    "zone_key": "zone-default-zone",
+    "name": "internal-jwt-security",
+    "require_tls": true,
+    "secret": {
+      "secret_key": "secret-internal-jwt-security-secret",
+      "secret_name": "spiffe://quickstart.greymatter.io/data-internal",
+      "secret_validation_name": "spiffe://quickstart.greymatter.io",
+      "ecdh_curves": [
+        "X25519:P-256:P-521:P-384"
+      ],
+      "subject_names": [
+        "spiffe://{{ .Values.global.spire.trust_domain}}/internal-jwt-security"
+      ]
+    },
+    "circuit_breakers": null,
+    "outlier_detection": null,
+    "health_checks": []
+  }
+  

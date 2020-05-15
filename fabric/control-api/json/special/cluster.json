@@ -1,0 +1,14 @@
+{
+    "cluster_key": "cluster-edge",
+    "zone_key": "{{ .Values.global.zone}}",
+    "name": "edge",
+    "instances": [
+      {
+          "host": "localhost",
+          "port": 10808
+      }
+    ],
+    "circuit_breakers": null,
+    "outlier_detection": null,
+    "health_checks": []
+  }

@@ -1,59 +1,98 @@
+SHELL := /bin/bash
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
-BUILD_NUMBER_FILE=build-number.txt
+include output.mk
+include secrets/Makefile
+# `make credentials` to build out credentials with user input
+# `make secrets` deploys the credentials
 
-# We need to increment the version even if the build number file exists
-.PHONY: $(BUILD_NUMBER_FILE)
-# Build number file.  Increment if any object file changes.
-$(BUILD_NUMBER_FILE):
-	@if ! test -f $(BUILD_NUMBER_FILE); then echo 0 > $(BUILD_NUMBER_FILE); fi
-	@echo $$(($$(cat $(BUILD_NUMBER_FILE)) + 1)) > $(BUILD_NUMBER_FILE)
+.PHONY: minikube
+minikube:
+	./ci/scripts/minikube.sh
+
+.PHONY: k3d
+k3d:
+	./ci/scripts/k3d.sh
+	@echo -e "\nSet KUBECONFIG in your shell by running:"
+	@echo -e "export KUBECONFIG=$$(k3d get-kubeconfig --name='greymatter')"
+
+reveal-endpoint:
+	./ci/scripts/show-voyager.sh
+
+.IGNORE= destroy
+destroy:
+	-(make delete)
+	-minikube delete
+	-k3d delete --name greymatter
+	-(eval unset KUBECONFIG)
+
+
+# Grey Matter Specific targets
+# To target individual sub charts you can go the directory and use the make targets there.
 
 clean:
-	rm -rf greymatter/charts
+	(cd spire && make clean-spire)
+	(cd fabric && make clean-fabric)
+	(cd data && make clean-data)
+	(cd sense && make clean-sense)
 
 dev-dep: clean
-	helm dep up greymatter/ --skip-refresh
+	(cd spire && make package-spire)
+	(cd fabric && make package-fabric)
+	(cd data && make package-data)
+	(cd sense && make package-sense)
 
-dep: clean
-	helm dep up greymatter/
+.PHONY: check-secrets
+check-secrets:
+	$(eval SECRET_CHECK=$(shell helm ls | grep secrets | awk '{if ($$1 == "secrets") print "present"; else print "not-present"}'))
+	if [[ "$(SECRET_CHECK)" != "present" ]]; then \
+		(make secrets);\
+	fi
 
-install: dev-dep
-	@echo "installing greymatter helm charts"
-	helm install greymatter -f ./custom.yaml --name gm-deploy
+.PHONY: install-spire
+install-spire:
+	$(eval IS=$(shell cat global.yaml | grep -A3 'spire:'| grep enabled: | awk '{print $$2}'))
+	if [ "$(IS)" = "true" ]; then \
+		(cd spire && make spire); \
+	fi
 
-credentials:
-	./ci/scripts/build-credentials.sh
+.PHONY: install
+install: dev-dep check-secrets install-spire
+	(cd fabric && make fabric)
+	sleep 20
+	(cd edge && make edge)
+	sleep 20
+	(cd data && make data)
+	sleep 20
+	(cd sense && make sense)
+	(make reveal-endpoint)
 
-fresh: credentials
-	./ci/scripts/minikube.sh
+.IGNORE: uninstall
+.PHONY: uninstall
+uninstall:
+	-(cd spire && make remove-spire)
+	-(cd fabric && make remove-fabric)
+	-(cd edge && make remove-edge)
+	-(cd data && make remove-data)
+	-(cd sense && make remove-sense)
 
-dev:
-	./ci/scripts/minikube.sh
+delete: uninstall remove-pvc remove-pods
+	@echo "purged greymatter helm release"
 	
-# For reference equivalent to ./ci/scripts/minikube.sh but without extra aws handling
-#   minikube start --memory 6144 --cpus 6		
-#   helm init --wait	
-#   ./ci/scripts/install-voyager.sh	
-#   helm dep up greymatter
-#   helm install greymatter -f greymatter.yaml -f greymatter-secrets.yaml -f credentials.yaml --set global.environment=kubernetes -n gm-deploy	
-#   ./ci/scripts/show-voyager.sh
+remove-pvc:
+	kubectl delete pvc $$(kubectl get pvc | awk '{print $$1}' | tail -n +2)
 
-prod:
-	./ci/scripts/minikube.sh --prod
+remove-pods:
+	kubectl delete pods $$(kubectl get pods | awk '{print $$1'} | tail -n +2)
 
-destroy:
-	minikube delete
 
 OUTPUT_PATH=./logs
 
-BN=$$(cat $(BUILD_NUMBER_FILE))
-
 template: dev-dep $(BUILD_NUMBER_FILE)
-	@echo "templating the greymatter helm charts"
+	@echo "Templating the greymatter helm charts"
 	mkdir -p $(OUTPUT_PATH)
-	helm template greymatter -f ./custom.yaml --name gm-deploy > $(OUTPUT_PATH)/helm-$(BN).yaml
-
-delete:
-	@echo "purging greymatter helm release"
-	helm del --purge gm-deploy
+	(cd spire && make template-spire && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
+	(cd fabric && make template-fabric && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
+	(cd edge && make template-edge && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
+	(cd data && make template-data && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
+	(cd sense && make template-sense && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)	

@@ -9,3 +9,9 @@
   mountPath: {{ .Values.edge.ingress.secret.mount_point }}
   readOnly: true
 {{- end }}
+
+{{- define "spire_volume_mount" }}
+- name: spire-socket
+  mountPath: /run/spire/socket
+  readOnly: false
+{{- end }}

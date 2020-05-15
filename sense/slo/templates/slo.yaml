@@ -6,13 +6,13 @@ metadata:
 spec:
   selector:
     matchLabels:
-      gm.proxy: slo
+      {{ .Values.global.control.cluster_label }}: slo
       deployment: slo
   replicas: 1
   template:
     metadata:
       labels:
-        gm.proxy: slo
+        {{ .Values.global.control.cluster_label }}: slo
         deployment: slo
     spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
@@ -70,13 +70,19 @@ spec:
         {{- end }}
         ports:
         - name: proxy
-          containerPort: 8080
+          containerPort: 10808
         - name: metrics
           containerPort: 8081
         env:
         {{- include "sidecar.envvars" . | indent 8 }}
-        {{- if .Values.sidecar.secret.enabled }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
         volumeMounts:
+        {{- if .Values.global.spire.enabled }}
+        {{- include "spire_volume_mount" . | indent 8 }}
+        {{- else if .Values.sidecar.secret.enabled }}
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
       {{- if .Values.global.consul.enabled }}
@@ -86,20 +92,28 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.global.image_pull_secret }}
       volumes:
-      {{- if .Values.sidecar.secret.enabled }}
+      {{- if .Values.global.spire.enabled }}
+      {{- include "spire_volumes" . | indent 6 }}
+      {{- else if .Values.sidecar.secret.enabled }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
       {{- if .Values.postgres.secret.enabled }}
       - name: postgres-certs
         secret:
+          {{- if .Values.global.global_certs.enabled }}
+          secretName: global-certs
+          {{- else }}
           secretName: {{ .Values.postgres.secret.secret_name }}
-          defaultMode: 0600
+          {{- end }}
       {{- end }}
       {{- if .Values.slo.secret.enabled }}
       - name: service-certs
         secret:
+          {{- if .Values.global.global_certs.enabled }}
+          secretName: global-certs
+          {{- else }}
           secretName: {{ .Values.slo.secret.secret_name }}
-          defaultMode: 0600
+          {{- end }}
       {{- end }}
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

@@ -39,11 +39,11 @@ jobs:
       - run:
           name: Package and Publish JWT
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/jwt
       - run:
           name: Package and Publish JWT Gov
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt-gov
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/jwt-gov
       - run:
           name: Package and Publish Edge
           command: |
@@ -53,9 +53,17 @@ jobs:
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/sense/slo
       - run:
-          name: Package and Publish Spire
+          name: Package and Publish Spire Server
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire/server
+      - run:
+          name: Package and Publish Spire Agent
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire/agent
+      - run:
+          name: Package and Publish Secrets
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/secrets
   package-and-publish-greymatter-staging:
     machine: true
     steps:
@@ -65,11 +73,13 @@ jobs:
           command: |
             echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-staging/" >> $BASH_ENV
       - run:
-          name: Change Grey Matter (fabric, sense, data) Requirements from local to helm-staging
+          name: Change Grey Matter (fabric, sense, data, spire, secrets) Requirements from local to helm-staging
           command: |
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/fabric/Chart.yaml
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/sense/Chart.yaml
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/data/Chart.yaml
+            sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/fabric/Chart.yaml
+            sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/sense/Chart.yaml
+            sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/data/Chart.yaml
+            sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/spire/Chart.yaml
+            sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/secrets/Chart.yaml
       - run:
           name: Print directory listing
           command: |
@@ -78,6 +88,13 @@ jobs:
           name: Package and Publish Fabric
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
+      # package fabric gov
+      - run:
+          name: Package and Publish Fabric-gov
+          command: |
+            sed -i.bak-gov -e "s|name: jwt|name: jwt-gov|" -e "s|name: fabric|name: fabric-gov|" -e "s|Grey Matter Fabric|Grey Matter Fabric-gov|" $(pwd)/fabric/Chart.yaml
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
+            mv $(pwd)/fabric/Chart.yaml.bak-gov $(pwd)/fabric/Chart.yaml
       - run:
           name: Package and Publish Sense
           command: |
@@ -94,6 +111,18 @@ jobs:
           name: Package and Publish Spire
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire
+      - run:
+          name: Package and Publish Secrets
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/secrets
+      - run:
+          name: Revert SED
+          command: |
+            mv $(pwd)/fabric/Chart.yaml.bak $(pwd)/fabric/Chart.yaml
+            mv $(pwd)/sense/Chart.yaml.bak $(pwd)/sense/Chart.yaml
+            mv $(pwd)/data/Chart.yaml.bak $(pwd)/data/Chart.yaml
+            mv $(pwd)/spire/Chart.yaml.bak $(pwd)/spire/Chart.yaml
+            mv $(pwd)/secrets/Chart.yaml.bak $(pwd)/secrets/Chart.yaml
   package-and-publish-core-hosted:
     machine: true
     steps:
@@ -113,7 +142,7 @@ jobs:
       - run:
           name: Package and Publish Data
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/data
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/gm-data
       - run:
           name: Package and Publish GM Control API
           command: |
@@ -125,11 +154,11 @@ jobs:
       - run:
           name: Package and Publish JWT
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/jwt
       - run:
           name: Package and Publish JWT Gov
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/data/jwt-gov
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric/jwt-gov
       - run:
           name: Package and Publish Edge
           command: |
@@ -139,9 +168,17 @@ jobs:
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/sense/slo
       - run:
-          name: Package and Publish Spire
+          name: Package and Publish Spire Server
           command: |
-            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire/server
+      - run:
+          name: Package and Publish Spire Agent
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire/agent
+      - run:
+          name: Package and Publish Secrets
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/secrets
   package-and-publish-greymatter-hosted:
     machine: true
     steps:
@@ -151,15 +188,24 @@ jobs:
           command: |
             echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
       - run:
-          name: Change Grey Matter (fabric, sense, data) Requirements from local to helm-hosted
+          name: Change Grey Matter (fabric, sense, data, spire) Requirements from local to helm-hosted
           command: |
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/fabric/Chart.yaml
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/sense/Chart.yaml
-            sed -e "s|file:.*|$NEXUS_URL|" $(pwd)/data/Chart.yaml
+            sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/fabric/Chart.yaml
+            sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/sense/Chart.yaml
+            sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/data/Chart.yaml
+            sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/spire/Chart.yaml
+            sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/secrets/Chart.yaml
       - run:
           name: Package and Publish Fabric
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
+      # package fabric gov
+      - run:
+          name: Package and Publish Fabric-gov
+          command: |
+            sed -i.bak -e "s|name: jwt|name: jwt-gov|" -e "s|name: fabric|name: fabric-gov|" -e "s|Grey Matter Fabric|Grey Matter Fabric-gov|" $(pwd)/fabric/Chart.yaml
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/fabric
+            mv $(pwd)/fabric/Chart.yaml.bak $(pwd)/fabric/Chart.yaml
       - run:
           name: Package and Publish Sense
           command: |
@@ -176,6 +222,10 @@ jobs:
           name: Package and Publish Spire
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/spire
+      - run:
+          name: Package and Publish Secrets
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/secrets
 workflows:
   version: 2
   build-and-publish:
@@ -194,7 +244,7 @@ workflows:
             tags:
               ignore: /.*/
             branches:
-              ignore: /release-2.2/
+              ignore: /release-2.3/
               only: /release-.*/
       - package-and-publish-greymatter-hosted:
           requires:

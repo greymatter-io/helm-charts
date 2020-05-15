@@ -4,12 +4,14 @@ metadata:
   name: edge
   namespace: {{ .Release.Namespace }}
   labels:
-    app: edge
+    {{ .Values.global.control.cluster_label }}: edge
 spec:
   ports:
     - name: proxy
-      port: 8080
+      port: 10808
     - name: metrics
       port: 8081
   selector:
-    app: edge
+    {{ .Values.global.control.cluster_label }}: edge
+  sessionAffinity: None
+  type: LoadBalancer

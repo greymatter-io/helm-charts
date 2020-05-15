@@ -12,19 +12,27 @@ global:
     enabled: false
     host: ''
     port: 8500
-  # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
-  control_port: 50000     
-  # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
-  control_additional_namespaces:            
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
+    # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
+    additional_namespaces:   
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: false
+    trust_domain: quickstart.greymatter.io 
+    path: '/run/spire/socket/agent.sock'         
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.2.0
+    version: 1.4.0
     
 dashboard:
   # Name used for the deployment and service resources
   name: dashboard
   # Dashboard app version
-  version: 3.3.2
+  version: 3.4.0
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
   # Port for the dashboard app
   port: 1337
@@ -33,25 +41,26 @@ dashboard:
   # CPU and memory limits for the dashboard app
   resources:
     requests:
-      memory: '8Gi'
+      memory: '2Gi'
       cpu: '1'
     limits:
-      memory: '12Gi'
+      memory: '6Gi'
       cpu: '2'
   secret:
+    enabled: true
     secret_name: dashboard-certs
     mount_point: /certs
     secret_keys:
       ca: ca.crt
-      cert: service.crt
-      key: service.key
+      cert: server.crt
+      key: server.key
   envvars:
     fabric_server:
       type: "value"
       value: '/services/catalog/latest/'
     config_server:
       type: "value"
-      value: '/services/gm-control-api/latest/v1.0'
+      value: '/services/control-api/latest/v1.0'
     use_prometheus:
       type: "value"
       value: 'true'
@@ -69,7 +78,7 @@ dashboard:
       value: '15000'
     server_ssl_enabled:
       type: "value"
-      value: "true"
+      value: "{{ not .Values.global.spire.enabled }}"
     server_ssl_ca:
       type: "value"
       value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.ca }}'
@@ -90,6 +99,7 @@ sidecar_dashboard:
   # Port where the proxy will expose metrics
   metrics_port: 8081
   secret:
+    enabled: true
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar
     secret_keys:
@@ -140,10 +150,10 @@ prometheus:
     name: prometheus-sa
   resources:
     requests:
-      memory: "20Gi"
+      memory: "8Gi"
       cpu: "1"
     limits:
-      memory: "40Gi"
+      memory: "12Gi"
       cpu: "2"
 
 
@@ -157,6 +167,7 @@ sidecar_prometheus:
   # Port where the proxy will expose metrics
   metrics_port: 8081
   secret:
+    enabled: true
     secret_name: sidecar-certs
     mount_point: /etc/proxy/tls/sidecar
     secret_keys:
@@ -164,11 +175,10 @@ sidecar_prometheus:
       cert: server.crt
       key: server.key
   # Overrides global.sidecar.envvars
-  sidecar:
-    envvars:
-      xds_cluster:
-        type: value
-        value: '{{ .Values.prometheus.name }}'
+  envvars:
+    xds_cluster:
+      type: value
+      value: '{{ .Values.prometheus.name }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the sidecar

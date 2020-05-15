@@ -10,12 +10,12 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      gm.proxy: {{ .Values.controlApi.name }}
+      {{ .Values.global.control.cluster_label }}: {{ .Values.controlApi.name }}
       deployment: {{ .Values.controlApi.name }}
   template:
     metadata:
       labels:
-        gm.proxy: {{ .Values.controlApi.name }}
+        {{ .Values.global.control.cluster_label }}: {{ .Values.controlApi.name }}
         deployment: {{ .Values.controlApi.name }}
     spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
@@ -84,7 +84,8 @@ spec:
             - name: metrics
               containerPort: {{ .Values.sidecar.metrics_port }}
           # If mTLS is enabled on the service, we can't use normal httpGet probes. Instead we add the probes to the sidecar so that we can exec in and call the service directly. The control-api service does not have the utilities (curl, wget with ssl) we need to do these probes there.
-          {{- if .Values.controlApi.secret.enabled }}
+          {{- if .Values.global.spire.enabled }}
+          {{- else if .Values.sidecar.secret.enabled }}
           # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
           readinessProbe:
             exec:
@@ -102,16 +103,22 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - "curl -k --cacert {{ .Values.sidecar.secret.mount_point }}/{{ .Values.sidecar.secret.secret_keys.ca }} --key  {{ .Values.sidecar.secret.mountPoint }}/{{ .Values.sidecar.secret.secret_keys.key }} --cert  {{ .Values.sidecar.secret.mount_point }}/{{ .Values.sidecar.secret.secret_keys.cert }} https://localhost:5555/v1.0/cluster"
+                - "curl -k --cacert {{ .Values.sidecar.secret.mount_point }}/{{ .Values.sidecar.secret.secret_keys.ca }} --key  {{ .Values.sidecar.secret.mount_point }}/{{ .Values.sidecar.secret.secret_keys.key }} --cert  {{ .Values.sidecar.secret.mount_point }}/{{ .Values.sidecar.secret.secret_keys.cert }} https://localhost:5555/v1.0/cluster"
             initialDelaySeconds: 60
             periodSeconds: 3
           {{- end }}
           env:
           {{- include "sidecar.envvars" . | indent 12 }}
-        {{- if .Values.sidecar.secret.enabled }}
+            {{- if .Values.global.spire.enabled }}
+            - name: SPIRE_PATH
+              value: {{ .Values.global.spire.path }}
+            {{- end }}
           volumeMounts:
+          {{- if .Values.global.spire.enabled }}
+          {{- include "spire_volume_mount" . | indent 12 }}
+          {{- else if .Values.sidecar.secret.enabled }}
           {{- include "sidecar_volume_certs_mount" . | indent 12 }}
-        {{- end }}
+          {{- end }}
         {{- if .Values.global.consul.enabled }}
         {{- $data := dict "Values" .Values "ServiceName" .Values.controlApi.name }}
         {{- include "consul.agent" $data | nindent 8 }}
@@ -122,8 +129,11 @@ spec:
       {{- if .Values.controlApi.secret.enabled }}
       - name: service-certs
         secret:
+          {{- if .Values.global.global_certs.enabled }}
+          secretName: global-certs
+          {{- else }}
           secretName: {{ .Values.controlApi.secret.secret_name }}
-          defaultMode: 0600
+          {{- end }}
       {{- end }}
       {{- if .Values.global.consul.enabled }}
       - name: data-consul
@@ -131,7 +141,9 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.controlApi.secret.enabled }}
+      {{- if .Values.global.spire.enabled }}
+      {{- include "spire_volumes" . | indent 6 }}
+      {{- else if .Values.sidecar.secret.enabled }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
   volumeClaimTemplates:

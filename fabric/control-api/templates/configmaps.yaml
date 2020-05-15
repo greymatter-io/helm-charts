@@ -1,0 +1,49 @@
+{{- $top := . }}
+{{- /* We loop over all the services to create the individual service objects */}}
+{{- range $name, $service := .Values.services }}
+{{- if $service.controlEnabled }}
+---
+{{- $svc := $service }}
+{{- $scope := set $top "service" $svc }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-{{.serviceName}}-mesh-config
+  namespace: {{ $.Release.Namespace }}
+data:
+{{- range $path, $bytes := $top.Files.Glob "json/services/**.json" }}
+  {{ base $path }}: |-
+{{ tpl ($top.Files.Get $path) $scope | indent 4 }}
+{{- end }}
+...
+{{- end}}
+{{- end }}
+{{- /* Then we loop over the services again in order to create the edge objects */}}
+{{- range $name, $service := .Values.services }}
+{{- if $service.controlEnabled }}
+---
+{{- $scope := set $top "service" $service }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: edge-{{.serviceName}}-mesh-config
+  namespace: {{ $.Release.Namespace }}
+data:
+{{- range $path, $bytes := $top.Files.Glob "json/edge/**.json" }}
+  {{ base $path }}: |-
+{{ tpl ($top.Files.Get $path) $scope | indent 4 }}
+{{- end }}
+...
+{{- end}}
+{{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: special-mesh-config
+  namespace: {{ $.Release.Namespace }}
+data:
+{{- range $path, $bytes := $top.Files.Glob "json/special/**.json" }}
+  {{ base $path }}: |-
+{{ tpl ($top.Files.Get $path) $top | indent 4 }}
+{{- end }}

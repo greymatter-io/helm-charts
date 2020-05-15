@@ -1,25 +1,27 @@
 # Minikube
 
-- [Local Minikube Deployment](#local-minikube-deployment)
-  - [Prerequisites](#prerequisites)
-  - [Quick Start](#quick-start)
-    - [Pre-Requisite](#pre-requisite)
-  - [Start Minikube](#start-minikube)
-    - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
-    - [OS X](#os-x)
-- [AWS EC2 Deployment](#aws-ec2-deployment)
-- [Configuration](#configuration)
-  - [Copy Files to EC2](#copy-files-to-ec2)
-- [Setup Helm](#setup-helm)
-- [Secrets](#secrets)
-  - [Configure Voyager Ingress](#configure-voyager-ingress)
-- [Install](#install)
-  - [Latest Helm charts release](#latest-helm-charts-release)
-  - [Local Helm charts](#local-helm-charts)
-  - [Verification](#verification)
-  - [Ingress](#ingress)
-    - [EC2](#ec2)
-  - [Debugging](#debugging)
+- [Minikube](#minikube)
+  - [Local Minikube Deployment](#local-minikube-deployment)
+    - [Prerequisites](#prerequisites)
+    - [Quick Start](#quick-start)
+      - [Pre-Requisite](#pre-requisite)
+    - [Start Minikube](#start-minikube)
+      - [Troubleshooting Minikube start](#troubleshooting-minikube-start)
+      - [OS X](#os-x)
+  - [AWS EC2 Deployment](#aws-ec2-deployment)
+  - [Configuration](#configuration)
+    - [Copy Files to EC2](#copy-files-to-ec2)
+    - [Docker Credentials](#docker-credentials)
+  - [Setup Helm](#setup-helm)
+  - [Secrets](#secrets)
+    - [Configure Voyager Ingress](#configure-voyager-ingress)
+  - [Install](#install)
+    - [Latest Helm charts release](#latest-helm-charts-release)
+    - [Local Helm charts](#local-helm-charts)
+    - [Verification](#verification)
+    - [Ingress](#ingress)
+      - [EC2](#ec2)
+    - [Debugging](#debugging)
 
 Minikube allows us to quicky setup a Kubernetes cluster and test drive Grey Matter before deploying to a production environment. We've provided instructions for two scenarios, [Local Minikube Deployment](#local-minikube-deployment) or [AWS EC2 Deployment](#aws-ec2-deployment).
 
@@ -180,6 +182,18 @@ If deploying to EC2, secure copy these files into the instance.
 
 ```sh
 scp -i <path-to-keyfile> custom-greymatter-secrets.yaml custom-greymatter.yaml ubuntu@<public-dns>:/home/ubuntu
+```
+
+### Docker Credentials
+
+Helm needs valid Docker credentials to pull and run Grey Matter containers. Add your Docker credentials to the `custom-greymatter-secrets.yaml` file. If you need credentials please contact [Grey Matter Support](https://support.greymatter.io).
+
+```yaml
+dockerCredentials:
+  registry: docker.production.deciphernow.com
+  email:
+  username:
+  password:
 ```
 
 ## Setup Helm

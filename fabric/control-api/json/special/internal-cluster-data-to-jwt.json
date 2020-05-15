@@ -1,0 +1,20 @@
+{
+  "cluster_key": "data-to-jwt-cluster",
+  "zone_key": "zone-default-zone",
+  "name": "jwt-security",
+  "require_tls": true,
+  "secret": {
+    "secret_key": "secret-jwt-security-secret",
+    "secret_name": "spiffe://quickstart.greymatter.io/data",
+    "secret_validation_name": "spiffe://quickstart.greymatter.io",
+    "ecdh_curves": [
+      "X25519:P-256:P-521:P-384"
+    ],
+    "subject_names": [
+      "spiffe://{{ .Values.global.spire.trust_domain}}/jwt-security"
+    ]
+  },
+  "circuit_breakers": null,
+  "outlier_detection": null,
+  "health_checks": []
+}

@@ -12,8 +12,16 @@ global:
     enabled: false
     host: ''
     port: 8500
-  # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
-  control_port: 50000                  
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: false
+    trust_domain: quickstart.greymatter.io
+    path: '/run/spire/socket/agent.sock'                
   # Configures the init container used to wait on various deployments to be ready
   waiter:
     image: deciphernow/k8s-waiter:latest
@@ -21,7 +29,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.2.0
+    version: 1.4.0
     
 slo:
   name: "slo"
@@ -45,8 +53,8 @@ slo:
     mount_point: /service-certs
     secret_keys:
       ca: ca.crt
-      cert: service.crt
-      key: service.key
+      cert: server.crt
+      key: server.key
   envvars:
     postgresql_username:
       type: secret
@@ -183,7 +191,7 @@ postgres:
       key: password
     postgres_user_cn:
       type: value
-      value: CN=*.greymatter.svc, OU=Engineering, O=Decipher Technology Studios, L=Alexandria, ST=Virginia, C=US
+      value: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
     postgresql_database:
       type: secret
       secret: postgres-credentials

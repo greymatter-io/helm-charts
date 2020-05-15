@@ -1,0 +1,11 @@
+global:
+  spire:
+    trust_domain: quickstart.greymatter.io
+    registration_api_path: /run/spire/socket/registration.sock
+    cluster_name: quickstart
+    namespace: spire
+
+server:
+  image: gcr.io/spiffe-io/spire-server:0.9.3
+  config_file_path: /run/spire/config/server.conf
+  config_file_dir: /run/spire/config

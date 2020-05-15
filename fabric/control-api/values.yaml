@@ -2,43 +2,63 @@
 
 global:
   # Used as imagePullSecrets value for each subchart
-  image_pull_secret: docker.secret    
+  image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
-  environment: openshift              
+  environment: openshift
   # Used to configure control and control-api environment variables
-  zone: zone-default-zone             
+  zone: zone-default-zone
   # Whether to use consul for service discovery
-  consul:                             
+  consul:
     enabled: false
     host: ''
     port: 8500
-  # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
-  control_port: 50000                  
+  # API Key used to configure the gm_jwtsecurity filter. Refactor this to use the jwt-certs secret.
+  jwt_api_key: dm9sY2Fuby1lcGlkZW1pYy10d2VsZnRoLXRhbWFsZQ==
+  # Observables configuration, used to build Control API objects (see control-api/json)
+  observables:
+    topic: "greymatter"
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: false
+    trust_domain: quickstart.greymatter.io
+    path: '/run/spire/socket/agent.sock'
   # Configures the init container used to wait on various deployments to be ready
-  waiter:                             
+  waiter:
     image: deciphernow/k8s-waiter:latest
-    service_account: 
+    service_account:
       create: true
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
-    version: 1.2.0
-   
+    version: 1.4.0
+    dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
+  # Global rbac configuration for service admin principal.
+  rbac:
+    admin:
+      header_name: user_dn
+      match_type: exact_match
+      header_value: CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US
+
 controlApi:
   # Name used for the deployment and service resources
-  name: control-api                   
+  name: control-api
   # Display name used for NOTES.txt
-  display_name: control-api            
+  display_name: control-api
   # Number of replicas for the deployment
-  replicas: 1                         
-  version: 1.2.0
+  replicas: 1
+  version: 1.4.0
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
-  image_pull_policy: IfNotPresent       
+  image_pull_policy: IfNotPresent
   # Port exposed by the control-api container
-  container_port: 5555                                 
+  container_port: 5555
   # Location to persist control-api's configuration store
-  pvc_mount_point: '/app/control-api/data/backend.json' 
+  pvc_mount_point: '/app/control-api/data/backend.json'
   secret:
     enabled: true
     secret_name: controlapi-certs
@@ -84,7 +104,7 @@ controlApi:
   resources:
   pvc:
     size: 1Gi
-     
+
 # Sidecar configuration for Control Api
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
@@ -111,3 +131,305 @@ sidecar:
     requests:
       cpu: 100m
       memory: 128Mi
+
+
+bootstrap:
+  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.4.0'
+  image_pull_policy: IfNotPresent
+  secret:
+    enabled: true
+    secret_name: sidecar-certs
+    mount_point: /certs
+    insecure: true
+    secret_keys:
+      cert: server.crt
+      key: server.key
+      ca: ca.crt
+  envvars:
+    greymatter_console_level:
+      value: 'debug'
+      type: 'value'
+    greymatter_api_host:
+      value: '{{ .Values.controlApi.name }}:{{ .Values.controlApi.container_port }}'
+      type: 'value'
+    greymatter_api_key:
+      value: 'xxx'
+      type: 'value'
+    greymatter_api_ssl:
+      value: 'false'
+      type: 'value'
+    basic_object_path:
+      value: '/tmp/mesh/basic_objects'
+      type: 'value'
+    spire_enabled:
+      type: 'value'
+      value: '{{ .Values.global.spire.enabled }}'
+    greymatter_api_ssl:
+      type: value
+      value: '{{ .Values.bootstrap.secret.enabled }}'
+    greymatter_api_insecure:
+      type: value
+      value: '{{ .Values.bootstrap.secret.insecure }}'
+    greymatter_api_sslcert:
+      type: value
+      value: '{{ .Values.bootstrap.secret.mount_point }}/{{ .Values.bootstrap.secret.secret_keys.cert }}'
+    greymatter_api_sslkey:
+      type: value
+      value: '{{ .Values.bootstrap.secret.mount_point }}/{{ .Values.bootstrap.secret.secret_keys.key }}'
+
+# Services list used to create Grey Matter configuration objects in control-api/config
+services:
+  catalog:
+    catalogEnabled: true
+    controlEnabled: true
+    serviceName: 'catalog'
+    observablesEnabled: false
+    port: 9080
+    enableInstanceMetrics: 'true'
+    capability: 'Mesh'
+    documentation: '/services/catalog/latest/'
+    name: 'Grey Matter Catalog'
+    owner: 'Decipher'
+    data_prefix: "/data"
+    version: 1.0.1
+    minInstances: 1
+    maxInstances: 1
+    secret:
+      enabled: true
+      secret_name: sidecar-certs
+      mount_point: /etc/proxy/tls/sidecar
+      insecure: true
+      secret_keys:
+        cert: server.crt
+        key: server.key
+        ca: ca.crt
+    routes:
+      - '/services/catalog/{{ $.Values.services.catalog.version }}'
+      - '/services/catalog/{{ $.Values.services.catalog.version }}/'
+
+  # control:
+  #   name: 'Grey Matter Control'
+  #   serviceName: 'control'
+  #   routes:
+  # - '/services/xds/{{ $.Values.global.xds.version }}'
+  # - '/services/xds/{{ $.Values.global.xds.version }}'
+
+  dashboard:
+    catalogEnabled: true
+    controlEnabled: true
+    name: 'Grey Matter Dashboard'
+    serviceName: 'dashboard'
+    observablesEnabled: false
+    port: 1337
+    enableInstanceMetrics: 'true'
+    capability: 'Apps'
+    documentation: ''
+    owner: 'Decipher'
+    version: 3.4.0
+    routes:
+      - '/services/dashboard/latest'
+      - '/services/dashboard/latest/'
+    secret:
+      enabled: true
+      secret_name: sidecar-certs
+      mount_point: /etc/proxy/tls/sidecar
+      insecure: true
+      secret_keys:
+        cert: server.crt
+        key: server.key
+        ca: ca.crt
+
+
+  prometheus:
+    catalogEnabled: false
+    controlEnabled: true
+    name: 'Prometheus'
+    serviceName: 'prometheus'
+    observablesEnabled: false
+    port: 9090
+    secret:
+      enabled: false
+
+  data:
+    catalogEnabled: true
+    controlEnabled: true
+    name: 'Grey Matter Data'
+    serviceName: 'data'
+    observablesEnabled: false
+    port: 8181
+    enableInstanceMetrics: 'true'
+    capability: 'Data'
+    jwt_prefix: '/jwt'
+    documentation: '/services/data/latest/static/ui/index.html'
+    owner: 'Decipher'
+    version: 1.0.0
+    jwt_prefix: /jwt
+    routes:
+      - '/services/data/{{ $.Values.services.data.version }}'
+      - '/services/data/{{ $.Values.services.data.version }}/'
+    secret:
+      enabled: true
+      secret_name: sidecar-certs
+      mount_point: /etc/proxy/tls/sidecar
+      insecure: true
+      secret_keys:
+        cert: server.crt
+        key: server.key
+        ca: ca.crt
+
+  internal-data:
+    catalogEnabled: false
+    controlEnabled: true
+    name: 'Grey Matter Internal Data'
+    serviceName: 'data-internal'
+    observablesEnabled: false
+    port: 8181
+    enableInstanceMetrics: "true"
+    capability: 'Data'
+    jwt_prefix: '/jwt'
+    documentation: '/services/data/latest/static/ui/index.html'
+    name: 'Grey Matter Internal Data'
+    owner: 'Decipher'
+    version: 1.0.0
+    jwt_prefix: /jwt
+    secret:
+      enabled: true
+      secret_name: sidecar-certs
+      mount_point: /etc/proxy/tls/sidecar
+      insecure: true
+      secret_keys:
+        cert: server.crt
+        key: server.key
+        ca: ca.crt
+
+  jwt:
+    catalogEnabled: true
+    controlEnabled: true
+    name: 'Grey Matter JWT Security'
+    serviceName: 'jwt-security'
+    observablesEnabled: false
+    port: 3000
+    enableInstanceMetrics: 'true'
+    capability: 'Security'
+    documentation: ''
+    owner: 'Decipher'
+    version: '0.2.0'
+    routes:
+      - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
+      - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
+    secret:
+      enabled: true
+      secret_name: sidecar-certs
+      mount_point: /etc/proxy/tls/sidecar
+      insecure: true
+      secret_keys:
+        cert: server.crt
+        key: server.key
+        ca: ca.crt
+
+  internal-jwt:
+    catalogEnabled: false
+    controlEnabled: true
+    name: 'Grey Matter JWT Security Internal'
+    serviceName: 'internal-jwt-security'
+    observablesEnabled: false
+    port: 3000
+    enableInstanceMetrics: 'true'
+    capability: 'Grey Matter'
+    documentation: ''
+    owner: 'Decipher'
+    version: '0.2.0'
+    secret:
+      enabled: true
+      secret_name: sidecar-certs
+      mount_point: /etc/proxy/tls/sidecar
+      insecure: true
+      secret_keys:
+        cert: server.crt
+        key: server.key
+        ca: ca.crt
+
+  controlApi:
+    catalogEnabled: true
+    controlEnabled: true
+    name: 'Grey Matter Control API'
+    serviceName: 'control-api'
+    observablesEnabled: false
+    port: 5555
+    enableInstanceMetrics: 'true'
+    capability: 'Mesh'
+    documentation:
+    owner: 'Decipher'
+    version: '1.4'
+    routes:
+      - '/services/control-api/{{ $.Values.services.controlApi.version }}'
+      - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
+    secret:
+      enabled: true
+      secret_name: sidecar-certs
+      mount_point: /etc/proxy/tls/sidecar
+      insecure: true
+      secret_keys:
+        cert: server.crt
+        key: server.key
+        ca: ca.crt
+
+  edge:
+    catalogEnabled: true
+    controlEnabled: false
+    name: 'Grey Matter Edge'
+    serviceName: 'edge'
+    observablesEnabled: false
+    port: 10808
+    # This is the DN of the new certificate issued to the edge for internal mesh communication. It needs to be whitelisted by the proxies
+    egressDn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=edge
+    # We use a static cert on the edge listener
+    removeListenerSecret: true
+    enableInstanceMetrics: 'true'
+    capability: 'Mesh'
+    documentation: ''
+    owner: 'Decipher'
+    version: '1.4'
+    ingress:
+      secret:
+        enabled: true
+        secret_name: greymatter-edge-ingress
+        mount_point: /etc/proxy/tls/edge
+        secret_keys:
+          cert: server.crt
+          key: server.key
+          ca: ca.crt
+    egress:
+      secret:
+        enabled: '{{- not .Values.global.spire.enabled }}'
+        secret_name: greymatter-edge-egress
+        mount_point: /etc/proxy/tls/sidecar
+        secret_keys:
+          cert: server.crt
+          key: server.key
+          ca: ca.crt
+
+  slo:
+    catalogEnabled: true
+    controlEnabled: true
+    name: 'Grey Matter Service Level Objectives'
+    serviceName: 'slo'
+    observablesEnabled: false
+    port: 1337
+    enableInstanceMetrics: 'true'
+    capability: 'Sense'
+    documentation:
+    owner: 'Decipher'
+    version: '1.1.1'
+    routes:
+      - '/services/slo/{{ $.Values.services.slo.version }}'
+      - '/services/slo/{{ $.Values.services.slo.version }}/'
+    secret:
+      enabled: true
+      secret_name: sidecar-certs
+      mount_point: /etc/proxy/tls/sidecar
+      insecure: true
+      secret_keys:
+        cert: server.crt
+        key: server.key
+        ca: ca.crt

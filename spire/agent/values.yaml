@@ -1,0 +1,8 @@
+global:
+  spire:
+    trust_domain: quickstart.greymatter.io
+    namespace: spire
+
+agent:
+  name: agent
+  image: gcr.io/spiffe-io/spire-agent:0.9.3

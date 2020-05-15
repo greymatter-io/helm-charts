@@ -1,0 +1,29 @@
+{
+    "domain_key": "edge-egress",
+    "zone_key": "{{ .Values.global.zone}}",
+    "name": "*",
+    "port": 10909,
+    "redirects": null,
+    "gzip_enabled": false,
+    "cors_config": null,
+    "aliases": null{{- if .Values.global.spire.enabled }},
+    "force_https": false,
+    "custom_headers": [
+      {
+        "key": "x-forwarded-proto",
+        "value": "https"
+      }
+    ]{{- else if .Values.services.edge.egress.secret.enabled }},
+    "force_https": true,
+    "ssl_config": {
+        "require_client_certs": true,
+        "trust_file": "{{ .Values.services.edge.egress.secret.mount_point }}/ca.crt",
+        "cert_key_pairs": [
+            {
+                "certificate_path": "{{ .Values.services.edge.egress.secret.mount_point }}/server.crt",
+                "key_path": "{{ .Values.services.edge.egress.secret.mount_point }}/server.key"
+            }
+        ]
+    }
+   {{- end }}
+}

@@ -12,12 +12,20 @@ global:
     port: 8500
   # The port where the edge proxy is running, needed if consul is enabled
   edge_port: 10808
-  # Port for Grey Matter Control. Used in sidecar envvars
-  control_port: 50000
-
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: true
+    trust_domain: quickstart.greymatter.io
+    path: '/run/spire/socket/agent.sock'
+    bind_address: '127.0.0.1'
   # Default configuration for all sidecars in all subcharts
   sidecar: 
-    version: '1.2.0'
+    version: '1.4.0'
     envvars:
       xds_cluster:
         type: value
@@ -33,14 +41,13 @@ global:
         value: 'control.{{ .Release.Namespace }}.svc'
       xds_port:
         type: 'value'
-        value: '{{ .Values.global.control_port }}'
+        value: '{{ .Values.global.control.port }}'
       xds_node_id:
         type: 'value'
         value: 'default'
       envoy_admin_log_path:
         type: 'value'
         value: '/dev/stdout'
-
   # Configures the init container used to wait on various deployments to be ready
   waiter:
     image: deciphernow/k8s-waiter:latest
@@ -59,18 +66,19 @@ data:
   data:
     # Name used for the deployment and service resources
     name: data
-    version: latest
+    version: 1.1
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-data:{{ .Values.data.version }}'
     # Security context for the statefulset if enabled
     security_context:
       enabled: false
     # If set, enables tls using the secret specified in secret_name
     secret:
+      enabled: true
       secret_name: data-secrets
     envvars:
       uses3:
         type: value
-        value: 'true'
+        value: 'false'
       aws_access_key_id:
         type: secret
         secret: '{{ .Values.data.name }}-secrets'
@@ -117,7 +125,7 @@ data:
         key: database
       gmdata_use_tls:
         type: value
-        value: 'true'
+        value: '{{ not .Values.global.spire.enabled }}'
       gmdata_cert:
         type: secret
         secret: jwt-certs
@@ -141,13 +149,13 @@ data:
         value: localhost
       client_jwt_endpoint_port:
         type: value
-        value: '10808'
+        value: '{{- if .Values.global.spire.enabled }}10909{{- else}}10808{{- end }}'
       client_jwt_endpoint_prefix:
         type: value
         value: /jwt
       client_jwt_endpoint_use_tls:
         type: value
-        value: 'true'
+        value: '{{ not .Values.global.spire.enabled }}'
       client_jwt_endpoint_cert:
         type: secret
         secret: jwt-certs
@@ -234,6 +242,7 @@ internal-data:
       xds_cluster:
         type: value
         value: 'data-internal'
+
   data:
     # Name used for the deployment and service resources
     name: data-internal
@@ -241,6 +250,7 @@ internal-data:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-data:{{ .Values.data.version }}'
     # If set, enables tls using the secret specified in secret_name
     secret:
+      enabled: true
       secret_name: internal-data-secrets
     # Security context for the statefulset if enabled
     security_context:
@@ -269,7 +279,7 @@ internal-data:
         value: greymatter
       gmdata_use_tls:
         type: value
-        value: 'true'
+        value: '{{ not .Values.global.spire.enabled }}'
       jwt_pub:
         type: secret
         secret: internal-jwt-security-secret
@@ -278,6 +288,26 @@ internal-data:
         type: secret
         secret: internal-jwt-security-secret
         key: jwt.api_key
+      # SPIRE: If spire is enabled, uncomment the client env vars
+      client_prefix:
+        type: value
+        value: /services/data-internal/1.0.0
+      client_jwt_prefix:
+        type: value
+        value: /jwt
+      client_jwt_endpoint_address:
+        type: value
+        value: localhost
+      client_jwt_endpoint_port:
+        type: value
+        value: '{{- if .Values.global.spire.enabled }}10909{{- else}}10808{{- end }}'
+      client_jwt_endpoint_prefix:
+        type: value
+        value: /jwt
+      client_jwt_endpoint_use_tls:
+        type: value
+        value: '{{ not .Values.global.spire.enabled }}'
+
 
   mongo:
     # Name used for the mongo deployment and service resources
@@ -344,183 +374,3 @@ internal-data:
       #  type: secret
       #  secret: {{ .Values.mongo.secret.secret_name }}
       #  key: {{ .Values.mongo.secret.secret_keys.ca }}
-
-
-jwt:
-  # Sidecar configuration overrides for jwt sidecar
-  sidecar:
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'jwt-security'
-
-  jwt:
-    # Name used for the deployment and service resources
-    name: jwt-security
-    # Whether or not to use aac if using jwt-gov
-    use_aac: false
-    # If set, enables tls using the secret specified in secret_name
-    #secret:
-    #  secret_name: jwt-certs
-    #  mount_point: /gm-jwt-security/certs
-    # Location to mount the information specified in users_cg_name in the container
-    users_mount_point: /gm-jwt-security/etc
-    version: 1.0.1
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
-    envvars:
-      private_key:
-        type: secret
-        secret: jwt-security
-        key: jwt.key
-      jwt_api_key:
-        type: secret
-        secret: jwt-security
-        key: jwt.api_key
-      enable_tls:
-        type: value
-        value: 'true'
-      zerolog_level:
-        type: value
-        value: 'info'
-      token_exp_time:
-        type: value
-        value: '300'
-      redis_port:
-        type: value
-        value: "6379"
-      redis_db:
-        type: value
-        value: "0"
-      https_port:
-        type: value
-        value: '3000'
-      server_trust:
-        type: secret
-        secret: jwt-certs
-        key: jwt.trust.pem
-      server_cert:      
-        type: secret
-        secret: jwt-certs
-        key: jwt.cert.pem
-      server_key:     
-        type: secret
-        secret: jwt-certs
-        key: jwt.key.pem
-
-
-  redis:
-    private_image: true
-
-internal-jwt:
-  # Sidecar configuration overrides for internal-jwt sidecar
-  sidecar:
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'internal-jwt-security'
-  jwt:
-    # Name used for the deployment and service resources
-    name: internal-jwt-security
-    # If set, enables tls using the secret specified in secret_name
-    #secret:
-    #  secret_name: internal-jwt-certs
-    #  mount_point: /gm-jwt-security/certs
-    version: 1.0.1
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
-    envvars:
-      private_key:
-        type: secret
-        secret: jwt-security
-        key: jwt.key
-      jwt_api_key:
-        type: secret
-        secret: jwt-security
-        key: jwt.api_key
-      enable_tls:
-        type: value
-        value: 'true'
-      zerolog_level:
-        type: value
-        value: 'info'
-      token_exp_time:
-        type: value
-        value: '300'
-      redis_port:
-        type: value
-        value: "6379"
-      redis_db:
-        type: value
-        value: "0"
-      https_port:
-        type: value
-        value: '3000'
-      server_trust:
-        type: secret
-        secret: jwt-certs
-        key: jwt.trust.pem
-      server_cert:
-        type: secret
-        secret: jwt-certs
-        key: jwt.cert.pem
-      server_key:
-        type: secret
-        secret: jwt-certs
-        key: jwt.key.pem
-
-    # Provides a list of authorized users for the JWT service - preloaded with the DNs for GM Control, GM Catalog and the Mesh cert
-    users_cg_name: internal-jwt-users
-    users: |-
-      {
-        "users": [
-        {
-          "label": "CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
-          "values": {
-            "email": [
-                "gm-control@deciphernow.com"
-            ],
-            "org": [
-                "www.deciphernow.com"
-            ],
-            "privilege": [
-                "root"
-            ]
-          }
-        },
-        {
-          "label": "CN=gm-catalog,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
-          "values": {
-            "email": [
-                "engineering@deciphernow.com"
-            ],
-            "org": [
-                "www.deciphernow.com"
-            ],
-            "privilege": [
-                "root"
-            ]
-          }
-        },
-        {
-          "label": "C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=*.greymatter.svc.cluster.local",
-          "values": {
-            "email": [
-                "engineering@deciphernow.com"
-            ],
-            "org": [
-                "www.deciphernow.com"
-            ],
-            "privilege": [
-                "root"
-            ]
-          }
-        }]
-      }
-
-
-  redis:
-    # Name used for the internal-redis deployment and service resources
-    name: internal-redis
-    # The secret containing the password to configure the environment variable REDIS_PASSWORD
-    secret:
-      secret_name: internal-redis-password
-

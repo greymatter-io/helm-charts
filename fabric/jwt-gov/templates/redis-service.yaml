@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.redis.name | default "redis" }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - name: server
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+  selector:
+    {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name | default "redis" }}
+  sessionAffinity: None
+  type: ClusterIP

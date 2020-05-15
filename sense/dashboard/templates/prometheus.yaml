@@ -7,23 +7,21 @@ spec:
   serviceName: {{ .Values.prometheus.name }}
   selector:
     matchLabels:
-      gm.proxy: {{ .Values.prometheus.name }}
+      {{ .Values.global.control.cluster_label }}: {{ .Values.prometheus.name }}
       deployment: {{ .Values.prometheus.name }}
   replicas: {{ .Values.prometheus.replica_count }}
   template:
     metadata:
       labels:
-        gm.proxy: {{ .Values.prometheus.name }}
+        {{ .Values.global.control.cluster_label }}: {{ .Values.prometheus.name }}
         deployment: {{ .Values.prometheus.name }}
     spec:
       serviceAccountName: {{ .Values.prometheus.service_account.name }}
-      {{- if ((ne .Values.global.environment "openshift")) }}
-      # Pod security contexts are propagated to their children volumes to allow r/w permissions
-      # We only do this in openshift when spire is enabled because then it is running with a more relaxed security context constraint
+      {{- if eq .Values.global.environment "openshift"}}
       securityContext:
-        fsGroup: 65534
-      {{- end }}  
-      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+        # Adding the user to root group.
+        runAsGroup: 0
+      {{- else }}
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
@@ -67,8 +65,10 @@ spec:
         resources:
 {{ toYaml .Values.sidecar_prometheus.resources | indent 10 }}
         {{- end }}
-        {{- if .Values.sidecar_prometheus.secret }}
         volumeMounts:
+        {{- if .Values.global.spire.enabled }}
+        {{- include "spire_volume_mount" . | indent 8 }}
+        {{- else if .Values.sidecar_prometheus.secret.enabled }}
         - name: sidecar-certs
           mountPath: {{ .Values.sidecar_prometheus.secret.mount_point }}
           readOnly: true
@@ -80,6 +80,10 @@ spec:
           containerPort: {{ .Values.sidecar_prometheus.metrics_port }}
         env:   
         {{- include "sidecar.envvars-prometheus" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       volumes:
@@ -89,7 +93,9 @@ spec:
       - name: config-consul
         emptyDir: {}
       {{- end }}
-      {{- if .Values.sidecar_prometheus.secret }}
+      {{- if .Values.global.spire.enabled }}
+      {{- include "spire_volumes" . | indent 6 }}
+      {{- else if .Values.sidecar_prometheus.secret.enabled }}
       - name: sidecar-certs
         secret:
           secretName: {{ .Values.sidecar_prometheus.secret.secret_name }}

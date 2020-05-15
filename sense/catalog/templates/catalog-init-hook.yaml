@@ -1,0 +1,70 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.catalog.name }}-init
+  annotations:
+    # Run this job after an install or an upgrade
+    "helm.sh/hook": post-install,post-upgrade
+    # If a job with this name already exists, delete it before running this one
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      name: {{ .Values.catalog.name }}-init
+    spec:
+      restartPolicy: "OnFailure"
+      # We need a SA with read access to the `Endpoints` resource
+      serviceAccountName: {{ .Values.global.waiter.service_account.name }}
+      initContainers:
+        - name: ensure-{{ .Values.catalog.name }}
+          image: {{ .Values.global.waiter.image }}
+          imagePullPolicy: {{ .Values.catalog.init.image_pull_policy }}
+          env:
+            - name: NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: SERVICE
+              value: catalog
+      containers:
+        - image: {{ tpl .Values.catalog.init.image . }}
+          name: {{ .Values.catalog.name }}-init
+          imagePullPolicy: {{ .Values.catalog.init.image_pull_policy }}
+          command: ["/tmp/bootstrap/bootstrap.sh"]
+          env:
+          {{- include "envvars" (dict "envvar" .Values.catalog.init.envvars "top" $) | indent 12 }}
+          volumeMounts:
+          {{- range $name, $service := .Values.services }}
+          {{- if $service.catalogEnabled }}
+            - name: service-config-volume-{{$service.serviceName}}
+              mountPath: /etc/config/mesh/services/{{$service.serviceName}}
+          {{- end }}
+          {{- end }}
+            - name: bootstrap-script-volume
+              mountPath: /tmp/bootstrap
+            - name: bootstrap-zone-volume
+              mountPath: /etc/config/mesh/zones/
+            {{- if and $.Values.catalog.secret.enabled }}
+            - name: certs
+              mountPath: {{ .Values.catalog.secret.mount_point }}
+            {{- end }}
+      volumes:
+        {{- range $name, $service := .Values.services }}
+        {{- if $service.catalogEnabled }}
+        - name: service-config-volume-{{ $service.serviceName }}
+          configMap:
+            name: service-{{ $service.serviceName }}-catalog-api-config
+        {{- end }}
+        {{- end }}
+        - name: bootstrap-script-volume
+          configMap:
+            name: {{ .Values.catalog.name }}-bootstrap-script
+            defaultMode: 0777
+        - name: bootstrap-zone-volume
+          configMap:
+            name: {{ .Values.catalog.name}}-zone-bootstrap
+        {{- if and $.Values.catalog.secret.enabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.catalog.secret.secret_name }}
+        {{- end }}
+      imagePullSecrets:
+        - name: docker.secret
