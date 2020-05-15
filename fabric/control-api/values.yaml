@@ -51,7 +51,7 @@ controlApi:
   display_name: control-api
   # Number of replicas for the deployment
   replicas: 1
-  version: 1.4.0
+  version: 1.4.1
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
@@ -134,7 +134,7 @@ sidecar:
 
 
 bootstrap:
-  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.4.0'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.4.1'
   image_pull_policy: IfNotPresent
   secret:
     enabled: true
