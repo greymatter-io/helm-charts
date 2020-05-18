@@ -134,7 +134,7 @@ sidecar:
 
 
 bootstrap:
-  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.4.1'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.4.0'
   image_pull_policy: IfNotPresent
   secret:
     enabled: true
