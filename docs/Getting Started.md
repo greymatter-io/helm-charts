@@ -1,24 +1,24 @@
 # Getting Started
 
-- [Helm](#helm)
-- [OpenShift](#openshift)
-- [Configuration](#configuration)
-  - [Storage](#storage)
-  - [Ingress](#ingress)
-  - [Observables](#observables)
-  - [Docker credentials](#docker-credentials)
-  - [AWS credentials (optional)](#aws-credentials-optional)
-  - [Certificates](#certificates)
-  - [SPIRE](#spire)
-  - [TLS Options](#tls-options)
-  - [Single-service deployments](#single-service-deployments)
-- [Install](#install)
-  - [Prepare Tiller](#prepare-tiller)
-  - [Prepare Service Accounts](#prepare-service-accounts)
-  - [Latest Helm charts release](#latest-helm-charts-release)
-  - [Local Helm charts](#local-helm-charts)
-  - [Additional Helm install flags](#additional-helm-install-flags)
-- [Verification](#verification)
+- [Getting Started](#getting-started)
+  - [Helm](#helm)
+  - [OpenShift](#openshift)
+  - [Configuration](#configuration)
+    - [Storage](#storage)
+    - [Ingress](#ingress)
+    - [Observables](#observables)
+    - [Docker credentials](#docker-credentials)
+    - [AWS credentials (optional)](#aws-credentials-optional)
+    - [Certificates](#certificates)
+    - [SPIRE](#spire)
+    - [TLS Options](#tls-options)
+    - [Single-service deployments](#single-service-deployments)
+  - [Install](#install)
+    - [Prepare Service Accounts](#prepare-service-accounts)
+    - [Latest Helm charts release](#latest-helm-charts-release)
+    - [Local Helm charts](#local-helm-charts)
+    - [Additional Helm install flags](#additional-helm-install-flags)
+  - [Verification](#verification)
 
 This guide assumes that your target environment is a hosted Kubernetes based platform. If you want to test drive Grey Matter on your local machine, follow [Deploy with Minikube](./Deploy%20with%20Minikube.md).
 
@@ -40,63 +40,51 @@ oc login development.deciphernow.com
 
 ## Configuration
 
-Our Helm charts can be overridden by custom YAML files that are chained together during install. We've provided two examples:
+Our Helm charts can be overridden by custom YAML files that are chained together during install.  Follow the structure of the `<chart>/values.yaml` file for the chart you are installing to create a `custom.yaml` with overrides.
 
-- [greymatter.yaml](../greymatter.yaml) provides a primary set of overrides
-- [greymatter-secrets.yaml](../greymatter-secrets.yaml) provides a separate set of overrides specifically for passwords, secrets, and other sensitive data
-
-Copy these files to `custom-greymatter.yaml` and `custom-greymatter-secrets.yaml` as we'll be making changes to them. They will not be picked up by Git.
-
-At the top of `custom-greymatter.yaml`, set the following four values according to your needs.
-
-```yaml
-global:
-  # used in our subcharts to apply platform specific settings, values can be `openshift` or `kubernetes` only
-  environment: openshift
-
-  # the domain you're deploying to
-  domain: development.deciphernow.com
-
-  # a string that will be prefixed to the final hostname of the deployment
-  route_url_name: greymatter
-
-  # whether to include the virtual cluster namespace in the final hostname of the deployment
-  remove_namespace_from_url: false
-
-  # a map of information specific for Grey Matter observables
-  observables:
-    # the Kafka topic that the observables should be written to
-    topic: observables
-    # the Kafka server connection string
-    kafkaServerConnection:
-```
 
 ### Storage
 
-The Grey Matter Helm chart assumes that your Kubernetes cluster has a default storage provider already defined.  The charts will attempt to create several PersistentVolumeClaims for data storage, and if a default storage provider has not been declared, the installation will fail.  Additionally, the Mongo StatefulSets declare a Persistent Volume Template that requires that a Storage Class be defined.  If there is no default StorageClass in your cluster, you must provide a StorageClass name for the Mongo chart.  This variable can be set at `.Values.data.mongo.storage.storageClass` and `.Values.internal-data.mongo.storage.storageName`
+The Grey Matter Helm chart assumes that your Kubernetes cluster has a default storage provider already defined.  The charts will attempt to create several PersistentVolumeClaims for data storage, and if a default storage provider has not been declared, the installation will fail.  Additionally, the Mongo StatefulSets declare a Persistent Volume Template that requires that a Storage Class be defined.  If there is no default StorageClass in your cluster, you must provide a StorageClass name for the Mongo chart.  This variable can be set for the [Data chart](./../data/Chart.yaml) at `.Values.data.mongo.storage.storageClass` and `.Values.internal-data.mongo.storage.storageName`
 
 ### Ingress
 
-If you're using OpenShift, you can skip to the next section because OpenShift will create a route using the `domain` value. For Kubernetes, we recommend the [Voyager Ingress Controller](https://appscode.com/products/voyager/), which automatically provisions a load balancer from a variety of supported cloud providers like EKS in AWS. This allows you to access the cluster at the provided load balancer URL. Add the following Voyager configuration to your `custom-greymatter.yaml` file. Ensure that the value for `cloudProvider` is one of the [supported providers](https://appscode.com/products/voyager/7.1.1/setup/install/#using-script).
+If you're using OpenShift, you can skip to the next section because OpenShift will create a route using the `global.domain` value set in the [Edge chart](./../edge/Chart.yaml). 
 
-```yaml
-voyager:
-  cloudProvider: aws
-  enableAnalytics: false
+By default, we use an nginx ingress configuration. This ingress will be set up automatically.
+
+If you prefer to use a [Voyager Ingress Controller](https://appscode.com/products/voyager/) for ingress, before intalling the charts,
+
+```bash
+cd voyager
+make voyager
 ```
 
-At present, there's [an issue](https://github.com/appscode/voyager/issues/1415) specifying Voyager as a dependency, so we need to manually configure Voyager ingress as a prerequisite. This can be done with following commands:
+and set `edge.ingress.use_voyager` to true in `edge/values.yaml`.
 
-```sh
-# PROVIDER should match `cloudProvider` value
-export PROVIDER=aws
-helm repo add appscode https://charts.appscode.com/stable/
-helm repo update
-helm install appscode/voyager --name voyager-operator --version 10.0.0 \
-  --namespace kube-system \
-  --set cloudProvider=$PROVIDER \
-  --set enableAnalytics=false \
-  --set apiserver.enableAdmissionWebhook=false
+This will generate an ingress with voyager that looks like the following:
+
+```yaml
+edge:
+  ingress:
+    apiVersion: voyager.appscode.com/v1beta1
+    annotations:
+      kubernetes.io/ingress.class: 'voyager'
+      ingress.appscode.com/ssl-passthrough: 'true'
+      ingress.appscode.com/type: NodePort
+    rules:
+      - tcp:
+          port: '80'
+          nodePort: '30001'
+          backend:
+            serviceName: edge
+            servicePort: 10808
+      - tcp:
+          port: '443'
+          nodePort: '30000'
+          backend:
+            serviceName: edge
+            servicePort: 10808
 ```
 
 Once the edge proxy is deployed, voyager-operator will create a custom ingress resource which will provision a load balancer for you. You can run `kubectl get svc voyager-edge` to see the cluster IP and port.
@@ -120,15 +108,35 @@ Observables can be enabled or disabled for each service.  You can enable observa
 
 ### Docker credentials
 
-At the top of your `custom-greymatter-secrets.yaml` file set your Docker credentials so Helm can pull the necessary Grey Matter images. If you need credentials please contact [Grey Matter Support](https://support.greymatter.io).
+Before installing the secrets chart, or your own series of secrets, a docker secret with docker credentials to pull the Grey Matter images must be created. By default, it is named `docker.secret`, but a secret with a different name can be used as long as `.Values.global.image_pull_secret` is set to the name of the secret in all of the Grey Matter charts.
+
+Run `make credentials` to generate a `credentials.yaml` file.  It will prompt you for your registry and credentials and (optionally) your [AWS credentials](#aws-credentials-optional).  The `credentials.yaml` file will look like the following:
 
 ```yaml
 dockerCredentials:
-  registry: docker.production.deciphernow.com
-  email:
-  username:
-  password:
+  - registry: docker.production.deciphernow.com
+    email:
+    username:
+    password:
+
+data:
+  aws:
+    access_key:
+    secret_key:
+    region: us-east-1
+    bucket: decipher-quickstart-helm
 ```
+
+To add another docker registry with credentials to the secrets, simply add another block to the `dockerCredentials` list:
+
+```yaml
+  - registry: second.docker.registry
+    email:
+    username:
+    password:
+```
+
+To install, run `make secrets`. The `docker.secret` will have creall registries in this file.  If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
 
 ### AWS credentials (optional)
 
@@ -136,29 +144,66 @@ Set AWS credentials for gm-data to authenticate and push content to S3. This ste
 
 ```yaml
 data:
-  data:
-    aws:
-      access_key:
-      secret_key:
-      region: us-east-1
-      bucket: decipher-quickstart-helm
+  aws:
+    access_key:
+    secret_key:
+    region: us-east-1
+    bucket: decipher-quickstart-helm
 ```
 
 ### Certificates
 
-You may notice a large section of your `custom-greymatter-secrets.yaml` file containing TLS certificates with public and private keys. These are used in various services like gm-jwt-security, the Grey Matter sidecar, and edge proxy.
+The Grey Matter [Secrets chart](../secrets/Chart.yaml) contains the default values for all Grey Matter certificates and credentials.  Deploying this chart will generate all of the necessary secrets to run Grey Matter.
 
 To access anything in the mesh, your request will pass through the edge proxy, which performs Mutual TLS (mTLS) authentication. Both the client and server must authenticate themselves and your browser (or other HTTPS client like `curl` or `wget`) will need to have the appropriate certificates loaded.
 
-To keep things simple, `greymatter-secrets.yaml` uses the same certificates as those from `common/certificates/user/quickstart.p12` in the [DecipherNow/grey-matter-quickstart](https://github.com/DecipherNow/grey-matter-quickstarts) repository. If you load `quickstart.p12` into your browser, when you access the Grey Matter Dashboard, you'll be prompted to use that certificate to verify yourself.
+If you load `quickstart.p12` into your browser, when you access the Grey Matter Dashboard, you'll be prompted to use that certificate to verify yourself.
 
-For production deployments it's recommened to use certificates generated from a secure Certificate Auhority (CA).
+For production deployments it's recommened to use certificates generated from a secure Certificate Authority (CA).  Kubernetes secrets must be created containing any necessary certificates. Then, to use them in Grey Matter, set `.Values.<service>.secret` to the with information pointing to the secret for whichever `<service>`
+the certificates are to be set on.
+
+For example, if you generate a secret with certificates that you wish to use for gm-data called `data-override-secret`, in `.Values.data` you should have something like the following:
+
+```yaml
+data:
+  data:
+    secret:
+      secret_name: data-override-secret
+      mount_point: /certs/
+      secret_keys:
+        ca: <key in secret for ca>
+        cert: <key in secret for cert>
+        key: <key in secret for key>
+```
+
+There is a global certs option that allows you to use a single set of certificates mounted for all services in the mesh.  To configure this, in your `global.yaml` file set:
+
+```yaml
+global:
+  global_certs:
+    enabled: false
+    certificates:
+      from_file:
+        enabled: false
+        path: files/certs/global
+      ca:
+      cert:
+      key:
+```
+
+The certificates themselves can either be added here in the `certificates.ca`, `certificates.key`, and `certificates.cert` values.  They can also be pulled from file, to do this, set `from_file.enabled` to true and indicate where the secrets chart can find the desired files.
+
+With the global option, you can also configure a separate certificate for edge ingress. To do this, if `global.global_certs.enabled` is true, set `edge.certificates.ingress.unique` to true and indicate where to pull that cert from in the same way.  Otherwise, edge ingress will use the same global certificates as the other services.
+
+From file certificates can also be specified for particular services, this can be done by setting the `<service>.secret.certificates.from_file.enabled` to true and setting the location in the same way.
+
+See the [secrets chart documentation](../secrets/README.md) for more information.
 
 ### SPIRE
 
 We also support using SPIFFE/SPIRE as a way to enable zero-trust attestation of different "workloads" (services).
 
-Read [SPIRE](./SPIRE.md) for further details.
+Read the [spire docs](./spire/configuration.md) for further details.
 
 ### TLS Options
 
@@ -166,11 +211,19 @@ We support multiple TLS options both for ingress/egress (north/south traffic) to
 
 ```yaml
 edge:
-  enableTLS: true
-  certPath: /etc/proxy/tls/edge
+  # If set, enables egress TLS from the edge proxy using the secret specified in secret_name
+  egress:
+    secret:
+      secret_name: greymatter-edge-egress
+      mount_point: /etc/proxy/tls/sidecar/
+  # If set, enables ingress TLS on the edge proxy using the secret specified in secret_name
+  ingress:
+    secret:
+      secret_name: greymatter-edge-ingress
+      mount_point: /etc/proxy/tls/edge/
 ```
 
-Certs are volume mounted to the edge proxy Docker container at the location specified by `certPath`.
+Certs are volume mounted to the edge proxy Docker container at the location specified by `mount_point`.
 
 For securing communication between the sidecar proxies in the mesh, we support:
 
@@ -178,78 +231,42 @@ For securing communication between the sidecar proxies in the mesh, we support:
 - Static mTLS (two-way TLS)
 - SPIFFE/SPIRE mTLS with certificate rotation
 
-If you want to disable TLS in the mesh, don't enable either of the following options.
+If you want to disable TLS in the mesh, don't set `.Values.<service>.secret` on the Grey Matter services.
 
-For both of the following options, you need:
+**Static mTLS** - this configures static mTLS between each proxy by mounting the appropriate certs on the sidecar container.  Set `.Values.<service>.sidecar.secret` to point at the correct secret to configure this.
 
-```yaml
-mesh_tls:
-  enabled: true
-```
-
-**Static mTLS** - this configures static mTLS between each proxy by mounting the appropriate certs and setting up the configuration in `control-api`. Read [Control API](./Control%20API.md) for further details.
-
-To enable it just set the following in your `custom-greymatter.yaml` file:
+For example, the default secret set on each sidecar is `sidecar-certs`, mounted at `/etc/proxy/tls/sidecar`:
 
 ```yaml
-mesh_tls:
-  enabled: true
-  use_provided_certs: true
+  secret:
+    secret_name: sidecar-certs
+    mount_point: /etc/proxy/tls/sidecar/
+    secret_keys:
+      ca: ca.crt
+      key: server.key
+      cert: server.crt
 ```
-
-Currently, this uses the certificates mounted at the path `/etc/proxy/tls/sidecar/`, but in the future this path may be configurable.
 
 **SPIFFE/SPIRE mTLS** - enables the `spire` subchart, which creates the SPIRE agent and server. Also creates appropriate SPIRE registration entries automatically, and adds SPIRE secrets to the proxy and cluster configuration in `control-api`
 
-To enable it, set the following in your `custom-greymatter.yaml`:
+To enable it, set the following in your `<chart>/values.yaml` or `custom.yaml`:
 
 ```yaml
-mesh_tls:
-  enabled: true
-spire:
-  enabled: true
-  trustDomain: deciphernow.com
+global:
+  spire:
+    enabled: true
+    trustDomain: quickstart.greymatter.io
 ```
 
 ### Single-service deployments
 
-If you want to deploy a Helm chart for a single service without the entire service mesh, you need to make sure that your `custom-greymatter.yaml` `globals.sidecar.envvars` key contains all of the necessary global defaults for the sidecar. Otherwise, the sidecar will contain inappropriate environment variables for that deployment and will lead to your sidecar being mis-configured.
+If you want to deploy a Helm chart for a single service without the entire service mesh, you need to make sure that your `custom.yaml` `globals.sidecar.envvars` key contains all of the necessary global defaults for the sidecar. Otherwise, the sidecar will contain inappropriate environment variables for that deployment and will lead to your sidecar being mis-configured.
 
 ## Install
 
-### Prepare Tiller
-
-Tiller requires permissions to run installations in the cluster. Depending on your
-setup and security requirements, these particular permissions will change. Please see
-the [official Helm docs](https://helm.sh/docs/using_helm/#tiller-and-role-based-access-control) to prepare your
-production setup, but we do provide highlights in our [Multi-tenant Helm guide](./Multi-tenant%20Helm.md).
-
-For development deployments with Minikube, you can skip these steps and proceed on. Full Tiller access should be granted by default when installing with Minikube.
-
-For a quick setup, giving Tiller full cluster-wide access, have an admin apply the `helm-service-account.yaml` found in this repository. This will enable Tiller
-to act and install across the entire Kubernetes cluster.
-
-For Openshift:
-
-```sh
-oc apply -f ./helm-service-account.yaml
-```
-
-For Kubernetes:
-
-```sh
-kubectl apply -f ./helm-service-account.yaml
-```
-
-You'll then be able to initialize Helm using this account:
-
-```sh
-helm init --service-account tiller
-```
-
 ### Prepare Service Accounts
 
-For production deployments, we recommend that an admin setup service accounts first following our [Service Accounts](./Service%20Accounts.md) guide because some of our services require cluster resources, such as read access to Kubernetes Pods. If Tiller has full cluster access then it will install the service accounts. This would be the default when installing in a simple fashion with Minikube.
+For production deployments, we recommend that an admin setup service accounts first following our [Service Accounts](./Service%20Accounts.md) guide because some of our services require cluster resources, such as read access to Kubernetes Pods.
 
 ### Latest Helm charts release
 
@@ -264,48 +281,40 @@ Once the repository has successfully been added to your `helm` CLI, you can inst
 
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
-```sh
-helm install decipher/greymatter --namespace <project_namespace> --name <release_name> -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --tiller-namespace <tiller_namespace>
-```
-
 ### Local Helm charts
 
-If you've cloned this project and are changing charts locally, you'll need to modify the repository paths in `requirements.yaml` to point to the relative chart paths of this GitHub project.
+If you are modifying charts or want to run development versions of charts you'll need to clone this repository.
 
-```yaml
-dependencies:
-  - name: dashboard
-    version: '2.0.1'
-    repository: 'file://../dashboard'
+```sh
+git clone git@github.com:DecipherNow/helm-charts.git
 ```
 
 Then you can run the following commands to update the local charts and then install them.
 
 ```sh
-helm dep up greymatter
-helm install greymatter --namespace <project_namespace> --name <release_name> -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --tiller-namespace <tiller_namespace>
+helm dep up <chart>
+helm install <release-name> <chart> --namespace <project_namespace> --name <release_name> -f <optional config overrides>
 ```
 
-The `helm dep up greymatter` command will create a `./greymatter/charts` directory with tarballs of each sub-chart that the parent `greymatter` chart will use to install Grey Matter.
+The `helm dep up <chart>` command will create a `./<chart>/charts` directory with tarballs of each sub-chart that the parent chart will use to install Grey Matter.
 
 ### Additional Helm install flags
 
 Here are some additional parameters we often use when running `helm install`:
 
 - `-f` allows you to pass in a file with values that can override the chart's defaults (relative path)
-- `--name` the release version of the project, service, etc.
 - `--namespace` the namespace provided by the OpenShift/Kubernetes environment e.g. `fabric-development`
-- `--tiller-namespace` the namespace of the Tiller pod in OpenShift/Kubernetes
 - `--debug` prints out the deployment YAML to the terminal
 - `--dry-run` w/ debug will print out the deployment YAML without actually deploying to OpenShift/Kubernetes environment
-- `--replace` will create new deployments if they are undefined or replace old ones if they exist
 
 ## Verification
 
-Once all pods, containers, and services start successfully you can confirm that the Grey Matter service mesh is running by navigating to its dashboard. You'll need to construct the URL from your global values in `custom-greymatter.yaml`.
+We can run `helm ls` to see all our current deployments and `helm uninstall <release name>` to delete deployments. If you need to make changes, you can run `helm upgrade <release name> <chart> -f <optional config overrides>` to update your release in place.
 
 You should also load the appropriate user p12 file according to the certs you configured when deploying Greymatter. The default certs correspond to the quickstart certificates and the `quickstart.p12` file can be found at `certs/quickstart.p12`. You will want to follow your browser specific instructions to load in this user pki. 
 [Firefox](https://www.sslsupportdesk.com/how-to-import-a-certificate-into-firefox/) and [Chrome](https://support.globalsign.com/customer/en/portal/articles/1211541-install-client-digital-certificate---windows-using-chrome) instructions.
+
+You can confirm that the Grey Matter service mesh is running by navigating to its dashboard. You'll need to construct the URL from your global values in `edge/values.yaml`.
 
 For example, with the following configuration:
 
@@ -314,7 +323,7 @@ global:
   environment: openshift
   domain: development.deciphernow.com
   route_url_name: greymatter
-  remove_namespace_from_url: false
+  remove_namespace_from_url: 'false'
 ```
 
-The URL will be `greymatter.{{ Release.Namespace }}.development.deciphernow.com`, so if you deployed into a OpenShift or Kubernetes namespace with a command like, `helm install decipher/greymatter --namespace mesh`, the final URL would be: `https://greymatter.mesh.development.deciphernow.com`. That URL will route you to the Grey Matter dashboard and you can confirm that the core services are up and running.
+The URL will be `greymatter.{{ Release.Namespace }}.development.deciphernow.com`, so if you deployed into a OpenShift namespace, the final URL would be: `https://greymatter.mesh.development.deciphernow.com`. That URL will route you to the Grey Matter dashboard and you can confirm that the core services are up and running.

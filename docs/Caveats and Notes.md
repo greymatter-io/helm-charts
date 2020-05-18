@@ -2,7 +2,7 @@
 
 ## Deleting Install
 
-To delete a deployment run `helm del --purge <namespace>`. This will delete everything in the deployment. If using OpenShift, you can use `oc get pods` and `oc get pvc` to check that the rescources in the deployment have been removed (persistent volumes seem to take longer than pods).
+To delete a deployment run `helm uninstall <release name>`.  This will delete everything in the release. If using OpenShift, you can use `oc get pods` and `oc get pvc` to check that the rescources in the deployment have been removed (persistent volumes seem to take longer than pods).
 
 ## Custom File
 

@@ -1,12 +1,12 @@
 # Control API
 
-The Grey Matter control plane is configured using `control-api`, a service which serves as the source of truth and the persistence layer for mesh configuration.
+The Grey Matter control plane is installed with the `fabric` chart. The control plane is configured using `control-api`, a service which serves as the source of truth and the persistence layer for mesh configuration.
 
 You define all of your service mesh objects + configuration by interacting with `control-api`, either directly through the REST API, or by using the `greymatter` CLI.
 
 ## Routing
 
-All routing configuration is defined by the `helm-charts/control-api/json` folder, which specifies all of the mesh objects to create for each service both for its own proxy (service) and for routing from the edge node to its proxy (edge), along with any special mesh objects needed (aka the domain, edge cluster, etc).
+All routing configuration is defined by the `helm-charts/fabric/control-api/json` folder, which specifies all of the mesh objects to create for each service both for its own proxy (service) and for routing from the edge node to its proxy (edge), along with any special mesh objects needed (aka the domain, edge cluster, etc).
 
 Currently, each service is served at `/services/dashboard/latest/`. Previously, we had served each route at a URL containing the version of the service (e.g. `/services/dashboard/3.0.0/`) However, in order to provide better flexibility, the GM 2.0 deployment will only provide the first one for now.
 
@@ -41,12 +41,12 @@ These link a sidecar proxy to its service. The edge proxy has the following:
 
 ## Service discovery
 
- `gm-control` periodically queries the Kubernetes API to look for pods with the following two characteristics:
+ `control` periodically queries the Kubernetes API to look for pods with the following two characteristics:
 
-1. The pods have a label (by default `app`) with a value corresponding to the `name` key of the `control-api` cluster object which it should be associated with.
-2. The pod has a named port (by default `proxy`) with a defined port value which `gm-control` adds to the `Instance` and adds it to the cluster mentioned above.
+1. The pods have a label (by default `greymatter.io/control`) with a value corresponding to the `name` key of the `control-api` cluster object which it should be associated with.
+2. The pod has a named port (by default `proxy`) with a defined port value which `control` adds to the `Instance` and adds it to the cluster mentioned above.
 
-These two things: both the pod's label and the port name can be configured using two environment variables on  `gm-control`: `GM_CONTROL_KUBERNETES_CLUSTER_LABEL` and `GM_CONTROL_KUBERNETES_PORT_NAME`
+These two things: both the pod's label and the port name can be configured using two environment variables on  `control`: `GM_CONTROL_KUBERNETES_CLUSTER_LABEL` and `GM_CONTROL_KUBERNETES_PORT_NAME`
 
 In our deployment, we have an architecture which only discovers services with a sidecar proxy (e.g. the `proxy` port). We ensure that the edge and every proxy can talk to every other proxy using the configured TLS and authentication options (static mTLS, SPIFFE/SPIRE certs, etc) which have been set in `control-api`.
 
@@ -54,11 +54,11 @@ Make sure that every service which you want to deploy and to be discovered has t
 
 ## YAML structure
 
-All structure for bootstrapping the mesh is defined in `.Values.global.services` (this is the service list for which the services + edge service template is used, along with the list which automatically generates SPIRE registration entries and catalog API configuration calls)
+All structure for bootstrapping the mesh is defined in `.Values.services` (this is the service list for which the services + edge service template is used, along with the list which automatically generates SPIRE registration entries and catalog API configuration calls)
 
-The only requirement for `.Values.global.services` is that it is a list of service objects. A service object is set as the scope for the services template/mesh configuration init objects.
+The only requirement for `.Values.services` is that it is a list of service objects. A service object is set as the scope for the services template/mesh configuration init objects.
 
 We add a few items to each `$service` object:
 
 - `$top` - represents the top-level Helm values scope, and allows access to global values
-- `$svids` - a list of spiffe IDs generated from the `$service.serviceName` field on `.Values.global.services`
+- `$svids` - a list of spiffe IDs generated from the `$service.serviceName` field on `.Values.services`
