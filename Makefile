@@ -107,4 +107,4 @@ remove-secrets:
 
 .PHONY: credentials
 credentials:
-	cd secrets && make secrets
+	cd secrets && make credentials
