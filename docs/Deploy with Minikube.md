@@ -14,12 +14,12 @@
     - [Docker Credentials](#docker-credentials)
   - [Setup Helm](#setup-helm)
   - [Secrets](#secrets)
+    - [Ingress](#ingress)
     - [Configure Voyager Ingress](#configure-voyager-ingress)
   - [Install](#install)
     - [Latest Helm charts release](#latest-helm-charts-release)
     - [Local Helm charts](#local-helm-charts)
     - [Verification](#verification)
-    - [Ingress](#ingress)
       - [EC2](#ec2)
     - [Debugging](#debugging)
 
@@ -228,6 +228,12 @@ To install the secrets, run:
 make secrets
 ```
 
+### Ingress
+
+By default, the Helm Charts use nginx ingress in k3d.  If you want to use [a voyager ingress controller](https://appscode.com/products/voyager/), see how to [configure voyager ingress](#configure-voyager-ingress).
+
+See the [Ingress](./Ingress.md) docs for more information on how the ingress objects are created.
+
 ### Configure Voyager Ingress
 
 By default, the Helm Charts use nginx ingress in k3d.  If you want to use [a voyager ingress controller](https://appscode.com/products/voyager/), run the following commands and in the `edge/values.yaml` file set `edge.ingress.use_voyager` to true before running `make install`:
@@ -246,6 +252,24 @@ Describe ingress is also a useful command for debugging:
 ```sh
 kubectl describe ingress.voyager.appscode.com -n <namespace> <ingress-name>
 ```
+
+To hit our cluster, we can access voyager-edge:
+
+```sh
+$ minikube -p gm-deploy service --https=true voyager-edge
+|-----------|--------------|--------------------------------|
+| NAMESPACE   | NAME           | URL                              |
+|-------------|----------------|----------------------------------|
+| default     | voyager-edge   | http://192.168.99.102:30001      |
+|             |                | http://192.168.99.102:30000      |
+| ----------- | -------------- | -------------------------------- |
+🎉  Opening kubernetes service  default/voyager-edge in default browser...
+🎉  Opening kubernetes service  default/voyager-edge in default browser...
+```
+
+Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:30000> in the above example, then navigate to there in your browser.
+
+You should be prompted for your [Decipher localuser certificate](https://github.com/DecipherNow/grey-matter-quickstarts/tree/master/common/certificates/user) and be taken to the dashboard. Once there, make sure all services are "green" and then pat yourself on the back -- you deployed Grey Matter to Minikube!
 
 To use nginx instead of voyager (the default), you can remove voyager with:
 
@@ -304,31 +328,6 @@ fabric 	default  	3       	2020-03-24 15:26:40.20025539 +0000 UTC 	deployed	fabr
 secrets	default  	1       	2020-03-23 21:27:58.104710704 +0000 UTC	deployed	secrets-1.0.0
 sense  	default  	1       	2020-03-24 14:34:27.931518189 +0000 UTC	deployed	sense-3.0.0  	1.2
 ```
-
-### Ingress
-
-There are two pods which control our ingress:
-
-- `edge` validates client-facing certificates and gets routing rules from `control-api`.
-- `voyager-edge` is our ingress controller. Edge isn't exposed to the outside world, and in a real deployment we need to tie our cluster ingress to an IP address. This points to `edge`.
-
-To hit our cluster, we can access voyager-edge:
-
-```sh
-$ minikube -p gm-deploy service --https=true voyager-edge
-|-----------|--------------|--------------------------------|
-| NAMESPACE   | NAME           | URL                              |
-|-------------|----------------|----------------------------------|
-| default     | voyager-edge   | http://192.168.99.102:30001      |
-|             |                | http://192.168.99.102:30000      |
-| ----------- | -------------- | -------------------------------- |
-🎉  Opening kubernetes service  default/voyager-edge in default browser...
-🎉  Opening kubernetes service  default/voyager-edge in default browser...
-```
-
-Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:30000> in the above example, then navigate to there in your browser.
-
-You should be prompted for your [Decipher localuser certificate](https://github.com/DecipherNow/grey-matter-quickstarts/tree/master/common/certificates/user) and be taken to the dashboard. Once there, make sure all services are "green" and then pat yourself on the back -- you deployed Grey Matter to Minikube!!
 
 #### EC2
 
