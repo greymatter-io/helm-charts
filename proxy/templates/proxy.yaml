@@ -34,6 +34,11 @@ spec:
           volumeMounts:
             - mountPath: /etc/proxy/tls/sidecar
               name: sidecar-certs
+            {{- if .Values.global.spire.enabled }}
+            - name: spire-socket
+              mountPath: /run/spire/socket
+              readOnly: false
+            {{- end }}
       dnsPolicy: ClusterFirst
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -45,3 +50,9 @@ spec:
             defaultMode: 420
             optional: false
             secretName: sidecar-certs
+        {{- if .Values.global.spire.enabled }}
+        - name: spire-socket
+          hostPath:
+            path: /run/spire/socket
+            type: DirectoryOrCreate
+        {{- end }}

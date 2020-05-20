@@ -9,7 +9,7 @@
     "tracing_config": null,
     "secret": {
 	"secret_key": "secret-kibana-secret",
-	"secret_name": "spiffe://quickstart.greymatter.io/kibana",
+	"secret_name": "spiffe://quickstart.greymatter.io/kibana-observables-proxy",
 	"secret_validation_name": "spiffe://quickstart.greymatter.io",
 	"forward_client_cert_details": "APPEND_FORWARD",
 	"set_current_client_cert_details": {

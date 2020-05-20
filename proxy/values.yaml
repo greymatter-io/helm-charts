@@ -26,10 +26,13 @@ sidecar:
       value: '{{ .Values.name }}'
     xds_host:
       type: 'value'
-      value: 'control.greymatter3.svc.cluster.local'
+      value: 'control.greymatter.svc.cluster.local'
     xds_port:
       type: 'value'
       value: '50000'
+    xds_zone:
+      type: 'value'
+      value: 'zone-default-zone'
     spire_path:
       type: 'value'
       value: '/run/spire/socket/agent.sock'
