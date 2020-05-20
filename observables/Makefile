@@ -59,6 +59,7 @@ kibana-proxy: helm-dep-up
 		--namespace $(NAMESPACE) \
 		-f custom-values-files/kibana-proxy-values.yaml \
 		--namespace $(NAMESPACE) \
+		--set=global.spire.enabled=true \
 		$(DRYRUN) --debug
 
 logstash: helm-dep-up
