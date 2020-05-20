@@ -4,18 +4,5 @@
   "name": "kibana-observables-proxy",
   "domain_keys": ["domain-kibana-observables-proxy"],
   "listener_keys": ["listener-kibana-observables-proxy"],
-  "listeners": null,
-  "active_proxy_filters": ["gm.metrics"],
-  "proxy_filters": {
-    "gm_metrics": {
-      "metrics_port": 8081,
-      "metrics_host": "0.0.0.0",
-      "metrics_dashboard_uri_path": "/metrics",
-      "metrics_prometheus_uri_path": "/prometheus",
-      "prometheus_system_metrics_interval_seconds": 15,
-      "metrics_ring_buffer_size": 4096,
-      "metrics_key_function": "depth",
-      "metrics_key_depth": "1"
-    }
-  }
+  "listeners": null
 }

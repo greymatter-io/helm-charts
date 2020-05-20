@@ -2,11 +2,13 @@
 name: proxy
 
 imagePullSecrets:
-  - name: docker-greymatter-ro
+  - name: docker.secret
 
 sidecar:
-  version: 1.0.0
-  image: 'docker-greymatter.di2e.net/greymatter/gm-proxy:{{ $.Values.sidecar.version }}'
+  version: 1.4.0
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}'
+  port: 10808
+  metrics_port: 8081
   imagePullPolicy: IfNotPresent
   resources:
     limits:
@@ -28,3 +30,6 @@ sidecar:
     xds_port:
       type: 'value'
       value: '50000'
+    spire_path:
+      type: 'value'
+      value: '/run/spire/socket/agent.sock'

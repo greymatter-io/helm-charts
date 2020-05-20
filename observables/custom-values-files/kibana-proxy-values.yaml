@@ -4,9 +4,9 @@ imagePullSecrets:
   - name: docker.secret
 
 sidecar:
-  version: 1.0.0
-  image: 'docker-greymatter.di2e.net/greymatter/gm-proxy:1.0.0'
+  version: 1.4.0
+  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:1.4.0'
   envvars:
     xds_host:
       type: 'value'
-      value: 'control.greymatter3.svc.cluster.local'
+      value: 'control.default.svc.cluster.local'

@@ -293,7 +293,7 @@ persistence:
   ##
   # existingClaim:
 
-  storageClass: gp2
+  # storageClass: gp2
   accessModes:
     - ReadWriteOnce
   size: 8Gi

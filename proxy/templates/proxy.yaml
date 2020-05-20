@@ -2,19 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.name }}
-  labels:
-    app: {{ .Values.name }}
-    type: service
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.name }}
+      greymatter.io/control: {{ .Values.name }}
+      deployment: {{ .Values.name }}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ .Values.name }}
+        greymatter.io/control: {{ .Values.name }}
+        deployment: {{ .Values.name }}
     spec:
       containers:
         - name: sidecar
@@ -23,10 +22,10 @@ spec:
           env:
           {{- include "envvars" (dict "envvar" .Values.sidecar.envvars "top" $) | indent 12 }}
           ports:
-          - containerPort: 9080
+          - containerPort: {{ .Values.sidecar.port }}
             protocol: TCP
             name: proxy
-          - containerPort: 8081
+          - containerPort: {{ .Values.sidecar.metrics_port }}
             protocol: TCP
             name: metrics
           resources: {}

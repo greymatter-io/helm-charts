@@ -16,39 +16,13 @@ Simply put:
 
 - `docker.secret` with ability to pull images in namespace
 - `sidecar-certs` secret in namespace (for kibana-proxy)
-- Tiller service account added to namespace[tiller-account](#tiller-account)
-- Helm installed in observable namespace [install-helm-into-namespace](#install-helm-into-namespace)
-- [Identify namespace/project ID](#identify-namespace-id)
-- Docker images that conform to openshift security [Dockerfile](#dockerfile)
-
-### Tiller Account
-
-- To add the super Tiller account to the cluster modify [tiller-sa.yaml](./tiller/tiller-sa.yaml) substituting in your namespace. Run `oc apply -f ./tiller-sa.yaml` to apply to cluster.
-
-### Install Helm Into Namespace
-
-- run `helm init --tiller-namespace <observables-namespace> --service-account tiller`
-- Confirm tiller is running with `helm version --tiller-namespace <observables-namespace>`. It is running if you see a client and server lines
-
-```console
-Client: &version.Version{SemVer:"v2.14.2", GitCommit:"a8b13cc5ab6a7dbef0a58f5061bcc7c0c61598e7", GitTreeState:"clean"}
-Server: &version.Version{SemVer:"v2.14.2", GitCommit:"a8b13cc5ab6a7dbef0a58f5061bcc7c0c61598e7", GitTreeState:"clean"}
-```
-
-### Identify Namespace ID
-
-Get security ID by running `oc get project <your project name> -o yaml | grep openshift.io/sa.scc.uid-range | awk '{print $2}' - | cut -d / -f 1`. You will see output similar to `1000170000`.  In this case you would append `ID=1000170000` to make commands.
-
-### Dockerfile
-
-Openshift introduces a number of security restrictions on images. The [Elasticsearch Dockerfile](./dockerfiles/elasticsearch/Dockerfile) we provide add those changes on top of the stock image provided by elastic.
 
 ## All in One Install
 
 - Edit Values files to point to docker images you would like kubernetes/ openshift to pull from.
 - Edit `xds_host` in the [kibana proxy value file](./custom-values-files/kibana-proxy-values.yaml) to point to control's service.
 - If deploying kibana outside the proxy namespace the extraEnvs's `SERVER_BASEPATH` will need to match the path defined in your `05.route.edge.1.json` [gm config](#add-kibana-proxy-to-dashboard).
-- From inside the `observables` directory run `make CLUSTER_CMD=oc TILLER-NAMESPACE=<observables-namespace> ID=<id-from-requirements>`. This will deploy Kafka, Zookeeper, ElasticSearch, Logstash, Kibana, and Kibana-proxy into the observables namespace with values from [custom-values.files](./custom-calues-files).
+- From inside the `observables` directory run `make`. This will deploy Kafka, Zookeeper, ElasticSearch, Logstash, Kibana, and Kibana-proxy into the observables namespace with values from [custom-values.files](./custom-calues-files).
 
 ### Mesh Updates (control/ prometheus)
 
@@ -82,10 +56,10 @@ We suggest you deploy observables as a package into one namespace and then an in
 
 To install services individually use:
 
-1. `make kafka TILLER-NAMESPACE=observables CLUSTER_CMD=oc`
-2. `make elasticsearch TILLER-NAMESPACE=observables CLUSTER_CMD=oc ID=<namespace-id#>`
-3. `make kibana TILLER-NAMESPACE=observables CLUSTER_CMD=oc>`
-4. `make logstash LOGSTASH-NAMESPACE=observables CLUSTER_CMD=oc ID=<namespace-id#>`
+1. `make kafka NAMESPACE=observables`
+2. `make elasticsearch NAMESPACE=observables`
+3. `make kibana NAMESPACE=observables`
+4. `make logstash LOGSTASH-NAMESPACE=observables`
 
 ## Add Kibana-Proxy to dashboard
 
@@ -112,7 +86,7 @@ To configure a proxy to emit observables you must define the filter as well as e
 
 ## Removing Observables
 
-The make file has the ability to remove the observables deployment as a whole or individual pieces.  To remove everything use `make destroy-observables TILLER_NAMESPACE=<observables-namespace>`.  To delete individual logstash deployments use `make delete-logstash LOGSTASH-NAMESPACE=<namespace-logstash-deployed-into>`
+The make file has the ability to remove the observables deployment as a whole or individual pieces.  To remove everything use `make destroy-observables NAMESPACE=<observables-namespace>`.  To delete individual logstash deployments use `make delete-logstash LOGSTASH-NAMESPACE=<namespace-logstash-deployed-into>`
 
 ## Troubleshooting
 
