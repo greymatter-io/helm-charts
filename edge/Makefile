@@ -10,10 +10,10 @@ include ../output.mk
 edge:
 	if [ "$(pwd_name)" == "edge" ]; then \
 		echo "run in makefile directory"; \
-		helm install edge . --set=global.environment=kubernetes -f ../global.yaml; \
+		helm install edge . -f ../global.yaml; \
 	else \
 		echo "run in helm-charts top directory"; \
-		helm install edge edge --set=global.environment=kubernetes -f ../global.yaml; \
+		helm install edge edge -f ../global.yaml; \
 	fi
 
 .PHONY: remove-edge

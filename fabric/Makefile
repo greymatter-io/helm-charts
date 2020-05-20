@@ -9,19 +9,19 @@ wsa-fabric:
 
 .PHONY: control
 control: wsa-fabric
-	helm install $(NAME-FABRIC) control --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) -f ../global.yaml
+	helm install $(NAME-FABRIC) control $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
 .PHONY: control-api
 control-api: wsa-fabric
-	helm install control-api-$(NAME-FABRIC) control-api  --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) -f ../global.yaml
+	helm install control-api-$(NAME-FABRIC) control-api $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
 .PHONY: jwt
 jwt: wsa-data
-	helm install jwt-$(NAME-FABRIC) jwt --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) -f ../global.yaml
+	helm install jwt-$(NAME-FABRIC) jwt $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
 .PHONY: jwt-gov
 jwt-gov: wsa-data
-	helm install $(NAME-FABRIC) jwt-gov --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) -f ../global.yaml
+	helm install $(NAME-FABRIC) jwt-gov $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
 clean-fabric:
 	rm -f ./charts/*
@@ -32,11 +32,11 @@ package-fabric: clean-fabric
 
 template-fabric: package-fabric $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template $(NAME-FABRIC) . --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-FABRIC)$(BN).yaml
+	helm template $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-FABRIC)$(BN).yaml
 
 .PHONY: fabric
 fabric: package-fabric wsa-fabric
-	helm install $(NAME-FABRIC) . --set=global.environment=kubernetes $(WAITERSACHECK-FABRIC) -f ../global.yaml
+	helm install $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
 .PHONY: remove-fabric
 remove-fabric:
