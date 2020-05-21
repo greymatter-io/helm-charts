@@ -56,8 +56,20 @@ global:
       name: waiter-sa
 
 data:
+  enabled: false
   # Sidecar configuration overrides for data sidecar
   sidecar:
+    # version:
+    # image:
+    # image_pull_policy:
+    # secret:
+    #   enabled: true
+    #   secret_name: sidecar-certs
+    #   mount_point: /etc/proxy/tls/sidecar/
+    #   secret_keys:
+    #     ca: ca.crt
+    #     key: server.key
+    #     cert: server.crt
     envvars:
       xds_cluster:
         type: value
@@ -67,14 +79,29 @@ data:
     # Name used for the deployment and service resources
     name: data
     version: 1.1
+    replicas: 1
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-data:{{ .Values.data.version }}'
+    # image_pull_secret: '{{ .Values.global.image_pull_secret }}'
+    image_pull_policy: IfNotPresent
+
+    # master_key: ac8923[lkn43589vi23kl4rfgv0ws
+    # Location and (optionally) size of pvc to persist data if not using s3 
+    # pvc:
+    #   mount_point: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
+      #size:
+    
     # Security context for the statefulset if enabled
     security_context:
       enabled: false
+      # run_as_user: 666
+      # run_as_group: 666
+      # fs_group: 666
+
     # If set, enables tls using the secret specified in secret_name
     secret:
       enabled: true
       secret_name: data-secrets
+
     envvars:
       uses3:
         type: value
@@ -172,6 +199,10 @@ data:
   mongo:
     # Name used for the mongo deployment and service resources
     name: data-mongo
+    replicas: 1
+    image: 'deciphernow/mongo:4.0.3'
+    image_pull_policy: IfNotPresent
+
     # True if mongo uses a private image, sets the image pull secret to global.image_pull_secret
     private_image: true
     # If set, enables tls and configures environment using the secret specified in secret_name
@@ -236,8 +267,20 @@ data:
       #  key: {{ .Values.mongo.secret.secret_keys.ca }}
 
 internal-data:
+  enabled: true
   # Sidecar configuration overrides for internal-data sidecar
   sidecar:
+    # version:
+    # image:
+    # image_pull_policy:
+    # secret:
+    #   enabled: true
+    #   secret_name: sidecar-certs
+    #   mount_point: /etc/proxy/tls/sidecar/
+    #   secret_keys:
+    #     ca: ca.crt
+    #     key: server.key
+    #     cert: server.crt
     envvars:
       xds_cluster:
         type: value
@@ -247,7 +290,13 @@ internal-data:
     # Name used for the deployment and service resources
     name: data-internal
     version: latest
+    # replicas: 1
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-data:{{ .Values.data.version }}'
+    # image_pull_secret: '{{ .Values.global.image_pull_secret }}'
+    # image_pull_policy: IfNotPresent
+    
+    # master_key: ac8923[lkn43589vi23kl4rfgv0ws
+
     # If set, enables tls using the secret specified in secret_name
     secret:
       enabled: true
@@ -255,6 +304,10 @@ internal-data:
     # Security context for the statefulset if enabled
     security_context:
       enabled: true
+      # run_as_user: 666
+      # run_as_group: 666
+      # fs_group: 666
+
     # Location and size of pvc to persist data if not using s3 
     pvc:
       mount_point: /buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
@@ -312,6 +365,10 @@ internal-data:
   mongo:
     # Name used for the mongo deployment and service resources
     name: internal-data-mongo
+    # replicas: 1
+    # image: 'deciphernow/mongo:4.0.3'
+    # image_pull_policy: IfNotPresent
+    
     # True if mongo uses a private image, sets the image pull secret to global.image_pull_secret
     private_image: true
     # If set, enables tls and configures environment using the secret specified in secret_name

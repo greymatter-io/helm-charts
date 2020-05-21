@@ -17,8 +17,10 @@ dependencies:
     repository: file://./gm-data
     version: '2.2.1'
     alias: data
+    condition: data.enabled
 
   - name: gm-data
     repository: file://./gm-data
     version: '2.2.1'
     alias: internal-data
+    condition: internal-data.enabled

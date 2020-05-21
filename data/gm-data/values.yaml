@@ -43,9 +43,11 @@ data:
   secret:
     enabled: true
     secret_name: data-secrets
+
   image: docker-dev.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
   image_pull_secret: '{{ .Values.global.image_pull_secret }}'
   image_pull_policy: IfNotPresent
+  
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
   # Location and (optionally) size of pvc to persist data if not using s3 
   pvc:
