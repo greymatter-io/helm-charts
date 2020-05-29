@@ -5,7 +5,7 @@ Simply put:
 
 - Configured sidecars emit events to Kafka topics
 - These topics are consumed by Logstash (one logstash per topic) and publish a transformation to Elasticsearch
-- Kibana makes the Elastic search data presentable
+- Kibana makes the Elasticsearch data presentable
 - Kibana-proxy allows Kibana to be exposed through the mesh.
 
 ## TODO
@@ -14,8 +14,19 @@ Simply put:
 
 ## Requirements
 
+- a namespace in which to apply the observables
 - `docker.secret` with ability to pull images in namespace
 - `sidecar-certs` secret in namespace (for kibana-proxy)
+
+You can add a namespace with:
+
+`make namespace NAMESPACE=observables`
+
+You can add secrets with:
+
+`make secrets NAMESPACE=observables`
+
+* this assumes you have a `credentials.yaml` file as created via the main `helm-charts/Makefile`
 
 ## All in One Install
 
@@ -26,7 +37,7 @@ Simply put:
 
 ### Mesh Updates (control/ prometheus)
 
-- Update control to see your observables namespace by appending your namespace to th `GM_CONTROL_KUBERNETES_NAMESPACES` environment variable.
+- Update control to see your observables namespace by appending your namespace to the `GM_CONTROL_KUBERNETES_NAMESPACES` environment variable.
 - In the `prometheus` cofigmap `prometheus.yaml` update this section to include those same namespaces:
 
 ```yaml

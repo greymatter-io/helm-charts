@@ -17,7 +17,7 @@ endif
 
 CMD=kubectl
 
-
+pwd_name := $(notdir $(PWD))
 
 .DEFAULT_GOAL := install-observables
 
@@ -26,6 +26,43 @@ install-observables: kafka elasticsearch kibana logstash kibana-proxy
 # make obseravables namespace
 namespace:
 	kubectl create namespace $(NAMESPACE)
+
+# make observables secrets
+copy-credentials:
+	@if [ "$(pwd_name)" == "observables" ]; then \
+		cp ../credentials.yaml .; \
+	else \
+		echo "Make sure you are running this from observables makefile"; \
+	fi
+
+.PHONY: secrets
+secrets: copy-credentials
+	@if [ "$(pwd_name)" == "observables" ]; then \
+		helm install secrets ../secrets -f credentials.yaml -f ../global.yaml -n $(NAMESPACE); \
+		kubectl delete secret control-certs -n $(NAMESPACE); \
+		kubectl delete secret postgres-credentials -n $(NAMESPACE); \
+		kubectl delete secret internal-redis-password -n $(NAMESPACE); \
+		kubectl delete secret internal-mongo-certs -n $(NAMESPACE); \
+		kubectl delete secret mongo-certs -n $(NAMESPACE); \
+		kubectl delete secret redis-password -n $(NAMESPACE); \
+		kubectl delete secret controlapi-certs -n $(NAMESPACE); \
+		kubectl delete secret postgres-ssl-certs -n $(NAMESPACE); \
+		kubectl delete secret mongo-password -n $(NAMESPACE); \
+		kubectl delete secret slo-certs -n $(NAMESPACE); \
+		kubectl delete secret jwt-certs -n $(NAMESPACE); \
+		kubectl delete secret greymatter-edge-egress -n $(NAMESPACE); \
+		kubectl delete secret internal-mongo-password -n $(NAMESPACE); \
+		kubectl delete secret internal-jwt-security-secret -n $(NAMESPACE); \
+		kubectl delete secret greymatter-edge-ingress -n $(NAMESPACE); \
+		kubectl delete secret internal-jwt-certs -n $(NAMESPACE); \
+		kubectl delete secret dashboard-certs -n $(NAMESPACE); \
+		kubectl delete secret data-secrets -n $(NAMESPACE); \
+		kubectl delete secret internal-data-secrets -n $(NAMESPACE); \
+		kubectl delete secret jwt-security -n $(NAMESPACE); \
+		rm credentials.yaml; \
+	else \
+		echo "Make sure you are running this from observables makefile"; \
+	fi
 
 # add and update helm repos
 helm-dep-up:

@@ -13,7 +13,6 @@ roles:
   data: 'true'
 
 replicas: 1
-# KYLE changed 2 -> 1
 minimumMasterNodes: 1
 
 esMajorVersion: ''
@@ -110,7 +109,6 @@ podSecurityPolicy:
       - configMap
       - persistentVolumeClaim
 
-# KYLE made false
 persistence:
   enabled: true
   annotations: {}
@@ -244,7 +242,6 @@ lifecycle:
   #   exec:
   #     command: ["/bin/sh", "-c", "echo Hello from the postStart handler > /usr/share/message"]
 
-# KYLE set to false
 sysctlInitContainer:
   enabled: false
 

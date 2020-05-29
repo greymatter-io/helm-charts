@@ -74,7 +74,6 @@ updateStrategy: RollingUpdate
 podDisruptionBudget:
   maxUnavailable: 1
 
-# KYLE changed this
 replicaCount: 3
 
 config: |-
@@ -239,7 +238,6 @@ auth:
 ## Kubernetes Security Context
 ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 ##
-# KYLE set to false
 securityContext:
   enabled: false
   fsGroup: 1001
@@ -284,7 +282,6 @@ serviceAccount:
 ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
 ##   GKE, AWS & OpenStack)
 ##
-# KYLE CHANGED
 persistence:
   enabled: true
   ## A manually managed Persistent Volume and Claim
@@ -549,7 +546,6 @@ metrics:
 ##
 zookeeper:
   enabled: true
-  # KYLE added persistence, securityContext these and set to false; and  replicaCount=3
   persistence:
     enabled: true
   securityContext:
