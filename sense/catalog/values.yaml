@@ -29,13 +29,13 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.4.0
+    version: 1.4.1
 
 catalog:
   # Name used for the deployment and service resources
   name: catalog
   # GM Catalog version
-  version: latest
+  version: 1.0.7
   image: docker-dev.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
@@ -205,7 +205,7 @@ services:
     documentation: '/services/catalog/latest/'
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
-    version: 1.0.6
+    version: 1.0.7
     minInstances: 1
     maxInstances: 1
     data_prefix: "/data"
@@ -240,7 +240,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 3.4.0
+    version: 3.4.1
     routes:
       - '/services/dashboard/latest'
       - '/services/dashboard/latest/'
@@ -324,7 +324,7 @@ services:
     capability: 'Security'
     documentation: '/services/jwt-security/latest/'
     owner: 'Decipher'
-    version: '1.0.1'
+    version: '1.1.1'
     routes:
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
@@ -349,7 +349,7 @@ services:
     capability: 'Grey Matter'
     documentation: ''
     owner: 'Decipher'
-    version: '1.0.1'
+    version: '1.1.1'
     secret:          
       enabled: true
       secret_name: sidecar-certs
@@ -371,7 +371,7 @@ services:
     capability: 'Mesh'
     documentation: '/services/control-api/latest/'
     owner: 'Decipher'
-    version: '1.4.0'
+    version: '1.4.3'
     routes:
       - '/services/control-api/{{ $.Values.services.controlApi.version }}'
       - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
@@ -400,7 +400,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.4.0'
+    version: '1.4.1'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -422,7 +422,7 @@ services:
     capability: 'Sense'
     documentation: '/services/slo/latest/'
     owner: 'Decipher'
-    version: '1.1.1'
+    version: '1.1.4'
     routes:
       - '/services/slo/{{ $.Values.services.slo.version }}'
       - '/services/slo/{{ $.Values.services.slo.version }}/'

@@ -29,12 +29,12 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.4.0
+    version: 1.4.1
     
 slo:
   name: "slo"
   # SLO version
-  version: 1.1.2
+  version: 1.1.4
   image: "docker-dev.production.deciphernow.com/deciphernow/gm-slo:{{ .Values.slo.version }}"
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent

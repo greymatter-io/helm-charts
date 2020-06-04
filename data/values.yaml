@@ -289,7 +289,7 @@ internal-data:
   data:
     # Name used for the deployment and service resources
     name: data-internal
-    version: latest
+    version: 1.1
     # replicas: 1
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-data:{{ .Values.data.version }}'
     # image_pull_secret: '{{ .Values.global.image_pull_secret }}'

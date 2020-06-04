@@ -32,7 +32,7 @@ global:
       create: true
       name: waiter-sa
   sidecar:
-    version: 1.4.0
+    version: 1.4.1
 
 data:
   # Name used for the deployment and service resources

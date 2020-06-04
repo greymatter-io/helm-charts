@@ -35,7 +35,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
-    version: 1.4.0
+    version: 1.4.1
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
   # Global rbac configuration for service admin principal.
   rbac:
@@ -51,7 +51,7 @@ controlApi:
   display_name: control-api
   # Number of replicas for the deployment
   replicas: 1
-  version: 1.4.0
+  version: 1.4.3
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
@@ -134,7 +134,7 @@ sidecar:
 
 
 bootstrap:
-  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.4.0'
+  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.4.1'
   image_pull_policy: IfNotPresent
   secret:
     enabled: true
@@ -191,7 +191,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.0.1
+    version: 1.0.7
     minInstances: 1
     maxInstances: 1
     secret:
@@ -225,7 +225,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 3.4.0
+    version: 3.4.1
     routes:
       - '/services/dashboard/latest'
       - '/services/dashboard/latest/'
@@ -262,7 +262,7 @@ services:
     jwt_prefix: '/jwt'
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
-    version: 1.0.0
+    version: 1.1.0
     jwt_prefix: /jwt
     routes:
       - '/services/data/{{ $.Values.services.data.version }}'
@@ -290,7 +290,7 @@ services:
     documentation: '/services/data/latest/static/ui/index.html'
     name: 'Grey Matter Internal Data'
     owner: 'Decipher'
-    version: 1.0.0
+    version: 1.1.0
     jwt_prefix: /jwt
     secret:
       enabled: true
@@ -313,7 +313,7 @@ services:
     capability: 'Security'
     documentation: ''
     owner: 'Decipher'
-    version: '0.2.0'
+    version: '1.1.1'
     routes:
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
       - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
@@ -338,7 +338,7 @@ services:
     capability: 'Grey Matter'
     documentation: ''
     owner: 'Decipher'
-    version: '0.2.0'
+    version: '1.1.1'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -360,7 +360,7 @@ services:
     capability: 'Mesh'
     documentation:
     owner: 'Decipher'
-    version: '1.4'
+    version: '1.4.3'
     routes:
       - '/services/control-api/{{ $.Values.services.controlApi.version }}'
       - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
@@ -389,7 +389,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.4'
+    version: '1.4.1'
     ingress:
       secret:
         enabled: true
@@ -420,7 +420,7 @@ services:
     capability: 'Sense'
     documentation:
     owner: 'Decipher'
-    version: '1.1.1'
+    version: '1.1.4'
     routes:
       - '/services/slo/{{ $.Values.services.slo.version }}'
       - '/services/slo/{{ $.Values.services.slo.version }}/'
