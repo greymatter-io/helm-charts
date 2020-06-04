@@ -56,7 +56,7 @@ global:
       name: waiter-sa
 
 data:
-  enabled: false
+  enabled: true
   # Sidecar configuration overrides for data sidecar
   sidecar:
     # version:
