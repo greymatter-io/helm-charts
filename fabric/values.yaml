@@ -514,6 +514,7 @@ jwt:
     users_mount_point: /gm-jwt-security/etc
     version: 1.1.1
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    port: 3000
     envvars:
       private_key:
         type: secret
