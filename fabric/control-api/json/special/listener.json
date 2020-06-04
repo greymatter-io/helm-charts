@@ -7,7 +7,7 @@
   "port": 10808,
   "protocol": "http_auto",
   "tracing_config": null,
-  "active_http_filters": ["gm.metrics", "gm.inheaders", "gm.jwtsecurity", "envoy.rbac"],
+  "active_http_filters": ["gm.metrics", "gm.inheaders", "gm.jwtsecurity", "envoy_jwt_authn", "envoy.rbac"],
   "http_filters": {
     "gm_inheaders": {},
     "gm_metrics": {
@@ -18,37 +18,98 @@
       "metrics_ring_buffer_size": 4096,
       "prometheus_system_metrics_interval_seconds": 15,
       "metrics_key_function": "depth",
-      "metrics_key_depth": "5"
+      "metrics_key_depth": "3"
+    },
+    "envoy_jwt_authn": {
+      "providers": {
+        "greymatter": {
+          "issuer": "greymatter.io",
+          "from_headers": [
+            {
+              "name": "userpolicy"
+            }
+          ],
+          "payload_in_metadata": "claims",
+          "local_jwks": {
+            "inline_string": "{'keys':[{'crv': 'P-521','kid': '1','kty': 'EC','x': 'DxZd8I_IS4Am6jfjKNaqsAxWfxhweN6I081jLgq6hTL-qlReYXd62kH3v-chAWtqWKILz1CM-reeh5hlZ3qsDf4','y': 'AWs6sDyue4kBEM90K7IVweZ674QIyn4hEqPvsxZpGVAKoE466MdhCVI7RxceNGGxXtVa3zevbnP1Grju-DymFkVl'}]}"
+          }
+        }
+      },
+      "rules": [
+        {
+          "match": {
+            "prefix": "/"
+          },
+          "requires": {
+            "provider_name": "greymatter"
+          }
+        }
+      ]
     },
     "envoy_rbac": {
       "rules": {
-          "action": 0,
-          "policies": {
-              "service-admin": {
-                  "permissions": [{
-                      "any": true
-                  }],
-                  "principals": [{
-                      "header": {
-                        "name": "{{ .Values.global.rbac.admin.header_name }}",
-                        "{{ .Values.global.rbac.admin.match_type }}": "{{ .Values.global.rbac.admin.header_value }}"
-                      }
-                  }]
-              },
-              "product-viewer": {
-                  "permissions": [{
-                      "header": {
-                          "name": ":method",
-                          "exact_match": "GET"
-                      }
-                  }],
-                  "principals": [{
-                      "any": true
-                  }]
+        "action": 0,
+        "policies": {
+          "greymatter-developer": {
+            "permissions": [
+              {
+                "any": true
               }
+            ],
+            "principals": [
+              {
+                "metadata": {
+                  "filter": "envoy.filters.http.jwt_authn",
+                  "path": [
+                    {
+                      "key": "claims"
+                    },
+                    {
+                      "key": "email"
+                    }
+                  ],
+                  "value": {
+                    "string_match": {
+                      "suffix": "greymatter.io"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "admin_dn": {
+            "permissions": [
+              {
+                "any": true
+              }
+            ],
+            "principals": [
+              {
+                "header": {
+                  "name": "{{ .Values.global.rbac.admin.header_name }}",
+                  "{{ .Values.global.rbac.admin.match_type }}": "{{ .Values.global.rbac.admin.header_value }}"
+                }
+              }
+            ]
+          },
+          "anonymous": {
+            "permissions": [
+              {
+                "header": {
+                  "name": ":method",
+                  "exact_match": "GET"
+                }
+              }
+            ],
+            "principals": [
+              {
+                "any": true
+              }
+            ]
           }
+        }
       }
-  },
+    },
     "gm_jwtsecurity": {
       {{- if .Values.global.spire.enabled }}
       "apiKey": "{{ .Values.global.jwt_api_key }}",
