@@ -93,7 +93,7 @@ jwt:
         "label": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
         "values": {
           "email": [
-            "quickstart@deciphernow.com"
+            "quickstart@greymatter.io"
           ],
           "org": [
             "www.greymatter.io"
@@ -107,7 +107,7 @@ jwt:
         "label": "CN=localuser,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
         "values": {
           "email": [
-            "localuser@deciphernow.com"
+            "localuser@greymatter.io"
           ],
           "org": [
             "www.greymatter.io"
@@ -121,7 +121,7 @@ jwt:
         "label": "CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
         "values": {
           "email": [
-              "gm-control@deciphernow.com"
+              "gm-control@greymatter.io"
           ],
           "org": [
               "www.greymatter.io"

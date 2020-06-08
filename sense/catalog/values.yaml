@@ -132,7 +132,7 @@ catalog:
       value: 'C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter'
     client_email:
       type: value
-      value: 'gm-control@deciphernow.com'
+      value: 'gm-control@greymatter.io'
 
   init:
     image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
