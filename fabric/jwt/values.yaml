@@ -96,7 +96,7 @@ jwt:
             "quickstart@deciphernow.com"
           ],
           "org": [
-            "www.deciphernow.com"
+            "www.greymatter.io"
           ],
           "privilege": [
             "root"
@@ -110,7 +110,7 @@ jwt:
             "localuser@deciphernow.com"
           ],
           "org": [
-            "www.deciphernow.com"
+            "www.greymatter.io"
           ],
           "privilege": [
             "root"
@@ -124,7 +124,7 @@ jwt:
               "gm-control@deciphernow.com"
           ],
           "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
           ],
           "privilege": [
               "root"
@@ -135,10 +135,10 @@ jwt:
         "label": "CN=gm-catalog,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
         "values": {
           "email": [
-              "engineering@deciphernow.com"
+              "engineering@greymatter.io"
           ],
           "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
           ],
           "privilege": [
               "root"
@@ -149,10 +149,10 @@ jwt:
         "label": "CN=greymatter,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
         "values": {
           "email": [
-              "engineering@deciphernow.com"
+              "engineering@greymatter.io"
           ],
           "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
           ],
           "privilege": [
               "root"
@@ -163,10 +163,10 @@ jwt:
         "label": "O=SPIRE,C=US",
         "values": {
           "email": [
-              "engineering@deciphernow.com"
+              "engineering@greymatter.io"
           ],
           "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
           ],
           "privilege": [
               "root"

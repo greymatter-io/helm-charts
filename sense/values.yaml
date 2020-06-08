@@ -400,7 +400,7 @@ catalog:
         value: 'CN=greymatter,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US'
       client_email:
         type: value
-        value: 'engineering@deciphernow.com'
+        value: 'engineering@greymatter.io'
     # Sidecar configuration overrides for catalog
     sidecar:
       envvars:
