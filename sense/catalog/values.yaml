@@ -17,6 +17,13 @@ global:
     port: 50000
     # The label Control uses to find pods to include in the mesh
     cluster_label: greymatter.io/control
+  data:
+    # whether to install an external data
+    external:
+      enabled: false
+    # whether to install an internal data
+    internal:
+      enabled: true    
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: false
@@ -218,16 +225,10 @@ services:
         cert: server.crt
         key: server.key
         ca: ca.crt
-    routes:
-      - '/services/catalog/{{ $.Values.services.catalog.version }}'
-      - '/services/catalog/{{ $.Values.services.catalog.version }}/'
 
   # control:
   #   name: 'Grey Matter Control'
   #   serviceName: 'control'
-  #   routes:
-  # - '/services/xds/{{ $.Values.global.xds.version }}'
-  # - '/services/xds/{{ $.Values.global.xds.version }}'
 
   dashboard:
     catalogEnabled: true
@@ -241,9 +242,6 @@ services:
     documentation: ''
     owner: 'Decipher'
     version: 3.4.1
-    routes:
-      - '/services/dashboard/latest'
-      - '/services/dashboard/latest/'
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -277,9 +275,6 @@ services:
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
     version: 1.1.0
-    routes:
-      - '/services/data/{{ $.Values.services.data.version }}'
-      - '/services/data/{{ $.Values.services.data.version }}/'
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -325,9 +320,6 @@ services:
     documentation: '/services/jwt-security/latest/'
     owner: 'Decipher'
     version: '1.1.1'
-    routes:
-      - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
-      - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -372,9 +364,6 @@ services:
     documentation: '/services/control-api/latest/'
     owner: 'Decipher'
     version: '1.4.3'
-    routes:
-      - '/services/control-api/{{ $.Values.services.controlApi.version }}'
-      - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -423,9 +412,6 @@ services:
     documentation: '/services/slo/latest/'
     owner: 'Decipher'
     version: '1.1.4'
-    routes:
-      - '/services/slo/{{ $.Values.services.slo.version }}'
-      - '/services/slo/{{ $.Values.services.slo.version }}/'
     secret:
       enabled: true
       secret_name: sidecar-certs
