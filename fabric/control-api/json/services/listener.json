@@ -20,9 +20,9 @@
         "X25519:P-256:P-521:P-384"
     ],
     "subject_names": [
-      "spiffe://{{ .Values.global.spire.trust_domain}}/edge"{{- if eq .service.serviceName "jwt-security" }},
+      "spiffe://{{ .Values.global.spire.trust_domain}}/edge"{{- if and (eq .service.serviceName "jwt-security") (.Values.global.data.external.enabled) }},
       "spiffe://{{ .Values.global.spire.trust_domain}}/data"{{- else if eq .service.serviceName "data-internal"}},
-      "spiffe://{{ .Values.global.spire.trust_domain}}/catalog"{{- else if eq .service.serviceName "internal-jwt-security"}},
+      "spiffe://{{ .Values.global.spire.trust_domain}}/catalog"{{- else if and (eq .service.serviceName "internal-jwt-security") (.Values.global.data.internal.enabled) }},
       "spiffe://{{ .Values.global.spire.trust_domain}}/data-internal"{{- end }}
     ]
   },

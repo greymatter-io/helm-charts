@@ -49,7 +49,11 @@ metadata:
   name: special-mesh-config
   namespace: {{ $.Release.Namespace }}
 data:
+{{- $data := .Values.global.data.external.enabled }}
 {{- range $path, $bytes := $top.Files.Glob "json/special/**.json" }}
+  {{- if and (not $data) (hasSuffix "-extdata.json" $path) }}
+  {{- else }}
   {{ base $path }}: |-
 {{ tpl ($top.Files.Get $path) $top | indent 4 }}
+  {{- end }}
 {{- end }}
