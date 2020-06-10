@@ -33,6 +33,7 @@
     "envoy.rbac"{{- end }}
   ],
   "http_filters": {
+    {{- if .Values.global.spire.enabled }}
     "envoy_rbac": {
       "rules": {
           "action": 0,
@@ -81,6 +82,7 @@
           }
       }
   },
+  {{- end }}
     "gm_metrics": {
       "metrics_port": 8081,
       "metrics_host": "0.0.0.0",
