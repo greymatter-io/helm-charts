@@ -18,7 +18,7 @@ global:
   data:
     # whether to install an external data
     external:
-      enabled: true
+      enabled: false
     # whether to install an internal data
     internal:
       enabled: true
