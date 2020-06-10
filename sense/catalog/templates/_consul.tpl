@@ -16,7 +16,7 @@
         \"Service\": {
         \"name\":\"$(NAME)\",
         \"address\": \"$(POD_IP)\",
-        \"port\": {{ .Values.global.services.edge.port }},
+        \"port\": {{ .Values.services.edge.port }},
         \"tags\": [\"gm-cluster\"],
         \"meta\": {
             \"metrics\": \"8081\"
@@ -24,7 +24,7 @@
         \"check\": [
             {
                 \"name\": \"$(NAME) health check\",
-                \"tcp\": \"$(POD_IP):{{ .Values.global.services.edge.port }}\",
+                \"tcp\": \"$(POD_IP):{{ .Values.services.edge.port }}\",
                 \"interval\": \"10s\"
             }
             ]

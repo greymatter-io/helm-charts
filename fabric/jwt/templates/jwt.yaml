@@ -71,7 +71,7 @@ spec:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
       {{- if .Values.global.consul.enabled }}
-      {{- $data := dict "Values" .Values "ServiceName"  (default "jwt-security"  .Values.jwt.name) }}
+      {{- $data := dict "Values" .Values "ServiceName" .Values.jwt.name }}
       {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}
       imagePullSecrets:
