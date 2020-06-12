@@ -35,7 +35,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
-    version: 1.4.1
+    version: 1.4.2
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
   # Global rbac configuration for service admin principal.
   rbac:
@@ -52,7 +52,7 @@ controlApi:
   # Number of replicas for the deployment
   replicas: 1
   version: 1.4.3
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # Port exposed by the control-api container
@@ -108,7 +108,7 @@ controlApi:
 # Sidecar configuration for Control Api
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -134,7 +134,7 @@ sidecar:
 
 
 bootstrap:
-  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.4.1'
+  image: 'docker.production.deciphernow.com/deciphernow/greymatter:1.4.1'
   image_pull_policy: IfNotPresent
   secret:
     enabled: true
@@ -253,7 +253,7 @@ services:
     jwt_prefix: '/jwt'
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
-    version: 1.1.0
+    version: 1.1.1
     jwt_prefix: /jwt
     secret:
       enabled: true
@@ -278,7 +278,7 @@ services:
     documentation: '/services/data/latest/static/ui/index.html'
     name: 'Grey Matter Internal Data'
     owner: 'Decipher'
-    version: 1.1.0
+    version: 1.1.1
     jwt_prefix: /jwt
     secret:
       enabled: true
@@ -371,7 +371,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.4.1'
+    version: '1.4.2'
     ingress:
       secret:
         enabled: true
