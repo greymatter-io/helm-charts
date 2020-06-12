@@ -10,6 +10,7 @@ global:
     enabled: false
     host: ''
     port: 8500
+    edge_port: 10808
   control:
     # Port for Grey Matter Control. Used in sidecar envvars
     port: 50000

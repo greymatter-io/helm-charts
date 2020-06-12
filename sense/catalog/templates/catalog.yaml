@@ -78,7 +78,7 @@ spec:
         {{- end }}
       {{- if .Values.global.consul.enabled }}
       {{- $data := dict "Values" .Values "ServiceName" "catalog" }}
-      {{- include "consul.agent" $data | nindent 8 }}
+      {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}
       volumes:
       {{- if .Values.global.consul.enabled }}

@@ -12,6 +12,7 @@ global:
     enabled: false
     host: ''
     port: 8500
+    edge_port: 10808
   # API Key used to configure the gm_jwtsecurity filter. Refactor this to use the jwt-certs secret.
   jwt_api_key: dm9sY2Fuby1lcGlkZW1pYy10d2VsZnRoLXRhbWFsZQ==
   control:
