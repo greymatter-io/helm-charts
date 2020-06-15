@@ -5,8 +5,8 @@
   "require_tls": true,
   "secret": {
     "secret_key": "secret-jwt-security-secret",
-    "secret_name": "spiffe://quickstart.greymatter.io/data",
-    "secret_validation_name": "spiffe://quickstart.greymatter.io",
+    "secret_name": "spiffe://{{ .Values.global.spire.trust_domain}}/data",
+    "secret_validation_name": "spiffe://{{ .Values.global.spire.trust_domain}}",
     "ecdh_curves": [
       "X25519:P-256:P-521:P-384"
     ],
