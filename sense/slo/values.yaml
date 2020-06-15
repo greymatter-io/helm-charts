@@ -12,6 +12,7 @@ global:
     enabled: false
     host: ''
     port: 8500
+    edge_port: 10808
   control:
     # Port for Grey Matter Control. Used in sidecar envvars
     port: 50000
@@ -29,13 +30,13 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.4.1
+    version: 1.4.2
     
 slo:
   name: "slo"
   # SLO version
   version: 1.1.4
-  image: "docker-dev.production.deciphernow.com/deciphernow/gm-slo:{{ .Values.slo.version }}"
+  image: "docker.production.deciphernow.com/deciphernow/gm-slo:{{ .Values.slo.version }}"
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the SLO service
@@ -112,7 +113,7 @@ slo:
 # Sidecar configuration for SLO
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics

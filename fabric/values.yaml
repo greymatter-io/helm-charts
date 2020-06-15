@@ -12,6 +12,7 @@ global:
     enabled: false
     host: ''
     port: 8500
+    edge_port: 10808
   # API Key used to configure the gm_jwtsecurity filter. Refactor this to use the jwt-certs secret.
   jwt_api_key: dm9sY2Fuby1lcGlkZW1pYy10d2VsZnRoLXRhbWFsZQ==
   control:
@@ -21,6 +22,13 @@ global:
     cluster_label: greymatter.io/control
     # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
     additional_namespaces:
+  data:
+    # whether to install an external data
+    external:
+      enabled: true
+    # whether to install an internal data
+    internal:
+      enabled: true
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: true
@@ -35,7 +43,7 @@ global:
   # Sidecar configuration (Control-api is the only service in this chart with a proxy)
   sidecar:
     # GM Proxy version, used by control-api
-    version: 1.4.1
+    version: 1.4.2
     envvars:
       xds_cluster:
         type: value
@@ -69,7 +77,7 @@ control:
     replicas: 1
     # Version of control
     version: 1.4.2
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Secret used to talk to control-api
@@ -160,8 +168,8 @@ control-api:
     # Number of replicas for the deployment
     replicas: 1                         
     # Gm Control API version
-    version: 1.4.3
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
+    version: 1.4.4
+    image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent       
     # Port exposed by the control-api container
@@ -261,16 +269,10 @@ services:
         cert: server.crt
         key: server.key
         ca: ca.crt
-    routes:
-      - '/services/catalog/{{ $.Values.services.catalog.version }}'
-      - '/services/catalog/{{ $.Values.services.catalog.version }}/'
 
   # control:
   #   name: 'Grey Matter Control'
   #   serviceName: 'control'
-  #   routes:
-  # - '/services/xds/{{ $.Values.global.xds.version }}'
-  # - '/services/xds/{{ $.Values.global.xds.version }}'
 
   dashboard:
     catalogEnabled: true
@@ -284,9 +286,6 @@ services:
     documentation: ''
     owner: 'Decipher'
     version: 3.4.1
-    routes:
-      - '/services/dashboard/latest'
-      - '/services/dashboard/latest/'
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -322,9 +321,6 @@ services:
     owner: 'Decipher'
     version: 1.1
     jwt_prefix: /jwt
-    routes:
-      - '/services/data/{{ $.Values.services.data.version }}'
-      - '/services/data/{{ $.Values.services.data.version }}/'
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -372,9 +368,6 @@ services:
     documentation: ''
     owner: 'Decipher'
     version: '1.1.1'
-    routes:
-      - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
-      - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -418,10 +411,7 @@ services:
     capability: 'Mesh'
     documentation:
     owner: 'Decipher'
-    version: '1.4.3'
-    routes:
-      - '/services/control-api/{{ $.Values.services.controlApi.version }}'
-      - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
+    version: '1.4.4'
     secret:          
       enabled: true
       secret_name: sidecar-certs
@@ -447,7 +437,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.4.1'
+    version: '1.4.2'
     ingress:
       secret:
         enabled: true
@@ -479,9 +469,6 @@ services:
     documentation:
     owner: 'Decipher'
     version: '1.1.4'
-    routes:
-      - '/services/slo/{{ $.Values.services.slo.version }}'
-      - '/services/slo/{{ $.Values.services.slo.version }}/'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -513,7 +500,7 @@ jwt:
     # Location to mount the information specified in users_cg_name in the container
     users_mount_point: /gm-jwt-security/etc
     version: 1.1.1
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
     port: 3000
     envvars:
       private_key:
@@ -572,7 +559,7 @@ internal-jwt:
     #  secret_name: internal-jwt-certs
     #  mount_point: /gm-jwt-security/certs
     version: 1.1.1
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
     port: 3000
     envvars:
       private_key:

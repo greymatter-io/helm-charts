@@ -1,8 +1,11 @@
+{{- $data := .Values.global.data.external.enabled }}
+{{- $intdata := .Values.global.data.internal.enabled }}
 {{- $top := . }}
 {{- /* We loop over all the services to create the individual service objects */}}
-{{- /*range $index, $service := .Values.catalog.services */}}
 {{- range $name, $service := .Values.services }}
-{{- if .catalogEnabled }}
+{{- if and (eq .serviceName "data") (not $data) }}
+{{- else if and (eq .serviceName "internal-data") (not $intdata) }}
+{{- else if .catalogEnabled }}
 ---
 {{- $scope := set $top "service" $service }}
 apiVersion: v1
@@ -17,4 +20,4 @@ data:
 {{- end }}
 ...
 {{- end }}
-{{- end}}
+{{- end }}

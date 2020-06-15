@@ -22,6 +22,7 @@ global:
     enabled: false
     host: ''
     port: 8500
+    edge_port: 10808
   control:
     # Port for Grey Matter Control. Used in sidecar envvars
     port: 50000
@@ -33,8 +34,8 @@ global:
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
 edge:
-  version: '1.4.0'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.edge.version $ }}'
+  version: '1.4.2'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.edge.version $ }}'
   image_pull_policy: IfNotPresent
   # Port where the edge proxy will listen
   port: 10808
