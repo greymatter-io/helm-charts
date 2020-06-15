@@ -7,10 +7,10 @@ If you have your environment running and ready for install, make any custom conf
 Global values can be specified in the `global.yaml` file. Important configurations are:
 
 - `global.environment` (kubernetes, openshift, eks, etc)
-- `global.spire.enabled` to indicated whether or not to use spire
-- `global.control.additional_namespaces` should be used if gm-control will need to discover from namespaces other than `default` namespace.
+- `global.spire.enabled` indicating whether or not to use spire
+- `global.control.additional_namespaces` should be used if gm-control & prometheus will need to discover from namespaces other than `default` namespace.
 
-Certificates should be specified in `secrets/values.yaml`.  The `secrets` chart will generate kubernetes secrets using these values.  **Recommended** You can also run `make credentials` from the root directory to generate a file with docker registry and aws credentials for data.
+Certificates should be specified in `secrets/values.yaml`.  The `secrets` chart will generate kubernetes secrets using these values. You can also run `make credentials` from the root directory to generate a file with docker registry and aws credentials for data.
 
 Configurations for the fabric chart (control, control-api, and jwt-security) should be specified in `fabric/values.yaml`.
 
@@ -44,10 +44,10 @@ dockerCredentials:
 you can install secrets (if you did not generate `credentials.yaml` replace the flag with `secrets/values.yaml` below):
 
 ```bash
-helm install secrets decipher/secrets -f credentials.yaml -f global.yaml -n <desired namespace>
+helm install secrets decipher/secrets -f credentials.yaml -f global.yaml
 ```
 
-> Note that if youre installing different Grey Matter compenents to different namespaces you will need to generate secrets for each namespace.
+If youre installing different Grey Matter components to different namespaces you will need to generate secrets by adding the flag `-n <desired-namespace>` and rerunning for each namespace.
 
 ### 2. Install SPIRE
 
@@ -60,6 +60,8 @@ helm install server decipher/server -f global.yaml
 ```
 
 This will install spire into the `spire` namespace. Run `kubectl get pods -n spire -w` and wait until the server containers are `2/2`.
+
+> NOTE: The SPIRE server must be fully running before installing any other component.
 
 Once the server is running, install the agents:
 
@@ -84,9 +86,9 @@ Once all of the pods come up, you can check your ingress for the dashboard.
 
 ## Install with the local charts
 
-For development, or to deploy a branch with changes made within the charts themselves - follow the same instruction as above except instead of `helm install <release> decipher/<chart> -f <flags>`, run:
+For development, or to deploy a branch with changes made within the charts themselves - follow the same instruction as [above](#install-with-hosted-charts) but instead of following the pattern `helm install <release> decipher/<chart> <flags>`, run:
 
 ```bash
 helm dep up <chart>
-helm install <release> <chart> -f <same-flags>
+helm install <release> <chart> <flags>
 ```
