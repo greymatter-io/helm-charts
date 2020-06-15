@@ -73,6 +73,8 @@ helm install agent decipher/agent -f global.yaml
 
 Now, to install the core Grey Matter charts run the following. If you made changes to the `<chart>/values.yaml` files for any specific chart, add the flag `-f <chart>/values.yaml` to its install command. If you would like to deploy any or all charts to a namespace other than `default`, also add the flag `-n <desired-namespace>` pointing to the already existing namespace.
 
+> **Note** that if you edit the global values *within* a `<chart>/values.yaml`, the values from the file passed with `-f` second in the order will override the values of the first file passed.
+
 ```bash
 helm install fabric decipher/fabric -f global.yaml
 helm install edge decipher/edge -f global.yaml
