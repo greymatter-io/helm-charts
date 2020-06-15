@@ -8,7 +8,7 @@ Global values can be specified in the `global.yaml` file. Important configuratio
 
 - `global.environment` (kubernetes, openshift, eks, etc)
 - `global.spire.enabled` indicating whether or not to use spire
-- `global.control.additional_namespaces` should be used if gm-control & prometheus will need to discover from namespaces other than `default` namespace.
+- `global.control.additional_namespaces` should be used if gm-control & prometheus will need to discover from namespaces other than the release namespace that the fabric chart will be deployed into
 
 Certificates should be specified in `secrets/values.yaml`.  The `secrets` chart will generate kubernetes secrets using these values. You can also run `make credentials` from the root directory to generate a file with docker registry and aws credentials for data.
 
