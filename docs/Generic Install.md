@@ -41,7 +41,7 @@ dockerCredentials:
   - password: <nexus-password>
 ```
 
-you can install secrets (if you did not generate `credentials.yaml` take the flag off below):
+You can install secrets (if you did not generate `credentials.yaml` take the flag off below):
 
 ```bash
 helm install secrets decipher/secrets -f global.yaml -f secrets/values.yaml -f credentials.yaml
