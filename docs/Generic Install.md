@@ -104,7 +104,7 @@ Now, to install the core Grey Matter charts run the following. If you made chang
 helm install fabric decipher/fabric -f global.yaml
 helm install edge decipher/edge -f global.yaml
 helm install data decipher/data -f global.yaml --set=global.waiter.service_account.create=false
-helm install sense decipher/sence -f global.yaml --set=global.waiter.service_account.create=false
+helm install sense decipher/sense -f global.yaml --set=global.waiter.service_account.create=false
 ```
 
 > Note: the additional flag `--set=global.waiter.service_account.create=false` on the data and sense install's is necessary because of conflicting resources already created in the fabric install.
