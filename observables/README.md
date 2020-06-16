@@ -89,8 +89,8 @@ To configure a proxy to emit observables you must define the filter as well as e
     "gm_observables": {
       "useKafka": true, # must be true to emit to kafka
       "topic": "fibonacci", #this will be your service's name
-      "eventTopic": "fib-test", # this will typically be your namespace
-      "kafkaServerConnection": "kafka-observables-0.kafka-observables.observables.svc:9092" #this is the kafka that logstash is pointed towards
+      "eventTopic": "observables", # this will typically be your namespace
+      "kafkaServerConnection": "kafka-observables.observables.svc:9092" #this is the kafka that logstash is pointed towards
     },
   }
 ```
@@ -98,6 +98,13 @@ To configure a proxy to emit observables you must define the filter as well as e
 ## Removing Observables
 
 The make file has the ability to remove the observables deployment as a whole or individual pieces.  To remove everything use `make destroy-observables NAMESPACE=<observables-namespace>`.  To delete individual logstash deployments use `make delete-logstash LOGSTASH-NAMESPACE=<namespace-logstash-deployed-into>`
+
+## EKS Deployments
+
+A few extra steps are required for EKS deployments.
+
+- set `--set zookeeper.volumePermissions.enabled=true` in the helm install command for kafka
+- after installed, you must set `discovery.type` to `single-node` in the elastic search deployment, and delete the environment variable "cluster.initial_master_nodes"
 
 ## Troubleshooting
 

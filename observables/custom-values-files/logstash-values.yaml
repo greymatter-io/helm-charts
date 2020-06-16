@@ -43,13 +43,13 @@ logstashPipeline:
 # syntax here
 extraEnvs:
   - name: ELASTICSEARCH_HOST
-    value: elasticsearch-master-headless.observables.svc.cluster.local
+    value: elasticsearch-master-headless.observables.svc
   - name: ELASTICSEARCH_PORT
     value: '9200'
   - name: KAFKA_TOPIC
     value: gm-quick-2
   - name: KAFKA_BOOTSTRAP_SERVERS
-    value: kafka-observables-0.kafka-observables.observables.svc:9092
+    value: kafka-observables-headless.observables.svc:9092
 # A list of secrets and their paths to mount inside the pod
 secretMounts: []
 

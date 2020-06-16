@@ -9,4 +9,4 @@ sidecar:
   envvars:
     xds_host:
       type: 'value'
-      value: 'control.default.svc.cluster.local'
+      value: 'control.default.svc'
