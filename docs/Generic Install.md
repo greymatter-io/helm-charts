@@ -12,9 +12,9 @@ Global values can be specified in the `global.yaml` file. Important configuratio
 
 There are two options to make custom configuration changes to non-global values:
 
-1. Add sections to the `global.yaml` file for specific charts/subcharts. If you choose to add custom values to this file, make sure that the levels of nesting match those in the `<chart>/values.yaml` for whichever charts you are specifying values for.
+1. Add sections to the `global.yaml` file for specific charts/subcharts. If you choose to add custom values to this file, make sure that the levels of nesting match those in the `<chart>/values.yaml` for whichever charts you are customizing values for.
 
-   For example, to edit the `users.json` file for internal-jwt-security, you would need to specify [this value](https://github.com/DecipherNow/helm-charts/blob/79e1cf58d1c615b77a481e4da2d1000f750f898a/fabric/values.yaml#L603). To do this in your `global.yaml` file, specify the structure with the same nesting as the `fabric/values.yaml` file, you would add this block:
+   For example, to edit the `users.json` file for internal-jwt-security, you would need to specify [this value](https://github.com/DecipherNow/helm-charts/blob/79e1cf58d1c615b77a481e4da2d1000f750f898a/fabric/values.yaml#L603). To do this in your `global.yaml` file, add the structure with the same nesting as the `fabric/values.yaml` file, you would add this block:
 
    ```yaml
    internal-jwt:
@@ -23,7 +23,7 @@ There are two options to make custom configuration changes to non-global values:
          <your users.json content>
    ```
 
-   Say you also wanted to specify the [edge ingress to use voyager](https://github.com/DecipherNow/helm-charts/blob/79e1cf58d1c615b77a481e4da2d1000f750f898a/edge/values.yaml#L94-L95), you can check the `edge/values.yaml` file for the structure and see that you only need one level of nesting, so in this case you would add:
+   Say you also wanted to configure the [edge ingress to use voyager](https://github.com/DecipherNow/helm-charts/blob/79e1cf58d1c615b77a481e4da2d1000f750f898a/edge/values.yaml#L94-L95), you can check the `edge/values.yaml` file for the structure and see that you only need one level of nesting, so in this case you would add:
 
    ```yaml
    edge:
@@ -33,7 +33,7 @@ There are two options to make custom configuration changes to non-global values:
          <your voyager configuration>
    ```
 
-2. Rather than specifying in the `global.yaml` file, you can directly make changes to the `<chart>/values.yaml` files for any chart, and pass those files in during your install command.
+2. Rather than adding to the `global.yaml` file, you can directly make changes to the `<chart>/values.yaml` files for any chart, and pass those files in during your install command.
 
    Certificates should be specified in `secrets/values.yaml`.  The `secrets` chart will generate kubernetes secrets using these values. Note that you don't need to fill in your `dockerCredentials` here if you plan to generate the `credentials.yaml` file using `make credentials`.
 
