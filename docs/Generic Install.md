@@ -10,15 +10,40 @@ Global values can be specified in the `global.yaml` file. Important configuratio
 - `global.spire.enabled` indicating whether or not to use spire
 - `global.control.additional_namespaces` should be used if gm-control & prometheus will need to discover from namespaces other than the release namespace that the fabric chart will be deployed into
 
-Certificates should be specified in `secrets/values.yaml`.  The `secrets` chart will generate kubernetes secrets using these values. You can also run `make credentials` from the root directory to generate a file with docker registry and aws credentials for data.
+There are two options to make custom configuration changes to non-global values:
 
-Configurations for the fabric chart (control, control-api, and jwt-security) should be specified in `fabric/values.yaml`.
+1. Add sections to the `global.yaml` file for specific charts/subcharts. If you choose to add all custom values to this file, make sure that the levels of nesting match those in the `<chart>/values.yaml` for whichever charts you are specifying values for.
 
-Configurations for the edge proxy (ingress, etc) should be specified in `edge/values.yaml`.
+   For example, to edit the `users.json` file for internal-jwt-security, you would need to specify [this value](https://github.com/DecipherNow/helm-charts/blob/79e1cf58d1c615b77a481e4da2d1000f750f898a/fabric/values.yaml#L603). To do this in your `global.yaml` file, specify the structure with the same nesting as the `fabric/values.yaml` file, you would add this block:
 
-Configurations for the data chart should be specified in `data/values.yaml`.
+   ```yaml
+   internal-jwt:
+     jwt:
+       users: |-
+         <your users.json content>
+   ```
 
-Configurations for the sense chart (catalog, slo, and dashboard) should be specified in `sense/values.yaml`.
+   Say you also wanted to specify the [edge ingress to use voyager](https://github.com/DecipherNow/helm-charts/blob/79e1cf58d1c615b77a481e4da2d1000f750f898a/edge/values.yaml#L94-L95), you can check the `edge/values.yaml` file for the structure and see that you only need one level of nesting, so in this case you would add:
+
+   ```yaml
+   edge:
+     ingress:
+       use_voyager: true
+       voyager:
+         <your voyager configuration>
+   ```
+
+2. Rather than specifying in the `global.yaml` file, you can directly make changes to the `<chart>/values.yaml` files for any chart, and pass those files in during your install command.
+
+   Certificates should be specified in `secrets/values.yaml`.  The `secrets` chart will generate kubernetes secrets using these values. You can also run `make credentials` from the root directory to  generate a file with docker registry and aws credentials for data.
+
+   Configurations for the fabric chart (control, control-api, and jwt-security) should be specified in `fabric/values.yaml`.
+
+   Configurations for the edge proxy (ingress, etc) should be specified in `edge/values.yaml`.
+
+   Configurations for the data chart should be specified in `data/values.yaml`.
+
+   Configurations for the sense chart (catalog, slo, and dashboard) should be specified in `sense/values.yaml`.
 
 ## Install with hosted charts
 
@@ -31,7 +56,7 @@ helm repo update
 
 ### 1. Install secrets
 
-Using the `credentials.yaml` file you generated with `make credentials`, or by editing the `secrets/values.yaml` section under `dockerCredentials` to look something like this:
+Generate the `credentials.yaml` file by running `make credentials`, or edit the `secrets/values.yaml` section under `dockerCredentials` with your creds to look something like this:
 
 ```yaml
 dockerCredentials:
