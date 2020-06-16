@@ -12,7 +12,7 @@ Global values can be specified in the `global.yaml` file. Important configuratio
 
 There are two options to make custom configuration changes to non-global values:
 
-1. Add sections to the `global.yaml` file for specific charts/subcharts. If you choose to add all custom values to this file, make sure that the levels of nesting match those in the `<chart>/values.yaml` for whichever charts you are specifying values for.
+1. Add sections to the `global.yaml` file for specific charts/subcharts. If you choose to add custom values to this file, make sure that the levels of nesting match those in the `<chart>/values.yaml` for whichever charts you are specifying values for.
 
    For example, to edit the `users.json` file for internal-jwt-security, you would need to specify [this value](https://github.com/DecipherNow/helm-charts/blob/79e1cf58d1c615b77a481e4da2d1000f750f898a/fabric/values.yaml#L603). To do this in your `global.yaml` file, specify the structure with the same nesting as the `fabric/values.yaml` file, you would add this block:
 
@@ -35,7 +35,7 @@ There are two options to make custom configuration changes to non-global values:
 
 2. Rather than specifying in the `global.yaml` file, you can directly make changes to the `<chart>/values.yaml` files for any chart, and pass those files in during your install command.
 
-   Certificates should be specified in `secrets/values.yaml`.  The `secrets` chart will generate kubernetes secrets using these values. You can also run `make credentials` from the root directory to  generate a file with docker registry and aws credentials for data.
+   Certificates should be specified in `secrets/values.yaml`.  The `secrets` chart will generate kubernetes secrets using these values. Note that you don't need to fill in your `dockerCredentials` here if you plan to generate the `credentials.yaml` file using `make credentials`.
 
    Configurations for the fabric chart (control, control-api, and jwt-security) should be specified in `fabric/values.yaml`.
 
@@ -96,7 +96,7 @@ helm install agent decipher/agent -f global.yaml
 
 ### 3. Install Grey Matter
 
-Now, to install the core Grey Matter charts run the following. If you made changes to the `<chart>/values.yaml` files for any specific chart, add the flag `-f <chart>/values.yaml` to its install command. If you would like to deploy any or all charts to a namespace other than `default`, also add the flag `-n <desired-namespace>` pointing to the already existing namespace.
+Now, to install the core Grey Matter charts run the following. If you made changes to the `<chart>/values.yaml` files for any specific chart, add the flag `-f <chart>/values.yaml` to its install command. If you would like to deploy any or all charts to a namespace other than your default, also add the flag `-n <desired-namespace>` pointing to the already existing namespace.
 
 > **Note** that if you edit the global values *within* a `<chart>/values.yaml`, the values from the file passed with `-f` second in the order will override the values of the first file passed.
 
