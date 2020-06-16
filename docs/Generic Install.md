@@ -66,13 +66,13 @@ dockerCredentials:
   - password: <nexus-password>
 ```
 
-you can install secrets (if you did not generate `credentials.yaml` take the flag off below):
+You can install secrets (if you did not generate `credentials.yaml` take the flag off below):
 
 ```bash
 helm install secrets decipher/secrets -f global.yaml -f secrets/values.yaml -f credentials.yaml
 ```
 
-If youre installing different Grey Matter components to different namespaces you will need to generate secrets by adding the flag `-n <desired-namespace>` and rerunning for each namespace.
+If you're installing different Grey Matter components to different namespaces you will need to generate secrets by adding the flag `-n <desired-namespace>` and rerunning for each namespace.
 
 ### 2. Install SPIRE
 
