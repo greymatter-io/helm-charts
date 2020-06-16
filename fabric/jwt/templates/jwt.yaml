@@ -8,12 +8,12 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      {{ .Values.global.control_cluster_label }}: {{ .Values.jwt.name | default "jwt-security"  }}
+      {{ .Values.global.control.cluster_label }}: {{ .Values.jwt.name | default "jwt-security"  }}
       deployment: {{ .Values.jwt.name | default "jwt-security"  }}
   template:
     metadata:
       labels:
-        {{ .Values.global.control_cluster_label }}: {{ .Values.jwt.name | default "jwt-security"  }}
+        {{ .Values.global.control.cluster_label }}: {{ .Values.jwt.name | default "jwt-security"  }}
         deployment: {{ .Values.jwt.name | default "jwt-security"  }}
     spec:
       containers:
@@ -71,7 +71,7 @@ spec:
         {{- include "sidecar_volume_certs_mount" . | indent 8 }}
         {{- end }}
       {{- if .Values.global.consul.enabled }}
-      {{- $data := dict "Values" .Values "ServiceName"  (default "jwt-security"  .Values.jwt.name) }}
+      {{- $data := dict "Values" .Values "ServiceName" .Values.jwt.name }}
       {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}
       imagePullSecrets:

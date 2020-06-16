@@ -12,11 +12,7 @@
 {{- define "edge_ingress_volumes" }}
 - name: edge-ingress
   secret:
-    {{- if .Values.global.global_certs.enabled }}
-    secretName: global-certs
-    {{- else }}
     secretName: {{ .Values.edge.ingress.secret.secret_name }}
-    {{- end }}
 {{- end }}
 
 {{- define "spire_volumes" }}

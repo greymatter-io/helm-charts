@@ -10,11 +10,11 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      {{ .Values.global.control_cluster_label }}: {{ .Values.data.name }}
+      {{ .Values.global.control.cluster_label }}: {{ .Values.data.name }}
   template:
     metadata:
       labels:
-        {{ .Values.global.control_cluster_label }}: {{ .Values.data.name }}
+        {{ .Values.global.control.cluster_label }}: {{ .Values.data.name }}
     spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       {{- if .Values.data.security_context.enabled }}

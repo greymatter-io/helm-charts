@@ -10,12 +10,12 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      {{ .Values.global.control_cluster_label }}: {{ .Values.controlApi.name }}
+      {{ .Values.global.control.cluster_label }}: {{ .Values.controlApi.name }}
       deployment: {{ .Values.controlApi.name }}
   template:
     metadata:
       labels:
-        {{ .Values.global.control_cluster_label }}: {{ .Values.controlApi.name }}
+        {{ .Values.global.control.cluster_label }}: {{ .Values.controlApi.name }}
         deployment: {{ .Values.controlApi.name }}
     spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}

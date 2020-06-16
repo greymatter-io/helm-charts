@@ -7,12 +7,12 @@ spec:
   replicas: {{ .Values.control.replicas }}
   selector:
     matchLabels:
-      {{ .Values.global.control_cluster_label }}: {{ .Values.control.name }}
+      {{ .Values.global.control.cluster_label }}: {{ .Values.control.name }}
       deployment: {{ .Values.control.name }}
   template:
     metadata:
       labels:
-        {{ .Values.global.control_cluster_label }}: {{ .Values.control.name }}
+        {{ .Values.global.control.cluster_label }}: {{ .Values.control.name }}
         deployment: {{ .Values.control.name }}
         run: {{ .Values.control.name }}
     spec:
@@ -26,7 +26,7 @@ spec:
             {{- include "envvars" (dict "envvar" .Values.control.envvars "top" $) | indent 10 }}
           ports:
             - name: grpc
-              containerPort: {{ .Values.global.control_port }}
+              containerPort: {{ .Values.global.control.port }}
               protocol: TCP
           livenessProbe:
             tcpSocket:

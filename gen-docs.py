@@ -159,12 +159,92 @@ def gen_docs(svc, logger):
                     },
                     {
                         "key": svc + ".envvars",
-                        "name": "#### Environment Variables",
+                        "name": "#### Environment Configuration",
                         "table": envVarTableConfig,
                     },
                     {
-                        "key": "sidecar",
-                        "name": "### Sidecar Configuration",
+                        "key": "dockerCredentials",
+                        "name": "#### Docker Credentials Configuration",
+                        "table": envVarTableConfig,
+                    },
+                     {
+                        "key": "data",
+                        "name": "#### Data Secret Configuration",
+                        "table": envVarTableConfig,
+                    },                   
+                    {
+                        "key": "mongo",
+                        "name": "### Mongo Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                   {
+                        "key": "internaldata",
+                        "name": "### Internal Data Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                   {
+                        "key": "internalmongo",
+                        "name": "### Internal Mongo Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                   {
+                        "key": "slo",
+                        "name": "### SLO Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                   {
+                        "key": "postgres",
+                        "name": "### Postgres Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                   {
+                        "key": "internalredis",
+                        "name": "### Internal Redis Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                   {
+                        "key": "internaljwt",
+                        "name": "### Internal JWT Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                   {
+                        "key": "redis",
+                        "name": "### Internal Redis Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                   {
+                        "key": "jwt",
+                        "name": "### Internal JWT Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                    {
+                        "key": svc + ".certificates",
+                        "name": "### Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                    {
+                        "key": "edge",
+                        "name": "### Edge Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                    {
+                        "key": "edge.certificates",
+                        "name": "### Edge Secret Certificate Configuration",
+                        "table": optionTableConfig,
+                    },
+                    {
+                        "key": "controlApi",
+                        "name": "### Control API Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                    {
+                        "key": "control",
+                        "name": "### Control Secret Configuration",
+                        "table": optionTableConfig,
+                    },
+                    {
+                        "key": "dashboard",
+                        "name": "### Dashboard Secret Configuration",
                         "table": optionTableConfig,
                     },
                     {

@@ -6,12 +6,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{ .Values.global.control_cluster_label }}: dashboard
+      {{ .Values.global.control.cluster_label }}: dashboard
   replicas: 1
   template:
     metadata:
       labels:
-        {{ .Values.global.control_cluster_label }}: dashboard
+        {{ .Values.global.control.cluster_label }}: dashboard
     spec:
       containers:
       - name: dashboard

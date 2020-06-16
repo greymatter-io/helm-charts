@@ -12,10 +12,19 @@ global:
     enabled: false
     host: ''
     port: 8500
-  # Port for Grey Matter Control. Used in catalog init and sidecar envvars.
-  control_port: 50000
-  # The label Control uses to find pods to include in the mesh
-  control_cluster_label: greymatter.io/control
+    edge_port: 10808
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
+  data:
+    # whether to install an external data
+    external:
+      enabled: false
+    # whether to install an internal data
+    internal:
+      enabled: true    
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: false
@@ -28,14 +37,14 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.4.0
+    version: 1.4.2
 
 catalog:
   # Name used for the deployment and service resources
   name: catalog
   # GM Catalog version
-  version: latest
-  image: docker-dev.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
+  version: 1.0.7
+  image: docker.production.deciphernow.com/deciphernow/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the catalog service
@@ -71,7 +80,7 @@ catalog:
       value: '{{ $.Values.catalog.port }}'
     control_server_0_address:
       type: value
-      value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.control_port }}'
+      value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
     control_server_0_zone_name:
       type: value
       value: '{{ .Values.global.zone }}'
@@ -131,10 +140,10 @@ catalog:
       value: 'C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter'
     client_email:
       type: value
-      value: 'gm-control@deciphernow.com'
+      value: 'gm-control@greymatter.io'
 
   init:
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+    image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
     imagePullPolicy: IfNotPresent
     envvars:
       debug:
@@ -162,7 +171,7 @@ catalog:
 # Sidecar configuration for Catalog
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -204,7 +213,7 @@ services:
     documentation: '/services/catalog/latest/'
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
-    version: 1.0.6
+    version: 1.0.7
     minInstances: 1
     maxInstances: 1
     data_prefix: "/data"
@@ -217,16 +226,10 @@ services:
         cert: server.crt
         key: server.key
         ca: ca.crt
-    routes:
-      - '/services/catalog/{{ $.Values.services.catalog.version }}'
-      - '/services/catalog/{{ $.Values.services.catalog.version }}/'
 
   # control:
   #   name: 'Grey Matter Control'
   #   serviceName: 'control'
-  #   routes:
-  # - '/services/xds/{{ $.Values.global.xds.version }}'
-  # - '/services/xds/{{ $.Values.global.xds.version }}'
 
   dashboard:
     catalogEnabled: true
@@ -239,10 +242,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 3.4.0
-    routes:
-      - '/services/dashboard/latest'
-      - '/services/dashboard/latest/'
+    version: 3.4.1
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -275,10 +275,7 @@ services:
     capability: 'Data'
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
-    version: 1.1.0
-    routes:
-      - '/services/data/{{ $.Values.services.data.version }}'
-      - '/services/data/{{ $.Values.services.data.version }}/'
+    version: 1.1.1
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -301,7 +298,7 @@ services:
     documentation: '/services/data/latest/static/ui/index.html'
     name: 'Grey Matter Internal Data'
     owner: 'Decipher'
-    version: 1.1.0
+    version: 1.1.1
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -323,10 +320,7 @@ services:
     capability: 'Security'
     documentation: '/services/jwt-security/latest/'
     owner: 'Decipher'
-    version: '1.0.1'
-    routes:
-      - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
-      - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
+    version: '1.1.1'
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -348,7 +342,7 @@ services:
     capability: 'Grey Matter'
     documentation: ''
     owner: 'Decipher'
-    version: '1.0.1'
+    version: '1.1.1'
     secret:          
       enabled: true
       secret_name: sidecar-certs
@@ -370,10 +364,7 @@ services:
     capability: 'Mesh'
     documentation: '/services/control-api/latest/'
     owner: 'Decipher'
-    version: '1.4.0'
-    routes:
-      - '/services/control-api/{{ $.Values.services.controlApi.version }}'
-      - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
+    version: '1.4.3'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -399,7 +390,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.4.0'
+    version: '1.4.2'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -421,10 +412,7 @@ services:
     capability: 'Sense'
     documentation: '/services/slo/latest/'
     owner: 'Decipher'
-    version: '1.1.1'
-    routes:
-      - '/services/slo/{{ $.Values.services.slo.version }}'
-      - '/services/slo/{{ $.Values.services.slo.version }}/'
+    version: '1.1.4'
     secret:
       enabled: true
       secret_name: sidecar-certs

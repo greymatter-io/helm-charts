@@ -12,15 +12,17 @@ global:
     enabled: false
     host: ''
     port: 8500
+    edge_port: 10808
   # API Key used to configure the gm_jwtsecurity filter. Refactor this to use the jwt-certs secret.
   jwt_api_key: dm9sY2Fuby1lcGlkZW1pYy10d2VsZnRoLXRhbWFsZQ==
   # Observables configuration, used to build Control API objects (see control-api/json)
   observables:
     topic: "greymatter"
-  # Port for Grey Matter Control. Used in control, control-api, and sidecar envvars.
-  control_port: 50000  
-  # The label Control uses to find pods to include in the mesh
-  control_cluster_label: greymatter.io/control
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: false
@@ -34,7 +36,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
-    version: 1.4.0
+    version: 1.4.2
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
   # Global rbac configuration for service admin principal.
   rbac:
@@ -50,8 +52,8 @@ controlApi:
   display_name: control-api
   # Number of replicas for the deployment
   replicas: 1
-  version: 1.4.0
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
+  version: 1.4.3
+  image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # Port exposed by the control-api container
@@ -107,7 +109,7 @@ controlApi:
 # Sidecar configuration for Control Api
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -133,7 +135,7 @@ sidecar:
 
 
 bootstrap:
-  image: 'docker-dev.production.deciphernow.com/deciphernow/greymatter:1.4.0'
+  image: 'docker.production.deciphernow.com/deciphernow/greymatter:1.4.1'
   image_pull_policy: IfNotPresent
   secret:
     enabled: true
@@ -190,7 +192,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.0.1
+    version: 1.0.7
     minInstances: 1
     maxInstances: 1
     secret:
@@ -202,16 +204,10 @@ services:
         cert: server.crt
         key: server.key
         ca: ca.crt
-    routes:
-      - '/services/catalog/{{ $.Values.services.catalog.version }}'
-      - '/services/catalog/{{ $.Values.services.catalog.version }}/'
 
   # control:
   #   name: 'Grey Matter Control'
   #   serviceName: 'control'
-  #   routes:
-  # - '/services/xds/{{ $.Values.global.xds.version }}'
-  # - '/services/xds/{{ $.Values.global.xds.version }}'
 
   dashboard:
     catalogEnabled: true
@@ -224,10 +220,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 3.4.0
-    routes:
-      - '/services/dashboard/latest'
-      - '/services/dashboard/latest/'
+    version: 3.4.1
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -261,11 +254,8 @@ services:
     jwt_prefix: '/jwt'
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
-    version: 1.0.0
+    version: 1.1.1
     jwt_prefix: /jwt
-    routes:
-      - '/services/data/{{ $.Values.services.data.version }}'
-      - '/services/data/{{ $.Values.services.data.version }}/'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -289,7 +279,7 @@ services:
     documentation: '/services/data/latest/static/ui/index.html'
     name: 'Grey Matter Internal Data'
     owner: 'Decipher'
-    version: 1.0.0
+    version: 1.1.1
     jwt_prefix: /jwt
     secret:
       enabled: true
@@ -312,10 +302,7 @@ services:
     capability: 'Security'
     documentation: ''
     owner: 'Decipher'
-    version: '0.2.0'
-    routes:
-      - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
-      - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
+    version: '1.1.1'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -337,7 +324,7 @@ services:
     capability: 'Grey Matter'
     documentation: ''
     owner: 'Decipher'
-    version: '0.2.0'
+    version: '1.1.1'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -359,10 +346,7 @@ services:
     capability: 'Mesh'
     documentation:
     owner: 'Decipher'
-    version: '1.4'
-    routes:
-      - '/services/control-api/{{ $.Values.services.controlApi.version }}'
-      - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
+    version: '1.4.3'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -388,7 +372,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.4'
+    version: '1.4.2'
     ingress:
       secret:
         enabled: true
@@ -419,10 +403,7 @@ services:
     capability: 'Sense'
     documentation:
     owner: 'Decipher'
-    version: '1.1.1'
-    routes:
-      - '/services/slo/{{ $.Values.services.slo.version }}'
-      - '/services/slo/{{ $.Values.services.slo.version }}/'
+    version: '1.1.4'
     secret:
       enabled: true
       secret_name: sidecar-certs

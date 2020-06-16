@@ -13,13 +13,13 @@ spec:
   selector:
     matchLabels:
       app: agent
-      {{ .Values.global.control_cluster_label }}: agent
+      {{ .Values.global.control.cluster_label }}: agent
       cluster: spire.agent
   template:
     metadata:
       namespace: {{ .Values.global.spire.namespace }}
       labels:
-        {{ .Values.global.control_cluster_label }}: agent
+        {{ .Values.global.control.cluster_label }}: agent
         app: agent
         cluster: spire.agent
     spec:

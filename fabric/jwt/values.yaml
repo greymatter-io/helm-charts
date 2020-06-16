@@ -7,10 +7,11 @@ global:
   environment: openshift
   exhibitor:
     replicas: 1
-  # Port for Grey Matter Control. Used in sidecar envvars
-  control_port: 50000
-  # The label Control uses to find pods to include in the mesh
-  control_cluster_label: greymatter.io/control
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
   # Zone for Grey Matter objects. Used in sidecar envvars
   zone: zone-default-zone
   # Whether or not to use spire for cert management and the trust domain
@@ -18,18 +19,20 @@ global:
     enabled: false
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
-  # Whether to register services with Consul and where to find the Consul server
+  # Whether to use consul for service discovery
   consul:
     enabled: false
-
+    host: ''
+    port: 8500
+    edge_port: 10808
   sidecar:
-    version: 1.4.0
+    version: 1.4.2
 
 jwt:
   # Name used for the deployment and service resources
   name: jwt-security
-  version: '1.0.1'
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
+  version: '1.1.1'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
@@ -92,10 +95,10 @@ jwt:
         "label": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
         "values": {
           "email": [
-            "quickstart@deciphernow.com"
+            "quickstart@greymatter.io"
           ],
           "org": [
-            "www.deciphernow.com"
+            "www.greymatter.io"
           ],
           "privilege": [
             "root"
@@ -106,10 +109,10 @@ jwt:
         "label": "CN=localuser,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
         "values": {
           "email": [
-            "localuser@deciphernow.com"
+            "localuser@greymatter.io"
           ],
           "org": [
-            "www.deciphernow.com"
+            "www.greymatter.io"
           ],
           "privilege": [
             "root"
@@ -120,10 +123,10 @@ jwt:
         "label": "CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
         "values": {
           "email": [
-              "gm-control@deciphernow.com"
+              "gm-control@greymatter.io"
           ],
           "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
           ],
           "privilege": [
               "root"
@@ -134,10 +137,10 @@ jwt:
         "label": "CN=gm-catalog,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
         "values": {
           "email": [
-              "engineering@deciphernow.com"
+              "engineering@greymatter.io"
           ],
           "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
           ],
           "privilege": [
               "root"
@@ -148,10 +151,10 @@ jwt:
         "label": "CN=greymatter,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
         "values": {
           "email": [
-              "engineering@deciphernow.com"
+              "engineering@greymatter.io"
           ],
           "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
           ],
           "privilege": [
               "root"
@@ -162,10 +165,10 @@ jwt:
         "label": "O=SPIRE,C=US",
         "values": {
           "email": [
-              "engineering@deciphernow.com"
+              "engineering@greymatter.io"
           ],
           "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
           ],
           "privilege": [
               "root"
@@ -220,7 +223,7 @@ sidecar:
       ca: ca.crt
       key: server.key
       cert: server.crt
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:

@@ -12,19 +12,28 @@ global:
     enabled: false
     host: ''
     port: 8500
+    edge_port: 10808
   # API Key used to configure the gm_jwtsecurity filter. Refactor this to use the jwt-certs secret.
   jwt_api_key: dm9sY2Fuby1lcGlkZW1pYy10d2VsZnRoLXRhbWFsZQ==
-  # Port for Grey Matter Control. Used in control-api and sidecar envvars.
-  control_port: 50000 
-  # The label Control uses to find pods to include in the mesh
-  control_cluster_label: greymatter.io/control
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
+    # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
+    additional_namespaces:
+  data:
+    # whether to install an external data
+    external:
+      enabled: true
+    # whether to install an internal data
+    internal:
+      enabled: true
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: true
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
-  # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
-  control_additional_namespaces:
   # Configures the init container used to wait on various deployments to be ready
   waiter:                               
     image: deciphernow/k8s-waiter:latest
@@ -34,7 +43,7 @@ global:
   # Sidecar configuration (Control-api is the only service in this chart with a proxy)
   sidecar:
     # GM Proxy version, used by control-api
-    version: 1.4.0
+    version: 1.4.2
     envvars:
       xds_cluster:
         type: value
@@ -50,7 +59,7 @@ global:
         value: 'control.{{ .Release.Namespace }}.svc'
       xds_port:
         type: 'value'
-        value: '{{ .Values.global.control_port }}'
+        value: '{{ .Values.global.control.port }}'
       xds_node_id:
         type: 'value'
         value: 'default'
@@ -67,8 +76,8 @@ control:
     # Number of replicas for the deployment
     replicas: 1
     # Version of control
-    version: 1.4.1
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
+    version: 1.4.2
+    image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Secret used to talk to control-api
@@ -120,7 +129,7 @@ control:
         value: 'true'
       gm_control_kubernetes_cluster_label:
         type: 'value'
-        value: "{{ .Values.global.control_cluster_label }}"
+        value: "{{ .Values.global.control.cluster_label }}"
       gm_control_kubernetes_port_name:
         type: 'value'
         value: 'proxy'
@@ -159,8 +168,8 @@ control-api:
     # Number of replicas for the deployment
     replicas: 1                         
     # Gm Control API version
-    version: 1.4.0             
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
+    version: 1.4.4
+    image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent       
     # Port exposed by the control-api container
@@ -248,7 +257,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.0.6
+    version: 1.0.7
     minInstances: 1
     maxInstances: 1
     secret:
@@ -260,16 +269,10 @@ services:
         cert: server.crt
         key: server.key
         ca: ca.crt
-    routes:
-      - '/services/catalog/{{ $.Values.services.catalog.version }}'
-      - '/services/catalog/{{ $.Values.services.catalog.version }}/'
 
   # control:
   #   name: 'Grey Matter Control'
   #   serviceName: 'control'
-  #   routes:
-  # - '/services/xds/{{ $.Values.global.xds.version }}'
-  # - '/services/xds/{{ $.Values.global.xds.version }}'
 
   dashboard:
     catalogEnabled: true
@@ -282,10 +285,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 3.4.0
-    routes:
-      - '/services/dashboard/latest'
-      - '/services/dashboard/latest/'
+    version: 3.4.1
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -321,9 +321,6 @@ services:
     owner: 'Decipher'
     version: 1.1
     jwt_prefix: /jwt
-    routes:
-      - '/services/data/{{ $.Values.services.data.version }}'
-      - '/services/data/{{ $.Values.services.data.version }}/'
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -370,10 +367,7 @@ services:
     capability: 'Security'
     documentation: ''
     owner: 'Decipher'
-    version: '1.0.1'
-    routes:
-      - '/services/jwt-security/{{ $.Values.services.jwt.version }}'
-      - '/services/jwt-security/{{ $.Values.services.jwt.version }}/'
+    version: '1.1.1'
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -395,7 +389,7 @@ services:
     capability: 'Grey Matter'
     documentation: ''
     owner: 'Decipher'
-    version: '1.0.1'
+    version: '1.1.1'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -417,10 +411,7 @@ services:
     capability: 'Mesh'
     documentation:
     owner: 'Decipher'
-    version: '1.4'
-    routes:
-      - '/services/control-api/{{ $.Values.services.controlApi.version }}'
-      - '/services/control-api/{{ $.Values.services.controlApi.version }}/'
+    version: '1.4.4'
     secret:          
       enabled: true
       secret_name: sidecar-certs
@@ -446,7 +437,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.4'
+    version: '1.4.2'
     ingress:
       secret:
         enabled: true
@@ -477,10 +468,7 @@ services:
     capability: 'Sense'
     documentation:
     owner: 'Decipher'
-    version: '1.1.1'
-    routes:
-      - '/services/slo/{{ $.Values.services.slo.version }}'
-      - '/services/slo/{{ $.Values.services.slo.version }}/'
+    version: '1.1.4'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -511,8 +499,9 @@ jwt:
     #  mount_point: /gm-jwt-security/certs
     # Location to mount the information specified in users_cg_name in the container
     users_mount_point: /gm-jwt-security/etc
-    version: 1.0.1
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    version: 1.1.1
+    image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    port: 3000
     envvars:
       private_key:
         type: secret
@@ -569,8 +558,8 @@ internal-jwt:
     #secret:
     #  secret_name: internal-jwt-certs
     #  mount_point: /gm-jwt-security/certs
-    version: 1.0.1
-    image: 'docker-dev.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    version: 1.1.1
+    image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
     port: 3000
     envvars:
       private_key:
@@ -618,10 +607,10 @@ internal-jwt:
           "label": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
           "values": {
             "email": [
-              "quickstart@deciphernow.com"
+              "quickstart@greymatter.io"
             ],
             "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
             ],
             "privilege": [
               "root"
@@ -629,13 +618,27 @@ internal-jwt:
           }
         },
         {
+          "label": "CN=justin.ely,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
+          "values": {
+            "email": [
+              "justin@gmail.com"
+            ],
+            "org": [
+              "www.greymatter.io"
+            ],
+            "group": [
+              "intern"
+            ]
+          }
+        },
+        {
           "label": "CN=localuser,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
           "values": {
             "email": [
-              "localuser@deciphernow.com"
+              "localuser@greymatter.io"
             ],
             "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
             ],
             "privilege": [
               "root"
@@ -646,10 +649,10 @@ internal-jwt:
           "label": "CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
           "values": {
             "email": [
-                "gm-control@deciphernow.com"
+                "gm-control@greymatter.io"
             ],
             "org": [
-                "www.deciphernow.com"
+                "www.greymatter.io"
             ],
             "privilege": [
                 "root"
@@ -660,10 +663,10 @@ internal-jwt:
           "label": "CN=gm-catalog,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
           "values": {
             "email": [
-                "engineering@deciphernow.com"
+                "engineering@greymatter.io"
             ],
             "org": [
-                "www.deciphernow.com"
+                "www.greymatter.io"
             ],
             "privilege": [
                 "root"
@@ -674,10 +677,10 @@ internal-jwt:
           "label": "CN=greymatter,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
           "values": {
             "email": [
-                "engineering@deciphernow.com"
+                "engineering@greymatter.io"
             ],
             "org": [
-                "www.deciphernow.com"
+                "www.greymatter.io"
             ],
             "privilege": [
                 "root"
@@ -688,10 +691,10 @@ internal-jwt:
         "label": "O=SPIRE,C=US",
         "values": {
           "email": [
-              "engineering@deciphernow.com"
+              "engineering@greymatter.io"
           ],
           "org": [
-              "www.deciphernow.com"
+              "www.greymatter.io"
           ],
           "privilege": [
               "root"

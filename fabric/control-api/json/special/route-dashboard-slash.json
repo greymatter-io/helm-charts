@@ -9,5 +9,17 @@
   "rules": null,
   "response_data": {},
   "cohort_seed": null,
-  "retry_policy": null
+  "retry_policy": null,
+  "filter_metadata": {
+    "gm.metrics": [
+      {
+        "key": "metrics_key_function",
+        "value": "depth"
+      },
+      {
+        "key": "metrics_key_depth",
+        "value": "1"
+      }
+    ]
+  }
 }

@@ -13,12 +13,13 @@
     - [Copy Files to EC2](#copy-files-to-ec2)
     - [Docker Credentials](#docker-credentials)
   - [Setup Helm](#setup-helm)
+  - [Secrets](#secrets)
+    - [Ingress](#ingress)
     - [Configure Voyager Ingress](#configure-voyager-ingress)
   - [Install](#install)
     - [Latest Helm charts release](#latest-helm-charts-release)
     - [Local Helm charts](#local-helm-charts)
     - [Verification](#verification)
-    - [Ingress](#ingress)
       - [EC2](#ec2)
     - [Debugging](#debugging)
 
@@ -30,9 +31,9 @@ Minikube allows us to quicky setup a Kubernetes cluster and test drive Grey Matt
 
 You will need the following tools installed (tested on both Mac OS and Linux Ubuntu):
 
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)@1.16.0
-- [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)@1.4.0
-- [helm](https://github.com/helm/helm/releases/tag/v2.14.3)@2.15.0
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)@1.17.0
+- [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/)@1.8.2
+- [helm](https://github.com/helm/helm/releases/tag/v3.1.1)@3.1.2
 - [virtualbox](https://www.virtualbox.org/wiki/Downloads)@6.0.12
 
 ### Quick Start
@@ -88,13 +89,11 @@ minikube start -p gm-deploy --memory 4096 --cpus 4
 You should see a similar output:
 
 ```sh
-😄  [gm-deploy] minikube v1.3.1 on Ubuntu 18.04
-🔥  Creating virtualbox VM (CPUs=4, Memory=4096MB, Disk=20000MB) ...
-🐳  Preparing Kubernetes v1.15.2 on Docker 18.09.8 ...
-🚜  Pulling images ...
+🐳  Preparing Kubernetes v1.17.3 on Docker 19.03.6 ...
 🚀  Launching Kubernetes ...
-⌛  Waiting for: apiserver proxy etcd scheduler controller dns
-🏄  Done! kubectl is now configured to use "gm-deploy
+🌟  Enabling addons: default-storageclass, storage-provisioner
+⌛  Waiting for cluster to come online ...
+🏄  Done! kubectl is now configured to use "gm-deploy"
 ```
 
 To confirm the status of the Minikube cluster, run the following command:
@@ -124,7 +123,7 @@ If you have an older version of Minikube and you receive errors when attempting 
 rm -rf /usr/local/bin/minikube
 rm -rf ~/.minikube
 brew update
-brew cask reinstall minikube
+brew reinstall minikube
 minikube version
 ```
 
@@ -146,18 +145,20 @@ Then run the following commands to install dependencies:
 
 # Install kubectl
 sudo apt-get update
-curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.15.3/bin/linux/amd64/kubectl
-chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin/kubectl
+sudo snap install kubectl --classic
 
 # Install Docker
-sudo apt-get update && sudo apt-get install docker.io -y
-curl -Lo minikube https://storage.googleapis.com/minikube/releases/v1.3.1/minikube-linux-amd64 && chmod +x minikube && sudo mv minikube /usr/local/bin/
+sudo apt install docker.io socat -y
+
+# Install minikube
+wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+chmod +x minikube-linux-amd64
+sudo mv minikube-linux-amd64 /usr/local/bin/minikube
 
 # Install Helm
-curl -LO https://git.io/get_helm.sh
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
 chmod 700 get_helm.sh
-./get_helm.sh --version v2.15.0
+./get_helm.sh
 
 # add helpful aliases
 alias minikube='sudo minikube'
@@ -171,20 +172,9 @@ Next, start up Minikube. Note that --vm-driver is set to none because AWS EC2 is
 minikube start --vm-driver=none --memory 4096 --cpus 4 -p gm-deploy
 ```
 
-We will need `socat` as a dependency of Helm:
-
-```sh
-sudo apt-get update && sudo apt-get install socat
-```
-
 ## Configuration
 
-Our Helm charts can be overridden by custom YAML files that are chained together during install. We've provided two templates:
-
-- [greymatter.yaml](../greymatter.yaml) provides a primary set of overrides
-- [greymatter-secrets.yaml](../greymatter-secrets.yaml) provides a separate set of overrides specifically for passwords, secrets, and other sensitive data
-  
-Copy these files to `custom-greymatter.yaml` and  `custom-greymatter-secrets.yaml`.
+Our Helm charts can be overriden by custom YAML fiels that are chained together during install. The templates for custom yaml files should follow the pattern of the `<chart>/values.yaml` file inside the chart directory.
 
 ### Copy Files to EC2
 
@@ -196,15 +186,19 @@ scp -i <path-to-keyfile> custom-greymatter-secrets.yaml custom-greymatter.yaml u
 
 ### Docker Credentials
 
-Helm needs valid Docker credentials to pull and run Grey Matter containers. Add your Docker credentials to the `custom-greymatter-secrets.yaml` file. If you need credentials please contact [Grey Matter Support](https://support.greymatter.io).
+Helm needs valid Docker credentials to pull and run Grey Matter containers. Run `make credentials` to add your Docker credentials. If you need credentials please contact [Grey Matter Support](https://support.greymatter.io).
+
+The `credentials.yaml` file generated should generate your docker credentials in the following form:
 
 ```yaml
 dockerCredentials:
-  registry: docker.production.deciphernow.com
-  email:
-  username:
-  password:
+  - registry: docker.production.deciphernow.com
+    email:
+    username:
+    password:
 ```
+
+To add credentials for another docker registry, simply add another registry block and its credentials to the list.
 
 ## Setup Helm
 
@@ -218,31 +212,38 @@ chmod 700 get_helm.sh
 
 > Note: when using `helm install`, if an install fails the resources deployed may not properly be removed with a `helm uninstall`. Be sure to check for and remove configmaps, secrets, and pvc's manually if an install fails.
 
-### Configure Voyager Ingress
+## Secrets
 
-For Kubernetes, we use the [Voyager Ingress Controller](https://appscode.com/products/voyager/), which automatically provisions a load balancer from a variety of supported cloud providers like EKS in AWS. This allows you to access the cluster at the provided load balancer URL.
+To install the helm charts, any certificates or secrets needed for install must be configured and created first.  To install the default secrets, which will provide all necessary certificates and passwords to run the mesh, run the following:
 
-At present, there's [an issue](https://github.com/appscode/voyager/issues/1415) specifying Voyager as a dependency so we need to manually configure Voyager ingress as a prerequisite. This can be done with following commands:
-
-```sh
-export PROVIDER=minikube
-helm repo add appscode https://charts.appscode.com/stable/
-helm repo update
-helm install voyager-operator appscode/voyager --version 10.0.0 \
-   --namespace kube-system \
-   --set cloudProvider=minikube \
-   --set enableAnalytics=false \
-   --set apiserver.enableAdmissionWebhook=false
-
-NOTES:
-Set cloudProvider for installing Voyager
-
-To verify that Voyager has started, run:
-
-  kubectl --namespace=kube-system get deployments -l "release=voyager-operator, app=voyager"
+```bash
+make credentials
 ```
 
-You should see that the voyager-operator is now running in the namespace `kube-system`.
+This will prompt you for your docker credentials to pull and run Grey Matter containers. It will also provide the optional configuration for AWS S3 for use with Grey Matter Data.
+
+To install the secrets, run:
+
+```bash
+make secrets
+```
+
+### Ingress
+
+By default, the Helm Charts use nginx ingress in k3d.  If you want to use [a voyager ingress controller](https://appscode.com/products/voyager/), see how to [configure voyager ingress](#configure-voyager-ingress).
+
+See the [Ingress](./Ingress.md) docs for more information on how the ingress objects are created.
+
+### Configure Voyager Ingress
+
+By default, the Helm Charts use nginx ingress in k3d.  If you want to use [a voyager ingress controller](https://appscode.com/products/voyager/), run the following commands and in the `edge/values.yaml` file set `edge.ingress.use_voyager` to true before running `make install`:
+
+```sh
+cd voyager
+make voyager
+```
+
+You should see that the voyager-operator is now running in the namespace `kube-system` by running `kubectl get pods -n kube-system`.
 
 Note that running `kubectl get ingresses` will not list voyager because it uses its own custom resource definition. Instead, use `kubectl get ingress.voyager.appscode.com --all-namespaces` to find it with kubectl. It may take some time before voyager shows up in the result after the installation, so if you get `No resources found.` response, try again a few minutes later.
 
@@ -250,6 +251,31 @@ Describe ingress is also a useful command for debugging:
 
 ```sh
 kubectl describe ingress.voyager.appscode.com -n <namespace> <ingress-name>
+```
+
+To hit our cluster, we can access voyager-edge:
+
+```sh
+$ minikube -p gm-deploy service --https=true voyager-edge
+|-----------|--------------|--------------------------------|
+| NAMESPACE   | NAME           | URL                              |
+|-------------|----------------|----------------------------------|
+| default     | voyager-edge   | http://192.168.99.102:30001      |
+|             |                | http://192.168.99.102:30000      |
+| ----------- | -------------- | -------------------------------- |
+🎉  Opening kubernetes service  default/voyager-edge in default browser...
+🎉  Opening kubernetes service  default/voyager-edge in default browser...
+```
+
+Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:30000> in the above example, then navigate to there in your browser.
+
+You should be prompted for your [Decipher localuser certificate](https://github.com/DecipherNow/grey-matter-quickstarts/tree/master/common/certificates/user) and be taken to the dashboard. Once there, make sure all services are "green" and then pat yourself on the back -- you deployed Grey Matter to Minikube!
+
+To use nginx instead of voyager (the default), you can remove voyager with:
+
+```bash
+cd voyager
+make remove-voyager
 ```
 
 See [Ingress](./Ingress.md) for more details.
@@ -269,10 +295,6 @@ Once the repository has successfully been added to your `helm` CLI, and our envi
 
 **Note: Before installing Helm charts it's always prudent to do a dry-run first to ensure your custom YAML is correct. You can do this by adding the `--dry-run` flag to the below `helm install` command. If you receive no errors then you can confidently drop the `--dry-run` flag.**
 
-```sh
-helm install gm decipher/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes
-```
-
 ### Local Helm charts
 
 If you are modifying charts or want to run development versions of charts you'll need to clone this repository.
@@ -283,69 +305,29 @@ If you are modifying charts or want to run development versions of charts you'll
 git clone git@github.com:DecipherNow/helm-charts.git
 ```
 
-Then you'll need to modify the repository paths in `requirements.yaml` to point to the relative chart paths of this GitHub project.
+Then, you can run the following command to update the local charts one by one and install them.  The `helm install` command for helm3 takes `helm install <release name> <chart> -f <optional config overrides>`.  To install all of the Grey Matter charts at once, run:
 
-```yaml
-dependencies:
-  - name: dashboard
-    version: '2.0.1'
-    repository: 'file://../dashboard'
+```bash
+make install
 ```
-
-Then you can run the following commands to update the local charts and then install them.
-
-```sh
-rm -rf greymatter/charts
-helm dep up greymatter
-helm install greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml --set global.environment=kubernetes --name gm
-```
-
-The `helm dep up greymatter` command will create a `./greymatter/charts` directory with tarballs of each sub-chart that the parent `greymatter` chart will use to install Grey Matter.
 
 ### Verification
 
-It may take a few minutes for the installation to become stable. You can watch the status of the pods by running `kubectl get pods -w -n default`. Before attempting to view the Grey Matter dashboard you'll need to setup ingress in the next section.
+It may take a few minutes for the installation to become stable. You can watch the status of the pods by running `kubectl get pods -w`.  To specify ingress configuration, see [below](#ingress).
 
-We also have the option to specify:
+We can run `helm ls` to see all our current deployments and `helm uninstall <release name>` to delete deployments. If you need to make changes, you can run `helm upgrade <release name> <chart> -f <optional config overrides>` to update your release in place.
 
-- "--replace" will replace an existing deployment
-- "--dry-run" will print all Kubernetes configs to stdout
-
-We can run `helm ls` to see all our current deployments and `helm delete --purge $DEPLOYMENT` to delete deployments. If you need to make changes, you can run `helm upgrade gm deciperhnow/greymatter -f custom-greymatter.yaml -f custom-greymatter-secrets.yaml` to update your release in place.
-
-You should also load the appropriate user p12 file according to the certs you configured when deploying Greymatter. The default certs correspond to the quickstart certificates and the `quickstart.p12` file can be found at `certs/quickstart.p12`. You will want to follow your browser specific instructions to load in this user pki. 
+You should also load the appropriate user p12 file according to the certs you configured when deploying Greymatter. The default certs correspond to the quickstart certificates and the `quickstart.p12` file can be found at `certs/quickstart.p12`. You will want to follow your browser specific instructions to load in this user pki.
 [Firefox](https://www.sslsupportdesk.com/how-to-import-a-certificate-into-firefox/) and [Chrome](https://support.globalsign.com/customer/en/portal/articles/1211541-install-client-digital-certificate---windows-using-chrome) instructions.
 
 ```sh
-NAME                    REVISION        UPDATED                         STATUS          CHART                   APP VERSION     NAMESPACE  
-gm                      1               Thu Sep 12 11:25:43 2019        DEPLOYED        greymatter-2.1.0-dev    1.0.2-dev       default
-voyager-operator        1               Thu Sep 12 11:19:01 2019        DEPLOYED        voyager-10.0.0          10.0.0          kube-system
+NAME   	NAMESPACE	REVISION	UPDATED                                	STATUS  	CHART        	APP VERSION
+data   	default  	1       	2020-03-24 12:22:21.014995832 +0000 UTC	deployed	data-3.0.0   	1.2
+edge   	default  	1       	2020-03-24 12:21:53.372236561 +0000 UTC	deployed	edge-2.1.6   	1.0.0
+fabric 	default  	3       	2020-03-24 15:26:40.20025539 +0000 UTC 	deployed	fabric-3.0.0 	1.2
+secrets	default  	1       	2020-03-23 21:27:58.104710704 +0000 UTC	deployed	secrets-1.0.0
+sense  	default  	1       	2020-03-24 14:34:27.931518189 +0000 UTC	deployed	sense-3.0.0  	1.2
 ```
-
-### Ingress
-
-There are two pods which control our ingress:
-
-- `edge` validates client-facing certificates and gets routing rules from `control-api`.
-- `voyager-edge` is our ingress controller. Edge isn't exposed to the outside world, and in a real deployment we need to tie our cluster ingress to an IP address. This points to `edge`.
-
-To hit our cluster, we can access voyager-edge:
-
-```sh
-$ minikube -p gm-deploy service --https=true voyager-edge
-|-----------|--------------|--------------------------------|
-| NAMESPACE   | NAME           | URL                              |
-|-------------|----------------|----------------------------------|
-| default     | voyager-edge   | http://192.168.99.102:30001      |
-|             |                | http://192.168.99.102:30000      |
-| ----------- | -------------- | -------------------------------- |
-🎉  Opening kubernetes service  default/voyager-edge in default browser...
-🎉  Opening kubernetes service  default/voyager-edge in default browser...
-```
-
-Change "`http`" of the URL in the console output to "`https`" (i.e. <https://192.168.99.102:30000> in the above example, then navigate to there in your browser.
-
-You should be prompted for your [Decipher localuser certificate](https://github.com/DecipherNow/grey-matter-quickstarts/tree/master/common/certificates/user) and be taken to the dashboard. Once there, make sure all services are "green" and then pat yourself on the back -- you deployed Grey Matter to Minikube!!
 
 #### EC2
 
@@ -353,16 +335,9 @@ After running the last step where you expose the voyager-edge service, note one 
 
 EC2 >> (Network & Security) Security Groups >> Your Minikube Security Group >> Inbound
 
-Select the security group you're using and edit the following:
+Select the security group you're using and add an inbound rule with custom TCP access to port 30000-30001.
 
-| Parameter      | Value                                                |
-|----------------|------------------------------------------------------|
-| **Type**       | TCP                                                  |
-| **Protocol**   | 30263 (the voyager-edge port from the previous step) |
-| **Port Range** | Custom                                               |
-| **Source**     | 0.0.0.0/0  (Accessible via the internet)             |
-
-Select **Save**. Navigate back to the AWS instances dashboard and find the `IPv4 Public IP` column. You should be able to see the Grey Matter Dashboard at  `https://<public-ip>:<voyager-edge-port>`.
+Select **Save**. Navigate back to the AWS instances dashboard and find the `IPv4 Public IP` column. You should be able to see the Grey Matter Dashboard at  `https://<public-ip>:30000`.
 
 ### Debugging
 
@@ -372,7 +347,7 @@ If you're not prompted for a certificate when navigating to voyager-edge, or you
 kubectl get events -w | grep error
 ```
 
-To see the status of Kubernetes configs, you can access the Kubernetes dashboard running within the Minikube cluster with `minikube dashboard`
+To see the status of Kubernetes configs, you can access the Kubernetes dashboard running within the Minikube cluster with `minikube dashboard -p gm-deploy`
 
 To debug the mesh, you can access the Envoy admin UI for the edge proxy by running:
 

@@ -2,7 +2,6 @@ SHELL := /bin/bash
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
 include output.mk
-include secrets/Makefile
 # `make credentials` to build out credentials with user input
 # `make secrets` deploys the credentials
 
@@ -45,17 +44,14 @@ dev-dep: clean
 .PHONY: check-secrets
 check-secrets:
 	$(eval SECRET_CHECK=$(shell helm ls | grep secrets | awk '{if ($$1 == "secrets") print "present"; else print "not-present"}'))
-	echo $(SECRET_CHECK)
 	if [[ "$(SECRET_CHECK)" != "present" ]]; then \
-		echo "present" ;\
 		(make secrets);\
 	fi
 
 .PHONY: install-spire
 install-spire:
-	@read -p "Would you like to install Spire? [y/N] " response; \
-	if [ "$$response" = "y" ]; then \
-		echo "Installing spire"; \
+	$(eval IS=$(shell cat global.yaml | grep -A3 'spire:'| grep enabled: | awk '{print $$2}'))
+	if [ "$(IS)" = "true" ]; then \
 		(cd spire && make spire); \
 	fi
 
@@ -99,3 +95,16 @@ template: dev-dep $(BUILD_NUMBER_FILE)
 	(cd edge && make template-edge && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd data && make template-data && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd sense && make template-sense && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)	
+
+
+.PHONY: secrets
+secrets:
+	cd secrets && make secrets
+
+.PHONY: remove-secrets
+remove-secrets:
+	helm uninstall secrets
+
+.PHONY: credentials
+credentials:
+	cd secrets && make credentials

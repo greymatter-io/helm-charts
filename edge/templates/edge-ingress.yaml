@@ -34,6 +34,7 @@ spec:
     name: edge
     weight: 100
   wildcardPolicy: None
+{{ include "openshift.route.fix" $ }}
 
 {{- else }}
 

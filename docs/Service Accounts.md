@@ -1,63 +1,79 @@
 # Service Accounts
 
-Various services in the mesh require Kubernetes Service Accounts to function. These are:
+Various services in the mesh require Kubernetes Service Accounts to function.  There are three service accounts that are necessary to run all four Grey Matter charts together, `control-sa`, `prometheus-sa`, and `waiter-sa`. `control-sa` is required by Grey Matter Control, `prometheus-sa` is required by Grey Matter Dashboard, and `waiter-sa` is required by several subcharts.
 
-- `gm-control` - requires read access to Kubernetes Pods for service discovery
-- `prometheus` - requires read access to Kubernetes Pods to scrape metrics
-- `waiter` - various services use the `deciphernow/k8s-waiter` image as an InitContainer, which waits for a given service to have "ready" endpoints using the Kubernetes Endpoints API. This allows you to use readiness checks to define service dependencies in an idiomatic way. Requires read access to Kubernetes Endpoints. The services which use this InitContainer are:
-  - `gm-catalog` - waits for `gm-control` to be up
-  - `gm-slo` - waits for Postgres to be up
-  - `gm-control` - waits for `control-api` to be up - see above, also needs access to pods, so make sure you create one service account for this.
-  - `control-api-init` - waits for `control-api` to be up to bootstrap the mesh configuration
+The Grey Matter subcharts require the following service accounts:
+
+- Fabric
+  - control
+    - requires `control-sa`
+    - requires `waiter-sa`
+  - control-api
+    - requires `waiter-sa`
+- Edge
+- Data
+  - data
+    - requires `waiter-sa` 
+  - jwt
+  - jwt-gov
+- Sense
+  - catalog
+    - requires `waiter-sa`
+  - slo
+    - requires `waiter-sa`
+  - dashboard
+    - requires `prometheus-sa`
+
+There are two ways to create the necessary service accounts and their corresponding Roles, ClusterRoles, RoleBinding's and ClusterRoleBindings.
 
 ## Using Helm to Create the Service Accounts
 
-The waiter service account can be created automatically with `.Values.global.waiter.serviceAccount.create` set to `true`. Otherwise, all services that need access to a waiter service account will use the one specified by `.Values.global.waiter.serviceAccount.name`
+The first way to generate the necessary service accounts to run Grey Matter on install is to configure the `<chart>/values.yaml` files.
 
-All of the service accounts needed for Grey Matter can either be created automatically by Helm (if it has the appropriate permissions), or be created manually by a cluster admin. This is configured in the `serviceAccount` map that is found at different locations for various service accounts, which always looks like this:
+Each of the Grey Matter charts has the ability to create the necessary service accounts on install. In each `<chart>/values.yaml` file that requires the `waiter-sa` service account has the following configuration options:
 
 ```yaml
-serviceAccount:
-  create: true
-  name: waiter-sa
+global:
+  waiter:
+    image: deciphernow/k8s-waiter:latest
+    service_account:
+      create: true
+      name: waiter-sa
 ```
 
-If `create` is true, Helm will create a service account with the specified `name`. If `create` is false, the Grey Matter cluster expects you to have already created a service account with the appropriate permissions with the specified name. To figure out what permissions you need to give to a given service account, you will need to look at the `<something>-role.yaml` and `<something>-rolebinding.yaml` in the `templates` directory that corresponds to a given service account.
+Set `.Values.global.waiter.service_account.create` to true to create the `waiter-sa` in the necessary charts.
 
-The following list gives the service that needs a service account along with the Helm values key where you can configure the service account settings as shown above:
+Keep in mind that because the `waiter-sa` service account is used by multiple charts, `.Values.global.waiter.service_account.create` should only be set to true in one of the charts being deployed. 
 
-- `gm-control` - control subchart, `.Values.control.serviceAccount`
-- `prometheus` - dashboard subchart, `.Values.prometheus.serviceAccount`
-- `waiter` - greymatter chart - `.Values.global.waiter.serviceAccount`
-- `spire-agent` - spire subchart - `.Values.spire.agent.serviceAccount`
-- `spire-server` - spire subchart - `.Values.spire.server.serviceAccount`
+For example, if you install the Fabric chart first, make sure `.Values.global.waiter.service_account.create` is true.  Then, when installing the other charts, add the flag `--set=global.waiter.service_account.create=false` in order to prevent helm from trying to generate the same service account twice.
+
+Additionally, the `sense/values.yaml` has the following configuration option for the dashboard subchart:
+
+```yaml
+dashboard:
+  prometheus:
+    service_account:
+      create: true
+      name: prometheus-sa
+```
+
+and the `fabric/values.yaml` has the following configuration option for the control subchart:
+
+```yaml
+control:
+  control:
+    service_account:
+      create: true
+      name: control-sa
+```
 
 ## Manually Creating the Service Accounts
 
-If you're deploying into an environment where Tiller doesn't have sufficient permissions to create service accounts, you'll need to apply the [greymatter-service-accounts.yaml](../greymatter-service-accounts.yaml) file.
+Another way to create the service accounts necessary to run Grey Matter is to use the `greymatter-service-accounts.yaml` file.  Edit the file to use the correct `namespace` for each object to be created, and `kubectl apply -f greymatter-service-accounts.yaml` to create them.  Then, to install each chart, run the following:
 
-1. In your custom values file be sure to prevent Tiller from attempting to create the accounts. All occurrences of `serviceAccount.create` should be set to `false`.
-
-    ```yaml
-    waiter:
-      serviceAccount:
-        create: false
-    ...
-    control:
-      serviceAccount:
-        create: false
-    ...
-    prometheus:
-      serviceAccount:
-        create: false
-    ```
-
-2. Change all occurrences of `namespace` in `greymatter-service-accounts.yaml` to the namespace you're deploying to.
-3. Creat the service accounts by applying the `greymatter-service-accounts.yaml` as a cluster admin.
-
-    ```sh
-    oc apply -f greymatter-service-accounts.yaml
-    ```
+```bash
+helm install <release-name> <chart> --set=global.waiter.service_account.create=false --set=dashboard.prometheus.service_account.create=false --set=control.control.service_account.create=false
+```
 
 ## Creating Service Accounts for Other Namespaces
 
@@ -103,11 +119,3 @@ Permissions can be verified using the following command
 > kubectl auth can-i list endpoints -n services --as system:serviceaccount:greymatter:waiter-sa
 yes
 ```
-
-## Setting up the Tiller Service Account- [Using Helm to Create the Service Accounts](#using-helm-to-create-the-service-accounts)
-- [Using Helm to Create the Service Accounts](#using-helm-to-create-the-service-accounts)
-- [Manually Creating the Service Accounts](#manually-creating-the-service-accounts)
-- [Creating Service Accounts for Other Namespaces](#creating-service-accounts-for-other-namespaces)
-- [Setting up the Tiller Service Account- Using Helm to Create the Service Accounts](#setting-up-the-tiller-service-account--using-helm-to-create-the-service-accounts)
-
-[Multi-tenant Helm guide](./Multi-tenant%20Helm.md) provides further details on deploying Tiller securely.

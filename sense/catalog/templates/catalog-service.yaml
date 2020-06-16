@@ -4,7 +4,7 @@ metadata:
   name: catalog
 spec:
   selector:
-    {{ .Values.global.control_cluster_label }}: catalog
+    {{ .Values.global.control.cluster_label }}: catalog
   ports:
     - name: catalog
       port: {{ .Values.catalog.port }}

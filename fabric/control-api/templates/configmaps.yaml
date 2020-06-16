@@ -1,7 +1,11 @@
+{{- $data := .Values.global.data.external.enabled }}
+{{- $intdata := .Values.global.data.internal.enabled }}
 {{- $top := . }}
 {{- /* We loop over all the services to create the individual service objects */}}
 {{- range $name, $service := .Values.services }}
-{{- if $service.controlEnabled }}
+{{- if and (eq .serviceName "data") (not $data) }}
+{{- else if and (eq .serviceName "internal-data") (not $intdata) }}
+{{- else if $service.controlEnabled }}
 ---
 {{- $svc := $service }}
 {{- $scope := set $top "service" $svc }}
@@ -16,11 +20,13 @@ data:
 {{ tpl ($top.Files.Get $path) $scope | indent 4 }}
 {{- end }}
 ...
-{{- end}}
+{{- end }}
 {{- end }}
 {{- /* Then we loop over the services again in order to create the edge objects */}}
 {{- range $name, $service := .Values.services }}
-{{- if $service.controlEnabled }}
+{{- if and (eq .serviceName "data") (not $data) }}
+{{- else if and (eq .serviceName "internal-data") (not $intdata) }}
+{{- else if $service.controlEnabled }}
 ---
 {{- $scope := set $top "service" $service }}
 apiVersion: v1
@@ -43,7 +49,11 @@ metadata:
   name: special-mesh-config
   namespace: {{ $.Release.Namespace }}
 data:
+{{- $data := .Values.global.data.external.enabled }}
 {{- range $path, $bytes := $top.Files.Glob "json/special/**.json" }}
+  {{- if and (not $data) (hasSuffix "-extdata.json" $path) }}
+  {{- else }}
   {{ base $path }}: |-
 {{ tpl ($top.Files.Get $path) $top | indent 4 }}
+  {{- end }}
 {{- end }}

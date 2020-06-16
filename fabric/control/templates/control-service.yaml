@@ -3,12 +3,12 @@ kind: Service
 metadata:
   labels:
     run: {{ .Values.control.name }}
-    {{ .Values.global.control_cluster_label }}: {{ .Values.control.name }}
+    {{ .Values.global.control.cluster_label }}: {{ .Values.control.name }}
   name: {{ .Values.control.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   ports:
-  - port: {{ .Values.global.control_port }}
+  - port: {{ .Values.global.control.port }}
     protocol: TCP
     targetPort: grpc
   selector:
