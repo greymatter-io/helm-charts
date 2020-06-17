@@ -6,13 +6,17 @@ import shutil
 
 # requires python 3.6
 
-configFilesDir = "./kibana-observables-proxy"
+spire = input("Is SPIRE enabled? True or False ")
+if spire == "True":
+    configFilesDir = "./kibana-observables-proxy-spire"
+else:
+    configFilesDir = "./kibana-observables-proxy"
 
 listOfFiles = os.listdir(configFilesDir)
 
 # find and replace kibana-observables
-target = "kibana-observables"
-replacement = "kibana-observables2"
+target = "kibana-name"
+replacement = "kibana-observables"
 
 try:
     sys.argv[1]
@@ -58,6 +62,9 @@ for file in listOfFiles:
 
     fin.close()
     fout.close()
+
+os.chmod(export_dir + "/create.sh", 0o777)
+os.chmod(export_dir + "/delete.sh", 0o777)
 
 print("Done Builder")
 print(

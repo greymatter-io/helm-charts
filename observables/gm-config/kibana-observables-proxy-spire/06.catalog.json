@@ -1,7 +1,7 @@
 {
   "clusterName": "kibana-name",
   "zoneName": "zone-default-zone",
-  "name": "Kibana-observables",
+  "name": "kibana-name",
   "version": "7.1.0",
   "owner": "Audit",
   "capability": "Apps",

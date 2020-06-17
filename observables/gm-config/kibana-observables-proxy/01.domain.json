@@ -1,5 +1,5 @@
 {
-  "domain_key": "domain-kibana-observables-proxy",
+  "domain_key": "domain-kibana-name",
   "zone_key": "zone-default-zone",
   "name": "*",
   "port": 10808,
@@ -7,5 +7,18 @@
   "gzip_enabled": false,
   "cors_config": null,
   "aliases": null,
-  "force_https": true
+  "force_https": true,
+  "ssl_config": {
+    "cipher_filter": "",
+    "protocols": null,
+    "cert_key_pairs": [
+      {
+        "certificate_path": "/etc/proxy/tls/sidecar/server.crt",
+        "key_path": "/etc/proxy/tls/sidecar/server.key"
+      }
+    ],
+    "require_client_certs": true,
+    "trust_file": "/etc/proxy/tls/sidecar/ca.crt",
+    "sni": null
+  }
 }

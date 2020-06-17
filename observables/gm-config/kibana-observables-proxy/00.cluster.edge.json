@@ -1,21 +1,22 @@
 {
     "zone_key": "zone-default-zone",
-    "cluster_key": "edge-to-kibana-observables-proxy-cluster",
-    "name": "kibana-observables-proxy",
+    "cluster_key": "edge-to-kibana-name-cluster",
+    "name": "kibana-name",
     "instances": [],
     "circuit_breakers": null,
     "outlier_detection": null,
     "health_checks": [],
     "require_tls": true,
-    "secret": {
-	"secret_key": "secret-kibana-secret",
-	"secret_name": "spiffe://quickstart.greymatter.io/edge",
-	"secret_validation_name": "spiffe://quickstart.greymatter.io",
-	"subject_names": [
-	    "spiffe://quickstart.greymatter.io/kibana-observables-proxy"
-	],
-	"ecdh_curves": [
-            "X25519:P-256:P-521:P-384"
-	]
-    }
+    "ssl_config": {
+        "cipher_filter": "",
+        "protocols": null,
+        "cert_key_pairs": [
+          {
+            "certificate_path": "/etc/proxy/tls/sidecar/server.crt",
+            "key_path": "/etc/proxy/tls/sidecar/server.key"
+          }
+        ],
+        "trust_file": "/etc/proxy/tls/sidecar/ca.crt",
+        "sni": ""
+      }
 }

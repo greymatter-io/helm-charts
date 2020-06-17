@@ -33,6 +33,3 @@ sidecar:
     xds_zone:
       type: 'value'
       value: 'zone-default-zone'
-    spire_path:
-      type: 'value'
-      value: '/run/spire/socket/agent.sock'

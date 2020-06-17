@@ -75,8 +75,8 @@ To install services individually use:
 
 ## Add Kibana-Proxy to dashboard
 
-1. Inside `observables/gm-config` run `./json-builder.py` to create Grey Matter Mesh objects. You can include an argument or run it interactively.
-2. Apply those Grey Matter Configuration files to the mesh. (Copy the `export/<name>` directory into `greymatter-json/<name>` then run `./create.sh <name>`).
+1. Inside `observables/gm-config` run `./json-builder.py` to create Grey Matter Mesh objects. It will prompt you for whether or not this is a SPIRE enabled deployment. It will then prompt you for the kibana-proxy name, this should match the tag on the kibana-observables-proxy deployment `greymatter.io/control` (which is also [this value](./custom-values-files/kibana-proxy-values.yaml#L1)). You can include the name in an argument or run it interactively.
+2. Apply those Grey Matter Configuration files to the mesh. cd into the `/export/<name>` directory with `<name>` of the kibana proxy you just created, and run `./create.sh`. If you need to delete these configurations at any time cd back into this directory and `./delete.sh`.
 
 ## Configuration of proxy/sidecars
 

@@ -21,6 +21,10 @@ spec:
           imagePullPolicy: {{ .Values.sidecar.imagePullPolicy | quote }}
           env:
           {{- include "envvars" (dict "envvar" .Values.sidecar.envvars "top" $) | indent 12 }}
+            {{- if .Values.global.spire.enabled }}
+            - name: SPIRE_PATH
+              value: {{ .Values.global.spire.path }}
+            {{- end }}
           ports:
           - containerPort: {{ .Values.sidecar.port }}
             protocol: TCP

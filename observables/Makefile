@@ -87,7 +87,7 @@ kafka: helm-dep-up
 
 elasticsearch: helm-dep-up
 	if [ "$(EKS)" = "true" ]; then \
-		helm template $(ELASTICSEARCH-NAME) elastic/elasticsearch \
+		helm install $(ELASTICSEARCH-NAME) elastic/elasticsearch \
 			--namespace $(NAMESPACE) \
 			-f custom-values-files/elasticsearch-values.yaml \
 			--set extraEnvs[0].name=discovery.type,extraEnvs[0].value=single-node \
@@ -95,7 +95,7 @@ elasticsearch: helm-dep-up
 			--namespace $(NAMESPACE) \
 			$(DRYRUN) --debug; \
 	else \
-		helm template $(ELASTICSEARCH-NAME) elastic/elasticsearch \
+		helm install $(ELASTICSEARCH-NAME) elastic/elasticsearch \
 			--namespace $(NAMESPACE) \
 			-f custom-values-files/elasticsearch-values.yaml \
 			--namespace $(NAMESPACE) \
@@ -112,9 +112,9 @@ kibana: helm-dep-up
 kibana-proxy: helm-dep-up
 	helm install $(KIBANA-NAME)-observables-proxy ../proxy \
 		--namespace $(NAMESPACE) \
+		-f ../global.yaml \
 		-f custom-values-files/kibana-proxy-values.yaml \
 		--namespace $(NAMESPACE) \
-		--set=global.spire.enabled=true \
 		$(DRYRUN) --debug
 
 logstash: helm-dep-up

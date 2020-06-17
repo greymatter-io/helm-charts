@@ -1,0 +1,89 @@
+{
+    "listener_key": "listener-kibana-name",
+    "zone_key": "zone-default-zone",
+    "name": "kibana-name",
+    "ip": "0.0.0.0",
+    "port": 10808,
+    "protocol": "http_auto",
+    "domain_keys": ["domain-kibana-name"],
+    "tracing_config": null,
+    "secret": {
+	"secret_key": "secret-kibana-secret",
+	"secret_name": "spiffe://quickstart.greymatter.io/kibana-name",
+	"secret_validation_name": "spiffe://quickstart.greymatter.io",
+	"forward_client_cert_details": "APPEND_FORWARD",
+	"set_current_client_cert_details": {
+	    "uri": true
+	},
+	"ecdh_curves": [
+            "X25519:P-256:P-521:P-384"
+	],
+	"subject_names": [
+	    "spiffe://quickstart.greymatter.io/edge"
+	]
+    },
+    "active_http_filters": [
+	"gm.metrics",
+	"envoy.rbac"
+    ],
+    "http_filters": {
+	"envoy_rbac": {
+	    "rules": {
+		"action": 0,
+		"policies": {
+		    "service-admin": {
+			"permissions": [{
+			    "any": true
+			}],
+			"principals": [{
+			    "header": {
+				"name": "user_dn",
+				"exact_match": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US"
+			    }
+			}]
+		    },
+		    "services": {
+			"permissions": [
+			    {
+				"any": true
+			    }
+			],
+			"principals": [
+			    {
+				"authenticated": {
+				    "principal_name": {
+					"safe_regex": {
+					    "google_re2": {},
+					    "regex": "spiffe:\/\/quickstart.greymatter.io\/(.+)"
+					}
+				    }
+				}
+			    }
+			]
+		    },
+		    "product-viewer": {
+			"permissions": [{
+			    "header": {
+				"name": ":method",
+				"exact_match": "GET"
+			    }
+			}],
+			"principals": [{
+			    "any": true
+			}]
+		    }
+		}
+	    }
+	},
+	"gm_metrics": {
+	    "metrics_port": 8081,
+	    "metrics_host": "0.0.0.0",
+	    "metrics_dashboard_uri_path": "/metrics",
+	    "metrics_prometheus_uri_path": "/prometheus",
+	    "metrics_ring_buffer_size": 4096,
+	    "prometheus_system_metrics_interval_seconds": 15,
+	    "metrics_key_function": "depth",
+	    "metrics_key_depth": "1"
+	}
+    }
+}
