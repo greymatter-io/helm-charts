@@ -5,6 +5,7 @@ replicas: 1
 logstashConfig:
   logstash.yml: |
     xpack.monitoring.elasticsearch.hosts: ["http://${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
+    http.host: 0.0.0.0
 
 # Allows you to add any pipeline files in /usr/share/logstash/pipeline/
 logstashPipeline:

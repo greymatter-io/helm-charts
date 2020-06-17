@@ -33,6 +33,7 @@ You can add secrets with:
 - Edit Values files to point to docker images you would like kubernetes/ openshift to pull from.
 - Edit `xds_host` in the [kibana proxy value file](./custom-values-files/kibana-proxy-values.yaml) to point to control's service.
 - If deploying kibana outside the proxy namespace the extraEnvs's `SERVER_BASEPATH` will need to match the path defined in your `05.route.edge.1.json` [gm config](#add-kibana-proxy-to-dashboard).
+- If you are deploying in an **eks environment**, add `EKS=true` to your make commands.
 - From inside the `observables` directory run `make`. This will deploy Kafka, Zookeeper, ElasticSearch, Logstash, Kibana, and Kibana-proxy into the observables namespace with values from [custom-values.files](./custom-calues-files).
 
 ### Mesh Updates (control/ prometheus)
@@ -101,7 +102,7 @@ The make file has the ability to remove the observables deployment as a whole or
 
 ## EKS Deployments
 
-A few extra steps are required for EKS deployments.
+A few extra steps are required for EKS deployments.  These will be done automatically if you set `EKS=true` with your make commands.
 
 - set `--set zookeeper.volumePermissions.enabled=true` in the helm install command for kafka
 - after installed, you must set `discovery.type` to `single-node` in the elastic search deployment, and delete the environment variable "cluster.initial_master_nodes"

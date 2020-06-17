@@ -8,7 +8,7 @@ ELASTICSEARCH-NAME?=elasticsearch
 KIBANA-NAME?=kibana
 LOGSTASH-NAME?=logstash
 KAFKA-NAME?=kafka-observables
-
+EKS?=false
 
 # DEBUG=
 ifeq ($(TEST),TRUE)
@@ -72,17 +72,35 @@ helm-dep-up:
 
 # Install stuff
 kafka: helm-dep-up
-	helm install $(KAFKA-NAME) bitnami/kafka \
-		-f custom-values-files/kafka-values.yaml \
-		--namespace $(NAMESPACE) \
-		$(DRYRUN) --debug
+	if [ "$(EKS)" = "true" ]; then \
+		helm install $(KAFKA-NAME) bitnami/kafka \
+			-f custom-values-files/kafka-values.yaml \
+			--set zookeeper.volumePermissions.enabled=true \
+			--namespace $(NAMESPACE) \
+			$(DRYRUN) --debug; \
+	else \
+		helm install $(KAFKA-NAME) bitnami/kafka \
+			-f custom-values-files/kafka-values.yaml \
+			--namespace $(NAMESPACE) \
+			$(DRYRUN) --debug; \
+	fi
 
 elasticsearch: helm-dep-up
-	helm install $(ELASTICSEARCH-NAME) elastic/elasticsearch \
-		--namespace $(NAMESPACE) \
-		-f custom-values-files/elasticsearch-values.yaml \
-		--namespace $(NAMESPACE) \
-		$(DRYRUN) --debug
+	if [ "$(EKS)" = "true" ]; then \
+		helm template $(ELASTICSEARCH-NAME) elastic/elasticsearch \
+			--namespace $(NAMESPACE) \
+			-f custom-values-files/elasticsearch-values.yaml \
+			--set extraEnvs[0].name=discovery.type,extraEnvs[0].value=single-node \
+			--set-string roles.master=false \
+			--namespace $(NAMESPACE) \
+			$(DRYRUN) --debug; \
+	else \
+		helm template $(ELASTICSEARCH-NAME) elastic/elasticsearch \
+			--namespace $(NAMESPACE) \
+			-f custom-values-files/elasticsearch-values.yaml \
+			--namespace $(NAMESPACE) \
+			$(DRYRUN) --debug; \
+	fi
 
 kibana: helm-dep-up
 	helm install $(KIBANA-NAME) elastic/kibana \
