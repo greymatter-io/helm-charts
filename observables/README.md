@@ -102,7 +102,7 @@ The make file has the ability to remove the observables deployment as a whole or
 
 ## EKS Deployments
 
-A few extra steps are required for EKS deployments.  These will be done automatically if you set `EKS=true` with your make commands.
+Set `EKS=true` with your make commands.
 
 - set `--set zookeeper.volumePermissions.enabled=true` in the helm install command for kafka
 - after installed, you must set `discovery.type` to `single-node` in the elastic search deployment, and delete the environment variable "cluster.initial_master_nodes"
