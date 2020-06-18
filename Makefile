@@ -108,3 +108,18 @@ remove-secrets:
 .PHONY: credentials
 credentials:
 	cd secrets && make credentials
+
+EKS?=false
+OBSERVABLES_NAMESPACE?=observables
+
+.PHONY: observables
+observables:
+	cd observables && \
+	make check-namespace NAMESPACE=$(OBSERVABLES_NAMESPACE) && \
+	make check-secrets NAMESPACE=$(OBSERVABLES_NAMESPACE) && \
+	make install-observables NAMESPACE=$(OBSERVABLES_NAMESPACE) EKS=$(EKS)
+
+.PHONY: remove-observables
+remove-observables:
+	cd observables && \
+	make destroy-observables NAMESPACE=$(OBSERVABLES_NAMESPACE)

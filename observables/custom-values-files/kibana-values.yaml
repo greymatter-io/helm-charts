@@ -9,7 +9,7 @@ replicas: 1
 # syntax here
 extraEnvs:
   - name: SERVER_BASEPATH
-    value: /services/kibana-observables/7.1.0
+    value: /services/kibana-observables-proxy/7.1.0
 
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security and for mounting

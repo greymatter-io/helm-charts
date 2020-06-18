@@ -1,10 +1,10 @@
 {
   "cluster_key": "cluster-kibana-name",
   "zone_key": "zone-default-zone",
-  "name": "kibana-name",
+  "name": "kibana-name-svc",
   "instances": [
     {
-      "host": "kibana-kibana.observables.svc.cluster.local",
+      "host": "kibana-kibana.obs-namespace.svc.cluster.local",
       "port": 5601
     }
   ],

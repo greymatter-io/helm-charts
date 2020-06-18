@@ -32,8 +32,9 @@ You can add secrets with:
 
 - Edit Values files to point to docker images you would like kubernetes/ openshift to pull from.
 - Edit `xds_host` in the [kibana proxy value file](./custom-values-files/kibana-proxy-values.yaml) to point to control's service.
-- If deploying kibana outside the proxy namespace the extraEnvs's `SERVER_BASEPATH` will need to match the path defined in your `05.route.edge.1.json` [gm config](#add-kibana-proxy-to-dashboard).
+- If you change the [kibana-observables-proxy name](./custom-values-files/kibana-proxy-values.yaml#L1), you must also change the environment variable `SERVER_BASEPATH` in the kibana values file [here](./custom-values-files/kibana-values.yaml#L12) to match the path defined in your `05.route.edge.1.json` [gm config](#add-kibana-proxy-to-dashboard).
 - If you are deploying in an **eks environment**, add `EKS=true` to your make commands.
+- To run from the base directory of the helm-charts - `make observables OBSERVABLES_NAMESPACE= EKS=`. EKS defaults to false and OBSERVABLES_NAMESPACE defaults to observables.  You can remove from the base directory with `make remove-observables OBSERVABLES_NAMESPACE=`.
 - From inside the `observables` directory run `make`. This will deploy Kafka, Zookeeper, ElasticSearch, Logstash, Kibana, and Kibana-proxy into the observables namespace with values from [custom-values.files](./custom-calues-files).
 
 ### Mesh Updates (control/ prometheus)
@@ -58,6 +59,13 @@ scrape_configs:
 
 - Restart prometheus to pick up changes
 
+Once way you can make these changes is to add the observables namespace to `global.control.additional_namespaces` value in the global.yaml file, then upgrade fabric and sense:
+
+```bash
+helm upgrade fabric fabric -f global.yaml
+helm upgrade sense sense -f global.yaml --set=global.waiter.service_account.create=false
+```
+
 ## Alternative Installation
 
 ### Suggested Deployment
@@ -73,19 +81,22 @@ To install services individually use:
 3. `make kibana NAMESPACE=observables`
 4. `make logstash LOGSTASH-NAMESPACE=observables`
 
+> Note: remember to add `EKS=true` to these commands if you are deploying in eks.
+
 ## Add Kibana-Proxy to dashboard
 
 1. Inside `observables/gm-config` run `./json-builder.py` to create Grey Matter Mesh objects. It will prompt you for whether or not this is a SPIRE enabled deployment. It will then prompt you for the kibana-proxy name, this should match the tag on the kibana-observables-proxy deployment `greymatter.io/control` (which is also [this value](./custom-values-files/kibana-proxy-values.yaml#L1)). You can include the name in an argument or run it interactively.
 2. Apply those Grey Matter Configuration files to the mesh. cd into the `/export/<name>` directory with `<name>` of the kibana proxy you just created, and run `./create.sh`. If you need to delete these configurations at any time cd back into this directory and `./delete.sh`.
+3. If the instance doesn't seem to be found (if it remains up red on the dashboard), check that the [mesh updates](#mesh-updates-control-prometheus) were made.
 
 ## Configuration of proxy/sidecars
 
-To configure a proxy to emit observables you must define the filter as well as enable it.
+To configure a sidecar to emit observables you must define the filter as well as enable it.  In the sidecar's `listener` object that you wish to turn on observables, `greymattter edit listener listener-servicex` and add the following:
 
 ```yaml
 
-  "active_proxy_filters": ["gm.metrics","gm.observables"], #appending gm.observables will enable it
-  "proxy_filters": {
+  "active_http_filters": ["gm.metrics","gm.observables"], #appending gm.observables will enable it
+  "http_filters": {
     # configure the filter
     "gm_observables": {
       "useKafka": true, # must be true to emit to kafka
@@ -103,7 +114,6 @@ The make file has the ability to remove the observables deployment as a whole or
 ## EKS Deployments
 
 Set `EKS=true` with your make commands.
-
 
 ## Troubleshooting
 
