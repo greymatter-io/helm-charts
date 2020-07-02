@@ -7,7 +7,7 @@
   "port": 10808,
   "protocol": "http_auto",
   "tracing_config": null,
-  "active_http_filters": ["gm.metrics", "gm.inheaders", "gm.jwtsecurity", "envoy_jwt_authn", "envoy.rbac"],
+  "active_http_filters": ["gm.metrics", "gm.inheaders", "gm.jwtsecurity", "envoy.jwt_authn", "envoy.rbac"],
   "http_filters": {
     "gm_inheaders": {},
     "gm_metrics": {
@@ -65,12 +65,19 @@
                       "key": "claims"
                     },
                     {
+                      "key": "values"
+                    },
+                    {
                       "key": "email"
                     }
                   ],
                   "value": {
-                    "string_match": {
-                      "suffix": "greymatter.io"
+                    "list_match": {
+                      "one_of": {
+                        "string_match": {
+                          "suffix": "greymatter.io"
+                        }
+                      }
                     }
                   }
                 }
