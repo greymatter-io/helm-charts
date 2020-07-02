@@ -238,9 +238,6 @@ control-api:
       greymatter_api_ssl:
         type: value
         value: '{{ not .Values.global.spire.enabled }}'
-      spire_enabled:
-        type: 'value'
-        value: '{{ .Values.global.spire.enabled }}'
 
 
 # Services list used to create Grey Matter configuration objects in control-api/config

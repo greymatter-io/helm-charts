@@ -162,9 +162,6 @@ bootstrap:
     basic_object_path:
       value: '/tmp/mesh/basic_objects'
       type: 'value'
-    spire_enabled:
-      type: 'value'
-      value: '{{ .Values.global.spire.enabled }}'
     greymatter_api_ssl:
       type: value
       value: '{{ .Values.bootstrap.secret.enabled }}'
