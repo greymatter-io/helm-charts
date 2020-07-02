@@ -372,7 +372,7 @@ catalog:
         value: localhost
       client_port:
         type: value
-        value: '{{- if .Values.global.spire.enabled }}10909{{- else}}10808{{- end }}'
+        value: '10909'
       client_prefix:
         type: value
         value: '/data'

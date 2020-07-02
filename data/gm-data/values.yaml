@@ -148,7 +148,7 @@ data:
     # Use data's egress listener port
     client_jwt_endpoint_port:
       type: value
-      value: '{{- if .Values.global.spire.enabled }}10909{{- else}}10808{{- end }}'
+      value: '10909'
     client_jwt_endpoint_prefix:
       type: value
       value: '/jwt'

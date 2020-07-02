@@ -1,19 +1,11 @@
 {
   "route_key": "catalog-internal-data-route",
-  {{- if .Values.global.spire.enabled }}
   "domain_key": "domain-catalog-egress",
-  {{- else }}
-  "domain_key": "domain-catalog",
-  {{- end }}
   "zone_key": "{{ .Values.global.zone}}",
   "path": "{{ .Values.services.catalog.data_prefix }}/",
   "prefix_rewrite": "/",
   "redirects": null,
-  {{- if .Values.global.spire.enabled }}
   "shared_rules_key": "catalog-data-internal-shared-rules",
-  {{- else }}
-  "shared_rules_key": "edge-data-internal-shared-rules",
-  {{- end }}
   "rules": null,
   "response_data": {},
   "cohort_seed": null,

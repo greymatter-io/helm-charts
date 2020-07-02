@@ -105,17 +105,17 @@ done
 
 cd $MESH_CONFIG_DIR/special
 
-if $SPIRE_ENABLED; then
-    echo "Adding internal clusters"
-    for cl in $(ls internal-cluster-*.json); do
-        create_or_update "cluster" $cl
-    done
 
-    echo "Adding internal shared_rules"
-    for sr in $(ls internal-shared-rules-*.json); do
-        create_or_update "shared_rules" $sr
-    done
-fi
+echo "Adding egress clusters"
+for cl in $(ls internal-cluster-*.json); do
+    create_or_update "cluster" $cl
+done
+
+echo "Adding egress shared_rules"
+for sr in $(ls internal-shared-rules-*.json); do
+    create_or_update "shared_rules" $sr
+done
+
 
 echo "Adding additional Special Routes"
 for rte in $(ls route-*.json); do

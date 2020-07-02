@@ -1,19 +1,11 @@
 {
   "route_key": "data-jwt-route-slash",
-  {{- if .Values.global.spire.enabled }}
   "domain_key": "domain-data-egress",
-  {{- else }}
-  "domain_key": "domain-data",
-  {{- end }}
   "zone_key": "{{ .Values.global.zone}}",
   "path": "{{ .Values.services.data.jwt_prefix }}",
   "prefix_rewrite": "{{ .Values.services.data.jwt_prefix }}/",
   "redirects": null,
-  {{- if .Values.global.spire.enabled }}
   "shared_rules_key": "data-jwt-shared-rules",
-  {{- else }}
-  "shared_rules_key": "edge-jwt-security-shared-rules",
-  {{- end }}
   "rules": null,
   "response_data": {},
   "cohort_seed": null,
