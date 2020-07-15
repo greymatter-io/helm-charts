@@ -207,7 +207,7 @@ clusterHealthCheckParams: 'wait_for_status=green&timeout=1s'
 schedulerName: ''
 
 imagePullSecrets:
-  - name: docker.secret
+  - name: {{ .Values.global.image_pull_secret }}
 nodeSelector: {}
 tolerations: []
 

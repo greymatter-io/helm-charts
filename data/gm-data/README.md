@@ -114,7 +114,7 @@ createDockerSecret: false
 
 data:
   name: data-standalone-service
-  imagePullSecret: docker.secret
+  imagePullSecret: {{ .Values.global.image_pull_secret }}
   replicas: 3
   deploy:
     standalone: true

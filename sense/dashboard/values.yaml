@@ -2,7 +2,7 @@
 
 global:
   # Used as imagePullSecrets value
-  image_pull_secret: docker.secret    
+  image_pull_secret: {{ .Values.global.image_pull_secret }}    
   # Deployment environment, one of "eks", "kubernetes", or "openshift"
   environment: openshift              
   # Used to configure control and control-api environment variables

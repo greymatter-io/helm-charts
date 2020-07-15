@@ -75,4 +75,4 @@ spec:
             secretName: {{ .Values.catalog.secret.secret_name }}
         {{- end }}
       imagePullSecrets:
-        - name: docker.secret
+        - name: {{ .Values.global.image_pull_secret }}

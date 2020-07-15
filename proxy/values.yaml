@@ -2,7 +2,7 @@
 name: proxy
 
 imagePullSecrets:
-  - name: docker.secret
+  - name: {{ .Values.global.image_pull_secret }}
 
 sidecar:
   version: 1.4.0

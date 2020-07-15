@@ -15,7 +15,7 @@ Simply put:
 ## Requirements
 
 - a namespace in which to apply the observables
-- `docker.secret` with ability to pull images in namespace
+- `{{ .Values.global.image_pull_secret }}` with ability to pull images in namespace
 - `sidecar-certs` secret in namespace (for kibana-proxy)
 
 ## All in One Install
