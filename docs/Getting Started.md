@@ -108,7 +108,7 @@ Observables can be enabled or disabled for each service.  You can enable observa
 
 ### Docker credentials
 
-Before installing the secrets chart, or your own series of secrets, a docker secret with docker credentials to pull the Grey Matter images must be created. By default, it is named `{{ .Values.global.image_pull_secret }}`, but a secret with a different name can be used as long as `.Values.global.image_pull_secret` is set to the name of the secret in all of the Grey Matter charts.
+Before installing the secrets chart, or your own series of secrets, a docker secret with docker credentials to pull the Grey Matter images must be created. By default, it is named `docker.secret`, but a secret with a different name can be used as long as `.Values.global.image_pull_secret` is set to the name of the secret in all of the Grey Matter charts.
 
 Run `make credentials` to generate a `credentials.yaml` file.  It will prompt you for your registry and credentials and (optionally) your [AWS credentials](#aws-credentials-optional).  The `credentials.yaml` file will look like the following:
 
@@ -136,7 +136,7 @@ To add another docker registry with credentials to the secrets, simply add anoth
     password:
 ```
 
-To install, run `make secrets`. The `{{ .Values.global.image_pull_secret }}` will have creall registries in this file.  If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
+To install, run `make secrets`. The `docker.secret` will have creall registries in this file.  If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
 
 ### AWS credentials (optional)
 
