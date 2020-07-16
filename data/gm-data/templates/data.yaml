@@ -102,7 +102,7 @@ spec:
 
 
       imagePullSecrets:
-      - name: {{ .Values.global.image_pull_secret | default "{{ .Values.global.image_pull_secret }}" }}
+      - name: {{ .Values.global.image_pull_secret | default "docker.secret" }}
       volumes:
       {{- if .Values.global.consul.enabled }}
       - name: data-consul

@@ -1,5 +1,5 @@
 global:
-  imagePullSecret: {{ .Values.global.image_pull_secret }}
+  imagePullSecret: docker.secret
   
   environment: kubernetes
   domain:
