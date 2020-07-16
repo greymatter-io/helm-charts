@@ -2,7 +2,7 @@
 
 global:
   # Used as imagePullSecrets value for each subchart
-  image_pull_secret: {{ .Values.global.image_pull_secret }}
+  image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
   environment: openshift
   # Whether to register services with Consul and where to find the Consul server
