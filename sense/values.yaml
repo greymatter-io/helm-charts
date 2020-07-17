@@ -63,7 +63,7 @@ global:
 slo:   
   slo:
     # SLO version
-    version: 1.1.4
+    version: 1.1.5
     image: 'docker.production.deciphernow.com/deciphernow/gm-slo:{{ $.Values.slo.version }}'
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
@@ -205,7 +205,7 @@ dashboard:
     # Name used for the deployment and service resources
     name: dashboard
     # Dashboard app version
-    version: "3.4.1"
+    version: "3.4.2"
     image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
     # Port for the dashboard app
     port: 1337
@@ -261,6 +261,9 @@ dashboard:
       server_ssl_key:
         type: "value"
         value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.key }}'
+      disable_prometheus_routes_ui:
+        type: "value"
+        value: "false"
     # Sidecar configuration overrides for dashboard
     sidecar:
       envvars:
@@ -465,7 +468,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 3.4.1
+    version: 3.4.2
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -635,7 +638,7 @@ services:
     capability: 'Sense'
     documentation:
     owner: 'Decipher'
-    version: '1.1.4'
+    version: '1.1.5'
     secret:
       enabled: true
       secret_name: sidecar-certs

@@ -282,7 +282,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 3.4.1
+    version: 3.4.2
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -465,7 +465,7 @@ services:
     capability: 'Sense'
     documentation:
     owner: 'Decipher'
-    version: '1.1.4'
+    version: '1.1.5'
     secret:
       enabled: true
       secret_name: sidecar-certs
