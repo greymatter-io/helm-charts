@@ -89,9 +89,6 @@ dashboard:
     server_ssl_key:
       type: "value"
       value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.key }}'
-    disable_prometheus_routes_ui:
-      type: "value"
-      value: "false"
 
 # Sidecar configuration for dashboard
 sidecar_dashboard:
