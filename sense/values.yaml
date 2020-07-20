@@ -40,7 +40,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.4.2
+    version: 1.4.4
     envvars:
       proxy_dynamic:
         type: 'value'
@@ -614,7 +614,7 @@ services:
     capability: 'Mesh'
     documentatio: ''
     owner: 'Decipher'
-    version: '1.4.2'
+    version: '1.4.4'
     secret:
       enabled: true
       secret_name: sidecar-certs

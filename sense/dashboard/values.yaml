@@ -27,7 +27,7 @@ global:
     path: '/run/spire/socket/agent.sock'         
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.4.2
+    version: 1.4.4
     
 dashboard:
   # Name used for the deployment and service resources

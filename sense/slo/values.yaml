@@ -30,7 +30,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.4.2
+    version: 1.4.4
     
 slo:
   name: "slo"

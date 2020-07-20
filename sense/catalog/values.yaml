@@ -37,7 +37,7 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.4.2
+    version: 1.4.4
 
 catalog:
   # Name used for the deployment and service resources
@@ -390,7 +390,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.4.2'
+    version: '1.4.4'
     secret:
       enabled: true
       secret_name: sidecar-certs
