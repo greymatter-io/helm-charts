@@ -55,10 +55,10 @@ data:
     #size:
   # Security context for the statefulset if enabled
   security_context:
-    enabled: false
-    run_as_user: 666
-    run_as_group: 666
-    fs_group: 666
+    enabled: true
+    run_as_user: 1000140000
+    run_as_group: 1000140000
+    fs_group: 1000140000
 
   # If Grey Matter Data is being deployed as a standalone instance, these values need to be provided
   deploy:
