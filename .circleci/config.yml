@@ -1,5 +1,5 @@
 # These are the expected environment variables
-# 
+#
 # The Nexus information is so that the build can push the packaged charts to the Decipher Helm repo
 # NEXUS_URL
 # NEXUS_PASSWORD
@@ -8,14 +8,14 @@
 version: 2
 
 jobs:
-  build-staging:
+  build-development:
     machine: true
     steps:
       - checkout
       - run:
           name: Set Environment Variable
           command: |
-            echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-staging/" >> $BASH_ENV
+            echo "export NEXUS_URL=https://nexus.greymatter.io/repository/helm/development/" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: Package and Publish Catalog
@@ -65,17 +65,17 @@ jobs:
           name: Package and Publish Secrets
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/secrets
-  package-and-publish-greymatter-staging:
+  package-and-publish-greymatter-development:
     machine: true
     steps:
       - checkout
       - run:
           name: Set Environment Variable
           command: |
-            echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-staging/" >> $BASH_ENV
+            echo "export NEXUS_URL=https://nexus.greymatter.io/repository/helm/development/" >> $BASH_ENV
             source $BASH_ENV
       - run:
-          name: Change Grey Matter (fabric, sense, data, spire, secrets) Requirements from local to helm-staging
+          name: Change Grey Matter (fabric, sense, data, spire, secrets) Requirements from local to helm development
           command: |
             sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/fabric/Chart.yaml
             sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/sense/Chart.yaml
@@ -126,14 +126,14 @@ jobs:
             mv $(pwd)/data/Chart.yaml.bak $(pwd)/data/Chart.yaml
             mv $(pwd)/spire/Chart.yaml.bak $(pwd)/spire/Chart.yaml
             mv $(pwd)/secrets/Chart.yaml.bak $(pwd)/secrets/Chart.yaml
-  package-and-publish-core-hosted:
+  package-and-publish-core-release:
     machine: true
     steps:
       - checkout
       - run:
           name: Set Environment Variable
           command: |
-            echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
+            echo "export NEXUS_URL=https://nexus.greymatter.io/repository/helm/release/" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: Package and Publish Catalog
@@ -183,17 +183,17 @@ jobs:
           name: Package and Publish Secrets
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm deciphernow/helm-packager:v3.1.1 /helm/secrets
-  package-and-publish-greymatter-hosted:
+  package-and-publish-greymatter-release:
     machine: true
     steps:
       - checkout
       - run:
           name: Set Environment Variable
           command: |
-            echo "export NEXUS_URL=https://nexus.production.deciphernow.com/repository/helm-hosted/" >> $BASH_ENV
+            echo "export NEXUS_URL=https://nexus.greymatter.io/repository/helm/release/" >> $BASH_ENV
             source $BASH_ENV
       - run:
-          name: Change Grey Matter (fabric, sense, data, spire) Requirements from local to helm-hosted
+          name: Change Grey Matter (fabric, sense, data, spire) Requirements from local to helm release
           command: |
             sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/fabric/Chart.yaml
             sed -i.bak -e "s|file:.*|$NEXUS_URL|" $(pwd)/sense/Chart.yaml
@@ -236,22 +236,22 @@ workflows:
   version: 2
   build-and-publish:
     jobs:
-      - build-staging:
+      - build-development:
           filters:
             tags:
               ignore: /.*/
             branches:
               ignore: /release-.*/
-      - package-and-publish-greymatter-staging:
+      - package-and-publish-greymatter-development:
           requires:
-            - build-staging
-      - package-and-publish-core-hosted:
+            - build-development
+      - package-and-publish-core-release:
           filters:
             tags:
               ignore: /.*/
             branches:
               ignore: /release-2.3/
               only: /release-.*/
-      - package-and-publish-greymatter-hosted:
+      - package-and-publish-greymatter-release:
           requires:
-            - package-and-publish-core-hosted
+            - package-and-publish-core-release
