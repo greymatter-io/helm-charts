@@ -137,7 +137,6 @@ jobs:
           command: |
             echo "export NEXUS_URL=https://nexus.greymatter.io/repository/helm-release" >> $BASH_ENV
             echo "export DOCKER_IMAGE=deciphernow/helm-packager:3.2.4-1" >> $BASH_ENV
-            echo "export PUBLISH=true" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: Package and Publish Catalog
@@ -196,7 +195,6 @@ jobs:
           command: |
             echo "export NEXUS_URL=https://nexus.greymatter.io/repository/helm-release" >> $BASH_ENV
             echo "export DOCKER_IMAGE=deciphernow/helm-packager:3.2.4-1" >> $BASH_ENV
-            echo "export PUBLISH=true" >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: Change Grey Matter (fabric, sense, data, spire) Requirements from local to helm release
