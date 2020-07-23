@@ -2,8 +2,8 @@
 #
 # The Nexus information is so that the build can push the packaged charts to the Decipher Helm repo
 # NEXUS_URL
-# NEXUS_PASSWORD
-# NEXUS_USER
+# NEXUS_PASSWORD -> expects to be passed in from CI system (CircleCI)
+# NEXUS_USER -> expects to be passed in from CI system (CircleCI)
 #
 version: 2
 
