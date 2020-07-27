@@ -27,6 +27,10 @@ template-data: package-data $(BUILD_NUMBER_FILE)
 data: package-data wsa-data
 	helm install $(NAME-DATA) . $(WAITERSACHECK-DATA) -f ../global.yaml
 
+.PHONY: upgrade-data
+upgrade-data: wsa-data
+	helm upgrade $(NAME-DATA) . $(WAITERSACHECK-DATA) -f ../global.yaml
+
 .PHONY: remove-data
 remove-data:
 	helm uninstall $(NAME-DATA)

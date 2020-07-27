@@ -38,6 +38,11 @@ template-fabric: package-fabric $(BUILD_NUMBER_FILE)
 fabric: package-fabric wsa-fabric
 	helm install $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
+.PHONY: upgrade-fabric
+upgrade-fabric: wsa-fabric
+	helm upgrade $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC) -f ../global.yaml --no-hooks
+
+
 .PHONY: remove-fabric
 remove-fabric:
 	helm uninstall $(NAME-FABRIC)
