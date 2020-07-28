@@ -40,7 +40,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.4.4
+    version: 1.4.2
     envvars:
       proxy_dynamic:
         type: 'value'
@@ -423,7 +423,6 @@ catalog:
         use_tls:
           type: value
           value: '{{ not .Values.global.spire.enabled }}'
-      image_pull_policy
 
 # Services list used to configure Catalog, which populates service metadata for GM Dashboard
 services:
@@ -615,7 +614,7 @@ services:
     capability: 'Mesh'
     documentatio: ''
     owner: 'Decipher'
-    version: '1.4.4'
+    version: '1.4.2'
     secret:
       enabled: true
       secret_name: sidecar-certs
