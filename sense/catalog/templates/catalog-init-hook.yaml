@@ -18,7 +18,7 @@ spec:
       initContainers:
         - name: ensure-{{ .Values.catalog.name }}
           image: {{ .Values.global.waiter.image }}
-          imagePullPolicy: {{ .Values.catalog.init.image_pull_policy }}
+          imagePullPolicy: {{ .Values.catalog.init.imagePullPolicy }}
           env:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
@@ -27,7 +27,7 @@ spec:
       containers:
         - image: {{ tpl .Values.catalog.init.image . }}
           name: {{ .Values.catalog.name }}-init
-          imagePullPolicy: {{ .Values.catalog.init.image_pull_policy }}
+          imagePullPolicy: {{ .Values.catalog.init.imagePullPolicy }}
           command: ["/tmp/bootstrap/bootstrap.sh"]
           env:
           {{- include "envvars" (dict "envvar" .Values.catalog.init.envvars "top" $) | indent 12 }}
