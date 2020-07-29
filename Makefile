@@ -15,7 +15,7 @@ minikube:
 k3d:
 	./ci/scripts/k3d.sh
 	@echo -e "\nSet KUBECONFIG in your shell by running:"
-	@echo -e "export KUBECONFIG=$$(k3d get-kubeconfig --name='greymatter')"
+	@echo -e "export KUBECONFIG=$$(k3d kubeconfig get greymatter)"
   K3D=true
 
 reveal-endpoint:
@@ -25,7 +25,7 @@ reveal-endpoint:
 destroy:
 	-(make delete)
 	-minikube delete
-	-k3d delete --name greymatter
+	-k3d cluster delete greymatter
 	-(eval unset KUBECONFIG)
 
 

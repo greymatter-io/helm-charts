@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# install k3d 1.7.0
-curl -s https://raw.githubusercontent.com/rancher/k3d/master/install.sh | TAG=v1.7.0 bash
+# install k3d 3.0.0
+curl -s https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
 
-k3d create --workers 4 --name greymatter --publish 30000:10808 
-while [[ $(k3d get-kubeconfig --name='greymatter') != *kubeconfig.yaml ]]; do echo "echo waiting for k3d cluster to start up" && sleep 10; done
-export KUBECONFIG="$(k3d get-kubeconfig --name='greymatter')"
+k3d cluster delete greymatter
+
+k3d cluster create greymatter -a 4 --api-port 30000 && sleep 10
+export KUBECONFIG="$(k3d kubeconfig get greymatter)"
 echo "Cluster is connected"
