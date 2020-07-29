@@ -22,6 +22,11 @@ secrets: copy-credentials values-validation
 	helm install secrets . -f credentials.yaml -f ../global.yaml
 	rm credentials.yaml
 
+.PHONY: upgrade-secrets
+upgrade-secrets: copy-credentials values-validation
+	helm upgrade secrets . -f credentials.yaml -f ../global.yaml --install 
+	rm credentials.yaml
+
 .PHONY: remove-secrets
 remove-secrets:
 	helm uninstall secrets
