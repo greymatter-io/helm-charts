@@ -5,6 +5,8 @@ include output.mk
 # `make credentials` to build out credentials with user input
 # `make secrets` deploys the credentials
 
+K3D?=false
+
 .PHONY: minikube
 minikube:
 	./ci/scripts/minikube.sh
@@ -14,6 +16,7 @@ k3d:
 	./ci/scripts/k3d.sh
 	@echo -e "\nSet KUBECONFIG in your shell by running:"
 	@echo -e "export KUBECONFIG=$$(k3d get-kubeconfig --name='greymatter')"
+  K3D=true
 
 reveal-endpoint:
 	./ci/scripts/show-voyager.sh
@@ -45,7 +48,7 @@ dev-dep: clean
 check-secrets:
 	$(eval SECRET_CHECK=$(shell helm ls | grep secrets | awk '{if ($$1 == "secrets") print "present"; else print "not-present"}'))
 	if [[ "$(SECRET_CHECK)" != "present" ]]; then \
-		(make secrets);\
+		(make secrets); \
 	fi
 
 .PHONY: install-spire
@@ -61,6 +64,9 @@ install: dev-dep check-secrets install-spire
 	sleep 20
 	(cd edge && make edge)
 	sleep 20
+	if [ "$(K3D)" = "true" ]; then \
+		(kubectl patch svc edge -p '{"spec": {"type": "LoadBalancer"}}'); \
+	fi
 	(cd data && make data)
 	sleep 20
 	(cd sense && make sense)
