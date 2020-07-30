@@ -14,8 +14,6 @@ minikube:
 .PHONY: k3d
 k3d:
 	./ci/scripts/k3d.sh
-	@echo -e "\nSet KUBECONFIG in your shell by running:"
-	@echo -e "export KUBECONFIG=\$$HOME/.k3d/kubeconfig-\$$NAME.yaml"
   K3D=true
 
 reveal-endpoint:
