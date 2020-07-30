@@ -5,11 +5,9 @@ NAME=greymatter
 
 if ! command -v k3d &> /dev/null
 then
-    echo "*** Install k3d at https://k3d.io/#installation ***"
+    echo "*** k3d must be installed to start a kubernetes cluster with k3d. Install here: https://k3d.io/#installation ***"
     exit
 fi
-
-#curl -s https://raw.githubusercontent.com/rancher/k3d/master/install.sh | bash
 
 k3d cluster create $NAME -a 4 -p 30000:10808@loadbalancer && sleep 10
 
