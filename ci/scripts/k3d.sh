@@ -19,7 +19,7 @@ export KUBECONFIG=$HOME/.k3d/kubeconfig-$NAME.yaml
 echo "Cluster is connected"
 
 echo -e "\nSet KUBECONFIG in your shell by running:"
-echo -e "export KUBECONFIG=$$HOME/.k3d/kubeconfig-$$NAME.yaml"
+echo -e "export KUBECONFIG=$HOME/.k3d/kubeconfig-$NAME.yaml"
 
 K3D=true
-export K3d
+export K3D
