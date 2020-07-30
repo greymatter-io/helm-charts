@@ -129,7 +129,7 @@ $ helm dep up data
 $ helm dep up fabric
 $ helm dep up sense
 
-$ helm install secrets secrets -f 
+$ helm install secrets secrets -f credentials.yaml
 
 $ helm install edge edge -f overrides/codeready.yaml
 
