@@ -114,7 +114,7 @@ Create credential file:
 $ make credentials
 ```
 
-Note: The default Grey Matter install pulls images from the `docker.production.deciphernow.com` repository. If you want to pull images from `docker-dev.production.deciphernow.com` instead, you will have to update all values.yaml files and modify  to use that repository.
+Note: The default Grey Matter install pulls images from the `docker.production.deciphernow.com` repository. If you want to pull images from `docker-dev.production.deciphernow.com` instead, you will have to update all values.yaml files and modify credentials.yaml to use that repository.
 
 ### Actual steps:
 
