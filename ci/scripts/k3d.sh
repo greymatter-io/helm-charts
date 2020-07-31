@@ -9,11 +9,8 @@ then
     exit
 fi
 
-k3d cluster create $NAME -a 4 -p 30000:10808@loadbalancer && sleep 10
+k3d cluster create $NAME -a 4 -p 30000:10808@loadbalancer --update-default-kubeconfig && sleep 10
 
-#The following two lines set and access the kubeconfig file, respectively
-#The former returns the entire config rather than a path, so separating the k3d and export commands is optimal
-k3d kubeconfig get $NAME > /dev/null
 export KUBECONFIG=$HOME/.k3d/kubeconfig-$NAME.yaml
 
 echo "Cluster is connected"
