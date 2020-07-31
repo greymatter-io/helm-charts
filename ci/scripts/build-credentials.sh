@@ -24,7 +24,7 @@ case $yn in
     [Nn]* ) echo -e "\nSetting S3 to false";;
     * ) echo -e "\nPlease answer yes or no. Defaulting to no S3";;
 esac
-helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-hosted --username $EMAIL --password $PASSWORD
+helm repo add greymatter https://nexus.greymatter.io/repository/helm-release --username $EMAIL --password $PASSWORD
 export EMAIL
 export PASSWORD
 export ACCESS
