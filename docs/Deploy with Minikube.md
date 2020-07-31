@@ -287,7 +287,7 @@ See [Ingress](./Ingress.md) for more details.
 To install Helm charts representing the latest version of Grey Matter, you'll need to add the Grey Matter Helm repository to your local `helm` CLI. Run the following command, replacing username/password with credentials previously provided to you. These are the same as your Docker credentials.
 
 ```sh
-helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-hosted --username <username> --password '<password>'
+helm repo add greymatter https://nexus.greymatter.io/repository/helm-release --username <username> --password '<password>'
 helm repo update
 ```
 

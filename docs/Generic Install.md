@@ -50,7 +50,7 @@ There are two options to make custom configuration changes to non-global values:
 Once you have the desired configurations, and account credentials to access to [Deciphers Nexus Repository](https://nexus.production.deciphernow.com/#browse/welcome), you can install using the hosted helm charts:
 
 ```bash
-helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-hosted --username 'YOUR USERNAME' --password 'YOUR PASSWORD'
+helm repo add greymatter https://nexus.greymatter.io/repository/helm-release --username <username> --password '<password>'
 helm repo update
 ```
 

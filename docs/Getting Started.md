@@ -273,8 +273,9 @@ For production deployments, we recommend that an admin setup service accounts fi
 To install Helm charts representing the latest version of Grey Matter, you'll need to add the Grey Matter Helm repository to your local `helm` CLI. Run the following command, replacing username/password with credentials previously provided to you. These are the same as your Docker credentials.
 
 ```sh
-helm repo add decipher https://nexus.production.deciphernow.com/repository/helm-hosted --username <username> --password '<password>'
+helm repo add greymatter https://nexus.greymatter.io/repository/helm-release --username <username> --password '<password>'
 helm repo update
+helm search repo
 ```
 
 Once the repository has successfully been added to your `helm` CLI, you can install Grey Matter from the latest charts.
