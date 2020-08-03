@@ -9,6 +9,18 @@ then
     exit
 fi
 
+output=$(k3d --version)
+len=${#output}
+version=${output:13:1}
+default="3"
+
+if ((version < default)); 
+    then
+        echo '***Please update k3d to v3.0.0 or greater***'
+        exit
+fi
+ 
+
 k3d cluster create $NAME -a 4 -p 30000:10808@loadbalancer && sleep 10
 
 export KUBECONFIG=$HOME/.kube/config
