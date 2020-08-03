@@ -9,11 +9,11 @@ then
     exit
 fi
 
-k3d cluster create $NAME -a 4 -p 30000:10808@loadbalancer --update-default-kubeconfig && sleep 10
+k3d cluster create $NAME -a 4 -p 30000:10808@loadbalancer && sleep 10
 
-export KUBECONFIG=$HOME/.k3d/kubeconfig-$NAME.yaml
+export KUBECONFIG=$HOME/.kube/config
 
 echo "Cluster is connected"
 
 echo -e "\nSet KUBECONFIG in your shell by running:"
-echo -e "export KUBECONFIG=$HOME/.k3d/kubeconfig-$NAME.yaml"
+echo -e "export KUBECONFIG=$HOME/.kube/config"
