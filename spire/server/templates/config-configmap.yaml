@@ -14,7 +14,7 @@ data:
     addr = "0.0.0.0:8444"
     cluster = "quickstart"
     server_socket_path = "/run/spire/socket/registration.sock"
-    trust_domain = "quickstart.greymatter.io"
+    trust_domain = "{{ .Values.global.spire.trust_domain }}"
     cert_path = "/run/spire/tls/registrar.spire.svc.crt"
     key_path = "/run/spire/tls/registrar.spire.svc.key"
     cacert_path = "/run/spire/tls/ca.crt"
@@ -25,7 +25,7 @@ data:
       bind_address = "0.0.0.0"
       bind_port = "8443"
       registration_uds_path = "/run/spire/socket/registration.sock"
-      trust_domain = "quickstart.greymatter.io"
+      trust_domain = "{{ .Values.global.spire.trust_domain }}"
       data_dir = "/run/spire/data"
       log_level = "info"
       upstream_bundle = true

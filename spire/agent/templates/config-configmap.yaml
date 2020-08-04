@@ -16,7 +16,7 @@ data:
       server_port = "8443"
       socket_path = "/run/spire/socket/agent.sock"
       trust_bundle_path = "/run/spire/bundle/bundle.crt"
-      trust_domain = "quickstart.greymatter.io"
+      trust_domain = "{{ .Values.global.spire.trust_domain }}"
       enable_sds = true
     }
 

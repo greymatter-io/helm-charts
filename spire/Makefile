@@ -35,3 +35,8 @@ spire: package-spire wsa-spire
 remove-spire:
 	helm uninstall $(shell helm ls | grep agent | awk '{print $$1}')
 	helm uninstall $(shell helm ls | grep server | awk '{print $$1}')
+
+.PHONY: custom-ca
+custom-ca:
+	./../ci/scripts/spire-ca.sh
+	
