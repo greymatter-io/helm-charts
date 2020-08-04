@@ -48,4 +48,6 @@ CABUNDLE="$(acert leaves export ${REGISTRAR_FINGERPRINT} -t authority -f pem | b
 
 sed -i "" "s/caBundle: .*/caBundle: $CABUNDLE/" ../../spire/server/templates/validatingwebhookconfiguration.yaml
 
+acert authorities delete ${AUTH_FINGERPRINT}
+
 echo "CA Updated, update global.spire.trust_domain and global.spire.namespace before installing"
