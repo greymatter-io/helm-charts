@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: server-bundle
-  namespace: spire
+  namespace: {{ .Values.global.spire.namespace }}
   labels:
     chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
     release: "{{ $.Release.Name }}"

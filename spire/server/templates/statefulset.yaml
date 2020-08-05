@@ -92,7 +92,7 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: server-data
-        namespace: spire
+        namespace: {{ .Values.global.spire.namespace }}
       spec:
         accessModes:
           - ReadWriteOnce
