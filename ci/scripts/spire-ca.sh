@@ -1,27 +1,53 @@
 #!/bin/bash
 
+addflg() {
+    flags=$1
+    flg=$2
+    flgval=$3
+    if ! [[ -z "$flgval" ]]; then
+        n="$flg $flgval "
+        flags+=$n
+    fi
+}
+
+cacfg() {
+    echo Enter the SPIRE release namespace, or press enter to use the default = \"spire\":
+    read NS
+    if [[ -z "$NS" ]]; then NS=spire; fi
+    echo
+
+    echo Enter the following to configure the authority, or press enter to use the default
+    echo Common Name \(default Acert\):
+    read CN; addflg "$flags" "-n" "$CN"
+    echo Organization \(default Decipher Technology Studios\):
+    read ORG; addflg "$flags" "-o" "$ORG"
+    echo Country \(default US\):
+    read CTRY; addflg "$flags" "-c" "$CTRY"
+    echo State \(default Virginia\):
+    read STATE; addflg "$flags" "-s" "$STATE"
+    echo Locality \(default Alexandria\):
+    read LOC; addflg "$flags" "-l" "$LOC"
+    echo Organizational Unit \(default Engineering\):
+    read ORGU; addflg "$flags" "-u" "$ORGU"
+    echo Expiration Time \(default 87600h0m0s\):
+    read EXP; addflg "$flags" "-e" "$EXP"
+    echo Street Address \(default none\):
+    read ADDR; addflg "$flags" "-a" "$ADDR"
+    echo Postal Code \(default none\):
+    read ZIP; addflg "$flags" "-p" "$ZIP"
+}
+
+flags=""
+
 cd $(dirname "${BASH_SOURCE[0]}")
 read -p "Do you wish to configure a custom upstream CA for SPIRE? [yn] " -n 1 yn
 case $yn in
-    [Yy]* ) echo -e "\nGenerating custom CA for SPIRE";;
-    [Nn]* )
-        echo -e "\nUsing Quickstart CA for SPIRE"
-        exit
-        ;;
-    * )
-        echo -e "\nPlease answer yes or no. Defaulting to Quickstart CA"
-        exit
-        ;;
+    [Yy]* ) echo -e "\nGenerating custom CA for SPIRE"; cacfg $flags;;
+    [Nn]* ) echo -e "\nUsing Quickstart CA for SPIRE"; exit;;
+    * ) echo -e "\nPlease answer yes or no. Defaulting to Quickstart CA"; exit;;
 esac
 
-echo Common Name:
-read CN
-echo Organization:
-read ORG
-echo Spire Release Namespace:
-read NS
-
-cmd='acert authorities create -n '${CN}' -o '${ORG}''
+cmd='acert authorities create '${flags}''
 AUTH_FINGERPRINT=$($cmd)
 
 kubectl create secret generic server-ca \
@@ -50,4 +76,4 @@ sed -i "" "s/caBundle: .*/caBundle: $CABUNDLE/" ../../spire/server/templates/val
 
 acert authorities delete ${AUTH_FINGERPRINT}
 
-echo "CA Updated, update global.spire.trust_domain and global.spire.namespace before installing"
+echo "SPIRE CA Updated, update global.spire.trust_domain and global.spire.namespace before installing"
