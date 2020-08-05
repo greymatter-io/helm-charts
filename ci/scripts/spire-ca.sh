@@ -42,7 +42,16 @@ flags=""
 cd $(dirname "${BASH_SOURCE[0]}")
 read -p "Do you wish to configure a custom upstream CA for SPIRE? [yn] " -n 1 yn
 case $yn in
-    [Yy]* ) echo -e "\nGenerating custom CA for SPIRE"; cacfg $flags;;
+    [Yy]* ) 
+        if ! command -v acert &> /dev/null 
+        then 
+            echo
+            echo "*** acert must be installed to generate a custom upstream CA. Install here: https://github.com/deciphernow/acert#build ***" 
+            exit 
+        fi 
+        echo -e "\nGenerating custom CA for SPIRE";
+        cacfg $flags
+        ;;
     [Nn]* ) echo -e "\nUsing Quickstart CA for SPIRE"; exit;;
     * ) echo -e "\nPlease answer yes or no. Defaulting to Quickstart CA"; exit;;
 esac
