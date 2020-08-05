@@ -15,8 +15,8 @@ data:
     cluster = "quickstart"
     server_socket_path = "/run/spire/socket/registration.sock"
     trust_domain = "{{ .Values.global.spire.trust_domain }}"
-    cert_path = "/run/spire/tls/registrar.spire.svc.crt"
-    key_path = "/run/spire/tls/registrar.spire.svc.key"
+    cert_path = "/run/spire/tls/registrar.{{ .Values.global.spire.namespace }}.svc.crt"
+    key_path = "/run/spire/tls/registrar.{{ .Values.global.spire.namespace }}.svc.key"
     cacert_path = "/run/spire/tls/ca.crt"
     insecure_skip_client_verification	= true
     pod_label = "{{ .Values.global.control.cluster_label }}"
@@ -49,7 +49,7 @@ data:
         plugin_data {
           clusters = {
             "quickstart" = {
-              service_account_whitelist = ["spire:agent"]
+              service_account_whitelist = ["{{ .Values.global.spire.namespace }}:agent"]
               audience = ["server"]
             }
           }
@@ -68,6 +68,7 @@ data:
 
       Notifier "k8sbundle" {
         plugin_data {
+          namespace = "{{ .Values.global.spire.namespace }}"
           config_map = "server-bundle"
         }
       }

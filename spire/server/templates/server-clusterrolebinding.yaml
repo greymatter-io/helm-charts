@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: spire:server
+  name: {{ .Values.global.spire.namespace }}:server
   labels:
     chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
     release: "{{ $.Release.Name }}"
@@ -12,5 +12,5 @@ subjects:
     namespace: {{ .Values.global.spire.namespace }}
 roleRef:
   kind: ClusterRole
-  name: spire:server
+  name: {{ .Values.global.spire.namespace }}:server
   apiGroup: rbac.authorization.k8s.io
