@@ -23,9 +23,9 @@ fi
 
 k3d cluster create $NAME -a 4 -p 30000:10808@loadbalancer && sleep 10
 
-export KUBECONFIG=$HOME/.kube/config
+export KUBECONFIG=$(k3d kubeconfig write greymatter)
 
 echo "Cluster is connected"
 
 echo -e "\nSet KUBECONFIG in your shell by running:"
-echo -e "export KUBECONFIG=$HOME/.kube/config"
+echo -e "export KUBECONFIG=$(k3d kubeconfig write greymatter)"
