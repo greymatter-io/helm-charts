@@ -30,7 +30,8 @@
   "active_http_filters": [
     "gm.metrics"{{- if (.service.observablesEnabled) }},
     "gm.observables"{{- end }}{{- if .Values.global.spire.enabled }},
-    "envoy.rbac"{{- end }}
+    "envoy.rbac"{{- else }},
+    "gm.impersonation"{{- end }}
   ],
   "http_filters": {
     {{- if .Values.global.spire.enabled }}
@@ -82,6 +83,13 @@
           }
       }
   },
+  "gm_impersonation": {
+    "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{  .Values.global.sidecar.dn }}{{- end -}}"
+  },
+  {{- else }}
+    "gm_impersonation": {
+      "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{  .Values.global.sidecar.dn }}{{- end -}}"
+    },
   {{- end }}
     "gm_metrics": {
       "metrics_port": 8081,
