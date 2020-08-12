@@ -83,9 +83,6 @@
           }
       }
   },
-  "gm_impersonation": {
-    "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{  .Values.global.sidecar.dn }}{{- end -}}"
-  },
   {{- else }}
     "gm_impersonation": {
       "servers": "{{ .Values.services.edge.egressDn }}{{- if not (eq .service.serviceName "dashboard") -}}|{{  .Values.global.sidecar.dn }}{{- end -}}"
