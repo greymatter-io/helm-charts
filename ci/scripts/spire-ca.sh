@@ -10,7 +10,7 @@ cacfg() {
     echo Common Name \(default Acert\):
     read N; if [[ -z "$N" ]]; then N=Acert; fi
     echo Organization \(default Decipher Technology Studios\):
-    read O; if [[ -z "$O" ]]; then O=Decipher Technology Studios; fi
+    read O; if [[ -z "$O" ]]; then O='Decipher Technology Studios'; fi
     echo Country \(default US\):
     read C; if [[ -z "$C" ]]; then C=US; fi
     echo State \(default Virginia\):
@@ -72,4 +72,10 @@ sed -i "" "s/caBundle: .*/caBundle: $CABUNDLE/" ../../spire/server/templates/val
 
 acert authorities delete ${AUTH_FINGERPRINT}
 
-echo "SPIRE CA Updated, update global.spire.trust_domain and global.spire.namespace before installing"
+echo "SPIRE CA Updated"
+if ! [[ $NS == "spire" ]];
+then
+    echo "Set global.spire.namespace=${NS} and optionally update global.spire.trust_domain"
+else
+    echo "Optionally update global.spire.trust_domain"
+fi
