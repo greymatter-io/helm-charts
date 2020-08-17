@@ -85,7 +85,7 @@ data:
     name: data
     version: 1.1.1
     replicas: 1
-    image: 'docker.production.deciphernow.com/deciphernow/gm-data:{{ .Values.data.version }}'
+    image: 'docker.greymatter.io/development/gm-data:{{ .Values.data.version }}'
     # image_pull_secret: '{{ .Values.global.image_pull_secret }}'
     image_pull_policy: IfNotPresent
 
@@ -295,7 +295,7 @@ internal-data:
     name: data-internal
     version: 1.1
     # replicas: 1
-    image: 'docker.production.deciphernow.com/deciphernow/gm-data:{{ .Values.data.version }}'
+    image: 'docker.greymatter.io/development/gm-data:{{ .Values.data.version }}'
     # image_pull_secret: '{{ .Values.global.image_pull_secret }}'
     # image_pull_policy: IfNotPresent
     

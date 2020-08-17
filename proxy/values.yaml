@@ -6,7 +6,7 @@ imagePullSecrets:
 
 sidecar:
   version: 1.4.4
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ $.Values.sidecar.version }}'
   port: 10808
   metrics_port: 8081
   imagePullPolicy: IfNotPresent

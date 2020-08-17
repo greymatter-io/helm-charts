@@ -53,7 +53,7 @@ controlApi:
   # Number of replicas for the deployment
   replicas: 1
   version: 1.4.3
-  image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ .Values.controlApi.version }}'
+  image: 'docker.greymatter.io/development/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # Port exposed by the control-api container
@@ -109,7 +109,7 @@ controlApi:
 # Sidecar configuration for Control Api
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -135,7 +135,7 @@ sidecar:
 
 
 bootstrap:
-  image: 'docker.production.deciphernow.com/deciphernow/greymatter:1.4.2'
+  image: 'docker.greymatter.io/development/greymatter:1.4.2'
   image_pull_policy: IfNotPresent
   secret:
     enabled: true

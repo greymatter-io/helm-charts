@@ -77,7 +77,7 @@ control:
     replicas: 1
     # Version of control
     version: 1.4.2
-    image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
+    image: 'docker.greymatter.io/development/gm-control:{{ $.Values.control.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Secret used to talk to control-api
@@ -169,7 +169,7 @@ control-api:
     replicas: 1                         
     # Gm Control API version
     version: 1.4.4
-    image: 'docker.production.deciphernow.com/deciphernow/gm-control-api:{{ $.Values.controlApi.version }}'
+    image: 'docker.greymatter.io/development/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent       
     # Port exposed by the control-api container
@@ -497,7 +497,7 @@ jwt:
     # Location to mount the information specified in users_cg_name in the container
     users_mount_point: /gm-jwt-security/etc
     version: 1.1.1
-    image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    image: 'docker.greymatter.io/development/gm-jwt-security:{{ .Values.jwt.version }}'
     port: 3000
     envvars:
       private_key:
@@ -556,7 +556,7 @@ internal-jwt:
     #  secret_name: internal-jwt-certs
     #  mount_point: /gm-jwt-security/certs
     version: 1.1.1
-    image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ .Values.jwt.version }}'
+    image: 'docker.greymatter.io/development/gm-jwt-security:{{ .Values.jwt.version }}'
     port: 3000
     envvars:
       private_key:

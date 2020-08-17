@@ -5,7 +5,7 @@ imagePullSecrets:
 
 sidecar:
   version: 1.4.0
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:1.4.0'
+  image: 'docker.greymatter.io/development/gm-proxy:1.4.0'
   envvars:
     xds_host:
       type: 'value'

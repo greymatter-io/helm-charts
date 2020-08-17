@@ -36,7 +36,7 @@ control:
   replicas: 1
   # Version of control
   version: 1.4.4
-  image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
+  image: 'docker.greymatter.io/development/gm-control:{{ $.Values.control.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # Secret used to talk to control-api

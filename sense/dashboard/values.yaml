@@ -34,7 +34,7 @@ dashboard:
   name: dashboard
   # Dashboard app version
   version: 3.4.2
-  image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
+  image: 'docker.greymatter.io/development/gm-dashboard:{{ $.Values.dashboard.version }}'
   # Port for the dashboard app
   port: 1337
   # When to pull container images, used in the deployment
@@ -94,7 +94,7 @@ dashboard:
 sidecar_dashboard:
   # Uses global.sidecar.version if set
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_dashboard.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar_dashboard.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -162,7 +162,7 @@ prometheus:
 sidecar_prometheus:
   # Uses global.sidecar.version if set
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics

@@ -44,7 +44,7 @@ data:
     enabled: true
     secret_name: data-secrets
 
-  image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
+  image: docker.greymatter.io/development/gm-data:{{ $.Values.data.version }}
   image_pull_secret: '{{ .Values.global.image_pull_secret }}'
   image_pull_policy: IfNotPresent
   
@@ -279,7 +279,7 @@ sidecar:
       ca: ca.crt
       key: server.key
       cert: server.crt
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:

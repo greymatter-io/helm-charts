@@ -35,7 +35,7 @@ global:
     path: '/run/spire/socket/agent.sock'
 edge:
   version: '1.4.4'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.edge.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.edge.version $ }}'
   image_pull_policy: IfNotPresent
   # Port where the edge proxy will listen
   port: 10808

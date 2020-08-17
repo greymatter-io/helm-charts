@@ -32,7 +32,7 @@ jwt:
   # Name used for the deployment and service resources
   name: jwt-security
   version: '1.1.1'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
+  image: 'docker.greymatter.io/development/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
@@ -223,7 +223,7 @@ sidecar:
       ca: ca.crt
       key: server.key
       cert: server.crt
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:
