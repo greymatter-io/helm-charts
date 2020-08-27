@@ -76,7 +76,7 @@ control:
     # Number of replicas for the deployment
     replicas: 1
     # Version of control
-    version: 1.4.2
+    version: latest
     image: 'docker.greymatter.io/development/gm-control:{{ $.Values.control.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
@@ -168,7 +168,7 @@ control-api:
     # Number of replicas for the deployment
     replicas: 1                         
     # Gm Control API version
-    version: 1.4.4
+    version: latest
     image: 'docker.greymatter.io/development/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent       
@@ -214,10 +214,37 @@ control-api:
         value: '{{ .Values.global.zone }}'
       gm_control_api_persister_type:
         type: value
-        value: 'file'
-      gm_control_api_persister_path:
+        value: 'redis'
+      gm_control_api_redis_host:
         type: value
-        value: '{{ .Values.controlApi.pvc_mount_point }}'
+        value: '{{ .Values.global.redis.external.host}}'
+      gm_control_api_redis_port:
+        type: value
+        value: '{{ .Values.global.redis.external.port}}'
+      gm_control_api_redis_use_tls:
+        type: value
+        value: '{{ .Values.global.redis.external.use_tls}}'
+      gm_control_api_redis_ca_cert_path:
+        type: value
+        value: '{{ .Values.global.redis.external.ca_cert_path}}'
+      gm_control_api_redis_server_cert_path:
+        type: value
+        value: '{{ .Values.global.redis.external.server_cert_path}}'
+      gm_control_api_redis_server_key_path:
+        type: value
+        value: '{{ .Values.global.redis.external.server_key_path}}'
+      gm_control_api_redis_pass:
+        type: value
+        value: '{{ .Values.global.redis.pass}}'
+      gm_control_api_redis_db:
+        type: value
+        value: '{{ .Values.global.redis.control_api_db}}'
+      gm_control_api_redis_max_retries:
+        type: value
+        value: '{{ .Values.global.redis.max_retries}}'
+      gm_control_api_redis_retry_delay:
+        type: value
+        value: '{{ .Values.global.redis.retry_delay}}'
     resources:
       # We usually recommend not to specify default resources and to leave this as a conscious
       # choice for the user. This also increases chances charts run on environments with little
@@ -317,7 +344,6 @@ services:
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
     version: 1.1
-    jwt_prefix: /jwt
     secret:
       enabled: true  
       secret_name: sidecar-certs
@@ -339,10 +365,8 @@ services:
     capability: 'Data'
     jwt_prefix: '/jwt'
     documentation: '/services/data/latest/static/ui/index.html'
-    name: 'Grey Matter Internal Data'
     owner: 'Decipher'
     version: 1.1
-    jwt_prefix: /jwt
     secret:
       enabled: true  
       secret_name: sidecar-certs

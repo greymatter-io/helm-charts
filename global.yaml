@@ -25,6 +25,23 @@ global:
     # whether to install an internal data
     internal:
       enabled: true
+  # Options for using Redis as a persister for Control API and Catalog
+  redis:
+    external:
+      enabled: true
+      host: 'gm-objects.hor6kf.0001.use1.cache.amazonaws.com'
+      port: '6379'
+      use_tls: false # how to configure?
+      ca_cert_path: '' # ?
+      server_cert_path: '' # ?
+      server_key_path: '' # ?
+    internal:
+      enabled: false
+    pass: ''
+    control_api_db: 0
+    catalog_db: 1
+    max_retries: 50
+    retry_delay: '5s'
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: true
