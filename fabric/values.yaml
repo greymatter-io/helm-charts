@@ -159,6 +159,12 @@ control:
       #   cpu: 100m
       #   memory: 128Mi
 
+redis:
+  name: redis
+  secret:
+    secret_name: redis-password
+    mount_point: /etc/certs
+
 control-api:
   controlApi:
     # Name used for the deployment and service resources
@@ -217,34 +223,34 @@ control-api:
         value: 'redis'
       gm_control_api_redis_host:
         type: value
-        value: '{{ .Values.global.redis.external.host}}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.redis.name }}.{{ .Release.Namespace }}.svc{{- else}}{{ .Values.global.external_redis.host }}{{- end }}'
       gm_control_api_redis_port:
         type: value
-        value: '{{ .Values.global.redis.external.port}}'
+        value: '{{- if .Values.global.external_redis.disabled }}6379{{- else}}{{ .Values.global.external_redis.port }}{{- end }}'
       gm_control_api_redis_use_tls:
         type: value
-        value: '{{ .Values.global.redis.external.use_tls}}'
+        value: '{{- if .Values.global.external_redis.disabled }}false{{- else}}{{ .Values.global.external_redis.use_tls }}{{- end }}'
       gm_control_api_redis_ca_cert_path:
         type: value
-        value: '{{ .Values.global.redis.external.ca_cert_path}}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{- else}}{{ .Values.global.external_redis.ca_cert_path }}{{- end }}'
       gm_control_api_redis_server_cert_path:
         type: value
-        value: '{{ .Values.global.redis.external.server_cert_path}}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{- else}}{{ .Values.global.external_redis.server_cert_path }}{{- end }}'
       gm_control_api_redis_server_key_path:
         type: value
-        value: '{{ .Values.global.redis.external.server_key_path}}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{- else}}{{ .Values.global.external_redis.server_key_path }}{{- end }}'
       gm_control_api_redis_pass:
         type: value
-        value: '{{ .Values.global.redis.pass}}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{- else}}{{ .Values.global.external_redis.pass }}{{- end }}'
       gm_control_api_redis_db:
         type: value
-        value: '{{ .Values.global.redis.control_api_db}}'
+        value: '{{- if .Values.global.external_redis.disabled }}0{{- else}}{{ .Values.global.external_redis.control_api_db }}{{- end }}'
       gm_control_api_redis_max_retries:
         type: value
-        value: '{{ .Values.global.redis.max_retries}}'
+        value: '{{- if .Values.global.external_redis.disabled }}50{{- else}}{{ .Values.global.external_redis.max_retries }}{{- end }}'
       gm_control_api_redis_retry_delay:
         type: value
-        value: '{{ .Values.global.redis.retry_delay}}'
+        value: '{{- if .Values.global.external_redis.disabled }}5s{{- else}}{{ .Values.global.external_redis.retry_delay }}{{- end }}'
     resources:
       # We usually recommend not to specify default resources and to leave this as a conscious
       # choice for the user. This also increases chances charts run on environments with little

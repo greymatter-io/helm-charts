@@ -30,3 +30,8 @@ dependencies:
     repository: file://./jwt
     version: '2.2.1'
     alias: internal-jwt
+
+  - name: redis
+    repository: file://./redis
+    version: '1.0.0'
+    condition: global.external_redis.disabled
