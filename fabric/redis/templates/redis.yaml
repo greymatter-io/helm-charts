@@ -56,12 +56,6 @@ spec:
           volumeMounts:
           - mountPath: {{ .Values.redis.storage.mount_path }}
             name: redis-pvc
-          env:
-          - name: REDIS_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.redis.secret.secret_name }}
-                key: password
   volumeClaimTemplates:
   - metadata:
       name: redis-pvc
