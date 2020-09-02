@@ -9,12 +9,7 @@ global:
     cluster_label: greymatter.io/control
 
 redis:
-  # Name used for the redis deployment and service resources
   name: mesh-redis
-  # The secret containing the password to configure the environment variable REDIS_PASSWORD
-  secret:
-    secret_name: redis-password
-    mount_point: /etc/certs
   # Redis image to use when global.environment=openshift
   openshift:
     image: 'centos/redis-32-centos7'

@@ -26,7 +26,8 @@ global:
     host: 'gm-objects.hor6kf.0001.use1.cache.amazonaws.com'
     port: '6379'
     use_tls: false
-    # todo: add docs for configuring certs and password in gm-control-api and catalog
+    # todo: add docs for configuring certs to use in control-api and catalog
+    # note this only applies to external Redis; internal does not use certs
     ca_cert_path: ''
     server_cert_path: ''
     server_key_path: ''

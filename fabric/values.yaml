@@ -152,12 +152,6 @@ control:
       #   cpu: 100m
       #   memory: 128Mi
 
-redis:
-  name: mesh-redis
-  secret:
-    secret_name: redis-password
-    mount_point: /etc/certs
-
 control-api:
   controlApi:
     # Name used for the deployment and service resources
@@ -216,7 +210,7 @@ control-api:
         value: 'redis'
       gm_control_api_redis_host:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.redis.name }}.{{ .Release.Namespace }}.svc{{- else}}{{ .Values.global.external_redis.host }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}mesh-redis.{{ .Release.Namespace }}.svc{{- else}}{{ .Values.global.external_redis.host }}{{- end }}'
       gm_control_api_redis_port:
         type: value
         value: '{{- if .Values.global.external_redis.disabled }}6379{{- else}}{{ .Values.global.external_redis.port }}{{- end }}'

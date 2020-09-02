@@ -303,12 +303,6 @@ dashboard:
         type: value
         value: '{{ .Values.prometheus.name }}'
 
-redis:
-  name: mesh-redis
-  secret:
-    secret_name: redis-password
-    mount_point: /etc/certs
-
 catalog:
   catalog:
     # Name used for the deployment and service resources
@@ -342,7 +336,7 @@ catalog:
         value: 'redis'
       redis_host:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.redis.name }}.{{ .Release.Namespace }}.svc.cluster.local{{- else}}{{ .Values.global.external_redis.host }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}mesh-redis.{{ .Release.Namespace }}.svc.cluster.local{{- else}}{{ .Values.global.external_redis.host }}{{- end }}'
       redis_port:
         type: value
         value: '{{- if .Values.global.external_redis.disabled }}6379{{- else}}{{ .Values.global.external_redis.port }}{{- end }}'

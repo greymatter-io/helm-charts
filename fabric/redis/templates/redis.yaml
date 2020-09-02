@@ -45,7 +45,6 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.redis.image_pull_policy }}
           command: ["redis-server", "--appendonly", "yes"]
-          # command: ["redis-server", "--appendonly", "yes", "--requirepass", "$(REDIS_PASSWORD)"]
         {{- if .Values.redis.resources }}
           resources:
 {{ toYaml .Values.redis.resources | indent 12 }}
@@ -57,11 +56,6 @@ spec:
           volumeMounts:
           - mountPath: {{ .Values.redis.storage.mount_path }}
             name: redis-pvc
-          # todo: configure certs
-          # {{- if .Values.redis.secret }}
-          # - name: certs
-          #   mountPath: {{ .Values.redis.secret.mount_point }}
-          # {{- end }}
           env:
           - name: REDIS_PASSWORD
             valueFrom:
@@ -69,7 +63,6 @@ spec:
                 name: {{ .Values.redis.secret.secret_name }}
                 key: password
   volumeClaimTemplates:
-  # todo: add another volumeClaimTemplate for certs
   - metadata:
       name: redis-pvc
     spec:
@@ -85,13 +78,3 @@ spec:
       storageClassName: "{{ .Values.redis.storage.storage_class }}"
     {{- end }}
     {{- end }}
-
-
-      # dnsPolicy: ClusterFirst
-      # restartPolicy: Always
-      # schedulerName: default-scheduler
-      # securityContext: {}
-      # terminationGracePeriodSeconds: 30
-#  test: false
-#  triggers:
-#    - type: ConfigChange
