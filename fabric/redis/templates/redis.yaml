@@ -59,7 +59,7 @@ spec:
             name: redis-pvc
           # todo: configure certs
           # {{- if .Values.redis.secret }}
-          # - name: certificates
+          # - name: certs
           #   mountPath: {{ .Values.redis.secret.mount_point }}
           # {{- end }}
           env:
@@ -69,6 +69,7 @@ spec:
                 name: {{ .Values.redis.secret.secret_name }}
                 key: password
   volumeClaimTemplates:
+  # todo: add another volumeClaimTemplate for certs
   - metadata:
       name: redis-pvc
     spec:

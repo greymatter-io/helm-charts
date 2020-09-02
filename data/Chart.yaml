@@ -13,8 +13,8 @@ keywords:
   - service mesh
   - data
 dependencies:
+  # todo: combine into one chart
   - name: gm-data
     repository: file://./gm-data
     version: '2.2.2'
     alias: data
-    condition: global.data.external.enabled

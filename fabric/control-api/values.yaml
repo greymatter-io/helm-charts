@@ -292,29 +292,6 @@ services:
         key: server.key
         ca: ca.crt
 
-  internal-data:
-    catalogEnabled: false
-    controlEnabled: true
-    name: 'Grey Matter Internal Data'
-    serviceName: 'data-internal'
-    observablesEnabled: false
-    port: 8181
-    enableInstanceMetrics: "true"
-    capability: 'Data'
-    jwt_prefix: '/jwt'
-    documentation: '/services/data/latest/static/ui/index.html'
-    owner: 'Decipher'
-    version: 1.1.1
-    secret:
-      enabled: true
-      secret_name: sidecar-certs
-      mount_point: /etc/proxy/tls/sidecar
-      insecure: true
-      secret_keys:
-        cert: server.crt
-        key: server.key
-        ca: ca.crt
-
   jwt:
     catalogEnabled: true
     controlEnabled: true
