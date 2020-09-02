@@ -2,8 +2,8 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   labels:
-    {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name | default "redis" }}
-  name: {{ .Values.redis.name | default "redis" }}
+    {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
+  name: {{ .Values.redis.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ .Values.redis.replica_count  }}

@@ -18,9 +18,3 @@ dependencies:
     version: '2.2.2'
     alias: data
     condition: global.data.external.enabled
-
-  - name: gm-data
-    repository: file://./gm-data
-    version: '2.2.2'
-    alias: internal-data
-    condition: global.data.internal.enabled

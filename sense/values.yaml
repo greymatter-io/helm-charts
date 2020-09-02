@@ -311,7 +311,7 @@ dashboard:
         value: '{{ .Values.prometheus.name }}'
 
 redis:
-  name: redis
+  name: mesh-redis
   secret:
     secret_name: redis-password
     mount_point: /etc/certs
@@ -536,28 +536,6 @@ services:
     port: 3000
     enableInstanceMetrics: 'true'
     capability: 'Security'
-    documentation: ''
-    owner: 'Decipher'
-    version: '1.1.1'
-    secret:
-      enabled: true
-      secret_name: sidecar-certs
-      mount_point: /etc/proxy/tls/sidecar
-      insecure: true
-      secret_keys:
-        cert: server.crt
-        key: server.key
-        ca: ca.crt
-
-  internal-jwt:
-    catalogEnabled: false
-    controlEnabled: true
-    name: 'Grey Matter JWT Security Internal'
-    serviceName: 'internal-jwt-security'
-    observablesEnabled: false
-    port: 3000
-    enableInstanceMetrics: 'true'
-    capability: 'Grey Matter'
     documentation: ''
     owner: 'Decipher'
     version: '1.1.1'

@@ -1,8 +1,8 @@
 kind: StatefulSet
 apiVersion: apps/v1
 metadata:
-  # labels:
-  #   {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
+  labels:
+    {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
   name: {{ .Values.redis.name }}
   namespace: {{ .Release.Namespace }}
 spec:
@@ -12,7 +12,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      # {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
+      {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
       deployment: {{ .Values.redis.name }}
   # strategy:
   #   rollingUpdate:
@@ -23,7 +23,7 @@ spec:
     metadata:
       creationTimestamp: null
       labels:
-        # {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
+        {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
         deployment: {{ .Values.redis.name }}
     spec:
       {{- if and .Values.global.environment (eq .Values.global.environment "eks") }}
@@ -57,10 +57,11 @@ spec:
           volumeMounts:
           - mountPath: {{ .Values.redis.storage.mount_path }}
             name: redis-pvc
-          {{- if .Values.redis.secret }}
-          - name: certificates
-            mountPath: {{ .Values.redis.secret.mount_point }}
-          {{- end }}
+          # todo: configure certs
+          # {{- if .Values.redis.secret }}
+          # - name: certificates
+          #   mountPath: {{ .Values.redis.secret.mount_point }}
+          # {{- end }}
           env:
           - name: REDIS_PASSWORD
             valueFrom:

@@ -180,7 +180,7 @@ jwt:
 
 redis:
   # Name used for the redis deployment and service resources
-  name: redis
+  name: jwt-redis
   # The secret containing the password to configure the environment variable REDIS_PASSWORD
   secret:
     secret_name: redis-password

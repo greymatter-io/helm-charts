@@ -21,10 +21,10 @@ global:
   data:
     # whether to install an external data
     external:
-      enabled: false
+      enabled: true
     # whether to install an internal data
     internal:
-      enabled: true
+      enabled: false
   # Options for using an external Redis server as a persister for Control API and Catalog
   # To use an internal Redis server, the `disabled` value must be set to true
   # Note that JWT and JWT-Gov still use their own internal redis services
