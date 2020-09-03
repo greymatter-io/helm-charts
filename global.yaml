@@ -18,16 +18,16 @@ global:
     cluster_label: greymatter.io/control
     # Comma delimited string of namespaces for control to monitor. Also used by prometheus.
     additional_namespaces:
-  # Options for using an external Redis service as the persister for Control API and Catalog
-  # To launch an internal Redis service, the `disabled` value must be set to true
-  # Note that JWT and JWT-Gov still use their own internal Redis pods
+
+  # Use an external Redis service as the persister for mesh configurations
+  # This requires the Redis provider to allow inbound connections from Kubernetes cluster
+  # e.g. Amazon Elastiache: https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/accessing-elasticache.html#grant-access
+  # If an external Redis service is not needed, an internal Redis service is launched by setting `disabled` below to true
   external_redis:
     disabled: true
-    host: 'gm-objects.hor6kf.0001.use1.cache.amazonaws.com'
+    host: ''
     port: '6379'
     use_tls: false
-    # todo: add docs for configuring certs to use in control-api and catalog
-    # note this only applies to external Redis; internal does not use certs
     ca_cert_path: ''
     server_cert_path: ''
     server_key_path: ''
@@ -36,6 +36,7 @@ global:
     catalog_db: 1
     max_retries: 50
     retry_delay: '5s'
+
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: true
