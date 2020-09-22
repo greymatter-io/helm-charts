@@ -69,7 +69,7 @@ control:
     # Number of replicas for the deployment
     replicas: 1
     # Version of control
-    version: latest
+    version: 1.4.2
     image: 'docker.greymatter.io/development/gm-control:{{ $.Values.control.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
@@ -161,7 +161,7 @@ control-api:
     # Number of replicas for the deployment
     replicas: 1                         
     # Gm Control API version
-    version: latest
+    version: v1.5.0-dev
     image: 'docker.greymatter.io/development/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent       
