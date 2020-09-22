@@ -20,8 +20,7 @@
         "X25519:P-256:P-521:P-384"
     ],
     "subject_names": [
-      "spiffe://{{ .Values.global.spire.trust_domain}}/edge",
-      "spiffe://{{ .Values.global.spire.trust_domain}}/data"
+      "spiffe://{{ .Values.global.spire.trust_domain}}/edge"
     ]
   },
   {{- end }}

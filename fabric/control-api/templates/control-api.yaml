@@ -69,8 +69,6 @@ spec:
             - name: service-certs
               mountPath: {{ .Values.controlApi.secret.mount_point }}
             {{- end }}
-            - name: control-api-backup
-              mountPath: {{ dir .Values.controlApi.pvc_mount_point }}
         - name: sidecar   
           image: {{ tpl .Values.sidecar.image $ | quote }}
           imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
@@ -146,11 +144,3 @@ spec:
       {{- else if .Values.sidecar.secret.enabled }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
-  volumeClaimTemplates:
-  - metadata:
-      name: control-api-backup
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: {{ .Values.controlApi.pvc.size | default "1Gi" }}
