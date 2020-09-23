@@ -21,7 +21,7 @@
     ],
     "subject_names": [
       "spiffe://{{ .Values.global.spire.trust_domain}}/edge"{{- if eq .service.serviceName "jwt-security" }},
-      "spiffe://{{ .Values.global.spire.trust_domain}}/data"
+      "spiffe://{{ .Values.global.spire.trust_domain}}/data"{{- end }}
     ]
   },
   {{- end }}
