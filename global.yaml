@@ -19,6 +19,11 @@ global:
     # Comma delimited string of namespaces for control to monitor. Also used by prometheus.
     additional_namespaces:
 
+  data:
+    # whether to install an external data
+    external:
+      enabled: false
+
   # Use an external Redis service as the persister for mesh configurations
   # This requires the Redis provider to allow inbound connections from Kubernetes cluster
   # e.g. Amazon Elastiache: https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/accessing-elasticache.html#grant-access

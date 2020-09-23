@@ -36,8 +36,10 @@ spec:
             - name: service-certs
               mountPath: {{ .Values.bootstrap.secret.mount_point }}
             {{- end }}
+          {{- $data := .Values.global.data.external.enabled }}
           {{- range $name, $service := .Values.services }}
-          {{- if $service.controlEnabled }}
+          {{- if and (eq .serviceName "data") (not $data) }}
+          {{- else if $service.controlEnabled }}
             - name: service-config-volume-{{$service.serviceName}}
               mountPath: /etc/config/mesh/services/{{$service.serviceName}}
             - name: edge-config-volume-{{$service.serviceName}}
@@ -58,8 +60,10 @@ spec:
             secretName: {{ .Values.bootstrap.secret.secret_name }}
             {{- end }}
         {{- end }}
+        {{- $data := .Values.global.data.external.enabled }}
         {{- range $name, $service := .Values.services }}
-        {{- if $service.controlEnabled }}
+        {{- if and (eq .serviceName "data") (not $data) }}
+        {{- else if $service.controlEnabled }}
         - name: service-config-volume-{{ $service.serviceName }}
           configMap:
             name: service-{{ $service.serviceName }}-mesh-config
