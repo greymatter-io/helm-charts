@@ -18,12 +18,11 @@ spec:
         {{ .Values.global.control.cluster_label }}: {{ .Values.controlApi.name }}
         deployment: {{ .Values.controlApi.name }}
     spec:
-      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+      # Security context for openshift, kubernetes and eks is the same. 
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
         fsGroup: 2000
-      {{- end }}
       containers:
         - name: {{ .Values.controlApi.name }}
           image: {{ tpl .Values.controlApi.image $ }}
@@ -148,9 +147,10 @@ spec:
       {{- end }}
   volumeClaimTemplates:
   - metadata:
-      name: control-api-backup
+      name: control-api-backup 
     spec:
-      accessModes: [ "ReadWriteOnce" ]
+      accessModes:
+        - ReadWriteOnce
       resources:
         requests:
           storage: {{ .Values.controlApi.pvc.size | default "1Gi" }}

@@ -1,7 +1,7 @@
 global:
   # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
-  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  # Deployment environment, one of "eks", "kubernetes", or "openshift"
   environment: kubernetes
   # Used to configure control and control-api environment variables
   zone: zone-default-zone
@@ -37,7 +37,7 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.4.4
+    version: 1.4.5
 
   # Configure services to use the same certs
   global_certs:

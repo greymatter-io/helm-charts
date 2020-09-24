@@ -17,16 +17,12 @@ spec:
         deployment: {{ .Values.prometheus.name }}
     spec:
       serviceAccountName: {{ .Values.prometheus.service_account.name }}
-      {{- if eq .Values.global.environment "openshift"}}
-      securityContext:
-        # Adding the user to root group.
-        runAsGroup: 0
-      {{- else }}
+      # Security context for openshift, kubernetes and eks is the same. 
+
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
         fsGroup: 2000
-      {{- end }}
       containers:
       - name: prometheus
         image: {{ .Values.prometheus.image | quote }}
