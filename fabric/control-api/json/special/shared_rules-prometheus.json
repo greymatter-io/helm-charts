@@ -1,0 +1,24 @@
+{
+  "shared_rules_key": "shared-rules-prometheus",
+  "name": "prometheus",
+  "zone_key": "{{ .Values.global.zone}}",
+  "default": {
+    "light": [
+      {
+        "constraint_key": "",
+        "cluster_key": "cluster-prometheus",
+        "metadata": null,
+        "properties": null,
+        "response_data": {},
+        "weight": 1
+      }
+    ],
+    "dark": null,
+    "tap": null
+  },
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "properties": null,
+  "retry_policy": null
+}

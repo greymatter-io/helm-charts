@@ -228,17 +228,6 @@ services:
         key: server.key
         ca: ca.crt
 
-
-  prometheus:
-    catalogEnabled: false
-    controlEnabled: true
-    name: 'Prometheus'
-    serviceName: 'prometheus'
-    observablesEnabled: false
-    port: 9090
-    secret:
-      enabled: false
-
   data:
     catalogEnabled: true
     controlEnabled: true
@@ -410,3 +399,15 @@ services:
         cert: server.crt
         key: server.key
         ca: ca.crt
+
+# Configuration values for services that are under special
+special:
+  prometheus:
+    catalogEnabled: false
+    controlEnabled: true
+    name: 'Prometheus'
+    serviceName: 'prometheus'
+    observablesEnabled: false
+    port: 9090
+    secret:
+      enabled: false

@@ -1,0 +1,104 @@
+{
+  "listener_key": "listener-prometheus",
+  "zone_key": "{{ .Values.global.zone}}",
+  "name": "prometheus",
+  "ip": "0.0.0.0",
+  "port": 10808,
+  "protocol": "http_auto",
+  "domain_keys": ["domain-prometheus"],
+  "tracing_config": null,
+  {{- if .Values.global.spire.enabled }}
+  "secret": {
+    "secret_key": "secret-prometheus-secret",
+    "secret_name": "spiffe://{{ .Values.global.spire.trust_domain}}/prometheus",
+    "secret_validation_name": "spiffe://{{ .Values.global.spire.trust_domain}}",
+    "forward_client_cert_details": "APPEND_FORWARD",
+    "set_current_client_cert_details": {
+      "uri": true
+    },
+    "ecdh_curves": [
+        "X25519:P-256:P-521:P-384"
+    ],
+    "subject_names": [
+      "spiffe://{{ .Values.global.spire.trust_domain}}/edge"{{- if and (eq .service.serviceName "jwt-security") (.Values.global.data.external.enabled) }},
+      "spiffe://{{ .Values.global.spire.trust_domain}}/data"{{- else if eq .service.serviceName "data-internal"}},
+      "spiffe://{{ .Values.global.spire.trust_domain}}/catalog"{{- else if and (eq .service.serviceName "internal-jwt-security") (.Values.global.data.internal.enabled) }},
+      "spiffe://{{ .Values.global.spire.trust_domain}}/data-internal"{{- end }}
+    ]
+  },
+  {{- end }}
+  "active_http_filters": [
+    "gm.metrics"{{- if (.Values.special.prometheus.observablesEnabled) }},
+    "gm.observables"{{- end }}{{- if .Values.global.spire.enabled }},
+    "envoy.rbac"{{- end }}
+  ],
+  "http_filters": {
+    {{- if .Values.global.spire.enabled }}
+    "envoy_rbac": {
+      "rules": {
+          "action": 0,
+          "policies": {
+              "service-admin": {
+                  "permissions": [{
+                      "any": true
+                  }],
+                  "principals": [{
+                      "header": {
+                          "name": "{{ .Values.global.rbac.admin.header_name }}",
+                          "{{ .Values.global.rbac.admin.match_type }}": "{{ .Values.global.rbac.admin.header_value }}"
+                      }
+                }]
+              },
+              "services": {
+                "permissions": [
+                  {
+                    "any": true
+                  }
+                ],
+                "principals": [
+                  {
+                    "authenticated": {
+                      "principal_name": {
+                        "safe_regex": {
+                          "google_re2": {},
+                          "regex": "spiffe:\/\/{{ .Values.global.spire.trust_domain }}\/(.+)"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "product-viewer": {
+                  "permissions": [{
+                      "header": {
+                          "name": ":method",
+                          "exact_match": "GET"
+                      }
+                  }],
+                  "principals": [{
+                      "any": true
+                  }]
+              }
+          }
+      }
+  },
+  {{- end }}
+    "gm_metrics": {
+      "metrics_port": 8081,
+      "metrics_host": "0.0.0.0",
+      "metrics_dashboard_uri_path": "/metrics",
+      "metrics_prometheus_uri_path": "/prometheus",
+      "metrics_ring_buffer_size": 4096,
+      "prometheus_system_metrics_interval_seconds": 15,
+      "metrics_key_function": "depth",
+      "metrics_key_depth": "3"
+    }{{-  if (.Values.special.prometheus.observablesEnabled) }},
+    "gm_observables": {
+      "useKafka": true,
+      "topic": "prometheus",
+      "eventTopic": "{{ .Values.global.observables.topic }}",
+      "kafkaServerConnection": "{{ .Values.global.observables.kafkaServerConnection }}"
+    }
+    {{- end }}
+  }
+}

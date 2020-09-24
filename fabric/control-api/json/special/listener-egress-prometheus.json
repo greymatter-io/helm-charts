@@ -1,0 +1,17 @@
+{
+  "listener_key": "listener-prometheus-egress",
+  "zone_key": "{{ .Values.global.zone}}",
+  "name": "prometheus",
+  "ip": "127.0.0.1",
+  "port": 10909,
+  "protocol": "http_auto",
+  "domain_keys": [
+    "domain-prometheus",
+    "domain-prometheus-egress"
+  ],
+  "tracing_config": null,
+  "active_http_filters": [{{- if (not .Values.global.spire.enabled) }}"gm.inheaders"{{- end}}],
+  "http_filters": {
+    "gm_inheaders": {}
+  }
+}
