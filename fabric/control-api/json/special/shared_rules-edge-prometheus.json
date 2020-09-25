@@ -1,0 +1,24 @@
+{
+  "zone_key": "{{ .Values.global.zone}}",
+  "shared_rules_key": "edge-prometheus-shared-rules",
+  "name": "prometheus",
+  "default": {
+    "light": [
+      {
+        "constraint_key": "",
+        "cluster_key": "edge-to-prometheus-cluster",
+        "metadata": null,
+        "properties": null,
+        "response_data": {},
+        "weight": 1
+      }
+    ],
+    "dark": null,
+    "tap": null
+  },
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "properties": null,
+  "retry_policy": null
+}

@@ -1,0 +1,13 @@
+{
+  "route_key": "edge-prometheus-route",
+  "domain_key": "edge",
+  "zone_key": "{{ .Values.global.zone}}",
+  "path": "/services/prometheus/latest/",
+  "prefix_rewrite": "/",
+  "redirects": null,
+  "shared_rules_key": "edge-prometheus-shared-rules",
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "retry_policy": null
+}

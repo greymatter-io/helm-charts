@@ -77,6 +77,10 @@ create_or_update "proxy" proxy-prometheus.json
 create_or_update "cluster" cluster-prometheus.json
 create_or_update "shared_rules" shared_rules-prometheus.json
 create_or_update "route" route-prometheus.json
+create_or_update "cluster" cluster-edge-prometheus.json
+create_or_update "route" route-1-edge-prometheus.json
+create_or_update "route" route-2-edge-prometheus.json
+create_or_update "shared_rules" shared_rules-edge-prometheus.json
 
 # The edge service is created last as it links to the clusters of every other service.
 # The edge domain must be created before it can be referenced
