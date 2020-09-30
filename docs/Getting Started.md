@@ -53,7 +53,7 @@ If you're using OpenShift, you can skip to the next section because OpenShift wi
 
 By default, we use an nginx ingress configuration. This ingress will be set up automatically.
 
-If you prefer to use a [Voyager Ingress Controller](https://appscode.com/products/voyager/) for ingress, before intalling the charts,
+If you prefer to use a [Voyager Ingress Controller](https://appscode.com/products/voyager/) for ingress, before installing the charts,
 
 ```bash
 cd voyager
