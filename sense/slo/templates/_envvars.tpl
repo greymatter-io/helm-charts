@@ -30,11 +30,8 @@
       name: {{ $e.secret }}
       key: {{ $e.key }}
           {{- else if eq $e.type "value" }}
-          {{- /* The following removes any undefined values. At this stage, it means both the local and global values are undefined, so its best to just get rid of it */}}
-            {{- if (tpl $e.value $top) ne "" }}
 - name: {{ $envName }}
   value: {{ tpl $e.value $top | quote }} 
-            {{- end }}
           {{- end }}
 {{- end }}
 

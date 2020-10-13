@@ -31,13 +31,10 @@
     secretKeyRef:
       name: {{ $e.secret }}
       key: {{ $e.key }}
-          {{- else if eq $e.type "value" }}
-          {{- /* The following removes any undefined values. At this stage, it means both the local and global values are undefined, so its best to just get rid of it */}}
-            {{- if (tpl $e.value $top) ne "" }}
+        {{- else if eq $e.type "value" }}
 - name: {{ $envName }}
   value: {{ tpl $e.value $top | quote }} 
-            {{- end }}
-          {{- end }}
+        {{- end }}
 {{- end }}
 
 {{- /*  envvars loops through the global sidecar envvars and generates Kubernetes container env keys for both regular values and secrets from the local sidecar values and from the global values as a backup.
