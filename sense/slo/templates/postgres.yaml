@@ -18,12 +18,11 @@ spec:
       labels:
         {{ .Values.global.control.cluster_label }}: postgres-slo
     spec:
-      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+      # Security context for openshift, kubernetes and eks is the same. 
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
         fsGroup: 2000
-      {{- end }}
       containers:
       - name: postgres
         image: {{ .Values.postgres.image }}
