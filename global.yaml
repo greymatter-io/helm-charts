@@ -54,7 +54,7 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.4.4
+    version: 1.5.0-dev
 
   # Configure services to use the same certs
   global_certs:

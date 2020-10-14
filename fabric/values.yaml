@@ -40,7 +40,7 @@ global:
   # Sidecar configuration (Control-api is the only service in this chart with a proxy)
   sidecar:
     # GM Proxy version, used by control-api
-    version: 1.4.4
+    version: 1.5.0-dev
     envvars:
       xds_cluster:
         type: value
@@ -384,7 +384,7 @@ services:
     capability: 'Mesh'
     documentation:
     owner: 'Decipher'
-    version: '1.4.4'
+    version: '1.5.0-dev'
     secret:          
       enabled: true
       secret_name: sidecar-certs
@@ -410,7 +410,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.4.4'
+    version: '1.5.0-dev'
     ingress:
       secret:
         enabled: true
