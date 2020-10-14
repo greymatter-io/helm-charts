@@ -35,6 +35,10 @@ jobs:
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm ${DOCKER_IMAGE} /helm/fabric/control-api
       - run:
+          name: Package and Publish Redis
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm ${DOCKER_IMAGE} /helm/fabric/redis
+      - run:
           name: Package and Publish Dashboard
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm ${DOCKER_IMAGE} /helm/sense/dashboard
@@ -154,6 +158,10 @@ jobs:
           name: Package and Publish GM Control API
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm ${DOCKER_IMAGE} /helm/fabric/control-api
+      - run:
+          name: Package and Publish Redis
+          command: |
+            docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm ${DOCKER_IMAGE} /helm/fabric/redis
       - run:
           name: Package and Publish Dashboard
           command: |

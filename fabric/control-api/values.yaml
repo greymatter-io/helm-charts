@@ -36,7 +36,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
-    version: 1.4.4
+    version: 1.5.0-dev
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
   # Global rbac configuration for service admin principal.
   rbac:
@@ -345,7 +345,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.4.4'
+    version: '1.5.0-dev'
     ingress:
       secret:
         enabled: true

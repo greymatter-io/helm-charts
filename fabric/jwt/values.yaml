@@ -26,7 +26,7 @@ global:
     port: 8500
     edge_port: 10808
   sidecar:
-    version: 1.4.4
+    version: 1.5.0-dev
 
 jwt:
   # Name used for the deployment and service resources
