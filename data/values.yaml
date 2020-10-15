@@ -23,7 +23,7 @@ global:
     path: '/run/spire/socket/agent.sock'
     bind_address: '127.0.0.1'
   # Default configuration for all sidecars in all subcharts
-  sidecar: 
+  sidecar:
     version: '1.5.0-dev'
     envvars:
       xds_cluster:
@@ -83,11 +83,11 @@ data:
     image_pull_policy: IfNotPresent
 
     # master_key: ac8923[lkn43589vi23kl4rfgv0ws
-    # Location and (optionally) size of pvc to persist data if not using s3 
+    # Location and (optionally) size of pvc to persist data if not using s3
     # pvc:
     #   mount_point: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
-      #size:
-    
+      # size:
+
     # Security context for the statefulset if enabled
     security_context:
       enabled: false
@@ -251,15 +251,15 @@ data:
       mongo_use_tls:
         type: value
         value: 'false'
-      #mongo_cert:
+      # mongo_cert:
       #  type: secret
       #  secret: {{ .Values.mongo.secret.secret_name }}
       #  key: {{ .Values.mongo.secret.secret_keys.cert }}
-      #mongo_key:
+      # mongo_key:
       #  type: secret
       #  secret: {{ .Values.mongo.secret.secret_name }}
       #  key: {{ .Values.mongo.secret.secret_keys.key }}
-      #mongo_trust:
+      # mongo_trust:
       #  type: secret
       #  secret: {{ .Values.mongo.secret.secret_name }}
       #  key: {{ .Values.mongo.secret.secret_keys.ca }}

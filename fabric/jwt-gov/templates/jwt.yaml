@@ -15,6 +15,7 @@ spec:
       labels:
         {{ .Values.global.control.cluster_label }}: {{ .Values.jwt.name | default "jwt-security"  }}
         deployment: {{ .Values.jwt.name | default "jwt-security"  }}
+        greymatter: fabric
     spec:
       containers:
       - name: jwt-security
@@ -30,7 +31,7 @@ spec:
         args:
 {{ toYaml .Values.jwt.args | indent 8 }}
         {{- end }}
-        
+
         env:
         {{- include "jwt.envvars" (dict "envvar" .Values.jwt.envvars "top" $) | indent 8 }}
         {{- if .Values.global.spire.enabled }}

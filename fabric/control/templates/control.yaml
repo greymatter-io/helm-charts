@@ -15,6 +15,7 @@ spec:
         {{ .Values.global.control.cluster_label }}: {{ .Values.control.name }}
         deployment: {{ .Values.control.name }}
         run: {{ .Values.control.name }}
+        greymatter: fabric
     spec:
       # This service_account must have read access to both pods and endpoints, because gm-control uses the kubernetes API to do service discovery, and the waiter init container needs access to service endpoints to wait on control-api
       serviceAccountName: {{ .Values.control.service_account.name }}

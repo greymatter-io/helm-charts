@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         {{ .Values.global.control.cluster_label }}: dashboard
+        greymatter: sense
     spec:
       containers:
       - name: dashboard

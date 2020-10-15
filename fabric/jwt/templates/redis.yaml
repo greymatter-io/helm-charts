@@ -23,6 +23,7 @@ spec:
       labels:
         {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
         deployment: {{ .Values.redis.name }}
+        greymatter: fabric
     spec:
       containers:
         - name: redis

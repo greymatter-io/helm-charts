@@ -28,6 +28,7 @@ spec:
         runAsUser: 2000
         runAsGroup: 0
         fsGroup: 2000
+      {{- end }}
       containers:
       - env:
         {{- include "data.envvars" (dict "envvar" .Values.mongo.envvars "top" $) | indent 8 }}

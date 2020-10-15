@@ -22,6 +22,7 @@ spec:
         {{ .Values.global.control.cluster_label }}: agent
         app: agent
         cluster: spire.agent
+        greymatter: spire
     spec:
       hostPID: true
       hostNetwork: true

@@ -39,11 +39,11 @@ jwt:
       '-c',
       'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /gm-jwt-security/gm-jwt-security',
     ]
-  # Used to configure the REDIS_DB environment variable 
+  # Used to configure the REDIS_DB environment variable
   # If set, enables tls using the secret specified in secret_name
-  #secret:
-  #  secret_name: jwt-certs
-  #  mount_point: /gm-jwt-security/certs
+  # secret:
+  #   secret_name: jwt-certs
+  #   mount_point: /gm-jwt-security/certs
   # Location to mount the information specified in users_cg_name in the container
   users_mount_point: /gm-jwt-security/etc
   image_pull_policy: IfNotPresent
@@ -56,7 +56,7 @@ jwt:
       memory: 64Mi
 
   envvars:
-    private_key: 
+    private_key:
       type: secret
       secret: jwt-security
       key: jwt.key
@@ -73,7 +73,7 @@ jwt:
     redis_port:
       type: value
       value: "6379"
-    redis_db:   
+    redis_db:
       type: value
       value: "0"
     redis_host:
@@ -203,7 +203,7 @@ redis:
       memory: 128Mi
   envvars:
     redis_password:
-      type: secret 
+      type: secret
       secret: '{{ .Values.redis.secret.secret_name | default "redis-password" }}'
       key: password
 

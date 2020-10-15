@@ -16,3 +16,7 @@ build-number.txt
 logs/
 
 *.helm-version
+
+# Ignore test vendor files
+test/vendor
+test/vendor/*

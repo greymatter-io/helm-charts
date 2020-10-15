@@ -14,6 +14,7 @@ spec:
       labels:
         {{ .Values.global.control.cluster_label }}: catalog
         deployment: catalog
+        greymatter: sense
     spec:
       serviceAccountName: {{ .Values.global.waiter.service_account.name }}
       initContainers:

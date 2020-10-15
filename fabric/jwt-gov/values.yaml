@@ -40,9 +40,9 @@ jwt:
       'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./certs/aac ]]; then mkdir -p ./certs/aac; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /gm-jwt-security-gov/gm-jwt-security-gov',
     ]
   # If set, enables tls using the secret specified in secret_name
-  #secret:
-  #  secret_name: jwt-certs
-  #  mount_point: /gm-jwt-security/certs
+  # secret:
+  #   secret_name: jwt-certs
+  #   mount_point: /gm-jwt-security/certs
   # Location to mount the information specified in users_cg_name in the container
   users_mount_point: /gm-jwt-security-gov/etc
   users_cg_name: jwt-users
@@ -167,7 +167,7 @@ jwt:
               "as_is": []
           },
           "f_share": {
-              "as_is": [ 
+              "as_is": [
               ]
           },
           "f_sci_ctrls": {
@@ -183,7 +183,7 @@ jwt:
     [
       "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US"
     ]
-          
+
 
 redis:
   # Name used for the redis deployment and service resources

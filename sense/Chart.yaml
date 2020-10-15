@@ -1,13 +1,12 @@
 apiVersion: v2
-appVersion: 1.2
+appVersion: 1.2.0
 description: A Helm chart to deploy Grey Matter Sense
 name: sense
-version: 2.2.1
+version: 2.2.2
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
-  - name: Decipher Technology Studios Engineering
-    email: engineering@deciphernow.com
-    website: deciphernow.com
+  - name: greymatter-io
+    email: engineering@greymatter.io
 keywords:
   - Grey Matter
   - service mesh
@@ -15,12 +14,12 @@ keywords:
 dependencies:
   - name: catalog
     repository: file://./catalog
-    version: '2.2.2'
+    version: '2.2.3'
 
   - name: dashboard
     repository: file://./dashboard
-    version: '2.2.2'
+    version: '2.2.3'
 
   - name: slo
     repository: file://./slo
-    version: '2.2.2'
+    version: '2.2.3'

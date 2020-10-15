@@ -15,9 +15,10 @@ spec:
       labels:
         {{ .Values.global.control.cluster_label }}: {{ .Values.prometheus.name }}
         deployment: {{ .Values.prometheus.name }}
+        greymatter: sense
     spec:
       serviceAccountName: {{ .Values.prometheus.service_account.name }}
-      # Security context for openshift, kubernetes and eks is the same. 
+      # Security context for openshift, kubernetes and eks is the same.
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
@@ -73,7 +74,7 @@ spec:
           containerPort: {{ .Values.sidecar_prometheus.port }}
         - name: metrics
           containerPort: {{ .Values.sidecar_prometheus.metrics_port }}
-        env:   
+        env:
         {{- include "sidecar.envvars-prometheus" . | indent 8 }}
         {{- if .Values.global.spire.enabled }}
         - name: SPIRE_PATH

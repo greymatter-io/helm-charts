@@ -44,6 +44,16 @@ global:
       header_name: user_dn
       match_type: exact_match
       header_value: CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US
+  # To use global certs or not
+  global_certs:
+    enabled: true
+  # To use an external redis or not
+  external_redis:
+    disabled: true
+  data:
+    # whether to install an external data
+    external:
+      enabled: false
 
 controlApi:
   # Name used for the deployment and service resources

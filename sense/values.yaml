@@ -2,13 +2,13 @@
 
 global:
   # Used as imagePullSecrets value
-  image_pull_secret: docker.secret    
+  image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kubernetes", or "openshift"
-  environment: openshift              
+  environment: openshift
   # Used to configure control and control-api environment variables
-  zone: zone-default-zone             
+  zone: zone-default-zone
   # Whether to use consul for service discovery
-  consul:                             
+  consul:
     enabled: false
     host: ''
     port: 8500
@@ -18,8 +18,8 @@ global:
     port: 50000
     # The label Control uses to find pods to include in the mesh
     cluster_label: greymatter.io/control
-    # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
-    additional_namespaces:   
+    # Comma delimited string of namespaces for control to monitor. Also used by prometheus.
+    additional_namespaces:
   data:
     # whether to install an external data
     external:
@@ -28,11 +28,11 @@ global:
   spire:
     enabled: true
     trust_domain: quickstart.greymatter.io
-    path: '/run/spire/socket/agent.sock' 
+    path: '/run/spire/socket/agent.sock'
   # Configures the init container used to wait on various deployments to be ready
   waiter:
     image: deciphernow/k8s-waiter:latest
-    service_account: 
+    service_account:
       create: true
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
@@ -57,7 +57,7 @@ global:
       envoy_admin_log_path:
         type: 'value'
         value: '/dev/stdout'
-slo:   
+slo:
   slo:
     # SLO version
     version: 1.1.5
@@ -101,7 +101,7 @@ slo:
       service_port:
         type: value
         value: "1337"
-      # SSL for SLO <-> postgres connection. Enabled if posgres.secret.enabled is true. 
+      # SSL for SLO <-> postgres connection. Enabled if posgres.secret.enabled is true.
       ssl_enabled:
         type: value
         value: "{{- if .Values.postgres.secret.enabled }}true{{- else }}false{{- end }}"
@@ -299,7 +299,7 @@ dashboard:
       limits:
         memory: "12Gi"
         cpu: "2"
-        
+
   # Sidecar configuration overrides for prometheus
   sidecar_prometheus:
     envvars:

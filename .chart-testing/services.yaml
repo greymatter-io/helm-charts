@@ -1,0 +1,6 @@
+chart-dirs:
+  - data
+  - fabric
+  - sense
+  - spire
+target-branch: testing-release-2.3

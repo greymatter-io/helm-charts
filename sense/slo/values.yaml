@@ -2,13 +2,13 @@
 
 global:
   # Used as imagePullSecrets value
-  image_pull_secret: docker.secret    
+  image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kubernetes", or "openshift"
-  environment: openshift              
+  environment: openshift
   # Used to configure control and control-api environment variables
-  zone: zone-default-zone             
+  zone: zone-default-zone
   # Whether to use consul for service discovery
-  consul:                             
+  consul:
     enabled: false
     host: ''
     port: 8500
@@ -22,7 +22,7 @@ global:
   spire:
     enabled: false
     trust_domain: quickstart.greymatter.io
-    path: '/run/spire/socket/agent.sock'                
+    path: '/run/spire/socket/agent.sock'
   # Configures the init container used to wait on various deployments to be ready
   waiter:
     image: deciphernow/k8s-waiter:latest
@@ -31,7 +31,9 @@ global:
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
     version: 1.5.0-dev
-    
+  # To use the global certs or not
+  global_certs:
+    enabled: true
 slo:
   name: "slo"
   # SLO version
@@ -76,7 +78,7 @@ slo:
     service_port:
       type: value
       value: "1337"
-    # SSL for SLO <-> postgres connection. Enabled if posgres.secret.enabled is true. 
+    # SSL for SLO <-> postgres connection. Enabled if posgres.secret.enabled is true.
     ssl_enabled:
       type: value
       value: "{{- if .Values.postgres.secret.enabled }}true{{- else }}false{{- end }}"

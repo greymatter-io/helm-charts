@@ -64,7 +64,7 @@ edge:
       type: 'value'
       value: '/dev/stdout'
 
-  # Optional resource options    
+  # Optional resource options
   resources:
     limits:
       cpu: 1
@@ -89,7 +89,7 @@ edge:
     # The following options configure the edge ingress based on the global.environment
     # If global.environment is openshift, a passthrough Route is configured with host set from the values specified in global.domain, global.route_url_name, and global.remove_namespace_from_url
     # If global.environment is not openshift, an ingress object is created with the specified apiVersion, annotations, and rules
-    
+
     # If use_voyager is true make sure voyager is already installed
     use_voyager: false
     voyager:

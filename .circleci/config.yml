@@ -1,13 +1,40 @@
-# These are the expected environment variables
-#
-# The Nexus information is so that the build can push the packaged charts to the Decipher Helm repo
-# NEXUS_URL
-# NEXUS_PASSWORD -> expects to be passed in from CI system (CircleCI)
-# NEXUS_USER -> expects to be passed in from CI system (CircleCI)
-#
 version: 2
 
+defaults: &defaults
+  machine: true
+  working_directory: ~/helm-charts
+
 jobs:
+  lint-edge-secrets:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Lint Edge and Secrets
+          command: |
+            ls -al ~
+            ls -al ~/helm-charts/
+            docker run --rm -v $(pwd):/helm-charts/ -w /helm-charts quay.io/helmpack/chart-testing:v3.1.1 ct lint --config /helm-charts/.chart-testing/edge-secrets.yaml
+  lint-services:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Lint Services
+          command: |
+            ls -al ~
+            ls -al ~/helm-charts/
+            docker run --rm -v $(pwd):/helm-charts/ -w /helm-charts quay.io/helmpack/chart-testing:v3.1.1 ct lint --config /helm-charts/.chart-testing/services.yaml
+  lint-fabric-sense:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Lint Fabric, Sense and Data
+          command: |
+            ls -al ~
+            ls -al ~/helm-charts/
+            docker run --rm -v $(pwd):/helm-charts/ -w /helm-charts quay.io/helmpack/chart-testing:v3.1.1 ct lint --config /helm-charts/.chart-testing/fabric-sense-data.yaml
   package-development:
     machine: true
     steps:
@@ -244,11 +271,89 @@ jobs:
           name: Package and Publish Secrets
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm ${DOCKER_IMAGE} /helm/secrets
+
+
+  greymatter-test:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Set up K3d, Kubectl and Helm
+          command: |
+            # remove the old go
+            sudo rm -rf /usr/local/go
+
+            # upgrade go
+            wget https://golang.org/dl/go1.14.7.linux-amd64.tar.gz
+            sudo tar -C /usr/local -xzf go1.14.7.linux-amd64.tar.gz
+
+            # get and start k3d
+            wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+            k3d cluster create greymatter -a 4 -p 30000:10808@loadbalancer --wait
+            export KUBECONFIG=$(k3d kubeconfig write greymatter)
+
+            # get kubectl
+            wget "https://storage.googleapis.com/kubernetes-release/release/v1.18.3/bin/linux/amd64/kubectl"
+            chmod +x ./kubectl
+            sudo mv kubectl /usr/local/
+
+            # get helm
+            wget "https://get.helm.sh/helm-v3.2.4-linux-amd64.tar.gz"
+            tar -xvf helm-v3.2.4-linux-amd64.tar.gz
+            chmod +s linux-amd64/helm
+            sudo mv linux-amd64/helm /usr/local/
+
+            # add the local dir to our path so we can run the helm and kubectl we just downloaded
+            export PATH=$PATH:/usr/local/go/bin:/usr/local
+
+            # set the credentials
+            cp ./ci/scripts/credentials.template ./credentials.yaml
+            printf '%s\n' $NEXUS_USER $NEXUS_PASSWORD n | ./ci/scripts/build-credentials.sh
+
+            # add the secrets
+            make secrets
+
+            # execute a test
+            cd test
+            go mod vendor
+            go test -v greymatter_integration_test.go
+
 workflows:
   version: 2
-  build-and-publish:
+  test:
     jobs:
+      - lint-edge-secrets:
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              only: /release-.*/
+      - lint-services:
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              only: /release-.*/
+      - lint-fabric-sense:
+          requires:
+            - lint-edge-secrets
+            - lint-services
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              only: /release-.*/
+      - greymatter-test:
+          requires:
+            - lint-fabric-sense
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              only: /release-.*/
       - package-development:
+          requires:
+            - greymatter-test
           filters:
             tags:
               ignore: /.*/
@@ -258,6 +363,8 @@ workflows:
           requires:
             - package-development
       - package-and-publish-core-release:
+          requires:
+            - greymatter-test
           filters:
             tags:
               ignore: /.*/

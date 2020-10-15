@@ -4,11 +4,11 @@ global:
   # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
-  environment: openshift              
+  environment: openshift
   # Used to configure control and control-api environment variables
-  zone: zone-default-zone             
+  zone: zone-default-zone
   # Whether to use consul for service discovery
-  consul:                             
+  consul:
     enabled: false
     host: ''
     port: 8500
@@ -20,7 +20,7 @@ global:
     port: 50000
     # The label Control uses to find pods to include in the mesh
     cluster_label: greymatter.io/control
-    # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
+    # Comma delimited string of namespaces for control to monitor. Also used by prometheus.
     additional_namespaces:
   data:
     # whether to install an external data
@@ -32,9 +32,9 @@ global:
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
   # Configures the init container used to wait on various deployments to be ready
-  waiter:                               
+  waiter:
     image: deciphernow/k8s-waiter:latest
-    service_account: 
+    service_account:
       create: true
       name: waiter-sa
   # Sidecar configuration (Control-api is the only service in this chart with a proxy)
@@ -78,7 +78,7 @@ control:
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Secret used to talk to control-api
-    secret:                      
+    secret:
       enabled: true
       secret_name: control-certs
       mount_point: /service-certs
@@ -159,21 +159,21 @@ control:
 control-api:
   controlApi:
     # Name used for the deployment and service resources
-    name: control-api                   
+    name: control-api
     # Display name used for NOTES.txt
-    display_name: control-api            
+    display_name: control-api
     # Number of replicas for the deployment
-    replicas: 1                         
+    replicas: 1
     # Gm Control API version
     version: v1.5.0-dev
     image: 'docker.greymatter.io/development/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
-    image_pull_policy: IfNotPresent       
+    image_pull_policy: IfNotPresent
     # Port exposed by the control-api container
-    container_port: 5555                           
+    container_port: 5555
     # Location to persist control-api's configuration store
-    pvc_mount_point: '/app/control-api/data/backend.json' 
-    secret:                             
+    pvc_mount_point: '/app/control-api/data/backend.json'
+    secret:
       enabled: true
       secret_name: controlapi-certs
       mount_point: /service-certs
@@ -282,7 +282,7 @@ services:
     minInstances: 1
     maxInstances: 1
     secret:
-      enabled: true  
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -308,7 +308,7 @@ services:
     owner: 'Decipher'
     version: 3.4.2
     secret:
-      enabled: true  
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -342,7 +342,7 @@ services:
     owner: 'Decipher'
     version: 1.1
     secret:
-      enabled: true  
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -364,7 +364,7 @@ services:
     owner: 'Decipher'
     version: '1.1.1'
     secret:
-      enabled: true  
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -385,7 +385,7 @@ services:
     documentation:
     owner: 'Decipher'
     version: '1.5.0-dev'
-    secret:          
+    secret:
       enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
@@ -467,7 +467,7 @@ jwt:
     # Whether or not to use aac if using jwt-gov
     use_aac: false
     # If set, enables tls using the secret specified in secret_name
-    #secret:
+    # secret:
     #  secret_name: jwt-certs
     #  mount_point: /gm-jwt-security/certs
     # Location to mount the information specified in users_cg_name in the container
@@ -503,11 +503,11 @@ jwt:
         type: secret
         secret: jwt-certs
         key: jwt.trust.pem
-      server_cert:      
+      server_cert:
         type: secret
         secret: jwt-certs
         key: jwt.cert.pem
-      server_key:     
+      server_key:
         type: secret
         secret: jwt-certs
         key: jwt.key.pem

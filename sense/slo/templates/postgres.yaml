@@ -17,8 +17,9 @@ spec:
     metadata:
       labels:
         {{ .Values.global.control.cluster_label }}: postgres-slo
+        greymatter: sense
     spec:
-      # Security context for openshift, kubernetes and eks is the same. 
+      # Security context for openshift, kubernetes and eks is the same.
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
@@ -56,7 +57,7 @@ spec:
       {{- if .Values.postgres.private_image }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
-      {{- end }} 
+      {{- end }}
       volumes:
       - name: postgres-slo-config
         configMap:

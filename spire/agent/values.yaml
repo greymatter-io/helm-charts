@@ -1,4 +1,6 @@
 global:
+  control:
+    cluster_label: greymatter.io/control
   spire:
     trust_domain: quickstart.greymatter.io
     namespace: spire

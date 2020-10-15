@@ -47,12 +47,12 @@ data:
   image: docker.greymatter.io/development/gm-data:{{ $.Values.data.version }}
   image_pull_secret: '{{ .Values.global.image_pull_secret }}'
   image_pull_policy: IfNotPresent
-  
+
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
-  # Location and (optionally) size of pvc to persist data if not using s3 
+  # Location and (optionally) size of pvc to persist data if not using s3
   pvc:
     mount_point: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
-    #size:
+    # size:
   # Security context for the statefulset if enabled
   security_context:
     enabled: false
@@ -195,7 +195,7 @@ mongo:
     ## If undefined (the default) or set to null, no storageClassName spec is
     ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
     ##   GKE, AWS & OpenStack)
-    #storage_class: "-"
+    # storage_class: "-"
   resources:
     limits:
       cpu: 200m
@@ -232,19 +232,19 @@ mongo:
     mongo_use_tls:
       type: value
       value: 'false'
-    #mongo_cert:
+    # mongo_cert:
     #  type: secret
     #  secret: {{ .Values.mongo.secret.secret_name }}
     #  key: {{ .Values.mongo.secret.secret_keys.cert }}
-    #mongo_key:
+    # mongo_key:
     #  type: secret
     #  secret: {{ .Values.mongo.secret.secret_name }}
     #  key: {{ .Values.mongo.secret.secret_keys.key }}
-    #mongo_trust:
+    # mongo_trust:
     #  type: secret
     #  secret: {{ .Values.mongo.secret.secret_name }}
     #  key: {{ .Values.mongo.secret.secret_keys.ca }}
- 
+
   # The credentials for setting up a mongo user and database for data to connect with
   credentials:
     secret_name: 'mongo-password'
@@ -256,10 +256,10 @@ mongo:
     gmdata_password: 'mongopassword'
 
   # If set, enables tls and configures environment using the secret specified in secret_name
-  #secret:
-    #secret_name: mongo-certs
-    #mount_point: /secret/cert
-    #secret_keys:
+  # secret:
+    # secret_name: mongo-certs
+    # mount_point: /secret/cert
+    # secret_keys:
     #  ca: ca_b64
     #  cert: cert_b64
     #  key: key_b64

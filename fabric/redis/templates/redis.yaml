@@ -14,17 +14,13 @@ spec:
     matchLabels:
       {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
       deployment: {{ .Values.redis.name }}
-  # strategy:
-  #   rollingUpdate:
-  #     maxSurge: 25%
-  #     maxUnavailable: 25%
-  #   type: RollingUpdate
   template:
     metadata:
       creationTimestamp: null
       labels:
         {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
         deployment: {{ .Values.redis.name }}
+        greymatter: fabric
     spec:
       {{- if and .Values.global.environment (eq .Values.global.environment "eks") }}
       securityContext:

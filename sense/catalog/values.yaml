@@ -8,7 +8,7 @@ global:
   # Used to configure control and control-api environment variables
   zone: zone-default-zone
   # Whether to use consul for service discovery
-  consul:       
+  consul:
     enabled: false
     host: ''
     port: 8500
@@ -17,7 +17,7 @@ global:
     # Port for Grey Matter Control. Used in sidecar envvars
     port: 50000
     # The label Control uses to find pods to include in the mesh
-    cluster_label: greymatter.io/control 
+    cluster_label: greymatter.io/control
   data:
     # whether to install an external data
     external:
@@ -28,13 +28,16 @@ global:
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
   # Configures the init container used to wait on various deployments to be ready
-  waiter:                             
+  waiter:
     image: deciphernow/k8s-waiter:latest
     service_account:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
     version: 1.5.0-dev
+  # To use an external redis or not
+  external_redis:
+    disabled: true
 
 catalog:
   # Name used for the deployment and service resources
@@ -200,7 +203,7 @@ services:
     maxInstances: 1
     data_prefix: "/data"
     secret:
-      enabled: true  
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -226,7 +229,7 @@ services:
     owner: 'Decipher'
     version: 3.4.2
     secret:
-      enabled: true  
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -259,7 +262,7 @@ services:
     owner: 'Decipher'
     version: 1.1.1
     secret:
-      enabled: true  
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true
@@ -281,7 +284,7 @@ services:
     owner: 'Decipher'
     version: '1.1.1'
     secret:
-      enabled: true  
+      enabled: true
       secret_name: sidecar-certs
       mount_point: /etc/proxy/tls/sidecar
       insecure: true

@@ -1,7 +1,7 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .Values.global.spire.namespace }}:agent
+  name: {{ .Values.global.spire.namespace }}.agent
   labels:
     chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
     release: "{{ $.Release.Name }}"
@@ -12,5 +12,5 @@ subjects:
     namespace: {{ .Values.global.spire.namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ .Values.global.spire.namespace }}:agent
+  name: {{ .Values.global.spire.namespace }}.agent
   apiGroup: rbac.authorization.k8s.io
