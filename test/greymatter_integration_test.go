@@ -266,6 +266,9 @@ func verifyCatalog(t *testing.T, kubectlOptions *k8s.KubectlOptions) {
 		InsecureSkipVerify: true,
 	}
 
+	// The Edge node requires a bit of time to get configured and we've seen issues where it will die before it' ready. This adds a sleep for 30 seconds to give it time to serve requests
+	time.Sleep(30 * time.Second)
+
 	// Define the path to the catalog service
 	catalogEndpoint := "https://localhost:30000/services/catalog/latest/summary"
 
