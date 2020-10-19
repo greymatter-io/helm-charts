@@ -1,8 +1,27 @@
-version: 2
+version: 2.1
+
+orbs:
+  slack: circleci/slack@4.0
 
 defaults: &defaults
   machine: true
   working_directory: ~/helm-charts
+
+slack-fail-post-step: &slack-fail-post-steps
+  context: SLACK
+  post-steps:
+    - slack/notify:
+        event: fail
+
+slack-notify: &slack-notify
+  context: SLACK
+  post-steps:
+    - slack/notify:
+        event: fail
+        template: basic_fail_1
+    - slack/notify:
+        event: pass
+        template: success_tagged_deploy_1
 
 jobs:
   lint-edge-secrets:
@@ -15,6 +34,7 @@ jobs:
             ls -al ~
             ls -al ~/helm-charts/
             docker run --rm -v $(pwd):/helm-charts/ -w /helm-charts quay.io/helmpack/chart-testing:v3.1.1 ct lint --config /helm-charts/.chart-testing/edge-secrets.yaml
+
   lint-services:
     <<: *defaults
     steps:
@@ -320,21 +340,24 @@ jobs:
 
 workflows:
   version: 2
-  test:
+  workflow:
     jobs:
       - lint-edge-secrets:
+          <<: *slack-notify
           filters:
             tags:
               ignore: /.*/
             branches:
-              only: /release-.*/
+              only: /testing-release-2.3/
       - lint-services:
+          <<: *slack-notify
           filters:
             tags:
               ignore: /.*/
             branches:
-              only: /release-.*/
+              only: /testing-release-2.3/
       - lint-fabric-sense:
+          <<: *slack-notify
           requires:
             - lint-edge-secrets
             - lint-services
@@ -342,16 +365,18 @@ workflows:
             tags:
               ignore: /.*/
             branches:
-              only: /release-.*/
+              only: /testing-release-2.3/
       - greymatter-test:
+          <<: *slack-notify
           requires:
             - lint-fabric-sense
           filters:
             tags:
               ignore: /.*/
             branches:
-              only: /release-.*/
+              only: /testing-release-2.3/
       - package-development:
+          <<: *slack-fail-post-steps
           requires:
             - greymatter-test
           filters:
@@ -360,9 +385,11 @@ workflows:
             branches:
               ignore: /release-.*/
       - package-and-publish-greymatter-development:
+          <<: *slack-fail-post-steps
           requires:
             - package-development
       - package-and-publish-core-release:
+          <<: *slack-fail-post-steps
           requires:
             - greymatter-test
           filters:
@@ -372,5 +399,6 @@ workflows:
               ignore: /release-2.3/
               only: /release-.*/
       - package-and-publish-greymatter-release:
+          <<: *slack-notify
           requires:
             - package-and-publish-core-release

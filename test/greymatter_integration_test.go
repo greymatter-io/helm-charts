@@ -13,10 +13,11 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
-	"github.com/chrisbsmith/terratest/modules/helm"
-	http_helper "github.com/chrisbsmith/terratest/modules/http-helper"
-	"github.com/chrisbsmith/terratest/modules/k8s"
-	"github.com/chrisbsmith/terratest/modules/random"
+	"github.com/gruntwork-io/terratest/modules/helm"
+	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
+	"github.com/gruntwork-io/terratest/modules/k8s"
+	"github.com/gruntwork-io/terratest/modules/random"
+	"github.com/stretchr/testify/require"
 )
 
 // Setup the args. For this test, we will set the following input values:
@@ -60,7 +61,12 @@ func TestSpire(t *testing.T) {
 	// Install spire
 	spireChartPath := "../spire"
 
-	helm.Dependency(t, emptyOptions, spireChartPath, "update")
+	// helm.Dependency(t, emptyOptions, spireChartPath, "update")
+
+	if _, err := helm.RunHelmCommandAndGetOutputE(t, options, "dependency", "update", spireChartPath); err != nil {
+		require.NoError(t, err)
+	}
+
 	helm.Install(t, options, spireChartPath, spireReleaseName)
 
 	labelSelector := metav1.LabelSelector{MatchLabels: map[string]string{"greymatter": "spire"}}
@@ -92,7 +98,10 @@ func TestFabric(t *testing.T) {
 	// `helm delete RELEASE_NAME` to clean up any resources that were created.
 
 	// Update the dependencies for this chart
-	helm.Dependency(t, emptyOptions, fabricChartPath, "update")
+	//helm.Dependency(t, emptyOptions, fabricChartPath, "update")
+	if _, err := helm.RunHelmCommandAndGetOutputE(t, options, "dependency", "update", fabricChartPath); err != nil {
+		require.NoError(t, err)
+	}
 
 	// Deploy the chart using `helm install`. Note that we use the version without `E`, since we want to assert the
 	// install succeeds without any errors.
@@ -134,7 +143,11 @@ func TestSense(t *testing.T) {
 
 	// Install Sense
 	senseChartPath := "../sense"
-	helm.Dependency(t, emptyOptions, senseChartPath, "update")
+	//helm.Dependency(t, emptyOptions, senseChartPath, "update")
+	if _, err := helm.RunHelmCommandAndGetOutputE(t, options, "dependency", "update", senseChartPath); err != nil {
+		require.NoError(t, err)
+	}
+
 	helm.Install(t, noWaiterOptions, senseChartPath, senseReleaseName)
 
 	// numberPods :=
@@ -260,8 +273,8 @@ func verifyCatalog(t *testing.T, kubectlOptions *k8s.KubectlOptions) {
 		t,
 		catalogEndpoint,
 		&tlsConfig,
-		10,
-		6*time.Second,
+		30,
+		10*time.Second,
 		func(statusCode int, body string) bool {
 			// fmt.Println("Catalog Summary:", body)
 
