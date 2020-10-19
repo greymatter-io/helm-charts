@@ -61,8 +61,6 @@ func TestSpire(t *testing.T) {
 	// Install spire
 	spireChartPath := "../spire"
 
-	// helm.Dependency(t, emptyOptions, spireChartPath, "update")
-
 	if _, err := helm.RunHelmCommandAndGetOutputE(t, options, "dependency", "update", spireChartPath); err != nil {
 		require.NoError(t, err)
 	}
@@ -98,7 +96,6 @@ func TestFabric(t *testing.T) {
 	// `helm delete RELEASE_NAME` to clean up any resources that were created.
 
 	// Update the dependencies for this chart
-	//helm.Dependency(t, emptyOptions, fabricChartPath, "update")
 	if _, err := helm.RunHelmCommandAndGetOutputE(t, options, "dependency", "update", fabricChartPath); err != nil {
 		require.NoError(t, err)
 	}
@@ -143,7 +140,6 @@ func TestSense(t *testing.T) {
 
 	// Install Sense
 	senseChartPath := "../sense"
-	//helm.Dependency(t, emptyOptions, senseChartPath, "update")
 	if _, err := helm.RunHelmCommandAndGetOutputE(t, options, "dependency", "update", senseChartPath); err != nil {
 		require.NoError(t, err)
 	}

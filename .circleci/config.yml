@@ -343,21 +343,21 @@ workflows:
   workflow:
     jobs:
       - lint-edge-secrets:
-          <<: *slack-notify
+          <<: *slack-fail-post-steps
           filters:
             tags:
               ignore: /.*/
             branches:
-              only: /testing-release-2.3/
+              only: /release-.*/
       - lint-services:
-          <<: *slack-notify
+          <<: *slack-fail-post-steps
           filters:
             tags:
               ignore: /.*/
             branches:
-              only: /testing-release-2.3/
+              only: /release-.*/
       - lint-fabric-sense:
-          <<: *slack-notify
+          <<: *slack-fail-post-steps
           requires:
             - lint-edge-secrets
             - lint-services
@@ -365,16 +365,16 @@ workflows:
             tags:
               ignore: /.*/
             branches:
-              only: /testing-release-2.3/
+              only: /release-.*/
       - greymatter-test:
-          <<: *slack-notify
+          <<: *slack-fail-post-steps
           requires:
             - lint-fabric-sense
           filters:
             tags:
               ignore: /.*/
             branches:
-              only: /testing-release-2.3/
+              only: /release-.*/
       - package-development:
           <<: *slack-fail-post-steps
           requires:
