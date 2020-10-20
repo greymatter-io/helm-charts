@@ -12,6 +12,7 @@ slack-fail-post-step: &slack-fail-post-steps
   post-steps:
     - slack/notify:
         event: fail
+        template: basic_fail_1
 
 slack-notify: &slack-notify
   context: SLACK
@@ -348,14 +349,14 @@ workflows:
             tags:
               ignore: /.*/
             branches:
-              only: /release-.*/
+              only: /.*/
       - lint-services:
           <<: *slack-fail-post-steps
           filters:
             tags:
               ignore: /.*/
             branches:
-              only: /release-.*/
+              only: /.*/
       - lint-fabric-sense:
           <<: *slack-fail-post-steps
           requires:
@@ -365,7 +366,7 @@ workflows:
             tags:
               ignore: /.*/
             branches:
-              only: /release-.*/
+              only: /.*/
       - greymatter-test:
           <<: *slack-fail-post-steps
           requires:
@@ -377,6 +378,8 @@ workflows:
               only: /release-.*/
       - package-development:
           <<: *slack-fail-post-steps
+          context:
+            - nexus
           requires:
             - greymatter-test
           filters:
@@ -386,10 +389,14 @@ workflows:
               ignore: /release-.*/
       - package-and-publish-greymatter-development:
           <<: *slack-fail-post-steps
+          context:
+            - nexus
           requires:
             - package-development
       - package-and-publish-core-release:
           <<: *slack-fail-post-steps
+          context:
+            - nexus
           requires:
             - greymatter-test
           filters:
@@ -400,5 +407,7 @@ workflows:
               only: /release-.*/
       - package-and-publish-greymatter-release:
           <<: *slack-notify
+          context:
+            - nexus
           requires:
             - package-and-publish-core-release
