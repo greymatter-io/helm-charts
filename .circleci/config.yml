@@ -381,7 +381,7 @@ workflows:
           context:
             - nexus
           requires:
-            - greymatter-test
+            - lint-fabric-sense
           filters:
             tags:
               ignore: /.*/

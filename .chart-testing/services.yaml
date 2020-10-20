@@ -3,4 +3,4 @@ chart-dirs:
   - fabric
   - sense
   - spire
-target-branch: testing-release-2.3
+target-branch: release-2.3
