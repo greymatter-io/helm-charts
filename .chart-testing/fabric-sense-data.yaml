@@ -2,4 +2,5 @@ charts:
   - fabric
   - sense
   - data
+  - spire
 target-branch: release-2.3

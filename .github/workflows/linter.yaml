@@ -7,7 +7,7 @@ on:
     branches:
       - release-*
 jobs:
-  lint-test:
+  lint-charts:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,6 +29,15 @@ jobs:
         with:
           command: lint
           config: .chart-testing/services.yaml
+
+  lint-umbrella-charts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Fetch history
+        run: git fetch --prune --unshallow
 
       - name: Run chart-testing (lint fabric sense data)
         id: lint-fabric-sense-data

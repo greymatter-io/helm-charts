@@ -1,9 +1,8 @@
 apiVersion: v2
 appVersion: 1.2.0
-description: A Helm chart to deploy the Spire Agent
-name: agent
+description: A Helm chart to deploy Grey Matter Data
+name: data
 version: 2.2.2
-home: https://greymatter.io
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
   - name: greymatter-io
@@ -11,5 +10,11 @@ maintainers:
 keywords:
   - Grey Matter
   - service mesh
-  - spire
-  - agent
+  - data
+dependencies:
+  # todo: combine into one chart
+  - name: gm-data
+    repository: file://./gm-data
+    version: '2.2.3'
+    alias: data
+    condition: global.data.external.enabled

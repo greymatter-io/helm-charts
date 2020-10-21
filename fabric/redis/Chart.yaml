@@ -3,6 +3,7 @@ appVersion: 1.0.0
 description: A Helm chart to deploy a Redis server to be used by Control API and Catalog
 name: redis
 version: 1.0.1
+home: https://greymatter.io
 maintainers:
   - name: greymatter-io
     email: engineering@greymatter.io

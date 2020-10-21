@@ -2,6 +2,7 @@ apiVersion: v2
 appVersion: 1.1.0
 description: Deploys the Grey Matter 2.0 control server
 name: control
+home: https://greymatter.io
 version: 2.2.2
 maintainers:
   - name: greymatter-io
