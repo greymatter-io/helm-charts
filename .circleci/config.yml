@@ -296,6 +296,7 @@ jobs:
 
   greymatter-test:
     machine: true
+    resource_class: xlarge
     steps:
       - checkout
       - run:
