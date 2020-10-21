@@ -16,6 +16,6 @@ dependencies:
   # todo: combine into one chart
   - name: gm-data
     repository: file://./gm-data
-    version: '2.2.3'
+    version: '2.2.4'
     alias: data
     condition: global.data.external.enabled

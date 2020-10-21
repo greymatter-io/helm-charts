@@ -15,18 +15,18 @@ keywords:
 dependencies:
   - name: control-api
     repository: file://./control-api
-    version: '2.2.3'
+    version: '2.2.4'
 
   - name: control
     repository: file://./control
-    version: '2.2.2'
+    version: '2.2.3'
 
   - name: jwt
     repository: file://./jwt
-    version: '2.2.2'
+    version: '2.2.3'
 
   - name: redis
     repository: file://./redis
-    version: '1.0.1'
+    version: '1.0.2'
     condition: global.external_redis.disabled
     alias: mesh-redis
