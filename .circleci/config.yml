@@ -370,6 +370,8 @@ workflows:
               only: /.*/
       - greymatter-test:
           <<: *slack-fail-post-steps
+          context:
+            - nexus
           requires:
             - lint-fabric-sense
           filters:
