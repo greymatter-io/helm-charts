@@ -36,7 +36,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
-    version: 1.5.0-dev
+    version: 1.5.0
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
   # Global rbac configuration for service admin principal.
   rbac:
@@ -62,7 +62,7 @@ controlApi:
   display_name: control-api
   # Number of replicas for the deployment
   replicas: 1
-  version: v1.5.0-dev
+  version: 1.5.0
   image: 'docker.greymatter.io/development/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
@@ -355,7 +355,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.5.0-dev'
+    version: '1.5.0'
     ingress:
       secret:
         enabled: true
