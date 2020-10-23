@@ -310,7 +310,7 @@ jobs:
             sudo tar -C /usr/local -xzf go1.14.7.linux-amd64.tar.gz
 
             # get and start k3d
-            wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+            wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v3.1.2 bash
             k3d cluster create greymatter -a 4 -p 30000:10808@loadbalancer --wait
             export KUBECONFIG=$(k3d kubeconfig write greymatter)
 
