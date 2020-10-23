@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: 1.2.0
 description: A Helm chart to deploy Grey Matter Fabric
 name: fabric
-version: 2.2.1
+version: 2.2.2
 home: https://greymatter.io
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
@@ -15,15 +15,15 @@ keywords:
 dependencies:
   - name: control-api
     repository: file://./control-api
-    version: '2.2.4'
+    version: '2.2.5'
 
   - name: control
     repository: file://./control
-    version: '2.2.3'
+    version: '2.2.4'
 
   - name: jwt
     repository: file://./jwt
-    version: '2.2.3'
+    version: '2.2.4'
 
   - name: redis
     repository: file://./redis

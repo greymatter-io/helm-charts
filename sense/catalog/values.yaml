@@ -43,7 +43,7 @@ catalog:
   # Name used for the deployment and service resources
   name: catalog
   # GM Catalog version
-  version: 1.1-dev
+  version: 1.0.7
   image: docker.greymatter.io/development/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
@@ -282,7 +282,7 @@ services:
     capability: 'Security'
     documentation: '/services/jwt-security/latest/'
     owner: 'Decipher'
-    version: '1.1.1'
+    version: '1.2.0'
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -304,7 +304,7 @@ services:
     capability: 'Mesh'
     documentation: '/services/control-api/latest/'
     owner: 'Decipher'
-    version: '1.4.3'
+    version: '1.5.0'
     secret:
       enabled: true
       secret_name: sidecar-certs
