@@ -3,7 +3,7 @@ Define the exhibitor host.
 */}}
 {{- define "greymatter.exhibitor.address" -}}
 {{- $zk := dict "servers" (list) -}}
-{{- range $i, $e := until (atoi (printf "%d" (int64 .Values.global.exhibitor.replicas))) -}} 
+{{- range $i, $e := until (atoi (printf "%d" (int64 .Values.global.exhibitor.replicas))) -}}
 {{- $noop := printf "%s%d.%s.%s.%s"  "exhibitor-" . "exhibitor" $.Release.Namespace "svc:2181" | append $zk.servers | set $zk "servers" -}}
 {{- end -}}
 {{- join "," $zk.servers | quote -}}
@@ -14,9 +14,8 @@ Define the mongo host.
 */}}
 {{- define "greymatter.mongo.address" -}}
 {{- $mongo := dict "servers" (list) -}}
-{{- range $i, $e := until (atoi (printf "%d" (int64 .Values.mongo.replicas))) -}} 
-{{- $noop := printf "%s%s%d.%s.%s.%s"  $.Values.mongo.name "-" . $.Values.mongo.name $.Release.Namespace "svc:27017" | append $mongo.servers | set $mongo "servers" -}}
-{{- end -}}
+{{- range $i, $e := until (atoi (printf "%d" (int64 .Values.mongo.replicas))) -}}
+{{- $noop := printf "%s.%s.%s"  $.Values.mongo.name $.Release.Namespace "svc:27017" | append $mongo.servers | set $mongo "servers" -}}
 {{- join "," $mongo.servers -}}
 {{- end -}}
 
