@@ -14,4 +14,4 @@ spec:
   selector:
     {{ .Values.global.control.cluster_label }}: edge
   sessionAffinity: None
-  type: ClusterIP
+  type: {{ .Values.edge.ingress.type }}

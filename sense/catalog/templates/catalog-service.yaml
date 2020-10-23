@@ -6,8 +6,5 @@ spec:
   selector:
     {{ .Values.global.control.cluster_label }}: catalog
   ports:
-    - name: catalog
-      port: {{ .Values.catalog.port }}
+    - port: {{ .Values.catalog.port }}
       targetPort: {{ .Values.catalog.port }}
-  type: ClusterIP
-  sessionAffinity: None

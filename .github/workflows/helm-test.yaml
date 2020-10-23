@@ -1,0 +1,118 @@
+name: Lint and Test Charts
+
+on:
+  pull_request:
+    branches:
+      - release-*
+
+jobs:
+  lint-charts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Fetch history
+        run: git fetch --prune --unshallow
+
+      - name: Run chart-testing (lint edge and secrets)
+        id: lint-edge-secrets
+        uses: helm/chart-testing-action@v1.0.0
+        with:
+          image: quay.io/helmpack/chart-testing:v3.1.1
+          command: lint
+          config: .chart-testing/edge-secrets.yaml
+
+      - name: Run chart-testing (lint services)
+        id: lint-services
+        uses: helm/chart-testing-action@v1.0.0
+        with:
+          image: quay.io/helmpack/chart-testing:v3.1.1
+          command: lint
+          config: .chart-testing/services.yaml
+
+  lint-umbrella-charts:
+    runs-on: ubuntu-latest
+    needs: lint-charts
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Fetch history
+        run: git fetch --prune --unshallow
+
+      - name: Run chart-testing (lint fabric sense data)
+        id: lint-fabric-sense-data
+        uses: helm/chart-testing-action@v1.0.0
+        with:
+          image: quay.io/helmpack/chart-testing:v3.1.1
+          command: lint
+          config: .chart-testing/fabric-sense-data.yaml
+
+  test-greymatter:
+    name: Test Grey Matter
+    needs: lint-umbrella-charts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Fetch history
+        run: git fetch --prune --unshallow
+
+      - name: Dowload Dependencies
+        env:
+          helm_version: 3.3.4
+          kubectl_version: 1.18.3
+          go_version: 1.14.7
+        run: |
+          # remove the old go
+          sudo rm -rf /usr/local/go
+
+          # upgrade go
+          wget https://golang.org/dl/go${go_version}.linux-amd64.tar.gz
+          sudo tar -C /usr/local -xzf go${go_version}.linux-amd64.tar.gz
+
+          # get k3d
+          wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+
+          # get kubectl
+          wget "https://storage.googleapis.com/kubernetes-release/release/v${kubectl_version}/bin/linux/amd64/kubectl"
+          chmod +x ./kubectl
+          sudo mv kubectl /usr/local/
+
+          # get helm
+          wget "https://get.helm.sh/helm-v${helm_version}-linux-amd64.tar.gz"
+          tar -xvf helm-v${helm_version}-linux-amd64.tar.gz
+          chmod +s linux-amd64/helm
+          sudo mv linux-amd64/helm /usr/local/
+
+          # add the local dir to our path so we can run the helm and kubectl we just downloaded
+          export PATH=$PATH:/usr/local/go/bin:/usr/local
+
+      - name: Start k3d
+        run: |
+          k3d cluster create greymatter -a 4 -p 30000:10808@loadbalancer --wait
+          export KUBECONFIG=$(k3d kubeconfig write greymatter)
+
+      - name: Set Credentials
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: |
+          # set the credentials
+          cp ./ci/scripts/credentials.template ./credentials.yaml
+          printf '%s\n' $NEXUS_USER $NEXUS_PASSWORD n | ./ci/scripts/build-credentials.sh
+
+      - name: Make secrets
+        run: make secrets
+
+      - name: Run tests
+        run: |
+          cd test
+          go mod vendor
+          go test -v greymatter_integration_test.go
+
+      - name: Tear down k3d
+        run: |
+          k3d cluster delete greymatter
