@@ -16,6 +16,7 @@ Define the mongo host.
 {{- $mongo := dict "servers" (list) -}}
 {{- range $i, $e := until (atoi (printf "%d" (int64 .Values.mongo.replicas))) -}}
 {{- $noop := printf "%s.%s.%s"  $.Values.mongo.name $.Release.Namespace "svc:27017" | append $mongo.servers | set $mongo "servers" -}}
+{{- end -}}
 {{- join "," $mongo.servers -}}
 {{- end -}}
 
