@@ -8,6 +8,9 @@
       - [With Voyager](#with-voyager)
       - [With another Ingress Controller](#with-another-ingress-controller)
     - [OpenShift](#openshift)
+  - [Automatic Ingress](#automatic-ingress)
+    - [AWS (EKS)](#aws-eks)
+    - [GCP (GKE)](#gcp-gke)
 
 >Grey Matter requires that the Edge service perform TLS termination.  Therefore, any ingress options need to be configured for TLS passthrough.
 
@@ -103,3 +106,25 @@ Whichever ingress controller you choose, it needs to allow for SSL passthrough.
 ### OpenShift
 
 In OpenShift, ingress is defined as a Route with the URL described above. No additional steps are required as the OpenShift router will automatically handle all traffic for you.
+
+## Automatic Ingress
+
+The default type of the Edge svc is ClusterIP.  This is good for when a separate ingress is going to be provisioned.  However, for a quickstart setup it may be useful to have the cloud provider automatically provision this for you.  
+
+To do so, set the `edge.ingress.type=LoadBalancer` when installing the `edge` charts, e.g.: `helm install edge edge --set=global.environment=eks --set=edge.ingress.type=LoadBalancer -f global.yaml`.  This will cause the cloud provider to setup a native load balancer to handle traffic in to your cluster.  You will be able to access your edge via the `EXTERNAL-IP` of the edge svc like shown below:
+
+### AWS (EKS)
+
+```bash
+$ kubectl get svc edge
+NAME   TYPE           CLUSTER-IP       EXTERNAL-IP                                                              PORT(S)                          AGE
+edge   LoadBalancer   10.100.208.192   a038cb433f4c140548045507a288a644-975336825.us-east-1.elb.amazonaws.com   10808:31346/TCP,8081:32018/TCP   83m
+```
+
+### GCP (GKE)
+
+```bash
+$ kubectl get svc edge
+NAME   TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                          AGE
+edge   LoadBalancer   10.15.248.43   35.232.167.96   10808:30429/TCP,8081:32461/TCP   12m
+```

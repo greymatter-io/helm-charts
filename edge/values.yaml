@@ -81,6 +81,10 @@ edge:
       mount_point: /etc/proxy/tls/sidecar/
   # If set, enables ingress TLS on the edge proxy using the secret specified in secret_name
   ingress:
+    # type is used to set how the edge k8s svc resource is created.  For depoyments using NGINX or Voyager or some other
+    # provisioned ingress, leave this as "ClusterIP".   If you want an ingress point automatically created by the cloud provider
+    # set this to "LoadBalancer"
+    type: ClusterIP
     secret:
       enabled: true
       secret_name: greymatter-edge-ingress
