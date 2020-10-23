@@ -6,5 +6,5 @@ spec:
   selector:
     {{ .Values.global.control.cluster_label }}: {{ .Values.controlApi.name }}
   ports:
-  - port: {{ .Values.controlApi.container_port }}
-    targetPort: {{ .Values.controlApi.container_port }}
+    - port: {{ .Values.controlApi.container_port }}
+      targetPort: {{ .Values.controlApi.container_port }}
