@@ -74,7 +74,7 @@ jobs:
           sudo tar -C /usr/local -xzf go${go_version}.linux-amd64.tar.gz
 
           # get k3d
-          wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | bash
+          wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v3.1.2 bash
 
           # get kubectl
           wget "https://storage.googleapis.com/kubernetes-release/release/v${kubectl_version}/bin/linux/amd64/kubectl"
