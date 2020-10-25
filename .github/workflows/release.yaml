@@ -1,9 +1,13 @@
+# This action releases the Grey Matter charts and stores them in
+# GitHub on the gh-pages branch, allowing GitHub to host the charts
+# instead of depending on Nexus
+
 name: Release Charts
 
 on:
   push:
     branches:
-      - github-hosted-charts
+      - release-*
 
 jobs:
   release:

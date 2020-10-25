@@ -1,0 +1,37 @@
+# copied from https://github.com/grafana/helm-charts/blob/main/.github/workflows/sync-readme.yaml
+
+# Since the helm charts are stored on a different branch in GitHub,
+# we want to keep a README there with the information on how to use
+# the charts. This job syncs the README from the default branch to the
+# gh-pages branch
+on:
+  push:
+    branches:
+      - 'release-*'
+    paths:
+      - 'README.md'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          cp -f README.md ${{ runner.temp }}/README.md
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+      - run: |
+          cp -f ${{ runner.temp }}/README.md .
+
+          # Find the current Default branch
+          branch=$(git remote show origin | grep "HEAD branch" | cut -d ":" -f 2 | tr -d "[:space:]")
+          url="https://github.com/greymatter-io/helm-charts/blob/${branch}"
+
+          # Set the fully qualified url to each document since they point to a different branch
+          sed -i "s|(docs|(${url}docs|g" ${{ runner.temp }}/README.md
+
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git add README.md
+          git commit --signoff -m "Sync README from Default Branch"
+          git push

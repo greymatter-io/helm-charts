@@ -1,3 +1,5 @@
+# This action lints and tests the helm charts on all
+# pull requests.
 name: Lint and Test Charts
 
 on:
