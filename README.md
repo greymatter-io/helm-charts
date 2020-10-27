@@ -31,7 +31,7 @@ make credentials
 
 ### Installing
 
-The following set of commands will install Grey Matter using the GitHub hosted Helm Charts
+The following set of commands will install Grey Matter using the GitHub hosted Helm Charts.
 
 ```console
 $ helm install secrets greymatter/secrets -f credentials.yaml -f global.yaml
