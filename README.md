@@ -37,9 +37,8 @@ The following set of commands will install Grey Matter using the GitHub hosted H
 $ helm install secrets greymatter/secrets -f credentials.yaml -f global.yaml
 $ helm install spire greymatter/spire --set=global.environment=kubernetes -f global.yaml
 $ helm install fabric greymatter/fabric --set=global.environment=kubernetes -f global.yaml
-$ helm install edge greymatter/edge -f global.yaml
+$ helm install edge greymatter/edge --set=edge.ingress.type=LoadBalancer -f global.yaml
 $ helm install sense greymatter/sense -f global.yaml --set=global.waiter.service_account.create=false
-$ kubectl patch svc edge -p '{"spec": {"type": "LoadBalancer"}}'
 ```
 
 ### Viewing the Grey Matter Application
