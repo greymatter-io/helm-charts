@@ -42,7 +42,7 @@ $ helm install sense greymatter/sense -f global.yaml --set=global.waiter.service
 $ kubectl patch svc edge -p '{"spec": {"type": "LoadBalancer"}}'
 ```
 
-### Viewing the Grey Matter Dashboard
+### Viewing the Grey Matter Application
 
 At this point, you can verify that Grey Matter was installed successfully by opening your browser and pointing it to `https://localhost:30000` and verify that all six services are running.
 
