@@ -19,7 +19,7 @@ You can then run `helm search repo greymatter` to see the charts.
 
 ## Quickstart with Grey Matter
 
-The steps below provide a quickstart exmple to deploy Grey Matter.
+The steps below provide a quickstart example to deploy Grey Matter.
 
 ### Create Credentials
 
