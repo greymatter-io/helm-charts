@@ -39,6 +39,34 @@ spec:
             - name: controlapi-certs
               mountPath: {{ .Values.control.secret.mount_point }}
         {{- end }}
+        - name: sidecar
+          image: {{ tpl .Values.sidecar.image $ | quote }}
+          imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
+          {{- if .Values.sidecar.resources }}
+          resources:
+{{ toYaml .Values.sidecar.resources | indent 12 }}
+          {{- end }}
+          ports:
+            - name: proxy
+              containerPort: {{ .Values.sidecar.port }}
+            - name: metrics
+              containerPort: {{ .Values.sidecar.metrics_port }}
+          env:
+            {{- include "envvars" (dict "envvar" .Values.sidecar.envvars "top" $) | indent 10 }}
+            {{- if .Values.global.spire.enabled }}
+            - name: SPIRE_PATH
+              value: {{ .Values.global.spire.path }}
+            {{- end }}
+          volumeMounts:
+          {{- if .Values.global.spire.enabled }}
+          {{- include "spire_volume_mount" . | indent 12 }}
+          {{- else if .Values.sidecar.secret.enabled }}
+          {{- include "sidecar_volume_certs_mount" . | indent 12 }}
+          {{- end }}
+        {{- if .Values.global.consul.enabled }}
+        {{- $data := dict "Values" .Values "ServiceName" .Values.control.name }}
+        {{- include "consul.agent" $data | nindent 8 }}
+        {{- end }}
       initContainers:
         - name: ensure-control-api
           image: {{ .Values.global.waiter.image }}
@@ -61,3 +89,14 @@ spec:
             secretName: {{ .Values.control.secret.secret_name }}
             {{- end }}
       {{- end }}
+        {{- if .Values.global.consul.enabled }}
+        - name: data-consul
+          emptyDir: {}
+        - name: config-consul
+          emptyDir: {}
+        {{- end }}
+        {{- if .Values.global.spire.enabled }}
+        {{- include "spire_volumes" . | indent 6 }}
+        {{- else if .Values.sidecar.secret.enabled }}
+        {{- include "sidecar_certs_volumes" . | indent 6 }}
+        {{- end }}
