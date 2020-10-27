@@ -23,7 +23,7 @@ The steps below provide a quickstart exmple to deploy Grey Matter.
 
 ### Create Credentials
 
-A Grey Matter LDAP account is still required to pull the images from our Nexus server. Run the following command and provide answers when prompted
+A Grey Matter LDAP account is still required to pull the images from our Nexus server. Run the following command and provide answers when prompted.
 
 ```console
 make credentials
