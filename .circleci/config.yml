@@ -9,6 +9,7 @@ version: 2
 
 jobs:
   package-development:
+    context: nexus
     machine: true
     steps:
       - checkout
@@ -67,6 +68,7 @@ jobs:
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm ${DOCKER_IMAGE} /helm/secrets
   package-and-publish-greymatter-development:
+    context: nexus 
     machine: true
     steps:
       - checkout
@@ -129,6 +131,7 @@ jobs:
             mv $(pwd)/spire/Chart.yaml.bak $(pwd)/spire/Chart.yaml
             mv $(pwd)/secrets/Chart.yaml.bak $(pwd)/secrets/Chart.yaml
   package-and-publish-core-release:
+    context: nexus 
     machine: true
     steps:
       - checkout
@@ -187,6 +190,7 @@ jobs:
           command: |
             docker run --rm -e INPUT_NEXUS_URL=$NEXUS_URL -e INPUT_NEXUS_USER=$NEXUS_USER -e INPUT_NEXUS_PASS=$NEXUS_PASSWORD -v $(pwd):/helm ${DOCKER_IMAGE} /helm/secrets
   package-and-publish-greymatter-release:
+    context: nexus 
     machine: true
     steps:
       - checkout
@@ -241,15 +245,18 @@ workflows:
   build-and-publish:
     jobs:
       - package-development:
+          context: nexus
           filters:
             tags:
               ignore: /.*/
             branches:
               ignore: /release-.*/
       - package-and-publish-greymatter-development:
+          context: nexus
           requires:
             - package-development
       - package-and-publish-core-release:
+          context: nexus
           filters:
             tags:
               ignore: /.*/
@@ -257,5 +264,6 @@ workflows:
               ignore: /release-2.3/
               only: /release-.*/
       - package-and-publish-greymatter-release:
+          context: nexus
           requires:
             - package-and-publish-core-release
