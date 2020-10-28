@@ -305,7 +305,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 3.4.2
+    version: 4.0.0
     secret:
       enabled: true
       secret_name: sidecar-certs
