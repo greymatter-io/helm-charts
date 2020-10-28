@@ -41,6 +41,10 @@ global:
   sidecar:
     # GM Proxy version, used by control and control-api
     version: 1.5.0-dev
+    envvars:
+      proxy_dynamic:
+        type: 'value'
+        value: 'true'
 
 control:
   control:
