@@ -33,7 +33,8 @@ spec:
             tcpSocket:
               port: grpc
             initialDelaySeconds: 2
-          resources: {{- toYaml .Values.resources | nindent 12 }}
+          resources:
+            {{- toYaml .Values.control.resources | nindent 12 }}
         {{- if .Values.control.secret }}
           volumeMounts:
             - name: controlapi-certs
