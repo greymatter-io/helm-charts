@@ -113,7 +113,7 @@ control:
 # Sidecar configuration for Control
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version . }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
