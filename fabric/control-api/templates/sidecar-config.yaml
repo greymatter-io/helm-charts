@@ -3,14 +3,14 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: api-sidecar
-  namespace: fabric
+  namespace: {{ .Release.Namespace }}
 data:
   config.yaml: |-
     node:
       id: "default"
       cluster: "fabric.api"
       locality:
-        zone: default.zone
+        zone: zone.default.zone
         region: default.region
     dynamic_resources:
       ads_config:
