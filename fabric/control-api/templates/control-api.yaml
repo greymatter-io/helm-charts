@@ -76,37 +76,15 @@ spec:
           resources:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           {{- end }}
+          args:
+            - -c
+            - /etc/greymatter/config.yaml
           ports:
             - name: proxy
               containerPort: {{ .Values.sidecar.port }}
             - name: metrics
               containerPort: {{ .Values.sidecar.metrics_port }}
-          # If mTLS is enabled on the service, we can't use normal httpGet probes. Instead we add the probes to the sidecar so that we can exec in and call the service directly. The control-api service does not have the utilities (curl, wget with ssl) we need to do these probes there.
-          {{- if .Values.global.spire.enabled }}
-          {{- else if .Values.sidecar.secret.enabled }}
-          # We don't want to kill the container if it's taking a while to start up, we'll just remove it from the service
-          readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - "curl -k --cacert /etc/proxy/tls/sidecar/ca.crt --key /etc/proxy/tls/sidecar/server.key --cert /etc/proxy/tls/sidecar/server.crt https://localhost:5555/v1.0/cluster"
-            # Pods are considered to be in a Failure state before the initialDelaySeconds has passed, meaning they won't be backends for a service
-            initialDelaySeconds: 5
-            periodSeconds: 2
-          # We want to restart the container if it's failed 3 requests spaced 3 seconds apart after we've given it quite enough time to start up and be initialized
-          # We give a full minute before we start health-checking for failures
-          livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - "curl -k --cacert {{ .Values.sidecar.secret.mount_point }}/{{ .Values.sidecar.secret.secret_keys.ca }} --key  {{ .Values.sidecar.secret.mount_point }}/{{ .Values.sidecar.secret.secret_keys.key }} --cert  {{ .Values.sidecar.secret.mount_point }}/{{ .Values.sidecar.secret.secret_keys.cert }} https://localhost:5555/v1.0/cluster"
-            initialDelaySeconds: 60
-            periodSeconds: 3
-          {{- end }}
           env:
-          {{- include "sidecar.envvars" . | indent 12 }}
             {{- if .Values.global.spire.enabled }}
             - name: SPIRE_PATH
               value: {{ .Values.global.spire.path }}
@@ -115,10 +93,11 @@ spec:
           {{- if .Values.global.spire.enabled }}
           {{- include "spire_volume_mount" . | indent 12 }}
           {{- else if .Values.sidecar.secret.enabled }}
-          {{- include "sidecar_volume_certs_mount" . | indent 12 }}
+            - name: sidecar-config
+              mountPath: /etc/greymatter
           {{- end }}
         {{- if .Values.global.consul.enabled }}
-        {{- $data := dict "Values" .Values "ServiceName" .Values.controlApi.name }}
+        {{- $data := dict "Values" .Values "ServiceName" .Values.control.name }}
         {{- include "consul.agent" $data | nindent 8 }}
         {{- end }}
       imagePullSecrets:
@@ -142,5 +121,7 @@ spec:
       {{- if .Values.global.spire.enabled }}
       {{- include "spire_volumes" . | indent 6 }}
       {{- else if .Values.sidecar.secret.enabled }}
-      {{- include "sidecar_certs_volumes" . | indent 6 }}
+      - name: sidecar-config
+        configMap:
+          name: api-sidecar
       {{- end }}

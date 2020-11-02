@@ -1,0 +1,174 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-sidecar
+  namespace: fabric
+data:
+  config.yaml: |-
+    node:
+      id: "default"
+      cluster: "fabric.api"
+      locality:
+        zone: default.zone
+        region: default.region
+    dynamic_resources:
+      ads_config:
+        api_type: GRPC
+        grpc_services:
+          envoy_grpc:
+            cluster_name: xds_cluster
+      cds_config:
+        ads: {}
+      lds_config:
+        ads: {}
+    static_resources:
+      listeners:
+        - name: control-ingress
+          address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: 10808
+          filter_chains:
+            - filters:
+              - name: envoy.http_connection_manager
+                config:
+                  forward_client_cert_details: sanitize_set
+                  set_current_client_cert_details:
+                      uri: true
+                  codec_type: AUTO
+                  access_log:
+                    - name: envoy.file_access_log
+                      config:
+                        path: "/dev/stdout"
+                  stat_prefix: ingress
+                  route_config:
+                    name: local
+                    virtual_hosts:
+                      - name: local
+                        domains: ["*"]
+                        routes:
+                          - match:
+                              prefix: "/"
+                            route:
+                              cluster: local
+                  http_filters:
+                    - name: gm.metrics
+                      typed_config:
+                        "@type": type.googleapis.com/deciphernow.gm_proxy.filters.MetricsConfig
+                        metrics_port: 8080
+                        metrics_host: 0.0.0.0
+                        metrics_dashboard_uri_path: /metrics
+                        metrics_prometheus_uri_path: /prometheus
+                        prometheus_system_metrics_interval_seconds: 15
+                        metrics_ring_buffer_size: 4096
+                        metrics_key_function: depth
+                        metrics_key_depth: "2"
+                    - name: envoy.router
+              tls_context:
+                common_tls_context:
+                  {{- if .Values.global.spire.enabled }}
+                  tls_certificate_sds_secret_configs:
+                      - name: "spiffe://{{ .Values.global.spire.trust_domain }}"
+                      sds_config:
+                          api_config_source:
+                          api_type: GRPC
+                          grpc_services:
+                              envoy_grpc:
+                              cluster_name: spire
+                  tls_params:
+                      ecdh_curves:
+                      - X25519:P-256:P-521:P-384
+                  validation_context_sds_secret_config:
+                      name: "spiffe://{{ .Values.global.spire.trust_domain }}"
+                      sds_config:
+                      api_config_source:
+                          api_type: GRPC
+                          grpc_services:
+                          envoy_grpc:
+                              cluster_name: spire
+                  {{- else }}
+                  tls_certificates:
+                      - certificate_chain: /etc/proxy/tls/sidecar/server.crt
+                          private_key: /etc/proxy/tls/sidecar/server.key
+                  validation_context:
+                      trusted_ca:
+                          filename: /etc/proxy/tls/sidecar/ca.crt
+                  {{- end }}
+      clusters:
+        - name: local
+          connect_timeout: 5s
+          type: STATIC
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: local
+            endpoints:
+              - lb_endpoints:
+                - endpoint:
+                    address:
+                      socket_address:
+                        address: 127.0.0.1
+                        port_value: 50000 
+        - name: spire_agent
+          connect_timeout: 5s
+          http2_protocol_options: {}
+          type: STATIC
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: spire_agent
+            endpoints:
+              - lb_endpoints:
+                - endpoint:
+                    address:
+                      pipe:
+                        path: /run/spire/sockets/agent.sock
+        - name: xds_cluster
+          connect_timeout: 5s
+          http2_protocol_options: {}
+          type: STRICT_DNS
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: xds_cluster
+            endpoints:
+              - lb_endpoints:
+                - endpoint:
+                    address:
+                      socket_address:
+                        address: control.fabric.svc.cluster.local
+                        port_value: 10808
+          tls_context:
+            common_tls_context:
+              {{- if .Values.global.spire.enabled }}
+              tls_certificate_sds_secret_configs:
+                  - name: "spiffe://{{ .Values.global.spire.trust_domain }}"
+                  sds_config:
+                      api_config_source:
+                      api_type: GRPC
+                      grpc_services:
+                          envoy_grpc:
+                          cluster_name: spire
+              tls_params:
+                  ecdh_curves:
+                  - X25519:P-256:P-521:P-384
+              validation_context_sds_secret_config:
+                  name: "spiffe://{{ .Values.global.spire.trust_domain }}"
+                  sds_config:
+                  api_config_source:
+                      api_type: GRPC
+                      grpc_services:
+                      envoy_grpc:
+                          cluster_name: spire
+              {{- else }}
+              tls_certificates:
+                  - certificate_chain: /etc/proxy/tls/sidecar/server.crt
+                      private_key: /etc/proxy/tls/sidecar/server.key
+              validation_context:
+                  trusted_ca:
+                      filename: /etc/proxy/tls/sidecar/ca.crt
+              {{- end }}
+    admin:
+      access_log_path: /dev/stdout
+      address:
+        socket_address:
+          address: 127.0.0.1
+          port_value: 8001
