@@ -89,8 +89,10 @@ data:
                               cluster_name: spire
                   {{- else }}
                   tls_certificates:
-                      - certificate_chain: /etc/proxy/tls/sidecar/server.crt
-                          private_key: /etc/proxy/tls/sidecar/server.key
+                      - certificate_chain:
+                          filename: /etc/proxy/tls/sidecar/server.crt
+                        private_key:
+                          filename: /etc/proxy/tls/sidecar/server.key
                   validation_context:
                       trusted_ca:
                           filename: /etc/proxy/tls/sidecar/ca.crt
@@ -108,7 +110,8 @@ data:
                     address:
                       socket_address:
                         address: 127.0.0.1
-                        port_value: 50000 
+                        port_value: 50000
+        {{- if .Values.global.spire.enabled }}
         - name: spire_agent
           connect_timeout: 5s
           http2_protocol_options: {}
@@ -122,6 +125,7 @@ data:
                     address:
                       pipe:
                         path: /run/spire/sockets/agent.sock
+        {{- end }}
         - name: xds_cluster
           connect_timeout: 5s
           http2_protocol_options: {}
@@ -160,8 +164,10 @@ data:
                           cluster_name: spire
               {{- else }}
               tls_certificates:
-                  - certificate_chain: /etc/proxy/tls/sidecar/server.crt
-                      private_key: /etc/proxy/tls/sidecar/server.key
+                  - certificate_chain:
+                      filename: /etc/proxy/tls/sidecar/server.crt
+                    private_key:
+                      filename: /etc/proxy/tls/sidecar/server.key
               validation_context:
                   trusted_ca:
                       filename: /etc/proxy/tls/sidecar/ca.crt

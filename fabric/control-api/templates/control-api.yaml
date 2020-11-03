@@ -79,6 +79,8 @@ spec:
           args:
             - -c
             - /etc/greymatter/config.yaml
+          command:
+            - /app/gm-proxy
           ports:
             - name: proxy
               containerPort: {{ .Values.sidecar.port }}
@@ -95,6 +97,8 @@ spec:
           {{- else if .Values.sidecar.secret.enabled }}
             - name: sidecar-config
               mountPath: /etc/greymatter
+            - name: sidecar-certs
+              mountPath: {{ .Values.sidecar.secret.mount_point }}
           {{- end }}
         {{- if .Values.global.consul.enabled }}
         {{- $data := dict "Values" .Values "ServiceName" .Values.control.name }}
@@ -124,4 +128,7 @@ spec:
       - name: sidecar-config
         configMap:
           name: api-sidecar
+      - name: sidecar-certs
+        secret:
+          secretName: {{ .Values.sidecar.secret.secret_name }}
       {{- end }}

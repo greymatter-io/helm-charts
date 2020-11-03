@@ -97,8 +97,10 @@ data:
                                 cluster_name: spire
                     {{- else }}
                     tls_certificates:
-                        - certificate_chain: /etc/proxy/tls/sidecar/server.crt
-                            private_key: /etc/proxy/tls/sidecar/server.key
+                        - certificate_chain:
+                            filename: /etc/proxy/tls/sidecar/server.crt
+                          private_key:
+                            filename: /etc/proxy/tls/sidecar/server.key
                     validation_context:
                         trusted_ca:
                             filename: /etc/proxy/tls/sidecar/ca.crt
@@ -141,8 +143,10 @@ data:
                         cluster_name: spire
                 {{- else }}
                 tls_certificates:
-                - certificate_chain: /etc/proxy/tls/sidecar/server.crt
-                    private_key: /etc/proxy/tls/sidecar/server.key
+                - certificate_chain:
+                    filename: /etc/proxy/tls/sidecar/server.crt
+                  private_key:
+                    filename: /etc/proxy/tls/sidecar/server.key
                 validation_context:
                 trusted_ca:
                     filename: /etc/proxy/tls/sidecar/ca.crt
