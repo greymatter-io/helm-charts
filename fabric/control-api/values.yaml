@@ -169,6 +169,27 @@ sidecar:
     requests:
       cpu: 100m
       memory: 128Mi
+  envvars:
+    xds_cluster:
+      type: value
+      value: 'control-api'
+    proxy_dynamic:
+      type: 'value'
+      value: 'true'
+    xds_zone:
+      type: 'value'
+      value: '{{ .Values.global.zone }}'
+    xds_host:
+      type: 'value'
+      value: 'control.{{ .Release.Namespace }}.svc'
+    xds_port:
+      type: 'value'
+      value: '50000'
+      type: 'value'
+      value: 'default'
+    envoy_admin_log_path:
+      type: 'value'
+      value: '/dev/stdout'
 
 
 bootstrap:
@@ -308,6 +329,28 @@ services:
     documentation: ''
     owner: 'Decipher'
     version: '1.1.1'
+    secret:
+      enabled: true
+      secret_name: sidecar-certs
+      mount_point: /etc/proxy/tls/sidecar
+      insecure: true
+      secret_keys:
+        cert: server.crt
+        key: server.key
+        ca: ca.crt
+
+  control:
+    catalogEnabled: true
+    controlEnabled: true
+    name: 'Grey Matter Control'
+    serviceName: 'control'
+    observablesEnabled: false
+    port: 50000
+    enableInstanceMetrics: 'true'
+    capability: 'Mesh'
+    documentation:
+    owner: 'Decipher'
+    version: '1.4.3'
     secret:
       enabled: true
       secret_name: sidecar-certs

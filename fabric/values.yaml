@@ -41,28 +41,6 @@ global:
   sidecar:
     # GM Proxy version, used by control-api
     version: 1.5.0-dev
-    envvars:
-      xds_cluster:
-        type: value
-        value: 'control-api'
-      proxy_dynamic:
-        type: 'value'
-        value: 'true'
-      xds_zone:
-        type: 'value'
-        value: '{{ .Values.global.zone }}'
-      xds_host:
-        type: 'value'
-        value: 'control.{{ .Release.Namespace }}.svc'
-      xds_port:
-        type: 'value'
-        value: '{{ .Values.global.control.port }}'
-      xds_node_id:
-        type: 'value'
-        value: 'default'
-      envoy_admin_log_path:
-        type: 'value'
-        value: '/dev/stdout'
 
 control:
   control:
