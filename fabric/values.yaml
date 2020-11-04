@@ -37,7 +37,7 @@ global:
     service_account:
       create: true
       name: waiter-sa
-  # Sidecar configuration (Control-api is the only service in this chart with a proxy)
+  # Sidecar configuration
   sidecar:
     # GM Proxy version, used by control-api
     version: 1.5.1
