@@ -136,7 +136,7 @@ To add another docker registry with credentials to the secrets, simply add anoth
     password:
 ```
 
-To install, run `make secrets`. The `docker.secret` will have creall registries in this file.  If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
+To install, run `make secrets`. The `docker.secret` will have all registries in this file.  If you need credentials please contact [Grey Matter Support](https://support.deciphernow.com).
 
 ### AWS credentials (optional)
 

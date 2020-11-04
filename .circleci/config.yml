@@ -372,6 +372,7 @@ workflows:
           <<: *slack-fail-post-steps
           context:
             - nexus
+            - SLACK
           requires:
             - lint-fabric-sense
           filters:
@@ -383,6 +384,7 @@ workflows:
           <<: *slack-fail-post-steps
           context:
             - nexus
+            - SLACK
           requires:
             - lint-fabric-sense
           filters:
@@ -394,12 +396,14 @@ workflows:
           <<: *slack-fail-post-steps
           context:
             - nexus
+            - SLACK
           requires:
             - package-development
       - package-and-publish-core-release:
           <<: *slack-fail-post-steps
           context:
             - nexus
+            - SLACK
           requires:
             - greymatter-test
           filters:
@@ -412,5 +416,6 @@ workflows:
           <<: *slack-notify
           context:
             - nexus
+            - SLACK
           requires:
             - package-and-publish-core-release
