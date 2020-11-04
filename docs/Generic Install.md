@@ -60,7 +60,7 @@ Generate the `credentials.yaml` file by running `make credentials`, or edit the 
 
 ```yaml
 dockerCredentials:
-  - registry: docker.production.deciphernow.com
+  - registry: docker.greymatter.io
   - email: <nexus-email>
   - username: <nexus-email>
   - password: <nexus-password>

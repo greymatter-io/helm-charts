@@ -44,12 +44,12 @@ data:
     enabled: true
     secret_name: data-secrets
 
-  image: docker.production.deciphernow.com/deciphernow/gm-data:{{ $.Values.data.version }}
+  image: docker.greymatter.io/release/gm-data:{{ $.Values.data.version }}
   image_pull_secret: '{{ .Values.global.image_pull_secret }}'
   image_pull_policy: IfNotPresent
-  
+
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
-  # Location and (optionally) size of pvc to persist data if not using s3 
+  # Location and (optionally) size of pvc to persist data if not using s3
   pvc:
     mount_point: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
     #size:
@@ -244,7 +244,7 @@ mongo:
     #  type: secret
     #  secret: {{ .Values.mongo.secret.secret_name }}
     #  key: {{ .Values.mongo.secret.secret_keys.ca }}
- 
+
   # The credentials for setting up a mongo user and database for data to connect with
   credentials:
     secret_name: 'mongo-password'
@@ -257,12 +257,12 @@ mongo:
 
   # If set, enables tls and configures environment using the secret specified in secret_name
   #secret:
-    #secret_name: mongo-certs
-    #mount_point: /secret/cert
-    #secret_keys:
-    #  ca: ca_b64
-    #  cert: cert_b64
-    #  key: key_b64
+  #secret_name: mongo-certs
+  #mount_point: /secret/cert
+  #secret_keys:
+  #  ca: ca_b64
+  #  cert: cert_b64
+  #  key: key_b64
 
 sidecar:
   version: '{{ .Values.global.sidecar.version | default "latest" }}'
@@ -279,7 +279,7 @@ sidecar:
       ca: ca.crt
       key: server.key
       cert: server.crt
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:

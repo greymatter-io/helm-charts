@@ -2,13 +2,13 @@
 
 global:
   # Used as imagePullSecrets value
-  image_pull_secret: docker.secret    
+  image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kubernetes", or "openshift"
-  environment: openshift              
+  environment: openshift
   # Used to configure control and control-api environment variables
-  zone: zone-default-zone             
+  zone: zone-default-zone
   # Whether to use consul for service discovery
-  consul:                             
+  consul:
     enabled: false
     host: ''
     port: 8500
@@ -18,23 +18,23 @@ global:
     port: 50000
     # The label Control uses to find pods to include in the mesh
     cluster_label: greymatter.io/control
-    # Comma delimited string of namespaces for control to monitor. Also used by prometheus.    
-    additional_namespaces:   
+    # Comma delimited string of namespaces for control to monitor. Also used by prometheus.
+    additional_namespaces:
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: false
-    trust_domain: quickstart.greymatter.io 
-    path: '/run/spire/socket/agent.sock'         
+    trust_domain: quickstart.greymatter.io
+    path: '/run/spire/socket/agent.sock'
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
     version: 1.4.4
-    
+
 dashboard:
   # Name used for the deployment and service resources
   name: dashboard
   # Dashboard app version
   version: 3.4.2
-  image: 'docker.production.deciphernow.com/deciphernow/gm-dashboard:{{ $.Values.dashboard.version }}'
+  image: 'docker.greymatter.io/release/gm-dashboard:{{ $.Values.dashboard.version }}'
   # Port for the dashboard app
   port: 1337
   # When to pull container images, used in the deployment
@@ -57,44 +57,44 @@ dashboard:
       key: server.key
   envvars:
     fabric_server:
-      type: "value"
+      type: 'value'
       value: '/services/catalog/latest/'
     config_server:
-      type: "value"
+      type: 'value'
       value: '/services/control-api/latest/v1.0'
     use_prometheus:
-      type: "value"
+      type: 'value'
       value: 'true'
     objectives_server:
-      type: "value"
+      type: 'value'
       value: '/services/slo/latest/'
     prometheus_server:
-      type: "value"
+      type: 'value'
       value: '/services/prometheus/latest/api/v1/'
     base_url:
-      type: "value"
+      type: 'value'
       value: '/services/dashboard/{{ $.Values.dashboard.version }}/'
     request_timeout:
-      type: "value"
+      type: 'value'
       value: '15000'
     server_ssl_enabled:
-      type: "value"
-      value: "{{ not .Values.global.spire.enabled }}"
+      type: 'value'
+      value: '{{ not .Values.global.spire.enabled }}'
     server_ssl_ca:
-      type: "value"
+      type: 'value'
       value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.ca }}'
     server_ssl_cert:
-      type: "value"
+      type: 'value'
       value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.cert }}'
     server_ssl_key:
-      type: "value"
+      type: 'value'
       value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.key }}'
 
 # Sidecar configuration for dashboard
 sidecar_dashboard:
   # Uses global.sidecar.version if set
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_dashboard.version $ }}'
+  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar_dashboard.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -151,18 +151,17 @@ prometheus:
     name: prometheus-sa
   resources:
     requests:
-      memory: "8Gi"
-      cpu: "1"
+      memory: '8Gi'
+      cpu: '1'
     limits:
-      memory: "12Gi"
-      cpu: "2"
-
+      memory: '12Gi'
+      cpu: '2'
 
 # Sidecar configuration for prometheus
 sidecar_prometheus:
   # Uses global.sidecar.version if set
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
+  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
