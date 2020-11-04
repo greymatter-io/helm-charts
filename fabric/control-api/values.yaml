@@ -173,9 +173,6 @@ sidecar:
     xds_cluster:
       type: value
       value: 'control-api'
-    proxy_dynamic:
-      type: 'value'
-      value: 'true'
     xds_zone:
       type: 'value'
       value: '{{ .Values.global.zone }}'
@@ -185,12 +182,12 @@ sidecar:
     xds_port:
       type: 'value'
       value: '50000'
+    xds_node_id:
       type: 'value'
       value: 'default'
     envoy_admin_log_path:
       type: 'value'
       value: '/dev/stdout'
-
 
 bootstrap:
   image: 'docker.greymatter.io/development/greymatter:latest'

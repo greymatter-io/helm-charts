@@ -42,9 +42,24 @@ We use indentation in the template for readability, but the template returns the
 Most users should use the `indent` or `nindent` functions to automatically indent the proper amount. */}}
 {{- define "sidecar.envvars" }}
   {{- $top := . }}
+  {{- if and .Values.global.sidecar.envvars $top.Values.sidecar.envvars }}
+    {{- $allvars := merge $top.Values.sidecar.envvars .Values.global.sidecar.envvars }}
+    {{- range $name, $envvar := $allvars }}
+      {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+      {{- $args := dict "name" $envName "value" $envvar "top" $top }}
+      {{- include "envvar" $args }}
+    {{- end }}
+  {{- else if .Values.global.sidecar.envvars }}
+    {{- range $name, $envvar := .Values.global.sidecar.envvars }}
+      {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
+      {{- $args := dict "name" $envName "value" $envvar "top" $top }}
+      {{- include "envvar" $args }}
+    {{- end }}
+  {{- else if $top.Values.sidecar.envvars }}
     {{- range $name, $envvar := $top.Values.sidecar.envvars }}
       {{- $envName := $name | upper | replace "." "_" | replace "-" "_" }}
       {{- $args := dict "name" $envName "value" $envvar "top" $top }}
       {{- include "envvar" $args }}
     {{- end }}
-{{- end }} 
+  {{- end }}
+{{- end }}
