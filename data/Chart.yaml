@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: 1.2.0
 description: A Helm chart to deploy Grey Matter Data
 name: data
-version: 2.2.2
+version: 2.2.3
 home: https://greymatter.io
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
@@ -16,6 +16,6 @@ dependencies:
   # todo: combine into one chart
   - name: gm-data
     repository: file://./gm-data
-    version: '3.0.0'
+    version: '3.0.1'
     alias: data
     condition: global.data.external.enabled

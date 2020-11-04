@@ -4,7 +4,7 @@
     "name": "edge",
     "instances": [
       {
-          "host": "localhost",
+          "host": "127.0.0.1",
           "port": 10808
       }
     ],
