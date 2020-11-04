@@ -40,6 +40,36 @@ spec:
             - name: controlapi-certs
               mountPath: {{ .Values.control.secret.mount_point }}
         {{- end }}
+        - name: sidecar
+          image: '{{ tpl .Values.sidecar.image $ }}'
+          imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
+          {{- if .Values.sidecar.resources }}
+          resources:
+  {{ toYaml .Values.sidecar.resources | indent 10 }}
+          {{- end }}
+          ports:
+          - name: proxy
+            containerPort: {{ .Values.sidecar.port }}
+          - name: metrics
+            containerPort: {{ .Values.sidecar.metrics_port }}
+          env:
+          {{- include "sidecar.envvars" . | indent 12 }}
+          {{- if .Values.global.spire.enabled }}
+          - name: SPIRE_PATH
+            value: {{ .Values.global.spire.path }}
+          {{- end }}
+          volumeMounts:
+          {{- if .Values.global.spire.enabled }}
+          {{- include "spire_volume_mount" . | indent 8 }}
+          {{- else if .Values.sidecar.secret.enabled }}
+          - name: sidecar-certs
+            mountPath: {{ .Values.sidecar.secret.mount_point }}
+            readOnly: true
+          {{- end }}
+        {{- if .Values.global.consul.enabled }}
+        {{- $data := dict "Values" .Values "ServiceName" "dashboard" }}
+        {{- include "consul.agent" $data | nindent 6 }}
+        {{- end }}
       initContainers:
         - name: ensure-control-api
           image: {{ .Values.global.waiter.image }}
@@ -61,4 +91,9 @@ spec:
             {{- else }}
             secretName: {{ .Values.control.secret.secret_name }}
             {{- end }}
+        {{- if .Values.sidecar.secret.enabled }}
+        - name: sidecar-certs
+          secret:
+            secretName: {{ .Values.sidecar.secret.secret_name }}
+        {{- end }}
       {{- end }}
