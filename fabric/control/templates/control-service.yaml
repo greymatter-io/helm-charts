@@ -8,9 +8,14 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   ports:
-  - port: {{ .Values.global.control.port }}
+  - name: control-sidecar
+    port: {{ .Values.global.control.port }}
     protocol: TCP
     targetPort: grpc
+  - name: control
+    port: 50000
+    protocol: TCP
+    targetPort: 50000
   selector:
     run: {{ .Values.control.name }}
   type: ClusterIP

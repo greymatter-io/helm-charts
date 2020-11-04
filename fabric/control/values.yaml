@@ -108,7 +108,7 @@ control:
     gm_control_file_filename:
       type: 'null'
       value: '/app/routes.yaml'
-  resources: {}
+  resources:
 
 
 # Sidecar configuration for Control

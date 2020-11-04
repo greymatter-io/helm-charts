@@ -34,7 +34,7 @@ spec:
               port: grpc
             initialDelaySeconds: 2
           resources:
-            {{- toYaml .Values.control.resources | nindent 12 }}
+{{ toYaml .Values.control.resources | indent 12 }}
         {{- if .Values.control.secret }}
           volumeMounts:
             - name: controlapi-certs
@@ -45,7 +45,7 @@ spec:
           imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
           {{- if .Values.sidecar.resources }}
           resources:
-  {{ toYaml .Values.sidecar.resources | indent 10 }}
+{{ toYaml .Values.sidecar.resources | indent 12 }}
           {{- end }}
           ports:
           - name: proxy
