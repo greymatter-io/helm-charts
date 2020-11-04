@@ -49,7 +49,7 @@ The Grey Matter Helm chart assumes that your Kubernetes cluster has a default st
 
 ### Ingress
 
-If you're using OpenShift, you can skip to the next section because OpenShift will create a route using the `global.domain` value set in the [Edge chart](./../edge/Chart.yaml). 
+If you're using OpenShift, you can skip to the next section because OpenShift will create a route using the `global.domain` value set in the [Edge chart](./../edge/Chart.yaml).
 
 By default, we use an nginx ingress configuration. This ingress will be set up automatically.
 
@@ -114,7 +114,7 @@ Run `make credentials` to generate a `credentials.yaml` file.  It will prompt yo
 
 ```yaml
 dockerCredentials:
-  - registry: docker.production.deciphernow.com
+  - registry: docker.greymatter.io
     email:
     username:
     password:
@@ -312,7 +312,7 @@ Here are some additional parameters we often use when running `helm install`:
 
 We can run `helm ls` to see all our current deployments and `helm uninstall <release name>` to delete deployments. If you need to make changes, you can run `helm upgrade <release name> <chart> -f <optional config overrides>` to update your release in place.
 
-You should also load the appropriate user p12 file according to the certs you configured when deploying Greymatter. The default certs correspond to the quickstart certificates and the `quickstart.p12` file can be found at `certs/quickstart.p12`. You will want to follow your browser specific instructions to load in this user pki. 
+You should also load the appropriate user p12 file according to the certs you configured when deploying Greymatter. The default certs correspond to the quickstart certificates and the `quickstart.p12` file can be found at `certs/quickstart.p12`. You will want to follow your browser specific instructions to load in this user pki.
 [Firefox](https://www.sslsupportdesk.com/how-to-import-a-certificate-into-firefox/) and [Chrome](https://support.globalsign.com/customer/en/portal/articles/1211541-install-client-digital-certificate---windows-using-chrome) instructions.
 
 You can confirm that the Grey Matter service mesh is running by navigating to its dashboard. You'll need to construct the URL from your global values in `edge/values.yaml`.

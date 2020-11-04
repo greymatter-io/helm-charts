@@ -35,7 +35,7 @@ global:
     path: '/run/spire/socket/agent.sock'
 edge:
   version: '1.4.5'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.edge.version $ }}'
+  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.edge.version $ }}'
   image_pull_policy: IfNotPresent
   # Port where the edge proxy will listen
   port: 10808
@@ -64,7 +64,7 @@ edge:
       type: 'value'
       value: '/dev/stdout'
 
-  # Optional resource options    
+  # Optional resource options
   resources:
     limits:
       cpu: 1
@@ -93,7 +93,7 @@ edge:
     # The following options configure the edge ingress based on the global.environment
     # If global.environment is openshift, a passthrough Route is configured with host set from the values specified in global.domain, global.route_url_name, and global.remove_namespace_from_url
     # If global.environment is not openshift, an ingress object is created with the specified apiVersion, annotations, and rules
-    
+
     # If use_voyager is true make sure voyager is already installed
     use_voyager: false
     voyager:
@@ -123,9 +123,9 @@ edge:
       # For instance, these values will work for nginx ingress
       apiVersion: extensions/v1beta1
       annotations:
-        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        nginx.ingress.kubernetes.io/backend-protocol: "https"
+        nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
+        nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+        nginx.ingress.kubernetes.io/backend-protocol: 'https'
 
       rules:
         - host: development.deciphernow.com

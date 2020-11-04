@@ -192,7 +192,7 @@ The `credentials.yaml` file generated should generate your docker credentials in
 
 ```yaml
 dockerCredentials:
-  - registry: docker.production.deciphernow.com
+  - registry: docker.greymatter.io
     email:
     username:
     password:
@@ -259,7 +259,7 @@ To hit our cluster, we can access voyager-edge:
 $ minikube -p gm-deploy service --https=true voyager-edge
 |-----------|--------------|--------------------------------|
 | NAMESPACE   | NAME           | URL                              |
-|-------------|----------------|----------------------------------|
+| ----------- | -------------- | -------------------------------- |
 | default     | voyager-edge   | http://192.168.99.102:30001      |
 |             |                | http://192.168.99.102:30000      |
 | ----------- | -------------- | -------------------------------- |

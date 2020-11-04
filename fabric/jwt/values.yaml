@@ -26,20 +26,20 @@ global:
     port: 8500
     edge_port: 10808
   sidecar:
-    version: 1.4.4
+    version: 1.4.5
 
 jwt:
   # Name used for the deployment and service resources
   name: jwt-security
   version: '1.1.1'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
+  image: 'docker.greymatter.io/release/gm-jwt-security:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
       '-c',
       'if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /gm-jwt-security/gm-jwt-security',
     ]
-  # Used to configure the REDIS_DB environment variable 
+  # Used to configure the REDIS_DB environment variable
   # If set, enables tls using the secret specified in secret_name
   #secret:
   #  secret_name: jwt-certs
@@ -56,7 +56,7 @@ jwt:
       memory: 64Mi
 
   envvars:
-    private_key: 
+    private_key:
       type: secret
       secret: jwt-security
       key: jwt.key
@@ -72,10 +72,10 @@ jwt:
       value: 'info'
     redis_port:
       type: value
-      value: "6379"
-    redis_db:   
+      value: '6379'
+    redis_db:
       type: value
-      value: "0"
+      value: '0'
     redis_host:
       type: value
       value: '{{ .Values.redis.name }}.{{ .Release.Namespace }}.svc'
@@ -83,7 +83,6 @@ jwt:
       type: secret
       secret: '{{ .Values.redis.secret.secret_name | default "redis-password" }}'
       key: password
-
 
   # Provides a list of authorized users for the JWT service - preloaded with the DNs for GM Control, GM Catalog and the Mesh cert
   users_cg_name: jwt-users
@@ -177,7 +176,6 @@ jwt:
       }]
     }
 
-
 redis:
   # Name used for the redis deployment and service resources
   name: redis
@@ -203,7 +201,7 @@ redis:
       memory: 128Mi
   envvars:
     redis_password:
-      type: secret 
+      type: secret
       secret: '{{ .Values.redis.secret.secret_name | default "redis-password" }}'
       key: password
 
@@ -223,7 +221,7 @@ sidecar:
       ca: ca.crt
       key: server.key
       cert: server.crt
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:

@@ -4,11 +4,11 @@ global:
   # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
-  environment: openshift              
+  environment: openshift
   # Used to configure control and control-api environment variables
-  zone: zone-default-zone             
+  zone: zone-default-zone
   # Whether to use consul for service discovery
-  consul:                             
+  consul:
     enabled: false
     host: ''
     port: 8500
@@ -18,12 +18,12 @@ global:
     port: 50000
     # The label Control uses to find pods to include in the mesh
     cluster_label: greymatter.io/control
-    # Comma delimited string of namespaces for control to monitor. Also used by prometheus. 
+    # Comma delimited string of namespaces for control to monitor. Also used by prometheus.
     additional_namespaces:
   # Configures the init container used to wait on various deployments to be ready
-  waiter:                             
+  waiter:
     image: deciphernow/k8s-waiter:latest
-    service_account: 
+    service_account:
       create: true
       name: waiter-sa
 
@@ -35,8 +35,8 @@ control:
   # Number of replicas for the deployment
   replicas: 1
   # Version of control
-  version: 1.4.4
-  image: 'docker.production.deciphernow.com/deciphernow/gm-control:{{ $.Values.control.version }}'
+  version: 1.4.2
+  image: 'docker.greymatter.io/release/gm-control:{{ $.Values.control.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # Secret used to talk to control-api
@@ -55,16 +55,16 @@ control:
   envvars:
     gm_control_api_insecure:
       type: 'value'
-      value: "{{ .Values.control.secret.insecure }}"
+      value: '{{ .Values.control.secret.insecure }}'
     gm_control_api_ssl:
       type: 'value'
-      value: "{{ .Values.control.secret.enabled }}"
+      value: '{{ .Values.control.secret.enabled }}'
     gm_control_api_sslcert:
       type: 'value'
-      value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.cert }}"
+      value: '{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.cert }}'
     gm_control_api_sslkey:
       type: 'value'
-      value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.key }}"
+      value: '{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.key }}'
     gm_control_console_level:
       type: 'value'
       value: 'info'
@@ -88,7 +88,7 @@ control:
       value: 'true'
     gm_control_kubernetes_cluster_label:
       type: 'value'
-      value: "{{ .Values.global.control.cluster_label }}"
+      value: '{{ .Values.global.control.cluster_label }}'
     gm_control_kubernetes_port_name:
       type: 'value'
       value: 'proxy'
@@ -105,4 +105,4 @@ control:
     gm_control_file_filename:
       type: 'null'
       value: '/app/routes.yaml'
-  resources:  {}
+  resources: {}

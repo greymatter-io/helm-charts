@@ -26,13 +26,13 @@ global:
     port: 8500
     edge_port: 10808
   sidecar:
-    version: 1.4.4
+    version: 1.4.5
 
 jwt:
   version: '1.1.2'
   # If true, uses aac for auth control
   use_aac: false
-  image: 'docker-government.production.deciphernow.com/deciphernow/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
+  image: 'docker.greymatter.io/government/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
   command: ['/bin/sh']
   args:
     [
@@ -87,10 +87,10 @@ jwt:
       value: '300'
     redis_port:
       type: value
-      value: "6379"
+      value: '6379'
     redis_db:
       type: value
-      value: "0"
+      value: '0'
     redis_host:
       type: value
       value: '{{ .Values.redis.name }}.{{ .Release.Namespace }}.svc'
@@ -167,7 +167,7 @@ jwt:
               "as_is": []
           },
           "f_share": {
-              "as_is": [ 
+              "as_is": [
               ]
           },
           "f_sci_ctrls": {
@@ -183,7 +183,6 @@ jwt:
     [
       "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US"
     ]
-          
 
 redis:
   # Name used for the redis deployment and service resources
@@ -219,7 +218,7 @@ sidecar:
       ca: ca.crt
       key: server.key
       cert: server.crt
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:

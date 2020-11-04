@@ -2,13 +2,13 @@
 
 global:
   # Used as imagePullSecrets value
-  image_pull_secret: docker.secret    
+  image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kubernetes", or "openshift"
-  environment: openshift              
+  environment: openshift
   # Used to configure control and control-api environment variables
-  zone: zone-default-zone             
+  zone: zone-default-zone
   # Whether to use consul for service discovery
-  consul:                             
+  consul:
     enabled: false
     host: ''
     port: 8500
@@ -22,7 +22,7 @@ global:
   spire:
     enabled: false
     trust_domain: quickstart.greymatter.io
-    path: '/run/spire/socket/agent.sock'                
+    path: '/run/spire/socket/agent.sock'
   # Configures the init container used to wait on various deployments to be ready
   waiter:
     image: deciphernow/k8s-waiter:latest
@@ -30,13 +30,13 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.4.4
-    
+    version: 1.4.5
+
 slo:
-  name: "slo"
+  name: 'slo'
   # SLO version
   version: 1.1.5
-  image: "docker.production.deciphernow.com/deciphernow/gm-slo:{{ .Values.slo.version }}"
+  image: 'docker.greymatter.io/release/gm-slo:{{ .Values.slo.version }}'
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the SLO service
@@ -71,49 +71,49 @@ slo:
       key: database
     # Postgresql endpoint - only templated if rds is enabled, otherwise the var isn't included at all
     postgresql_endpoint:
-      type: "{{- if .Values.postgres.rds.enabled }}value{{- else }}null{{- end }}"
-      value: "{{ .Values.postgres.rds.endpoint }}"
+      type: '{{- if .Values.postgres.rds.enabled }}value{{- else }}null{{- end }}'
+      value: '{{ .Values.postgres.rds.endpoint }}'
     service_port:
       type: value
-      value: "1337"
-    # SSL for SLO <-> postgres connection. Enabled if posgres.secret.enabled is true. 
+      value: '1337'
+    # SSL for SLO <-> postgres connection. Enabled if posgres.secret.enabled is true.
     ssl_enabled:
       type: value
-      value: "{{- if .Values.postgres.secret.enabled }}true{{- else }}false{{- end }}"
+      value: '{{- if .Values.postgres.secret.enabled }}true{{- else }}false{{- end }}'
     ssl_server_ca:
       type: value
-      value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.ca }}"
+      value: '{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.ca }}'
     ssl_server_cert:
       type: value
-      value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.cert }}"
+      value: '{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.cert }}'
     ssl_server_key:
       type: value
-      value: "{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.key }}"
+      value: '{{ .Values.postgres.secret.mount_point}}/{{ .Values.postgres.secret.secret_keys.key }}'
     # SSL for the SLO service. Enabled if slo.secret.enabled is true.
     service_ssl_enabled:
       type: value
-      value: "{{- if .Values.slo.secret.enabled }}true{{- else }}false{{- end }}"
+      value: '{{- if .Values.slo.secret.enabled }}true{{- else }}false{{- end }}'
     service_ssl_ca:
       type: value
-      value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.ca }}"
+      value: '{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.ca }}'
     service_ssl_cert:
       type: value
-      value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.cert }}"
+      value: '{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.cert }}'
     service_ssl_key:
       type: value
-      value: "{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.key }}"
+      value: '{{ .Values.slo.secret.mount_point}}/{{ .Values.slo.secret.secret_keys.key }}'
     drop_schema:
       type: value
-      value: "false"
+      value: 'false'
     # One way ssl between SLO <-> Postgres. Enabled if postgres.rds.enabled is true.
     ssl_1_way_ssl:
       type: value
-      value: "{{- if .Values.postgres.rds.enabled }}true{{- else }}false{{- end }}"
+      value: '{{- if .Values.postgres.rds.enabled }}true{{- else }}false{{- end }}'
 
 # Sidecar configuration for SLO
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.production.deciphernow.com/deciphernow/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics

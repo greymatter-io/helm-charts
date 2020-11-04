@@ -1,11 +1,10 @@
-
 name: proxy
 
 imagePullSecrets:
   - name: docker.secret
 
 sidecar:
-  version: 1.4.4
+  version: 1.4.5
   image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}'
   port: 10808
   metrics_port: 8081

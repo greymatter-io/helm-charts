@@ -13,10 +13,10 @@
 ## After installation
 
 Extract the `crc` binary to `~/.local/bin/crc`. You will likely get a security error like this:
-![](img/codeready1.png) 
+![](img/codeready1.png)
 
 which you can get by like so:
-![Screen Shot 2020-03-23 at 10.44.42 AM|569x500, 75%](img/codeready2.png) 
+![Screen Shot 2020-03-23 at 10.44.42 AM|569x500, 75%](img/codeready2.png)
 
 
 ## Starting CodeReady
@@ -32,7 +32,7 @@ Default memory is 8192, default cpus is 4. Double it for now (we may be able to 
 ```
 $ crc config set memory 16384
 
-$ crc config set cpus 8 
+$ crc config set cpus 8
 ```
 
 
@@ -114,7 +114,7 @@ Create credential file:
 $ make credentials
 ```
 
-Note: The default Grey Matter install pulls images from the `docker.production.deciphernow.com` repository. If you want to pull images from `docker-dev.production.deciphernow.com` instead, you will have to update all values.yaml files and modify credentials.yaml to use that repository.
+Note: The default Grey Matter install pulls images from the `docker.greymatter.io` repository. If you want to pull images from `docker-dev.production.deciphernow.com` instead, you will have to update all values.yaml files and modify credentials.yaml to use that repository.
 
 ### Actual steps:
 
@@ -149,7 +149,7 @@ https://edge-default.apps-crc.testing
 https://code-ready.github.io/crc/#starting-monitoring-alerting-telemetry_gsg
 
 ```
-$  oc get clusterversion version -ojsonpath='{range .spec.overrides[*]}{.name}{"\n"}{end}' | nl -v 0                                  
+$  oc get clusterversion version -ojsonpath='{range .spec.overrides[*]}{.name}{"\n"}{end}' | nl -v 0
      0	cluster-monitoring-operator
      1	machine-config-operator
      2	etcd-quorum-guard
@@ -164,7 +164,7 @@ $ oc patch clusterversion/version --type='json' -p '[{"op":"remove", "path":"/sp
 
 Delete all deployments:
 ```
-helm ls --all --short | xargs -L1 helm uninstall 
+helm ls --all --short | xargs -L1 helm uninstall
 ```
 
 Delete OpenShift cluster:
