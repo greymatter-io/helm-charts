@@ -49,7 +49,7 @@ At this point, you can verify that Grey Matter was installed successfully by ope
 
 ## Integration Testing
 
-Integration testing can be run against this repo via GitHub Actions prior to committing to GitHub. The below procedure assumes that you have cloned this repo and are starting from it's base directory (the same location as this README file).
+Integration tests are run automatically upon pull requests; however, you can emulate these same tests on your local machine. In fact, it's encouraged that you do this before you submit a PR. The below procedure assumes that you have cloned this repo and are starting from it's base directory (the same location as this README file).
 
 1. Build the k3d cluster.
     ```console
