@@ -47,6 +47,29 @@ At this point, you can verify that Grey Matter was installed successfully by ope
 
 ![](img/dashboard.png)
 
+## Integration Testing
+
+Integration testing can be run against this repo via GitHub Actions prior to committing to GitHub. The below procedure assumes that you have cloned this repo and are starting from it's base directory (the same location as this README file).
+
+1. Build the k3d cluster.
+    ```console
+    make k3d
+    ```
+2. Configure your credentials (you will need a Grey Matter LDAP username and password).
+    ```console
+    make credentials
+    ```
+3. Configure secrets.
+    ```console
+    make secrets
+    ```
+4. Run the Grey Matter integration tests.
+    ```console
+    cd test
+    go mod vendor
+    go test -v greymatter_integration_test.go
+    ```
+
 ## More Documentation
 
 Additional information on the Helm Charts and Grey Matter configuration can be found in the links below.
