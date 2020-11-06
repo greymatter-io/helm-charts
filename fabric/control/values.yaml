@@ -108,6 +108,21 @@ control:
     gm_control_file_filename:
       type: 'null'
       value: '/app/routes.yaml'
+    gm_control_xds_server_cert:
+      type: "value"
+      value: "/service-certs/server.crt"
+    gm_control_xds_server_key:
+      type: "value"
+      value: "/service-certs/server.key"
+    gm_control_xds_server_trusts:
+      type: "value"
+      value: "/service-certs/ca.crt"
+    gm_control_xds_enable_tls:
+      type: "value"
+      value: "true"
+    gm_control_xds_server_auth_type:
+      type: "value"
+      value: "noclientcert"
   resources:
 
 
@@ -149,7 +164,7 @@ sidecar:
       value: 'control.{{ .Release.Namespace }}.svc'
     xds_port:
       type: 'value'
-      value: '{{ .Values.global.control.port }}'
+      value: '50000'
     xds_node_id:
       type: 'value'
       value: 'default'

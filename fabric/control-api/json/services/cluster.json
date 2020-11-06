@@ -2,6 +2,7 @@
   "cluster_key": "cluster-{{.service.serviceName}}",
   "zone_key": "{{ .Values.global.zone}}",
   "name": "{{.service.serviceName}}-service",
+  "http2_protocol_options": {},
   "instances": [
     {
         "host": "127.0.0.1",

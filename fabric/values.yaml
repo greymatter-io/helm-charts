@@ -63,6 +63,18 @@ global:
       envoy_admin_log_path:
         type: 'value'
         value: '/dev/stdout'
+      xds_server_ca_path:
+        type: 'value'
+        value: /etc/proxy/tls/sidecar/ca.crt
+      xds_server_cert_path:
+        type: 'value'
+        value: /etc/proxy/tls/sidecar/server.crt    
+      xds_server_key_path:
+        type: 'value'
+        value: /etc/proxy/tls/sidecar/server.key
+      xds_enable_tls:
+        type: 'value'
+        value: 'true'
 
 control:
   control:
