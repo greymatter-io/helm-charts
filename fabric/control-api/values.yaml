@@ -223,7 +223,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.0.7
+    version: 1.1
     minInstances: 1
     maxInstances: 1
     secret:
