@@ -5,8 +5,7 @@ CHART-SPIRE := .
 include ../output.mk
 
 wsa-spire:
-	$(eval WAITERSACHECK-SPIRE=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
-	echo $(WAITERSACHECK-SPIRE)
+	$(eval WAITERSACHECK-SPIRE=$(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
 
 .PHONY: server
 server: wsa-spire
