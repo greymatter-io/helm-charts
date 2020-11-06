@@ -34,7 +34,7 @@ global:
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
 edge:
-  version: '1.5.0-dev'
+  version: '1.5.1-dev'
   image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.edge.version $ }}'
   image_pull_policy: IfNotPresent
   # Port where the edge proxy will listen
@@ -60,6 +60,18 @@ edge:
     xds_node_id:
       type: 'value'
       value: 'default'
+    xds_server_ca_path:
+      type: 'value'
+      value: /etc/proxy/tls/sidecar/ca.crt
+    xds_server_cert_path:
+      type: 'value'
+      value: /etc/proxy/tls/sidecar/server.crt    
+    xds_server_key_path:
+      type: 'value'
+      value: /etc/proxy/tls/sidecar/server.key
+    xds_enable_tls:
+      type: 'value'
+      value: 'true'
     envoy_admin_log_path:
       type: 'value'
       value: '/dev/stdout'

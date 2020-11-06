@@ -27,7 +27,7 @@ global:
     path: '/run/spire/socket/agent.sock'
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.5.0-dev
+    version: 1.5.1-dev
   # To use the global certs or not
   global_certs:
     enabled: true

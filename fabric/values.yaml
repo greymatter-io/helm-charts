@@ -40,9 +40,21 @@ global:
   # Sidecar configuration
   sidecar:
     # GM Proxy version
-    version: 1.5.0-dev
+    version: 1.5.1-dev
     envvars:
       proxy_dynamic:
+        type: 'value'
+        value: 'true'
+      xds_server_ca_path:
+        type: 'value'
+        value: /etc/proxy/tls/sidecar/ca.crt
+      xds_server_cert_path:
+        type: 'value'
+        value: /etc/proxy/tls/sidecar/server.crt    
+      xds_server_key_path:
+        type: 'value'
+        value: /etc/proxy/tls/sidecar/server.key
+      xds_enable_tls:
         type: 'value'
         value: 'true'
 
@@ -391,7 +403,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.5.0-dev'
+    version: '1.5.1-dev'
     ingress:
       secret:
         enabled: true

@@ -65,7 +65,7 @@ install: dev-dep check-secrets install-spire
 	if [ "$(K3D)" = "true" ]; then \
 		(kubectl patch svc edge -p '{"spec": {"type": "LoadBalancer"}}'); \
 	fi
-	(cd data && make data)
+	# (cd data && make data)
 	sleep 20
 	(cd sense && make sense)
 	(make reveal-endpoint)

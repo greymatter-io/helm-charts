@@ -11,7 +11,7 @@ spec:
   - name: control-sidecar
     port: {{ .Values.global.control.port }}
     protocol: TCP
-    targetPort: grpc
+    targetPort: proxy
   - name: control
     port: 50000
     protocol: TCP

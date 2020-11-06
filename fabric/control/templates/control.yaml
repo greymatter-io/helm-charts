@@ -29,10 +29,10 @@ spec:
             - name: grpc
               containerPort: {{ .Values.global.control.port }}
               protocol: TCP
-          livenessProbe:
-            tcpSocket:
-              port: grpc
-            initialDelaySeconds: 2
+          # livenessProbe:
+          #   tcpSocket:
+          #     port: grpc
+          #   initialDelaySeconds: 2
           resources:
 {{ toYaml .Values.control.resources | indent 12 }}
         {{- if .Values.control.secret }}
