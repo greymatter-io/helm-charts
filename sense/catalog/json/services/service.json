@@ -16,5 +16,9 @@
   "enableInstanceMetrics": {{.service.enableInstanceMetrics | default true}},
   "enableHistoricalMetrics": {{.service.enableHistoricalMetrics | default true}},
   "metricsTemplate": "",
-  "metricsPort": 8081
+  "metricsPort": 8081,
+  "ownerURL": "{{.service.ownerURL}}",
+  "apiSpecEndpoint": "{{.service.apiSpecEndpoint}}",
+  "apiEndpoint": "{{tpl .service.apiEndpoint $ }}",
+  "description": "{{.service.description}}"
 }

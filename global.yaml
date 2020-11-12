@@ -5,6 +5,8 @@ global:
   environment: kubernetes
   # Used to configure control and control-api environment variables
   zone: zone-default-zone
+  # domain used to template catalog's apiEndpoint cluster config and configure edge
+  domain: localhost:30000
   # Whether to use consul for service discovery
   consul:
     enabled: false
@@ -18,6 +20,7 @@ global:
     cluster_label: greymatter.io/control
     # Comma delimited string of namespaces for control to monitor. Also used by prometheus.
     additional_namespaces:
+
 
   data:
     # whether to install an external data

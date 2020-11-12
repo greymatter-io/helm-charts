@@ -139,6 +139,13 @@ controlApi:
     gm_control_api_redis_retry_delay:
       type: value
       value: '{{- if .Values.global.external_redis.disabled }}5s{{- else}}{{ .Values.global.external_redis.retry_delay }}{{- end }}'
+    # The following envvars enable the experimental control-api explorer UI
+    gm_control_api_experiments: 
+      type: value
+      value: 'false'
+    gm_control_api_base_url: 
+      type: value
+      value: '/services/control-api/latest/v1.0/'
   resources:
   pvc:
     size: 1Gi
@@ -208,7 +215,7 @@ bootstrap:
     greymatter_api_sslkey:
       type: value
       value: '{{ .Values.bootstrap.secret.mount_point }}/{{ .Values.bootstrap.secret.secret_keys.key }}'
-
+      
 # Services list used to create Grey Matter configuration objects in control-api/config
 services:
   catalog:
@@ -226,6 +233,13 @@ services:
     version: 1.1
     minInstances: 1
     maxInstances: 1
+    ownerURL: "https://greymatter.io"
+    apiEndpoint: 'https://{{- $.Values.global.domain }}/services/catalog/latest/'
+    apiSpecEndpoint: '/services/catalog/latest/'
+    businessImpact: low
+    description: The Grey Matter Catalog service interfaces with the Fabric mesh xDS interface to provide high level summaries and more easily consumable views of the current state of the mesh. It powers the Grey Matter application and any other applications that need to understand what is present in the mesh.
+    # External links configures the "Service Tools" dropdown in service view
+    # externalLinks: []
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -252,6 +266,13 @@ services:
     documentation: ''
     owner: 'Decipher'
     version: 4.0.0
+    ownerURL: "https://greymatter.io"
+    apiEndpoint: 'https://{{- $.Values.global.domain }}'
+    apiSpecEndpoint: ''
+    businessImpact: low
+    description: The Grey Matter application is a user dashboard that paints a high-level picture of the service mesh. 
+    # External links configures the "Service Tools" dropdown in service view
+    # externalLinks: []
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -286,6 +307,13 @@ services:
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
     version: 1.1.3
+    ownerURL: "https://greymatter.io"
+    apiEndpoint: 'https://{{- $.Values.global.domain }}/services/data/latest/'
+    apiSpecEndpoint: '/latest/static/'
+    businessImpact: low
+    description: Grey Matter Data is an API that enables secure and flexible access control for your microservices.
+    # External links configures the "Service Tools" dropdown in service view
+    # externalLinks: [{name: "API Explorer", link: '/services/data/latest/static/ui/index.html'}]
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -308,6 +336,13 @@ services:
     documentation: ''
     owner: 'Decipher'
     version: '1.2.0'
+    ownerURL: "https://greymatter.io"
+    apiEndpoint: 'https://{{- $.Values.global.domain }}/services/jwt-security/latest/'
+    apiSpecEndpoint: ''
+    businessImpact: low
+    description: The Grey Matter JWT security service is a JWT Token generation and retrieval service.
+    # External links configures the "Service Tools" dropdown in service view
+    # externalLinks: []
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -329,7 +364,14 @@ services:
     capability: 'Mesh'
     documentation:
     owner: 'Decipher'
-    version: '1.4.3'
+    version: '1.5.0'
+    ownerURL: "https://greymatter.io"
+    apiEndpoint: 'https://{{- $.Values.global.domain }}/services/control-api/latest/'
+    apiSpecEndpoint: ''
+    businessImpact: low
+    description: The purpose of the Grey Matter Control API is to update the configuration of every Grey Matter Proxy in the mesh.
+    # External links configures the "Service Tools" dropdown in service view
+    # externalLinks: []
     secret:
       enabled: true
       secret_name: sidecar-certs
@@ -355,7 +397,14 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.5.0'
+    version: '1.5.1'
+    ownerURL: "https://greymatter.io"
+    apiEndpoint: 'https://{{- $.Values.global.domain }}'
+    apiSpecEndpoint: ''
+    businessImpact: low
+    description: Grey Matter Edge handles north/south traffic flowing through the mesh. 
+    # External links configures the "Service Tools" dropdown in service view
+    # externalLinks: []
     ingress:
       secret:
         enabled: true
@@ -387,6 +436,13 @@ services:
     documentation:
     owner: 'Decipher'
     version: '1.2.0'
+    ownerURL: "https://greymatter.io"
+    apiEndpoint: 'https://{{- $.Values.global.domain }}/services/slo/latest/'
+    apiSpecEndpoint: '/services/slo/latest/'
+    businessImpact: low
+    description: Grey Matter Service Level Objectives (SLOs) allows users to manage objectives towards service-level agreements.
+    # External links configures the "Service Tools" dropdown in service view
+    # externalLinks: []
     secret:
       enabled: true
       secret_name: sidecar-certs
