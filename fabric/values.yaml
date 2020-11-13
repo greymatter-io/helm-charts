@@ -529,6 +529,18 @@ jwt:
       xds_cluster:
         type: value
         value: 'jwt-security'
+      xds_zone:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      xds_host:
+        type: 'value'
+        value: 'control.{{ .Release.Namespace }}.svc'
+      xds_port:
+        type: 'value'
+        value: '{{ .Values.global.control.port }}'
+      xds_node_id:
+        type: 'value'
+        value: 'default'
 
   jwt:
     # Name used for the deployment and service resources
