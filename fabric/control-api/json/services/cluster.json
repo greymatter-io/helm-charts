@@ -2,7 +2,9 @@
   "cluster_key": "cluster-{{.service.serviceName}}",
   "zone_key": "{{ .Values.global.zone}}",
   "name": "{{.service.serviceName}}-service",
+  {{- if ( eq .service.serviceName "control") }}
   "http2_protocol_options": {},
+  {{- end }}
   "instances": [
     {
         "host": "0.0.0.0",

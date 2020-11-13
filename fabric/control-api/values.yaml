@@ -142,6 +142,9 @@ controlApi:
     gm_control_api_experiments:
       type: value
       value: 'true'
+    gm_control_api_base_url:
+      type: value
+      value: '/services/control-api/latest/v1.0/'
   resources:
   pvc:
     size: 1Gi
