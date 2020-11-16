@@ -15,7 +15,6 @@ clean-data:
 	rm -f ./charts/*
 
 package-data: clean-data
-	echo "target hit package-data"
 	helm dep up .
 
 template-data: package-data $(BUILD_NUMBER_FILE)
@@ -27,7 +26,7 @@ data: package-data wsa-data
 	helm install $(NAME-DATA) . $(WAITERSACHECK-DATA) -f ../global.yaml
 
 .PHONY: upgrade-data
-upgrade-data: wsa-data
+upgrade-data: wsa-data package-data
 	helm upgrade $(NAME-DATA) . $(WAITERSACHECK-DATA) -f ../global.yaml
 
 .PHONY: remove-data

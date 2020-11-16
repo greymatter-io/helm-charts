@@ -18,8 +18,12 @@ edge:
 	fi
 
 .PHONY: upgrade-edge
-upgrade-edge:
+upgrade-edge: package-edge
 	helm upgrade $(NAME-EDGE) . -f ../global.yaml
+
+.PHONY: clean-edge
+clean-edge:
+	rm -f ./charts/*
 
 .PHONY: remove-edge
 remove-edge:
