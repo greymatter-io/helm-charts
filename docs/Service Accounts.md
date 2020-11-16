@@ -35,7 +35,7 @@ Each of the Grey Matter charts has the ability to create the necessary service a
 ```yaml
 global:
   waiter:
-    image: deciphernow/k8s-waiter:latest
+    image: docker.greymatter.io/internal/k8s-waiter:latest
     service_account:
       create: true
       name: waiter-sa
