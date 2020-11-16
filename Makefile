@@ -33,13 +33,11 @@ destroy:
 clean:
 	(cd spire && make clean-spire)
 	(cd fabric && make clean-fabric)
-	(cd data && make clean-data)
 	(cd sense && make clean-sense)
 
 dev-dep: clean
 	(cd spire && make package-spire)
 	(cd fabric && make package-fabric)
-	(cd data && make package-data)
 	(cd sense && make package-sense)
 
 .PHONY: check-secrets
@@ -65,7 +63,6 @@ install: dev-dep check-secrets install-spire
 	if [ "$(K3D)" = "true" ]; then \
 		(kubectl patch svc edge -p '{"spec": {"type": "LoadBalancer"}}'); \
 	fi
-	(cd data && make data)
 	sleep 20
 	(cd sense && make sense)
 	(make reveal-endpoint)
@@ -76,7 +73,6 @@ uninstall:
 	-(cd spire && make remove-spire)
 	-(cd fabric && make remove-fabric)
 	-(cd edge && make remove-edge)
-	-(cd data && make remove-data)
 	-(cd sense && make remove-sense)
 
 delete: uninstall remove-pvc remove-pods
@@ -97,7 +93,6 @@ template: dev-dep $(BUILD_NUMBER_FILE)
 	(cd spire && make template-spire && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd fabric && make template-fabric && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd edge && make template-edge && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
-	(cd data && make template-data && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd sense && make template-sense && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)	
 
 

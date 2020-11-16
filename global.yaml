@@ -52,7 +52,7 @@ global:
     path: '/run/spire/socket/agent.sock'
   # Configures the init container used to wait on various deployments to be ready
   waiter:
-    image: deciphernow/k8s-waiter:latest
+    image: docker.greymatter.io/internal/k8s-waiter:latest
     service_account:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)

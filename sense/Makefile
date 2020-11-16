@@ -5,8 +5,7 @@ CHART-SENSE := .
 include ../output.mk
 
 wsa-sense:
-	$(eval WAITERSACHECK-SENSE=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
-	@echo $(WAITERSACHECK-SENSE)
+	$(eval WAITERSACHECK-SENSE=$(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
 
 helm-validator:
 	$(eval HELM_VALIDATION=$(shell helm version --short | cut -d'+' -f1 | awk -Fv '{if ($$2 > 3.2) print "--disable-openapi-validation"}'))
@@ -28,7 +27,6 @@ clean-sense:
 	rm -f ./charts/*
 
 package-sense: clean-sense
-	echo "target hit package-sense"
 	helm dep up .
 
 template-sense: package-sense $(BUILD_NUMBER_FILE)
@@ -40,7 +38,7 @@ sense: package-sense wsa-sense
 	helm install $(NAME-SENSE) . $(WAITERSACHECK-SENSE) -f ../global.yaml --timeout 10m --wait
 
 .PHONY: upgrade-sense
-upgrade-sense: wsa-sense helm-validator
+upgrade-sense: wsa-sense package-sense helm-validator
 	helm upgrade $(NAME-SENSE) . $(WAITERSACHECK-SENSE) -f ../global.yaml --no-hooks --install $(HELM_VALIDATION)
 
 .PHONY: remove-sense
