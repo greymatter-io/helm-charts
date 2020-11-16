@@ -239,7 +239,7 @@ services:
     apiEndpoint: 'https://{{- $.Values.global.domain }}'
     apiSpecEndpoint: ''
     businessImpact: low
-    description: The Grey Matter application is a user dashboard that paints a high-level picture of the service mesh. 
+    description: The Grey Matter application is a user dashboard that paints a high-level picture of the service mesh.
     # External links configures the "Service Tools" dropdown in service view
     externalLinks: []
     secret:
@@ -371,7 +371,7 @@ services:
     apiEndpoint: 'https://{{- $.Values.global.domain }}'
     apiSpecEndpoint: ''
     businessImpact: low
-    description: Grey Matter Edge handles north/south traffic flowing through the mesh. 
+    description: Grey Matter Edge handles north/south traffic flowing through the mesh.
     # External links configures the "Service Tools" dropdown in service view
     externalLinks: []
     ingress:

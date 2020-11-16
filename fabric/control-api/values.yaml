@@ -140,10 +140,10 @@ controlApi:
       type: value
       value: '{{- if .Values.global.external_redis.disabled }}5s{{- else}}{{ .Values.global.external_redis.retry_delay }}{{- end }}'
     # The following envvars enable the experimental control-api explorer UI
-    gm_control_api_experiments: 
+    gm_control_api_experiments:
       type: value
       value: 'false'
-    gm_control_api_base_url: 
+    gm_control_api_base_url:
       type: value
       value: '/services/control-api/latest/v1.0/'
   resources:
@@ -215,7 +215,7 @@ bootstrap:
     greymatter_api_sslkey:
       type: value
       value: '{{ .Values.bootstrap.secret.mount_point }}/{{ .Values.bootstrap.secret.secret_keys.key }}'
-      
+
 # Services list used to create Grey Matter configuration objects in control-api/config
 services:
   catalog:
@@ -270,7 +270,7 @@ services:
     apiEndpoint: 'https://{{- $.Values.global.domain }}'
     apiSpecEndpoint: ''
     businessImpact: low
-    description: The Grey Matter application is a user dashboard that paints a high-level picture of the service mesh. 
+    description: The Grey Matter application is a user dashboard that paints a high-level picture of the service mesh.
     # External links configures the "Service Tools" dropdown in service view
     # externalLinks: []
     secret:
@@ -402,7 +402,7 @@ services:
     apiEndpoint: 'https://{{- $.Values.global.domain }}'
     apiSpecEndpoint: ''
     businessImpact: low
-    description: Grey Matter Edge handles north/south traffic flowing through the mesh. 
+    description: Grey Matter Edge handles north/south traffic flowing through the mesh.
     # External links configures the "Service Tools" dropdown in service view
     # externalLinks: []
     ingress:
