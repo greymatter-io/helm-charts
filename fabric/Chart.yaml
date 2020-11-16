@@ -15,11 +15,11 @@ keywords:
 dependencies:
   - name: control-api
     repository: file://./control-api
-    version: '3.0.2'
+    version: '3.0.3'
 
   - name: control
     repository: file://./control
-    version: '2.2.5'
+    version: '2.2.6'
 
   - name: jwt
     repository: file://./jwt
