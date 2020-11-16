@@ -26,10 +26,10 @@ global:
     port: 8500
     edge_port: 10808
   sidecar:
-    version: 1.5.0-dev
+    version: 1.5.1
 
 jwt:
-  version: '1.1.2'
+  version: '1.2.0'
   # If true, uses aac for auth control
   use_aac: false
   image: 'docker-government.production.deciphernow.com/deciphernow/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'
