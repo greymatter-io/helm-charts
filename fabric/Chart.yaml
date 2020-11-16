@@ -15,7 +15,7 @@ keywords:
 dependencies:
   - name: control-api
     repository: file://./control-api
-    version: '3.0.3'
+    version: '3.0.4'
 
   - name: control
     repository: file://./control
