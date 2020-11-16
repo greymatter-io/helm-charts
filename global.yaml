@@ -1,6 +1,4 @@
 global:
-  # if the mesh is based on an upgrade from 1.2 then this will add a volumeClaimTemplates for control-api to the manifest to allow helm upgrades to procede
-  is_upgrade_from_1_2: false
   # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kubernetes", or "openshift"
