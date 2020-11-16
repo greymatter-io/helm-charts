@@ -258,7 +258,7 @@ dashboard:
       server_ssl_key:
         type: "value"
         value: '{{ .Values.dashboard.secret.mount_point}}/{{ .Values.dashboard.secret.secret_keys.key }}'
-      # When set to true, disables parts of the UI that use route metrics from Prometheus - service summary view route-level metrics, 
+      # When set to true, disables parts of the UI that use route metrics from Prometheus - service summary view route-level metrics,
       # service routes view entirely, and route SLOs in the service configuration panel.
       disable_prometheus_routes_ui:
         type: "value"
@@ -473,7 +473,7 @@ services:
     apiEndpoint: 'https://{{- $.Values.global.domain }}'
     apiSpecEndpoint: ''
     businessImpact: low
-    description: The Grey Matter application is a user dashboard that paints a high-level picture of the service mesh. 
+    description: The Grey Matter application is a user dashboard that paints a high-level picture of the service mesh.
     # External links configures the "Service Tools" dropdown in service view
     externalLinks: []
     secret:
@@ -605,7 +605,7 @@ services:
     apiEndpoint: 'https://{{- $.Values.global.domain }}'
     apiSpecEndpoint: ''
     businessImpact: low
-    description: Grey Matter Edge handles north/south traffic flowing through the mesh. 
+    description: Grey Matter Edge handles north/south traffic flowing through the mesh.
     # External links configures the "Service Tools" dropdown in service view
     externalLinks: []
     ingress:
