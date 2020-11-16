@@ -4,6 +4,9 @@
 # we want to keep a README there with the information on how to use
 # the charts. This job syncs the README from the default branch to the
 # gh-pages branch
+
+name: Sync README
+
 on:
   push:
     branches:
@@ -28,7 +31,7 @@ jobs:
           url="https://github.com/greymatter-io/helm-charts/blob/${branch}"
 
           # Set the fully qualified url to each document since they point to a different branch
-          sed -i "s|(docs|(${url}docs|g" ${{ runner.temp }}/README.md
+          sed -i "s|(docs|(${url}docs|g" README.md
 
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"

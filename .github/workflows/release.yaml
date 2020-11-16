@@ -29,6 +29,14 @@ jobs:
         uses: azure/setup-helm@v1
         id: install-helm
 
+      # We need to release the Fabric Gov chart too. So we just update the Fabric chart
+      # and replace the jwt with jwt-gov
+      - name: Create Fabric Gov Folder
+        run: |
+          cp -R fabric/ fabric-gov/
+          echo "$(awk 'NR==1,/name: jwt/{sub(/name: jwt/, "name: jwt-gov")} 1' fabric-gov/Chart.yaml)" > fabric-gov/Chart.yaml
+          sed -i -e "s|name: fabric|name: fabric-gov|" -e "s|Grey Matter Fabric|Grey Matter Fabric Gov|" -e "s|/jwt|/jwt-gov|" fabric-gov/Chart.yaml
+
       - name: Run Grey Matter Charts
         uses: helm/chart-releaser-action@v1.0.0
         env:
@@ -36,21 +44,6 @@ jobs:
         with:
           charts_dir: .
 
-      # We need to release the Fabric Gov chart too. So we just update the Fabric chart
-      # and replace the jwt with jwt-gov, then rerun the chart releaser specifically at fabric
-      - name: Prepare to package Fabric Gov
-        run: |
-          cp -f fabric/Chart.yaml ${{ runner.temp }}/Chart.yaml
-          echo "$(awk 'NR==1,/name: jwt/{sub(/name: jwt/, "name: jwt-gov")} 1' fabric/Chart.yaml)" > fabric/Chart.yaml
-          sed -i -e "s|name: fabric|name: fabric-gov|" -e "s|Grey Matter Fabric|Grey Matter Fabric Gov|" -e "s|/jwt|/jwt-gov|" fabric/Chart.yaml
 
-      - name: Release Fabric Gov Chart
-        uses: helm/chart-releaser-action@v1.0.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-        with:
-          charts_dir: fabric
-
-      - run: mv ${{ runner.temp }}/Chart.yaml fabric/Chart.yaml
 
 
