@@ -27,7 +27,6 @@ clean-sense:
 	rm -f ./charts/*
 
 package-sense: clean-sense
-	echo "target hit package-sense"
 	helm dep up .
 
 template-sense: package-sense $(BUILD_NUMBER_FILE)
@@ -39,7 +38,7 @@ sense: package-sense wsa-sense
 	helm install $(NAME-SENSE) . $(WAITERSACHECK-SENSE) -f ../global.yaml --timeout 10m --wait
 
 .PHONY: upgrade-sense
-upgrade-sense: wsa-sense helm-validator
+upgrade-sense: wsa-sense package-sense helm-validator
 	helm upgrade $(NAME-SENSE) . $(WAITERSACHECK-SENSE) -f ../global.yaml --no-hooks --install $(HELM_VALIDATION)
 
 .PHONY: remove-sense

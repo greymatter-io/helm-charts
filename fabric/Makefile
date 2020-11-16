@@ -39,7 +39,7 @@ fabric: package-fabric wsa-fabric
 	helm install $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
 .PHONY: upgrade-fabric
-upgrade-fabric: wsa-fabric
+upgrade-fabric: package-fabric wsa-fabric
 	helm upgrade $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC) -f ../global.yaml --no-hooks
 
 
