@@ -2,7 +2,7 @@ global:
   # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kubernetes", or "openshift"
-  environment: kubernetes
+  environment: eks
   # Used to configure control and control-api environment variables
   zone: zone-default-zone
   # domain used to template catalog's apiEndpoint cluster config and configure edge
@@ -32,8 +32,8 @@ global:
   # e.g. Amazon Elastiache: https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/accessing-elasticache.html#grant-access
   # If an external Redis service is not needed, an internal Redis service is launched by setting `disabled` below to true
   external_redis:
-    disabled: true
-    host: ''
+    disabled: false
+    host: 'bms-long-lasting-1-3.248554.0001.use1.cache.amazonaws.com'
     port: '6379'
     use_tls: false
     ca_cert_path: ''
