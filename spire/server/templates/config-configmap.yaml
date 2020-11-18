@@ -19,7 +19,6 @@ data:
     key_path = "/run/spire/tls/registrar.{{ .Values.global.spire.namespace }}.svc.key"
     cacert_path = "/run/spire/tls/ca.crt"
     insecure_skip_client_verification	= true
-    pod_label = "{{ .Values.global.control.cluster_label }}"
   server.conf: |-
     server {
       bind_address = "0.0.0.0"
