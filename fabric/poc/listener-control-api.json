@@ -1,0 +1,126 @@
+{
+  "access_loggers": {
+    "http_connection_loggers": {
+      "disabled": false,
+      "file_loggers": null,
+      "http_grpc_access_loggers": null
+    },
+    "http_upstream_loggers": {
+      "disabled": false,
+      "file_loggers": null,
+      "http_grpc_access_loggers": null
+    }
+  },
+  "active_http_filters": [
+    "gm.metrics",
+    "envoy.rbac"
+  ],
+  "active_network_filters": null,
+  "checksum": "bb763c60112a5bf675667b4500a68b37f5d5e25def7f3814465c64ca8d8c0f25",
+  "domain_keys": [
+    "domain-control-api"
+  ],
+  "http_filters": {
+    "gm_jwtsecurity": {
+      "apiKey": "U3Vud2FsIGlzIG9uZSBvZiB0aGUgYmlnZ2VzdCBhbmQgcmljaGVzdCBNdW5pY2lwYWxpdGllbSBvZiBOYXdhbHBhcmFzaSBkaXN0cmljdC4gUmVjZW50bHksIGl0IGJlbG9uZ3MgdG8gdGhlIFN0YXRlIG5vLjUgdW5kZXIgbmV3IGNvbnN0aXR1dGlvbg==",
+      "endpoint": "https://localhost:10909/jwt",
+      "jwtHeaderName": "userpolicy",
+      "useTls": true,
+      "caPath": "/etc/proxy/tls/sidecar/ca.crt",
+      "certPath": "/etc/proxy/tls/sidecar/server.crt",
+      "keyPath": "/etc/proxy/tls/sidecar/server.key",
+      "insecureSkipVerify": true
+    },
+    "envoy_rbac": {
+      "rules": {
+        "action": 0,
+        "policies": {
+          "service-admin": {
+            "permissions": [
+              {
+                "any": true
+              }
+            ],
+            "principals": [
+              {
+                "header": {
+                  "name": "user_dn",
+                  "exact_match": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US"
+                }
+              }
+            ]
+          },
+          "services": {
+            "permissions": [
+              {
+                "any": true
+              }
+            ],
+            "principals": [
+              {
+                "authenticated": {
+                  "principal_name": {
+                    "safe_regex": {
+                      "google_re2": {},
+                      "regex": "spiffe:\/\/quickstart.greymatter.io\/(.+)"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "product-viewer": {
+            "permissions": [
+              {
+                "header": {
+                  "name": ":method",
+                  "exact_match": "GET"
+                }
+              }
+            ],
+            "principals": [
+              {
+                "any": true
+              }
+            ]
+          }
+        }
+      }
+    },
+    "gm_metrics": {
+      "metrics_port": 8081,
+      "metrics_host": "0.0.0.0",
+      "metrics_dashboard_uri_path": "/metrics",
+      "metrics_prometheus_uri_path": "/prometheus",
+      "metrics_ring_buffer_size": 4096,
+      "prometheus_system_metrics_interval_seconds": 15,
+      "metrics_key_function": "depth",
+      "metrics_key_depth": "3"
+    }
+  },
+  "ip": "0.0.0.0",
+  "listener_key": "listener-control-api",
+  "name": "control-api",
+  "network_filters": null,
+  "port": 10808,
+  "protocol": "http_auto",
+  "secret": {
+    "secret_key": "secret-control-api-secret",
+    "secret_name": "spiffe://quickstart.greymatter.io/control-api",
+    "secret_validation_name": "spiffe://quickstart.greymatter.io",
+    "subject_names": [
+      "spiffe://quickstart.greymatter.io/edge"
+    ],
+    "ecdh_curves": [
+      "X25519:P-256:P-521:P-384"
+    ],
+    "forward_client_cert_details": "APPEND_FORWARD",
+    "set_current_client_cert_details": {
+      "uri": true
+    },
+    "checksum": "94ac2b4b73d7e633eee9594c515570b0f24d09bd4f39ea8d903dea8e339af8af"
+  },
+  "tracing_config": null,
+  "use_remote_address": false,
+  "zone_key": "zone-default-zone"
+}

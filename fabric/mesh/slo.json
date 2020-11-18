@@ -1,0 +1,189 @@
+{
+  "access_loggers": {
+    "http_connection_loggers": {
+      "disabled": false,
+      "file_loggers": null,
+      "http_grpc_access_loggers": null
+    },
+    "http_upstream_loggers": {
+      "disabled": false,
+      "file_loggers": null,
+      "http_grpc_access_loggers": null
+    }
+  },
+  "active_http_filters": [
+    "gm.metrics",
+    "gm.inheaders",
+    "gm.jwtsecurity",
+    "envoy.jwt_authn",
+    "envoy.rbac"
+  ],
+  "active_network_filters": null,
+  "checksum": "",
+  "domain_keys": [
+    "domain-slo"
+  ],
+  "http_filters": {
+    "gm_inheaders": {},
+    "envoy_jwt_authn": {
+      "providers": {
+        "greymatter": {
+          "issuer": "greymatter.io",
+          "from_headers": [
+            {
+              "name": "userpolicy"
+            }
+          ],
+          "payload_in_metadata": "claims",
+          "local_jwks": {
+            "inline_string": "{'keys':[{'crv': 'P-521','kid': '1','kty': 'EC','x': 'DxZd8I_IS4Am6jfjKNaqsAxWfxhweN6I081jLgq6hTL-qlReYXd62kH3v-chAWtqWKILz1CM-reeh5hlZ3qsDf4','y': 'AWs6sDyue4kBEM90K7IVweZ674QIyn4hEqPvsxZpGVAKoE466MdhCVI7RxceNGGxXtVa3zevbnP1Grju-DymFkVl'}]}"
+          }
+        }
+      },
+      "rules": [
+        {
+          "match": {
+            "prefix": "/"
+          },
+          "requires": {
+            "provider_name": "greymatter"
+          }
+        }
+      ]
+    },
+    "envoy_rbac": {
+      "rules": {
+        "action": 0,
+        "policies": {
+          "0-admin": {
+            "permissions": [
+              {
+                "any": true
+              }
+            ],
+            "principals": [
+              {
+                "metadata": {
+                  "filter": "envoy.filters.http.jwt_authn",
+                  "path": [
+                    {
+                      "key": "claims"
+                    },
+                    {
+                      "key": "values"
+                    },
+                    {
+                      "key": "f_share"
+                    }
+                  ],
+                  "value": {
+                    "list_match": {
+                      "one_of": {
+                        "string_match": {
+                          "exact": "quickstart_slo_admin"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "1-updater": {
+            "permissions": [
+              {
+                "header": {
+                  "name": ":method",
+                  "exact_match": "DELETE",
+                  "invert_match": true
+                }
+              }
+            ],
+            "principals": [
+              {
+                "metadata": {
+                  "filter": "envoy.filters.http.jwt_authn",
+                  "path": [
+                    {
+                      "key": "claims"
+                    },
+                    {
+                      "key": "values"
+                    },
+                    {
+                      "key": "f_share"
+                    }
+                  ],
+                  "value": {
+                    "list_match": {
+                      "one_of": {
+                        "string_match": {
+                          "exact": "quickstart_slo_add_update"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "2-readonly": {
+            "permissions": [
+              {
+                "header": {
+                  "name": ":method",
+                  "exact_match": "GET"
+                }
+              }
+            ],
+            "principals": [
+              {
+                "any": true
+              }
+            ]
+          }
+        }
+      }
+    },
+    "gm_jwtsecurity": {
+      "apiKey": "dm9sY2Fuby1lcGlkZW1pYy10d2VsZnRoLXRhbWFsZQ==",
+      "endpoint": "http://localhost:10909/jwt",
+      "jwtHeaderName": "userpolicy"
+    },
+    "gm_metrics": {
+      "metrics_port": 8081,
+      "metrics_host": "0.0.0.0",
+      "metrics_dashboard_uri_path": "/metrics",
+      "metrics_prometheus_uri_path": "/prometheus",
+      "metrics_ring_buffer_size": 4096,
+      "prometheus_system_metrics_interval_seconds": 15,
+      "metrics_key_function": "depth",
+      "metrics_key_depth": "3"
+    }
+  },
+  "ip": "0.0.0.0",
+  "listener_key": "listener-slo",
+  "name": "slo",
+  "network_filters": null,
+  "port": 10808,
+  "protocol": "http_auto",
+  "secret": {
+    "secret_key": "secret-slo-secret",
+    "secret_name": "spiffe://quickstart.greymatter.io/slo",
+    "secret_validation_name": "spiffe://quickstart.greymatter.io",
+    "subject_names": [
+      "spiffe://quickstart.greymatter.io/edge"
+    ],
+    "ecdh_curves": [
+      "X25519:P-256:P-521:P-384"
+    ],
+    "forward_client_cert_details": "APPEND_FORWARD",
+    "set_current_client_cert_details": {
+      "uri": true
+    },
+    "checksum": ""
+  },
+  "tracing_config": null,
+  "use_remote_address": false,
+  "zone_key": "zone-default-zone"
+}

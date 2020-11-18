@@ -1,0 +1,24 @@
+{
+  "route_key": "route-slo-jwt",
+  "domain_key": "domain-slo-egress",
+  "zone_key": "zone-default-zone",
+  "path": "/jwt/",
+  "route_match": {
+    "path": "",
+    "match_type": ""
+  },
+  "prefix_rewrite": "/",
+  "redirects": null,
+  "shared_rules_key": "shared-rules-slo-jwt",
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "retry_policy": null,
+  "high_priority": false,
+  "filter_metadata": null,
+  "request_headers_to_add": null,
+  "request_headers_to_remove": null,
+  "response_headers_to_add": null,
+  "response_headers_to_remove": null,
+  "checksum": ""
+}

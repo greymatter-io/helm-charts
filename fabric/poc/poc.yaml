@@ -1,0 +1,36 @@
+jwt:
+  jwt:
+    use_aac: true
+    command:
+      - /bin/sh
+    args:
+      - '-c'
+      - >-
+        /gm-jwt-security-gov/gm-jwt-security-gov
+    users_mount_point: /gm-jwt-security/etc
+    image: docker.greymatter.io/government/development/gm-jwt-security-gov:1.1.4
+    envvars:
+      aac_trust:
+        type: secret
+        secret: aac-certs
+        key: server.trust
+      aac_cert:
+        type: secret
+        secret: aac-certs
+        key: server.crt
+      aac_key:
+        type: secret
+        secret: aac-certs
+        key: server.key
+      jwt_aachost:
+        type: value
+        value: 'mesh.greymatter.devcloud.di2e.net'
+      jwt_aacport:
+        type: value
+        value: '443'
+      jwt_aacroute:
+        type: value
+        value: '/services/aac/latest/'
+      jwt_aac_server_cn:
+        type: value
+        value: 'UNSET'

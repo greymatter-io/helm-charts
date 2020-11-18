@@ -1,0 +1,27 @@
+{
+  "cluster_key": "cluster-slo-jwt",
+  "zone_key": "zone-default-zone",
+  "name": "jwt-security",
+  "require_tls": true,
+  "secret": {
+    "secret_key": "secret-internal-jwt-security-secret",
+    "secret_name": "spiffe://quickstart.greymatter.io/data-internal",
+    "secret_validation_name": "spiffe://quickstart.greymatter.io",
+    "subject_names": [
+      "spiffe://quickstart.greymatter.io/jwt-security"
+    ],
+    "ecdh_curves": [
+      "X25519:P-256:P-521:P-384"
+    ],
+    "set_current_client_cert_details": {
+      "uri": false
+    },
+    "checksum": ""
+  },
+  "instances": null,
+  "circuit_breakers": null,
+  "outlier_detection": null,
+  "health_checks": [],
+  "lb_policy": "",
+  "checksum": ""
+}

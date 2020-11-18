@@ -1,0 +1,436 @@
+# Grey Matter Data Chart Overrides
+
+global:
+  # Used as imagePullSecrets value for each subchart
+  image_pull_secret: docker.secret
+  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  environment: openshift
+  # Whether to register services with Consul and where to find the Consul server
+  consul:
+    enabled: false
+    host: ''
+    port: 8500
+    edge_port: 10808
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
+  data:
+    # whether to install an external data
+    external:
+      enabled: false
+    # whether to install an internal data
+    internal:
+      enabled: true
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: true
+    trust_domain: quickstart.greymatter.io
+    path: '/run/spire/socket/agent.sock'
+    bind_address: '127.0.0.1'
+  # Default configuration for all sidecars in all subcharts
+  sidecar:
+    version: '1.4.5'
+    envvars:
+      xds_cluster:
+        type: value
+        value: 'service'
+      proxy_dynamic:
+        type: 'value'
+        value: 'true'
+      xds_zone:
+        type: 'value'
+        value: '{{ .Values.global.zone }}'
+      xds_host:
+        type: 'value'
+        value: 'control.{{ .Release.Namespace }}.svc'
+      xds_port:
+        type: 'value'
+        value: '{{ .Values.global.control.port }}'
+      xds_node_id:
+        type: 'value'
+        value: 'default'
+      envoy_admin_log_path:
+        type: 'value'
+        value: '/dev/stdout'
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:
+    image: deciphernow/k8s-waiter:latest
+    service_account:
+      create: true
+      name: waiter-sa
+
+data:
+  # Sidecar configuration overrides for data sidecar
+  sidecar:
+    # version:
+    # image:
+    # image_pull_policy:
+    # secret:
+    #   enabled: true
+    #   secret_name: sidecar-certs
+    #   mount_point: /etc/proxy/tls/sidecar/
+    #   secret_keys:
+    #     ca: ca.crt
+    #     key: server.key
+    #     cert: server.crt
+    envvars:
+      xds_cluster:
+        type: value
+        value: 'data'
+
+  data:
+    # Name used for the deployment and service resources
+    name: data
+    version: 1.1.1
+    replicas: 1
+    image: 'docker.greymatter.io:{{ .Values.data.version }}'
+    # image_pull_secret: '{{ .Values.global.image_pull_secret }}'
+    image_pull_policy: IfNotPresent
+
+    # master_key: ac8923[lkn43589vi23kl4rfgv0ws
+    # Location and (optionally) size of pvc to persist data if not using s3
+    # pvc:
+    #   mount_point: /app/buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
+    #size:
+
+    # Security context for the statefulset if enabled
+    security_context:
+      enabled: false
+      # run_as_user: 666
+      # run_as_group: 666
+      # fs_group: 666
+
+    # If set, enables tls using the secret specified in secret_name
+    secret:
+      enabled: true
+      secret_name: data-secrets
+
+    envvars:
+      uses3:
+        type: value
+        value: 'false'
+      aws_access_key_id:
+        type: secret
+        secret: '{{ .Values.data.name }}-secrets'
+        key: aws_access_key_id
+      aws_secret_access_key:
+        type: secret
+        secret: '{{ .Values.data.name }}-secrets'
+        key: aws_secret_access_key
+      aws_region:
+        type: secret
+        secret: '{{ .Values.data.name }}-secrets'
+        key: aws_region
+      aws_s3_bucket:
+        type: secret
+        secret: '{{ .Values.data.name }}-secrets'
+        key: aws_s3_bucket
+      aws_s3_partition:
+        type: value
+        value: data
+      gmdata_namespace:
+        type: value
+        value: home
+      gmdata_namespace_userfield:
+        type: value
+        value: email
+      jwt_pub:
+        type: secret
+        secret: jwt-security
+        key: jwt.pub
+      jwt_api_key:
+        type: secret
+        secret: jwt-security
+        key: jwt.api_key
+      less_chatty_info:
+        type: value
+        value: 'false'
+      masterkey:
+        type: secret
+        secret: '{{ .Values.data.name }}-secrets'
+        key: master_key
+      mongodb:
+        type: secret
+        secret: '{{ .Values.mongo.credentials.secret_name }}'
+        key: database
+      gmdata_use_tls:
+        type: value
+        value: '{{ not .Values.global.spire.enabled }}'
+      gmdata_cert:
+        type: secret
+        secret: jwt-certs
+        key: server.cert.pem
+      gmdata_key:
+        type: secret
+        secret: jwt-certs
+        key: server.key.pem
+      gmdata_trust:
+        type: secret
+        secret: jwt-certs
+        key: server.trust.pem
+      client_prefix:
+        type: value
+        value: /services/data/1.0.0
+      client_jwt_prefix:
+        type: value
+        value: /jwt
+      client_jwt_endpoint_address:
+        type: value
+        value: localhost
+      client_jwt_endpoint_port:
+        type: value
+        value: '10909'
+      client_jwt_endpoint_prefix:
+        type: value
+        value: /jwt
+      client_jwt_endpoint_use_tls:
+        type: value
+        value: '{{ not .Values.global.spire.enabled }}'
+      client_jwt_endpoint_cert:
+        type: secret
+        secret: jwt-certs
+        key: jwt.cert.pem
+      client_jwt_endpoint_key:
+        type: secret
+        secret: jwt-certs
+        key: jwt.key.pem
+      client_jwt_endpoint_trust:
+        type: secret
+        secret: jwt-certs
+        key: jwt.trust.pem
+
+  mongo:
+    # Name used for the mongo deployment and service resources
+    name: data-mongo
+    replicas: 1
+    image: 'deciphernow/mongo:4.0.3'
+    image_pull_policy: IfNotPresent
+
+    # True if mongo uses a private image, sets the image pull secret to global.image_pull_secret
+    private_image: true
+    # If set, enables tls and configures environment using the secret specified in secret_name
+    # secret:
+    #   secret_name: mongo-certs
+    # If defined, sets the size and storageClass name for the Mongo data persistent volume storage class
+    storage:
+      # Size, in Gi, that the Mongo PVC should be
+      size: 40
+      ## Mongo data Persistent Volume Storage Class
+      ## If defined, StorageClassName: <storage_class>
+      ## If set to "-", StorageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storage_class: "-"
+    # Sets the credentials for setting up a mongo user and database for data to connect with
+    credentials:
+      secret_name: 'mongo-password'
+      root_username: 'mongo'
+      root_password: 'mongo'
+      database: 'gmdata'
+      gmdata_username: 'gmdata-user'
+      gmdata_password: 'mongopassword'
+    envvars:
+      mongodb_admin_password:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: gmdata_password
+      mongodb_database:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: database
+      mongodb_user:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: root_username
+      mongodb_password:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: root_password
+      mongo_initdb_database:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: database
+      # If true, mongo.secret must be set, and mongo_key, mongo_trust, and mongo_cert must be specified as below
+      mongo_use_tls:
+        type: value
+        value: 'false'
+      #mongo_cert:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.cert }}
+      #mongo_key:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.key }}
+      #mongo_trust:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.ca }}
+
+internal-data:
+  # Sidecar configuration overrides for internal-data sidecar
+  sidecar:
+    # version:
+    # image:
+    # image_pull_policy:
+    # secret:
+    #   enabled: true
+    #   secret_name: sidecar-certs
+    #   mount_point: /etc/proxy/tls/sidecar/
+    #   secret_keys:
+    #     ca: ca.crt
+    #     key: server.key
+    #     cert: server.crt
+    envvars:
+      xds_cluster:
+        type: value
+        value: 'data-internal'
+
+  data:
+    # Name used for the deployment and service resources
+    name: data-internal
+    version: 1.1.1
+    # replicas: 1
+    image: 'docker.greymatter.io:{{ .Values.data.version }}'
+    # image_pull_secret: '{{ .Values.global.image_pull_secret }}'
+    # image_pull_policy: IfNotPresent
+
+    # master_key: ac8923[lkn43589vi23kl4rfgv0ws
+
+    # If set, enables tls using the secret specified in secret_name
+    secret:
+      enabled: true
+      secret_name: internal-data-secrets
+    # Security context for the statefulset if enabled
+    security_context:
+      enabled: true
+      # run_as_user: 666
+      # run_as_group: 666
+      # fs_group: 666
+
+    # Location and size of pvc to persist data if not using s3
+    pvc:
+      mount_point: /buckets/{{ $.Values.data.aws.bucket}}/{{ $.Values.data.envvars.aws_s3_partition.value }}
+    envvars:
+      gmdata_namespace:
+        type: value
+        value: 'world'
+      gmdata_namespace_userfield:
+        type: value
+        value: email
+      uses3:
+        type: value
+        value: 'false'
+      aws_access_key_id:
+        type: 'null'
+      aws_secret_access_key:
+        type: 'null'
+      aws_region:
+        type: 'null'
+      aws_s3_partition:
+        type: value
+        value: greymatter
+      gmdata_use_tls:
+        type: value
+        value: '{{ not .Values.global.spire.enabled }}'
+      jwt_pub:
+        type: secret
+        secret: internal-jwt-security-secret
+        key: jwt.pub
+      jwt_api_key:
+        type: secret
+        secret: internal-jwt-security-secret
+        key: jwt.api_key
+      # SPIRE: If spire is enabled, uncomment the client env vars
+      client_prefix:
+        type: value
+        value: /services/data-internal/1.0.0
+      client_jwt_prefix:
+        type: value
+        value: /jwt
+      client_jwt_endpoint_address:
+        type: value
+        value: localhost
+      client_jwt_endpoint_port:
+        type: value
+        value: '10909'
+      client_jwt_endpoint_prefix:
+        type: value
+        value: /jwt
+      client_jwt_endpoint_use_tls:
+        type: value
+        value: '{{ not .Values.global.spire.enabled }}'
+
+  mongo:
+    # Name used for the mongo deployment and service resources
+    name: internal-data-mongo
+    # replicas: 1
+    # image: 'deciphernow/mongo:4.0.3'
+    # image_pull_policy: IfNotPresent
+
+    # True if mongo uses a private image, sets the image pull secret to global.image_pull_secret
+    private_image: true
+    # If set, enables tls and configures environment using the secret specified in secret_name
+    # secret:
+    #   secret_name: mongo-certs
+    # If defined, sets the size and storageClass name for the Mongo data persistent volume storage class
+    storage:
+      # Size, in Gi, that the Mongo PVC should be
+      size: 10
+      ## Mongo data Persistent Volume Storage Class
+      ## If defined, StorageClassName: <storage_class>
+      ## If set to "-", StorageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      # storage_class: "-"
+    # Sets the credentials for setting up a mongo user and database for data to connect with
+    credentials:
+      secret_name: 'internal-mongo-password'
+      root_username: 'mongo'
+      root_password: 'mongo'
+      database: 'gmdata'
+      gmdata_username: 'gmdata-user'
+      gmdata_password: 'mongopassword'
+    envvars:
+      mongodb_admin_password:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: gmdata_password
+      mongodb_database:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: database
+      mongodb_user:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: root_username
+      mongodb_password:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: root_password
+      mongo_initdb_database:
+        type: secret
+        secret: '{{ $.Values.mongo.credentials.secret_name }}'
+        key: database
+      # If true, mongo.secret must be set, and mongo_key, mongo_trust, and mongo_cert must be specified as below
+      mongo_use_tls:
+        type: value
+        value: 'false'
+      #mongo_cert:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.cert }}
+      #mongo_key:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.key }}
+      #mongo_trust:
+      #  type: secret
+      #  secret: {{ .Values.mongo.secret.secret_name }}
+      #  key: {{ .Values.mongo.secret.secret_keys.ca }}
