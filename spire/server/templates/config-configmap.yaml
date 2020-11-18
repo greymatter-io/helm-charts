@@ -12,8 +12,8 @@ data:
     log_level = "info"
     log_path = "/dev/stdout"
     addr = "0.0.0.0:8444"
-    cluster = "quickstart"
-    server_socket_path = "/run/spire/socket/registration.sock"
+    cluster = "covidapihub"
+    server_socket_path = "/run/spire/sockets/registration.sock"
     trust_domain = "{{ .Values.global.spire.trust_domain }}"
     cert_path = "/run/spire/tls/registrar.{{ .Values.global.spire.namespace }}.svc.crt"
     key_path = "/run/spire/tls/registrar.{{ .Values.global.spire.namespace }}.svc.key"
@@ -23,7 +23,7 @@ data:
     server {
       bind_address = "0.0.0.0"
       bind_port = "8443"
-      registration_uds_path = "/run/spire/socket/registration.sock"
+      registration_uds_path = "/run/spire/sockets/registration.sock"
       trust_domain = "{{ .Values.global.spire.trust_domain }}"
       data_dir = "/run/spire/data"
       log_level = "info"
@@ -47,7 +47,7 @@ data:
       NodeAttestor "k8s_psat" {
         plugin_data {
           clusters = {
-            "quickstart" = {
+            "covidapihub" = {
               service_account_whitelist = ["{{ .Values.global.spire.namespace }}:agent"]
               audience = ["server"]
             }

@@ -52,7 +52,7 @@ spec:
               mountPath: /run/spire/config
               readOnly: true
             - name: agent-socket
-              mountPath: /run/spire/socket
+              mountPath: /run/spire/sockets
               readOnly: false
             - name: server-bundle
               mountPath: /run/spire/bundle
@@ -66,7 +66,7 @@ spec:
                 - /opt/spire/bin/spire-agent
                 - healthcheck
                 - -socketPath
-                - /run/spire/socket/agent.sock
+                - /run/spire/sockets/agent.sock
             failureThreshold: 2
             initialDelaySeconds: 15
             periodSeconds: 60
@@ -77,7 +77,7 @@ spec:
             name: agent-config
         - name: agent-socket
           hostPath:
-            path: /run/spire/socket
+            path: /run/spire/sockets
             type: DirectoryOrCreate
         - name: server-bundle
           configMap:
