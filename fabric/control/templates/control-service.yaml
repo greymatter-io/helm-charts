@@ -16,6 +16,10 @@ spec:
     port: 50000
     protocol: TCP
     targetPort: 50000
+  - name: control-admin
+    port: {{ .Values.global.control.admin_port }}
+    protocol: TCP
+    targetPort: 51000
   selector:
     run: {{ .Values.control.name }}
   type: ClusterIP

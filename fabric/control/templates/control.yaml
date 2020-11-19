@@ -29,6 +29,9 @@ spec:
             - name: grpc
               containerPort: {{ .Values.global.control.port }}
               protocol: TCP
+            - name: admin
+              containerPort: {{ .Values.global.control.admin_port }}
+              protocol: TCP
           # livenessProbe:
           #   tcpSocket:
           #     port: grpc
