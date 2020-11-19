@@ -138,7 +138,7 @@ controlApi:
       value: '{{- if .Values.global.external_redis.disabled }}50{{- else}}{{ .Values.global.external_redis.max_retries }}{{- end }}'
     gm_control_api_redis_retry_delay:
       type: value
-      value: '{{- if .Values.global.external_redis.disabled }}5s{{- else}}{{ .Values.global.external_redis.retry_delay }}{{- end }}
+      value: '{{- if .Values.global.external_redis.disabled }}5s{{- else}}{{ .Values.global.external_redis.retry_delay }}{{- end }}'
     # The following envvars enable the experimental control-api explorer UI
     gm_control_api_experiments:
       type: value
