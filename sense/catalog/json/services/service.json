@@ -16,5 +16,17 @@
   "enableInstanceMetrics": {{.service.enableInstanceMetrics | default true}},
   "enableHistoricalMetrics": {{.service.enableHistoricalMetrics | default true}},
   "metricsTemplate": "",
-  "metricsPort": 8081
+  "metricsPort": 8081,
+  "ownerURL": "{{.service.ownerURL}}",
+  "apiSpecEndpoint": "{{.service.apiSpecEndpoint}}",
+  "apiEndpoint": "{{tpl .service.apiEndpoint $ }}",
+  "description": "{{.service.description}}"{{- if .service.externalLinks }},{{ $length := len .service.externalLinks }}
+  "externalLinks": [{{ range $i, $link := .service.externalLinks }}
+    {
+      "name": "{{ $link.name }}",
+      "link": "{{ $link.link }}"
+    }{{ if lt $i ( sub $length 1 ) }},{{ end }}
+  {{- end }}
+  ]
+  {{- end }}
 }

@@ -5,7 +5,7 @@ CHART-FABRIC := .
 include ../output.mk
 
 wsa-fabric:
-	$(eval WAITERSACHECK-FABRIC=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
+	$(eval WAITERSACHECK-FABRIC=$(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
 
 .PHONY: control
 control: wsa-fabric
@@ -39,7 +39,7 @@ fabric: package-fabric wsa-fabric
 	helm install $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC) -f ../global.yaml
 
 .PHONY: upgrade-fabric
-upgrade-fabric: wsa-fabric
+upgrade-fabric: package-fabric wsa-fabric
 	helm upgrade $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC) -f ../global.yaml --no-hooks
 
 

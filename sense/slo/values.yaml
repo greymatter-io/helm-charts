@@ -25,19 +25,19 @@ global:
     path: '/run/spire/socket/agent.sock'
   # Configures the init container used to wait on various deployments to be ready
   waiter:
-    image: deciphernow/k8s-waiter:latest
+    image: docker.greymatter.io/internal/k8s-waiter:latest
     service_account:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.5.1-dev
+    version: 1.5.1
   # To use the global certs or not
   global_certs:
     enabled: true
 slo:
   name: "slo"
   # SLO version
-  version: 1.1.5
+  version: 1.2.0
   image: "docker.greymatter.io/development/gm-slo:{{ .Values.slo.version }}"
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent

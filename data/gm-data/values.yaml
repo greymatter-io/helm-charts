@@ -27,17 +27,17 @@ global:
     edge_port: 10808
   # Configures the init container used to wait on various deployments to be ready
   waiter:
-    image: deciphernow/k8s-waiter:latest
+    image: docker.greymatter.io/internal/k8s-waiter:latest
     service_account:
       create: true
       name: waiter-sa
   sidecar:
-    version: 1.5.1-dev
+    version: 1.5.1
 
 data:
   # Name used for the deployment and service resources
   name: data
-  version: latest
+  version: 1.1.3
   replicas: 1
   # If set, enables tls using the secret specified in secret_name
   secret:

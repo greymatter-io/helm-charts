@@ -5,6 +5,8 @@ global:
   environment: kubernetes
   # Used to configure control and control-api environment variables
   zone: zone-default-zone
+  # domain used to template catalog's apiEndpoint cluster config and configure edge
+  domain: localhost:30000
   # Whether to use consul for service discovery
   consul:
     enabled: false
@@ -18,6 +20,7 @@ global:
     cluster_label: greymatter.io/control
     # Comma delimited string of namespaces for control to monitor. Also used by prometheus.
     additional_namespaces:
+
 
   data:
     # whether to install an external data
@@ -49,12 +52,12 @@ global:
     path: '/run/spire/socket/agent.sock'
   # Configures the init container used to wait on various deployments to be ready
   waiter:
-    image: deciphernow/k8s-waiter:latest
+    image: docker.greymatter.io/internal/k8s-waiter:latest
     service_account:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.5.1-dev
+    version: 1.5.1
 
   # Configure services to use the same certs
   global_certs:
