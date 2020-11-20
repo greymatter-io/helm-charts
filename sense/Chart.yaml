@@ -19,7 +19,7 @@ dependencies:
 
   - name: dashboard
     repository: file://./dashboard
-    version: '3.0.0'
+    version: '3.0.1'
 
   - name: slo
     repository: file://./slo
