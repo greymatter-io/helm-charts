@@ -14,11 +14,11 @@ To install the observables stack:
 
 1. Determine which namespace you would like to install the stack into, by default it is `observables`. If you choose to install into namespace `observables`, you can move onto step 2.  Otherwise, make the following change:
 
-   Change the values for [`ELASTICSEARCH_HOST` and `KAFKA_BOOTSTRAP_SERVERS` here](custom-values-files/logstash-values. yaml#L45) to `elasticsearch-master-headless.<OBSERVABLES-NAMESPACE>.svc` and `kafka-observables-headless. <OBSERVABLES-NAMESPACE>` respectively, replacing `<OBSERVABLES-NAMESPACE>` with your chosen namespace.
+   Change the values for [`ELASTICSEARCH_HOST` and `KAFKA_BOOTSTRAP_SERVERS` here](./custom-values-files/logstash-values.yaml#L45) to `elasticsearch-master-headless.<OBSERVABLES-NAMESPACE>.svc` and `kafka-observables-headless.<OBSERVABLES-NAMESPACE>.svc:9092` respectively, replacing `<OBSERVABLES-NAMESPACE>` with your chosen namespace.
 
 2. If your Grey Matter fabric installation exists in the `default` namespace, you can move onto step 3. Otherwise, make the following change:
 
-   Change the value of the `xds_host` environment variable in `sidecar.envvars` [here](./custom-values-files/ kibana-proxy-values.yaml#L10) to `control.<FABRIC-NAMESPACE>.svc`, replacing `<FABRIC-NAMESPACE>` with the namespace  that your fabric installation is running.
+   Change the value of the `xds_host` environment variable in `sidecar.envvars` [here](./custom-values-files/kibana-proxy-values.yaml#L10) to `control.<FABRIC-NAMESPACE>.svc`, replacing `<FABRIC-NAMESPACE>` with the namespace  that your fabric installation is running.
 
 3. Are you installing into an EKS environment?
 

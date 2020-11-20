@@ -19,7 +19,7 @@ global:
     # The label Control uses to find pods to include in the mesh
     cluster_label: greymatter.io/control
     # Comma delimited string of namespaces for control to monitor. Also used by prometheus.
-    additional_namespaces:
+    additional_namespaces: observables
 
 
   data:
@@ -208,3 +208,7 @@ global:
         RK74+3zLN5+74qQQYfRZDKkTIWD3iD1o0LAn3+GrXgK3srQ8c16uTmxmwAUPS8lO
         /nhq1n+k2gddG2EMuDSfzFDG99vgJ84Ll6GaQmQDENZbWsGq9oGqkg==
         -----END RSA PRIVATE KEY-----
+
+control:
+  control:
+    version: 1.5.1-dev
