@@ -92,7 +92,7 @@ catalog:
       value: '{{- if .Values.global.external_redis.disabled }}{{- else}}{{ .Values.global.external_redis.pass }}{{- end }}'
     redis_db:
       type: value
-      value: '{{- if .Values.global.external_redis.disabled }}1{{- else}}{{ .Values.global.external_redis.control_api_db }}{{- end }}'
+      value: '{{- if .Values.global.external_redis.disabled }}1{{- else}}{{ .Values.global.external_redis.catalog_db }}{{- end }}'
     redis_max_retries:
       type: value
       value: '{{- if .Values.global.external_redis.disabled }}50{{- else}}{{ .Values.global.external_redis.max_retries }}{{- end }}'
