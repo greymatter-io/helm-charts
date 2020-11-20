@@ -13,12 +13,16 @@ Simply put:
 To install the observables stack:
 
 1. Determine which namespace you would like to install the stack into, by default it is `observables`. If you choose to install into namespace `observables`, you can move onto step 2.  Otherwise, make the following change:
+
   Change the values for [`ELASTICSEARCH_HOST` and `KAFKA_BOOTSTRAP_SERVERS` here](custom-values-files/logstash-values.yaml#L45) to `elasticsearch-master-headless.<OBSERVABLES-NAMESPACE>.svc` and `kafka-observables-headless.<OBSERVABLES-NAMESPACE>` respectively, replacing `<OBSERVABLES-NAMESPACE>` with your chosen namespace.
 
 2. If your Grey Matter fabric installation exists in the `default` namespace, you can move onto step 3. Otherwise, make the following change:
+
   Change the value of the `xds_host` environment variable in `sidecar.envvars` [here](./custom-values-files/kibana-proxy-values.yaml#L10) to `control.<FABRIC-NAMESPACE>.svc`, replacing `<FABRIC-NAMESPACE>` with the namespace that your fabric installation is running.
 
-3. Are you installing into an EKS environment? If yes:
+3. Are you installing into an EKS environment?
+
+   If yes:
    From the root directory of the helm-charts, fill in your namespace to install from step 1 and run:
 
    ```bash
@@ -33,7 +37,7 @@ To install the observables stack:
 
    If at any time you need to take down the ELK stack, run `make remove-observables OBSERVABLES_NAMESPACE=<OBSERVABLES-NAMESPACE>` from the root directory of the helm-charts.
 
-4. Upgrade fabric and sense for your new namespace.  Update the `global.yaml` file you used for your Grey Matter installation and add your observables namespace from step 1 to `global.control.additional_namespaces` [here](../global.yaml#L22). Now if you are using hosted charts in EKS (ie from the [Grey Matter Quickstart guide](https://docs.greymatter.io/v/1.3-beta/guides/installation-kubernetes)) run the following:
+4. Upgrade fabric and sense for your new namespace. Update the `global.yaml` file you used for your Grey Matter installation and add your observables namespace from step 1 to `global.control.additional_namespaces` [here](../global.yaml#L22). Now if you are using hosted charts in EKS (ie from the [Grey Matter Quickstart guide](https://docs.greymatter.io/v/1.3-beta/guides/installation-kubernetes)) run the following:
 
    ```bash
    helm upgrade fabric greymatter/fabric -f global.yaml --set=global.environment=eks
@@ -49,7 +53,7 @@ To install the observables stack:
 
    This will allow Grey Matter Control to discover from your observables namespace, and will allow Prometheus to get metrics.
 
-5. [Configure the kibana proxy](#configure-the-kibana-proxy)).
+5. [Configure the kibana proxy](#configure-the-kibana-proxy).
 
 Once you have done these 5 steps, you should be able to see `Kibana Observables Proxy` in the dashboard, and access it at path `/services/kibana-observables-proxy/7.1.0/`. If you run `kubectl get pods -n observables`, you should see something that looks like the following, with all pods running:
 
@@ -88,7 +92,7 @@ It will prompt you with a question `Is SPIRE enabled? True or False:`, if your G
 If you already have created mesh configs, it will prompt you to overwrite them. Type `y` enter to do so. You will see:
 
 ```bash
-Success! The next step is to apply the Grey Matter objects (in /Users/zoemccormick/go/src/github.com/greymatter-io/helm-charts/observables/gm-config/export/kibana-observables-proxy) to the mesh.
+Success! To apply, run './observables/gm-config/export/kibana-observables-proxy/create.sh'
 ```
 
 To apply the mesh configs, make sure the CLI is configured in your terminal (run `greymatter list cluster` without errors to check), and run:
@@ -112,7 +116,7 @@ To configure a sidecar to emit observables you must define the filter as well as
       "useKafka": true, # must be true to emit to kafka
       "topic": "fibonacci", #this will be your service's name
       "eventTopic": "observables", # this will typically be your namespace
-      "kafkaServerConnection": "kafka-observables.<OBSERABLES-NAMESPACE>.svc:9092" #this is the kafka that logstash is pointed towards
+      "kafkaServerConnection": "kafka-observables.<OBSERVABLES-NAMESPACE>.svc:9092" #this is the kafka that logstash is pointed towards
     },
   }
 ```
