@@ -19,7 +19,8 @@ To install the observables stack:
 2. Are you installing into an EKS environment?
 
    If yes:
-   From the root directory of the helm-charts, fill in your desired namespace to install observables and run (by default it is `observables`):
+
+   From the root directory of the helm-charts, fill in your desired namespace to install observables (by default it is `observables`) and run:
 
    ```bash
    make observables EKS=true OBSERVABLES_NAMESPACE=<OBSERVABLES-NAMESPACE>
