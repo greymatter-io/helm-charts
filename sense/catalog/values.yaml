@@ -302,12 +302,12 @@ services:
     port: 3000
     enableInstanceMetrics: 'true'
     capability: 'Security'
-    documentation: ''
+    documentation: '/services/jwt-security/latest/'
     owner: 'Decipher'
     version: '1.2.0'
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'https://{{- $.Values.global.domain }}/services/jwt-security/latest/'
-    apiSpecEndpoint: ''
+    apiSpecEndpoint: '/services/jwt-security/latest/'
     businessImpact: low
     description: The Grey Matter JWT security service is a JWT Token generation and retrieval service.
     # External links configures the "Service Tools" dropdown in service view
@@ -331,12 +331,12 @@ services:
     port: 5555
     enableInstanceMetrics: 'true'
     capability: 'Mesh'
-    documentation:
+    documentation: '/services/control-api/latest/'
     owner: 'Decipher'
     version: '1.5.0'
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'https://{{- $.Values.global.domain }}/services/control-api/latest/'
-    apiSpecEndpoint: ''
+    apiSpecEndpoint: '/services/control-api/latest/'
     businessImpact: low
     description: The purpose of the Grey Matter Control API is to update the configuration of every Grey Matter Proxy in the mesh.
     # External links configures the "Service Tools" dropdown in service view
@@ -402,7 +402,7 @@ services:
     port: 1337
     enableInstanceMetrics: 'true'
     capability: 'Sense'
-    documentation:
+    documentation: '/services/slo/latest/'
     owner: 'Decipher'
     version: '1.2.0'
     ownerURL: "https://greymatter.io"
