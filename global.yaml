@@ -2,7 +2,7 @@ global:
   # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kubernetes", or "openshift"
-  environment: kubernetes
+  environment: openshift
   # Used to configure control and control-api environment variables
   zone: zone-default-zone
   # Whether to use consul for service discovery
@@ -27,7 +27,7 @@ global:
       enabled: true
   # Whether or not to use spire for cert management and the trust domain
   spire:
-    enabled: true
+    enabled: false
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
   # Configures the init container used to wait on various deployments to be ready

@@ -5,7 +5,7 @@ CHART-SENSE := .
 include ../output.mk
 
 wsa-sense:
-	$(eval WAITERSACHECK-SENSE=$(shell kubectl get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
+	$(eval WAITERSACHECK-SENSE=$(shell oc get sa waiter-sa | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
 	@echo $(WAITERSACHECK-SENSE)
 
 helm-validator:

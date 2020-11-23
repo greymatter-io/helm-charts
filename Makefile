@@ -63,7 +63,7 @@ install: dev-dep check-secrets install-spire
 	(cd edge && make edge)
 	sleep 20
 	if [ "$(K3D)" = "true" ]; then \
-		(kubectl patch svc edge -p '{"spec": {"type": "LoadBalancer"}}'); \
+		(oc patch svc edge -p '{"spec": {"type": "LoadBalancer"}}'); \
 	fi
 	(cd data && make data)
 	sleep 20
@@ -83,10 +83,10 @@ delete: uninstall remove-pvc remove-pods
 	@echo "purged greymatter helm release"
 	
 remove-pvc:
-	kubectl delete pvc $$(kubectl get pvc | awk '{print $$1}' | tail -n +2)
+	oc delete pvc $$(oc get pvc | awk '{print $$1}' | tail -n +2)
 
 remove-pods:
-	kubectl delete pods $$(kubectl get pods | awk '{print $$1'} | tail -n +2)
+	oc delete pods $$(oc get pods | awk '{print $$1'} | tail -n +2)
 
 
 OUTPUT_PATH=./logs
