@@ -45,6 +45,9 @@ global:
       proxy_dynamic:
         type: 'value'
         value: 'true'
+      delta_xds:
+        type: 'value'
+        value: 'true'
       xds_server_ca_path:
         type: 'value'
         value: /etc/proxy/tls/sidecar/ca.crt
