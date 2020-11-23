@@ -17,10 +17,10 @@ spec:
     spec:
       # Security context for openshift, kubernetes and eks is the same. 
 
-      securityContext:
-        runAsUser: 2000
-        runAsGroup: 0
-        fsGroup: 2000
+      # securityContext:
+      #   runAsUser: 2000
+      #   runAsGroup: 0
+      #   fsGroup: 2000
       serviceAccountName: {{ .Values.global.waiter.service_account.name }}
       {{- if not .Values.postgres.rds.enabled }}
       initContainers:

@@ -20,10 +20,10 @@ spec:
     spec:
       # Security context for openshift, kubernetes and eks is the same. 
 
-      securityContext:
-        runAsUser: 2000
-        runAsGroup: 0
-        fsGroup: 2000
+      # securityContext:
+      #   runAsUser: 2000
+      #   runAsGroup: 0
+      #   fsGroup: 2000
       containers:
       - name: postgres
         image: {{ .Values.postgres.image }}
