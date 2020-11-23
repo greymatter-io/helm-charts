@@ -149,13 +149,13 @@ prometheus:
   service_account:
     create: true
     name: prometheus-sa
-  resources:
-    requests:
-      memory: '8Gi'
-      cpu: '1'
-    limits:
-      memory: '12Gi'
-      cpu: '2'
+  # resources:
+  #   requests:
+  #     memory: '8Gi'
+  #     cpu: '1'
+  #   limits:
+  #     memory: '12Gi'
+  #     cpu: '2'
 
 # Sidecar configuration for prometheus
 sidecar_prometheus:
