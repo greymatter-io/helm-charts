@@ -7,13 +7,22 @@ include ../output.mk
 wsa-spire:
 	$(eval WAITERSACHECK-SPIRE=$(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
 
+envirionemt-check:
+	$(eval ENVIRONMENT=$(shell grep -hri "environment:"  ../global.yaml  | cut -d ':' -f 2 | xargs))
+
 .PHONY: server
 server: wsa-spire
-	helm install $(NAME-SPIRE)-server server --set=global.environment=kubernetes $(WAITERSACHECK-SPIRE) -f ../global.yaml
+	helm install $(NAME-SPIRE)-server server $(WAITERSACHECK-SPIRE) -f ../global.yaml
 
 .PHONY: agent
-agent: wsa-spire
-	helm install $(NAME-SPIRE)-agent agent --set=global.environment=kubernetes $(WAITERSACHECK-SPIRE) -f ../global.yaml
+agent: wsa-spire envirionemt-check
+	@if [ "$(ENVIRONMENT)" == "openshift" ]; then \
+		helm install $(NAME-SPIRE)-agent agent $(WAITERSACHECK-SPIRE) -f ../global.yaml; \
+        oc adm policy add-scc-to-user hostaccess system:serviceaccount:spire:agent;\
+		oc adm policy add-scc-to-user privileged system:serviceaccount:spire:agent;\
+	else \
+		helm install $(NAME-SPIRE)-agent agent $(WAITERSACHECK-SPIRE) -f ../global.yaml; \
+    fi
 
 clean-spire:
 	rm -f ./charts/*
@@ -24,7 +33,7 @@ package-spire: clean-spire
 
 template-spire: package-spire $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template $(NAME-SPIRE) . --set=global.environment=kubernetes $(WAITERSACHECK-SPIRE)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SPIRE)$(BN).yaml
+	helm template $(NAME-SPIRE) . $(WAITERSACHECK-SPIRE)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SPIRE)$(BN).yaml
 
 .PHONY: spire
 spire: package-spire wsa-spire
