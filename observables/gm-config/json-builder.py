@@ -5,12 +5,14 @@ import sys
 import shutil
 
 # requires python 3.6
+path = os.getcwd()
+path = path + "/observables/gm-config"
 
 spire = input("Is SPIRE enabled? True or False: ")
 if spire == "True":
-    configFilesDir = "./kibana-observables-proxy-spire"
+    configFilesDir = path + "/kibana-observables-proxy-spire"
 else:
-    configFilesDir = "./kibana-observables-proxy"
+    configFilesDir = path + "/kibana-observables-proxy"
 
 listOfFiles = os.listdir(configFilesDir)
 
@@ -25,38 +27,38 @@ display_name = "Kibana Proxy"
 try:
     sys.argv[1]
 except:
-    print("No argument for kibana name passed")
-    replacement = input("Input the name of the kibana-proxy: ").lower()
+    print("No argument for observables namespace passed, using default \"observables\"")
+    ns_replacement = "observables"
 else:
     print("Argument: [%s]" % sys.argv[1])
-    replacement = sys.argv[1].lower()
-    print("Using [%s] as the kibana-proxy's name " % (replacement))
+    ns_replacement = sys.argv[1].lower()
+    print("Using [%s] as the observables namespace " % (ns_replacement))
 
 try:
     sys.argv[2]
 except:
-    print("No argument for observables namespace passed")
-    ns_replacement = input("Input the observables namespace: ").lower()
+    print("No argument for Kibana display name passed, using default \"Kibana Observables Proxy\"")
+    display_name = "Kibana Observables Proxy"
 else:
     print("Argument: [%s]" % sys.argv[2])
-    ns_replacement = sys.argv[2].lower()
-    print("Using [%s] as the observables namespace " % (ns_replacement))
+    display_name = sys.argv[2]
+    print("Using [%s] as the display name " % (display_name))
 
 try:
     sys.argv[3]
 except:
-    print("No argument for Kibana display name passed")
-    display_name = input("Input the display name: ")
+    print("No argument for kibana name passed, using default \"kibana-observables-proxy\"")
+    replacement = "kibana-observables-proxy"
 else:
     print("Argument: [%s]" % sys.argv[3])
-    display_name = sys.argv[3].lower()
-    print("Using [%s] as the display name " % (display_name))
+    replacement = sys.argv[3].lower()
+    print("Using [%s] as the kibana-proxy's name " % (replacement))
 
 # Make export directory
-export_dir = "%s/export/%s" % (".", replacement)
+export_dir = "%s/export/%s" % (path, replacement)
 if os.path.isdir(export_dir):
     yn = input(
-        "[%s] already exists.  Do you want to overwrite? [Yn]" % (export_dir)
+        "[%s] already exists.  Do you want to overwrite? [Yn] \n" % (export_dir)
     ).lower()
     if yn == "y":
         shutil.rmtree(export_dir)
@@ -90,6 +92,10 @@ for file in listOfFiles:
             line = line.replace(target, replacement)
             line = line.replace(display_target, display_name)
             fout.write(line)
+        elif (file == "create.sh") or (file == "delete.sh"):
+            line = line.replace(target, replacement)
+            line = line.replace("path-to-dir", export_dir)
+            fout.write(line)
         else:
             fout.write(line.replace(target, replacement))
 
@@ -99,7 +105,6 @@ for file in listOfFiles:
 os.chmod(export_dir + "/create.sh", 0o777)
 os.chmod(export_dir + "/delete.sh", 0o777)
 
-print("Done Builder")
 print(
-    "Next step is to apply the Grey Matter objects (in %s) to the mesh." % (export_dir)
+    "Success! To apply, run \'./observables/gm-config/export/kibana-observables-proxy/create.sh\'"
 )

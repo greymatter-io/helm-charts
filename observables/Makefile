@@ -125,6 +125,8 @@ logstash: helm-dep-up
 		--namespace $(LOGSTASH-NAMESPACE) \
 		-f custom-values-files/logstash-values.yaml \
 		--set extraEnvs[2].value=$(LOGSTASH-NAMESPACE) \
+		--set extraEnvs[0].value=elasticsearch-master-headless.$(LOGSTASH-NAMESPACE).svc \
+		--set extraEnvs[3].value=kafka-observables-headless.$(LOGSTASH-NAMESPACE).svc:9092 \
 		logstash-7.5.2.tgz > manifest.yaml
 	kubectl apply -f manifest.yaml --namespace $(LOGSTASH-NAMESPACE) --validate=false $(DRYRUN)
 
