@@ -20,6 +20,7 @@ global:
     # whether to install an external data
     external:
       enabled: false
+      uses3: false
     # whether to install an internal data
     internal:
       enabled: true
@@ -110,7 +111,7 @@ data:
     envvars:
       uses3:
         type: value
-        value: 'false'
+        value: '{{ .Values.global.data.uses3 }}'
       aws_access_key_id:
         type: secret
         secret: '{{ .Values.data.name }}-secrets'
