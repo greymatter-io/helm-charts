@@ -36,52 +36,60 @@ To install the observables stack:
 
 3. Upgrade fabric and sense for your new namespace. Update the `global.yaml` file you used for your Grey Matter installation and add your observables namespace from step 1 to `global.control.additional_namespaces` [here](../global.yaml#L22).
 
-   Now upgrade your fabric and sense deployments:
+   Now upgrade your fabric and sense deployments.
+
+   If you are running in eks:
 
    ```bash
-   helm upgrade fabric fabric -f global.yaml --set=global.environment=<ENV>
-   helm upgrade sense sense -f global.yaml --set=global.environment=<ENV> --set=global.waiter.service_account.create=false
+   helm upgrade fabric fabric -f global.yaml --set=global.environment=eks
+   helm upgrade sense sense -f global.yaml --set=global.environment=eks --set=global.waiter.service_account.create=false
    ```
+
+   If you are not running in eks, change `--set=global.environment=eks` to your environment in the above and run.
 
    This will allow Grey Matter Control to discover from your observables namespace, and will allow Prometheus to get metrics.
 
 4. Configure the Kibana proxy.
 
-  If you are using the namespace, observables:
+   To generate mesh configurations for the kibana proxy, [get the pathogen binary](https://github.com/greymatter-io/pathogen-greymatter#get-pathogen) if you have not already, and run:
 
   ```bash
-  pathogen generate 'git@github.com:greymatter-io/pathogen-greymatter//service?ref=helm-charts' kibana-observables-proxy/
+  pathogen generate 'git@github.com:greymatter-io/pathogen-greymatter//all?ref=helm-charts' kibana-observables-proxy/
   ```
 
-   If you are using namespace `observables`, from the root directory of the helm-charts, run:
+  There will be a series of prompts - answer them accordingly:
 
-   ```bash
-   ./observables/gm-config/json-builder.py
-   ```
+  1. serviceName = `kibana-observables-proxy`
+  2. serviceHost = `kibana-kibana.observables.svc.cluster.local`
 
-   If you changed the namespace in step 2, or you want to change the display name of the Kibana Proxy on the dashboard (the  default is `Kibana Observables Proxy`), fill in the arguments  between `<>` and run the following instead:
+     - If you installed into a namespace other than `observables` replace `.observables.` with `.<your-namespace>.`
 
-   ```bash
-   ./observables/gm-config/json-builder.py <observables-namespace> '<Kibana Dashboard Name>'
-   ```
+  3. servicePort = `5601`
+  4. sidecarIngressPort = `10808`
+  5. sidecarEgressPort = `10909`
+  6. trustDomain = `quickstart.greymatter.io`
+  7. zone = `zone-default-zone`
+  8. displayName = `Kibana Observables Proxy` (or however you would like it to appear on it's card in the dashboard)
+  9. version = `7.1.0`
+  10. owner = `Kibana`
+  11. capability = `observables`
+  12. documentation = `/services/kibana-observables-proxy/7.1.0`
+  13. minInstances = `1`
+  14. maxInstances = `1`
 
-   It will prompt you with a question `Is SPIRE enabled? True or False:`, if your Grey Matter deployment is using SPIRE,  type `True` and enter. Otherwise `False`.
+  Once the templates are generated, they will be saved into the directory `kibana-observables-proxy`. Make sure your CLI is configured (run `greymatter list zone` without errors to check) and run the following to apply the configs:
 
-   If you already have created mesh configs, it will prompt you to overwrite them. Type `y` enter to do so. You will see:
+  ```bash
+  cd kibana-observables-proxy
+  ./apply.sh
+  cd ..
+  ```
 
-   ```bash
-   Success! To apply, run './observables/gm-config/export/kibana-observables-proxy/create.sh'
-   ```
+  TODO what if spire is not enabled
 
-   To apply the mesh configs, make sure the CLI is configured in your terminal (run `greymatter list cluster` without  errors to check), and run:
+  Now you have configured the kibana dashboard!
 
-   ```bash
-   ./observables/gm-config/export/kibana-observables-proxy/create.sh
-   ```
-
-   Now you have configured the Kibana Proxy in the mesh! If you need to delete these objects from the mesh at any time  you can run `./observables/gm-config/export/kibana-observables-proxy/delete.sh`.
-
-Once you have done these 5 steps, you should be able to see `Kibana Observables Proxy` in the dashboard, and access it at path `/services/kibana-observables-proxy/7.1.0/`. If you run `kubectl get pods -n observables`, you should see something that looks like the following, with all pods running:
+Once you have completed these 4 steps, you should be able to see `Kibana Observables Proxy` (or whatever displayName you chose) in the dashboard, and access it at path `/services/kibana-observables-proxy/7.1.0/`. If you run `kubectl get pods -n observables`, you should see something that looks like the following, with all pods running:
 
 ```bash
 NAME                                        READY   STATUS    RESTARTS   AGE
@@ -107,16 +115,43 @@ To configure a sidecar to emit observables you must define the filter as well as
 
   "active_http_filters": ["gm.metrics","gm.observables"], #appending gm.observables will enable it
   "http_filters": {
+    ...
     # configure the filter
     "gm_observables": {
-      "useKafka": true, # must be true to emit to kafka
-      "topic": "fibonacci", #this will be your service's name
-      "eventTopic": "observables", # this will typically be your namespace
-      "kafkaServerConnection": "kafka-observables.<OBSERVABLES-NAMESPACE>.svc:9092" #this is the kafka that logstash is pointed towards
-    },
+      "useKafka": true,
+      "topic": "fibonacci",
+      "eventTopic": "greymatter",
+      "kafkaServerConnection": "kafka-observables.observables.svc:9092"
+    }
   }
 ```
 
+Make sure to leave `eventTopic` as `"greymatter"` as logstash is configured for this kafka event topic.
+
+Once you have done this, if you make a request to the service on which you just enabled observables, it will emit the observables to your ELK stack and you can move on to [finish configuring kibana](#configure-kibana).
+
+## Configure Kibana
+
+Navigate back to your kibana proxy dashboard at `services/kibana-observables-proxy/7.1.0` and go to the management panel (the bottom-most option on the left panel). You should see `ElasticSearch` and `Kibana` listed on the left. Click on Kibana - Index Patterns. On the far right, click `Create index pattern`. If you [enabled observables](#enabling-the-grey-matter-observables-filter) and made a request to your service, there should be some existing data with the pattern `greymatter-*`. In the index pattern, type `greymatter-`. Click through the next steps to create the index.
+
+Once you have created the kibana index for `greymatter-`, you can use [Grey Matter Dashboarder](https://github.com/greymatter-io/dashboarder#dashboarder) to (TODO?). From the root directory of your helm-charts repo, run the following:
+
+The password is `password`.
+
+```bash
+mkdir observables/certs
+openssl pkcs12 -in certs/quickstart.p12 -cacerts -nokeys -out observables/certs/ca.crt
+openssl pkcs12 -in certs/quickstart.p12 -clcerts -nokeys -out observables/certs/user.crt
+openssl pkcs12 -in certs/quickstart.p12 -nocerts -nodes -out observables/certs/user.key
+```
+
+Then, to run the dashboarder service:
+
+```bash
+docker run --rm -v $(pwd)/observables/certs:/usr/local/dashboarder -e GREYMATTER_URL=https://$GREYMATTER_API_HOST/services/kibana-observables-proxy/7.1.0/api/saved_objects/ docker.greymatter.io/internal/dashboarder generate greymatter
+```
+
+Now, you can navigate to the `Dashboard` pane in your Kibana observables proxy dashboard, and you will see `Greymatter Dashboard` as an option. Here you will be able to visualize your observables!
 
 ## Alternative Installation
 
@@ -143,7 +178,7 @@ Once this is done, make the necessary [mesh updates](#mesh-updates-control-prome
 
 ## Removing Observables
 
-The make file has the ability to remove the observables deployment as a whole or individual pieces.  
+The make file has the ability to remove the observables deployment as a whole or individual pieces.
 
 From the root directory of the helm-charts, run `make remove-observables OBSERVABLES_NAMESPACE=`.
 
