@@ -51,43 +51,41 @@ To install the observables stack:
 
 4. Configure the Kibana proxy.
 
+   > Note: These pathogen templates are for a SPIRE enabled deployment only.
+
    To generate mesh configurations for the kibana proxy, [get the pathogen binary](https://github.com/greymatter-io/pathogen-greymatter#get-pathogen) if you have not already, and run:
 
-  ```bash
-  pathogen generate 'git@github.com:greymatter-io/pathogen-greymatter//all?ref=helm-charts' kibana-observables-proxy/
-  ```
+   ```bash
+   pathogen generate 'git@github.com:greymatter-io/pathogen-greymatter//all?ref=release-2.2'  kibana-observables-proxy/
+   ```
 
-  There will be a series of prompts - answer them accordingly:
+   There will be a series of prompts - answer them accordingly:
 
-  1. serviceName = `kibana-observables-proxy`
-  2. serviceHost = `kibana-kibana.observables.svc.cluster.local`
+   1. serviceName = `kibana-observables-proxy`
+   2. serviceHost = `kibana-kibana.observables.svc.cluster.local`
+      - If you installed into a namespace other than `observables` replace `.observables.` with `.<your-namespace>.`
+   3. servicePort = `5601`
+   4. sidecarIngressPort = `10808`
+   5. sidecarEgressPort = `10909`
+   6. trustDomain = `quickstart.greymatter.io`
+   7. zone = `zone-default-zone`
+   8. displayName = `Kibana Observables Proxy` (or however you would like it to appear on it's card in the dashboard)
+   9. version = `7.1.0`
+   10. owner = `Kibana`
+   11. capability = `observables`
+   12. documentation = `/services/kibana-observables-proxy/7.1.0`
+   13. minInstances = `1`
+   14. maxInstances = `1`
 
-     - If you installed into a namespace other than `observables` replace `.observables.` with `.<your-namespace>.`
+   Once the templates are generated, they will be saved into the directory  `kibana-observables-proxy`. Make sure your CLI is configured (run `greymatter list zone`  without errors to check) and run the following to apply the configs:
 
-  3. servicePort = `5601`
-  4. sidecarIngressPort = `10808`
-  5. sidecarEgressPort = `10909`
-  6. trustDomain = `quickstart.greymatter.io`
-  7. zone = `zone-default-zone`
-  8. displayName = `Kibana Observables Proxy` (or however you would like it to appear on it's card in the dashboard)
-  9. version = `7.1.0`
-  10. owner = `Kibana`
-  11. capability = `observables`
-  12. documentation = `/services/kibana-observables-proxy/7.1.0`
-  13. minInstances = `1`
-  14. maxInstances = `1`
+   ```bash
+   cd kibana-observables-proxy
+   ./apply.sh
+   cd ..
+   ```
 
-  Once the templates are generated, they will be saved into the directory `kibana-observables-proxy`. Make sure your CLI is configured (run `greymatter list zone` without errors to check) and run the following to apply the configs:
-
-  ```bash
-  cd kibana-observables-proxy
-  ./apply.sh
-  cd ..
-  ```
-
-  TODO what if spire is not enabled
-
-  Now you have configured the kibana dashboard!
+   Now you have configured the kibana dashboard!
 
 Once you have completed these 4 steps, you should be able to see `Kibana Observables Proxy` (or whatever displayName you chose) in the dashboard, and access it at path `/services/kibana-observables-proxy/7.1.0/`. If you run `kubectl get pods -n observables`, you should see something that looks like the following, with all pods running:
 
@@ -109,11 +107,11 @@ Now your ELK stack is ready to recieve observables! See [enabling the observable
 
 ## Enabling the Grey Matter observables filter
 
-To configure a sidecar to emit observables you must define the filter as well as enable it.  In the sidecar's `listener` object that you wish to turn on observables, `greymatter edit listener listener-servicex` and add the following:
+To configure a sidecar to emit observables you must define the filter as well as enable it.  In the sidecar's `listener` object that you wish to turn on observables, `greymatter edit listener listener-servicex` and add `"gm.observables"` to the list of `active_http_filters`, and the following configuration to the `http_filters` map so that it looks like:
 
 ```yaml
-
-  "active_http_filters": ["gm.metrics","gm.observables"], #appending gm.observables will enable it
+  ...
+  "active_http_filters": [..., "gm.observables"],
   "http_filters": {
     ...
     # configure the filter
@@ -134,7 +132,7 @@ Once you have done this, if you make a request to the service on which you just 
 
 Navigate back to your kibana proxy dashboard at `services/kibana-observables-proxy/7.1.0` and go to the management panel (the bottom-most option on the left panel). You should see `ElasticSearch` and `Kibana` listed on the left. Click on Kibana - Index Patterns. On the far right, click `Create index pattern`. If you [enabled observables](#enabling-the-grey-matter-observables-filter) and made a request to your service, there should be some existing data with the pattern `greymatter-*`. In the index pattern, type `greymatter-`. Click through the next steps to create the index.
 
-Once you have created the kibana index for `greymatter-`, you can use [Grey Matter Dashboarder](https://github.com/greymatter-io/dashboarder#dashboarder) to (TODO?). From the root directory of your helm-charts repo, run the following:
+Once you have created the kibana index for `greymatter-`, you can use [Grey Matter Dashboarder](https://github.com/greymatter-io/dashboarder#dashboarder) to populate a Kibana dashboard. From the root directory of your helm-charts repo, run the following:
 
 The password is `password`.
 
@@ -149,6 +147,27 @@ Then, to run the dashboarder service:
 
 ```bash
 docker run --rm -v $(pwd)/observables/certs:/usr/local/dashboarder -e GREYMATTER_URL=https://$GREYMATTER_API_HOST/services/kibana-observables-proxy/7.1.0/api/saved_objects/ docker.greymatter.io/internal/dashboarder generate greymatter
+```
+
+You should see the response:
+
+```bash
+Found the greymatter index
+Templating the Visualization
+Applying the service visualization
+Applying the response_code visualization
+Applying the request_per_hour visualization
+Applying the total_requests visualization
+Applying the user_dn visualization
+Applying the x_real_ip visualization
+Applying the service_user_dn visualization
+Applying the popular_paths visualization
+Applying the successful_requests visualization
+Applying the path visualization
+Applying the user_agent visualization
+Templating the Dashboard
+Applying the Dashboard
+Completed
 ```
 
 Now, you can navigate to the `Dashboard` pane in your Kibana observables proxy dashboard, and you will see `Greymatter Dashboard` as an option. Here you will be able to visualize your observables!
