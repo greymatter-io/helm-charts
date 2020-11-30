@@ -40,6 +40,7 @@ global:
     dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
   # Global rbac configuration for service admin principal.
   rbac:
+    edge: true
     admin:
       header_name: user_dn
       match_type: exact_match

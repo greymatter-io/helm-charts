@@ -7,7 +7,14 @@
   "port": 10808,
   "protocol": "http_auto",
   "tracing_config": null,
-  "active_http_filters": ["gm.metrics", "gm.inheaders", "gm.jwtsecurity", "envoy.jwt_authn", "envoy.rbac"],
+  "active_http_filters": [
+    "gm.metrics",
+    "gm.inheaders",
+    "gm.jwtsecurity",
+    "envoy.jwt_authn"{{- if .Values.global.rbac.edge }},
+    "envoy.rbac"
+    {{- end }}
+  ],
   "http_filters": {
     "gm_inheaders": {},
     "gm_metrics": {
@@ -46,6 +53,7 @@
         }
       ]
     },
+    {{- if .Values.global.rbac.edge }}
     "envoy_rbac": {
       "rules": {
         "action": 0,
@@ -117,6 +125,7 @@
         }
       }
     },
+    {{- end }}
     "gm_jwtsecurity": {
       {{- if .Values.global.spire.enabled }}
       "apiKey": "{{ .Values.global.jwt_api_key }}",
