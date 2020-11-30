@@ -321,7 +321,7 @@ catalog:
     # Name used for the deployment and service resources
     name: catalog
     # GM Catalog version
-    version: 1.1
+    version: 1.2.0
     image: docker.greymatter.io/development/gm-catalog:{{ $.Values.catalog.version }}
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
@@ -433,7 +433,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.1
+    version: 1.2.0
     minInstances: 1
     maxInstances: 1
     ownerURL: "https://greymatter.io"
