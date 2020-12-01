@@ -71,7 +71,7 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 60
             timeoutSeconds: 3
-          {{- if eq (default $.Values.global.environment "kubernetes") "openshift" }}
+          {{- if eq $.Values.global.environment "openshift" }}
           securityContext:
             privileged: true
             runAsUser: 0
