@@ -63,7 +63,7 @@ controlApi:
   # Number of replicas for the deployment
   replicas: 1
   version: 1.5.0
-  image: 'docker.greymatter.io/development/gm-control-api:{{ .Values.controlApi.version }}'
+  image: 'docker.greymatter.io/development/gm-control-api:1.6.0-dev'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # Port exposed by the control-api container
@@ -142,7 +142,7 @@ controlApi:
     # The following envvars enable the experimental control-api explorer UI
     gm_control_api_experiments:
       type: value
-      value: 'false'
+      value: 'true'
     gm_control_api_base_url:
       type: value
       value: '/services/control-api/latest/v1.0/'
@@ -234,7 +234,7 @@ services:
     minInstances: 1
     maxInstances: 1
     ownerURL: "https://greymatter.io"
-    apiEndpoint: 'https://{{- $.Values.global.domain }}/services/catalog/latest/'
+    apiEndpoint: 'services/catalog/latest/'
     apiSpecEndpoint: '/services/catalog/latest/'
     businessImpact: low
     description: The Grey Matter Catalog service interfaces with the Fabric mesh xDS interface to provide high level summaries and more easily consumable views of the current state of the mesh. It powers the Grey Matter application and any other applications that need to understand what is present in the mesh.
@@ -267,7 +267,7 @@ services:
     owner: 'Decipher'
     version: 4.0.0
     ownerURL: "https://greymatter.io"
-    apiEndpoint: 'https://{{- $.Values.global.domain }}'
+    apiEndpoint: ''
     apiSpecEndpoint: ''
     businessImpact: low
     description: The Grey Matter application is a user dashboard that paints a high-level picture of the service mesh.
@@ -308,7 +308,7 @@ services:
     owner: 'Decipher'
     version: 1.1.3
     ownerURL: "https://greymatter.io"
-    apiEndpoint: 'https://{{- $.Values.global.domain }}/services/data/latest/'
+    apiEndpoint: 'services/data/latest/'
     apiSpecEndpoint: '/latest/static/'
     businessImpact: low
     description: Grey Matter Data is an API that enables secure and flexible access control for your microservices.
@@ -337,7 +337,7 @@ services:
     owner: 'Decipher'
     version: '1.2.0'
     ownerURL: "https://greymatter.io"
-    apiEndpoint: 'https://{{- $.Values.global.domain }}/services/jwt-security/latest/'
+    apiEndpoint: 'services/jwt-security/latest/'
     apiSpecEndpoint: '/services/jwt-security/latest/'
     businessImpact: low
     description: The Grey Matter JWT security service is a JWT Token generation and retrieval service.
@@ -366,7 +366,7 @@ services:
     owner: 'Decipher'
     version: '1.5.0'
     ownerURL: "https://greymatter.io"
-    apiEndpoint: 'https://{{- $.Values.global.domain }}/services/control-api/latest/'
+    apiEndpoint: 'services/control-api/latest/'
     apiSpecEndpoint: '/services/control-api/latest/'
     businessImpact: low
     description: The purpose of the Grey Matter Control API is to update the configuration of every Grey Matter Proxy in the mesh.
@@ -399,7 +399,7 @@ services:
     owner: 'Decipher'
     version: '1.5.1'
     ownerURL: "https://greymatter.io"
-    apiEndpoint: 'https://{{- $.Values.global.domain }}'
+    apiEndpoint: ''
     apiSpecEndpoint: ''
     businessImpact: low
     description: Grey Matter Edge handles north/south traffic flowing through the mesh.
@@ -437,7 +437,7 @@ services:
     owner: 'Decipher'
     version: '1.2.0'
     ownerURL: "https://greymatter.io"
-    apiEndpoint: 'https://{{- $.Values.global.domain }}/services/slo/latest/'
+    apiEndpoint: 'services/slo/latest/'
     apiSpecEndpoint: '/services/slo/latest/'
     businessImpact: low
     description: Grey Matter Service Level Objectives (SLOs) allows users to manage objectives towards service-level agreements.
