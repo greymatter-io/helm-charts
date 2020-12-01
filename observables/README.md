@@ -197,7 +197,7 @@ Once this is done, make the necessary [mesh updates](#mesh-updates-control-prome
 
 ## Removing Observables
 
-The make file has the ability to remove the observables deployment as a whole or individual pieces.
+The makefile has the ability to remove the observables deployment as a whole or individual pieces.
 
 From the root directory of the helm-charts, run `make remove-observables OBSERVABLES_NAMESPACE=`.
 
