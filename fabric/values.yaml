@@ -165,7 +165,7 @@ control-api:
     replicas: 1
     # Gm Control API version
     version: 1.5.0
-    image: 'docker.greymatter.io/development/gm-control-api:1.6.0-dev'
+    image: 'docker.greymatter.io/development/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Port exposed by the control-api container
@@ -244,10 +244,11 @@ control-api:
       # The following envvars enable the experimental control-api explorer UI
       gm_control_api_experiments:
         type: value
-        value: 'true'
+        value: 'false'
+      # staying at the default, just makes it easier to change when desired
       gm_control_api_disable_version_check:
         type: value
-        value: 'true'
+        value: 'false'
       gm_control_api_base_url:
         type: value
         value: '/services/control-api/latest/v1.0/'
