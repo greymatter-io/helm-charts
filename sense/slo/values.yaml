@@ -42,13 +42,13 @@ slo:
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the SLO service
-  resources:
-    limits:
-      cpu: 250m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 250m
+  #     memory: 512Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
   # Secret used to template envvars
   secret:
     enabled: true
@@ -163,13 +163,13 @@ postgres:
   # If true, don't use the image pull secret
   private_image: false
   # CPU and memory limits for the sidecar
-  resources:
-    limits:
-      cpu: 200m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 200m
+  #     memory: 512Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
   conf_mount_point: /conf
   # This override is unique to OpenShift's postgresql container
   # https://github.com/sclorg/postgresql-container/tree/master/examples/custom-config

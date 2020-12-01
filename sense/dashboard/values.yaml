@@ -43,13 +43,13 @@ dashboard:
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the dashboard app
-  resources:
-    requests:
-      memory: '2Gi'
-      cpu: '1'
-    limits:
-      memory: '6Gi'
-      cpu: '2'
+  # resources:
+  #   requests:
+  #     memory: '2Gi'
+  #     cpu: '1'
+  #   limits:
+  #     memory: '6Gi'
+  #     cpu: '2'
   secret:
     enabled: true
     secret_name: dashboard-certs
@@ -161,13 +161,13 @@ prometheus:
   service_account:
     create: true
     name: prometheus-sa
-  resources:
-    requests:
-      memory: "8Gi"
-      cpu: "1"
-    limits:
-      memory: "12Gi"
-      cpu: "2"
+  # resources:
+  #   requests:
+  #     memory: "8Gi"
+  #     cpu: "1"
+  #   limits:
+  #     memory: "12Gi"
+  #     cpu: "2"
 
 
 # Sidecar configuration for prometheus

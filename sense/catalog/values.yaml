@@ -48,13 +48,13 @@ catalog:
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the catalog service
-  resources:
-    limits:
-      cpu: 200m
-      memory: 1Gi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  # resources:
+  #   limits:
+  #     cpu: 200m
+  #     memory: 1Gi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
   # Catalog service port
   port: 9080
   secret:

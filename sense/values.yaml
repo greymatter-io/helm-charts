@@ -65,13 +65,13 @@ slo:
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the SLO service
-    resources:
-      limits:
-        cpu: 250m
-        memory: 512Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+    # resources:
+    #   limits:
+    #     cpu: 250m
+    #     memory: 512Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
     # Secret used to template envvars
     secret:
       enabled: true
@@ -160,13 +160,13 @@ slo:
     # If true, don't use the image pull secret
     private_image: false
     # CPU and memory limits for the sidecar
-    resources:
-      limits:
-        cpu: 200m
-        memory: 512Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+    # resources:
+    #   limits:
+    #     cpu: 200m
+    #     memory: 512Mi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
     conf_mount_point: /conf
     # This override is unique to OpenShift's postgresql container
     # https://github.com/sclorg/postgresql-container/tree/master/examples/custom-config
@@ -209,13 +209,13 @@ dashboard:
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the dashboard app
-    resources:
-      requests:
-        memory: '2Gi'
-        cpu: '1'
-      limits:
-        memory: '6Gi'
-        cpu: '2'
+    # resources:
+    #   requests:
+    #     memory: '2Gi'
+    #     cpu: '1'
+    #   limits:
+    #     memory: '6Gi'
+    #     cpu: '2'
     secret:
       enabled: true
       secret_name: dashboard-certs
@@ -301,13 +301,13 @@ dashboard:
     service_account:
       create: true
       name: prometheus-sa
-    resources:
-      requests:
-        memory: "8Gi"
-        cpu: "1"
-      limits:
-        memory: "12Gi"
-        cpu: "2"
+    # resources:
+    #   requests:
+    #     memory: "8Gi"
+    #     cpu: "1"
+    #   limits:
+    #     memory: "12Gi"
+    #     cpu: "2"
 
   # Sidecar configuration overrides for prometheus
   sidecar_prometheus:
@@ -326,13 +326,13 @@ catalog:
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the catalog service
-    resources:
-      limits:
-        cpu: 200m
-        memory: 1Gi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+    # resources:
+    #   limits:
+    #     cpu: 200m
+    #     memory: 1Gi
+    #   requests:
+    #     cpu: 100m
+    #     memory: 128Mi
     # Catalog service port
     port: 9080
     secret:
