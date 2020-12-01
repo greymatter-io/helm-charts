@@ -4,8 +4,8 @@ imagePullSecrets:
   - name: docker.secret
 
 sidecar:
-  version: 1.4.5
-  image: 'docker-dev.production.deciphernow.com/deciphernow/gm-proxy:{{ $.Values.sidecar.version }}'
+  version: '{{- $.Values.global.sidecar.version | default "latest" }}'
+  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   port: 10808
   metrics_port: 8081
   imagePullPolicy: IfNotPresent
@@ -25,7 +25,7 @@ sidecar:
       value: '{{ .Values.name }}'
     xds_host:
       type: 'value'
-      value: 'control.greymatter.svc.cluster.local'
+      value: 'control.default.svc'
     xds_port:
       type: 'value'
       value: '50000'

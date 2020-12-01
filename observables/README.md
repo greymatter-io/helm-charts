@@ -8,107 +8,169 @@ Simply put:
 - Kibana makes the Elasticsearch data presentable
 - Kibana-proxy allows Kibana to be exposed through the mesh.
 
-## TODO
-
-1. Create SA to run observables.
-
-## Requirements
-
-- a namespace in which to apply the observables
-- `{{ .Values.global.image_pull_secret }}` with ability to pull images in namespace
-- `sidecar-certs` secret in namespace (for kibana-proxy)
-
-## All in One Install
+## Install ELK Stack
 
 To install the observables stack:
 
-1. Edit the [values files](./custom-values-files) to point to docker images you would like kubernetes/ openshift to pull from and for any custom configurations.  Be sure to make the following changes:
+1. If your Grey Matter fabric installation exists in the `default` namespace, you can move onto step 2. Otherwise, make the following change:
 
-   - If you plan to install in a namespace other than `observables`, [edit the extra envs for logstash](custom-values-files/logstash-values.yaml#L45) `ELASTICSEARCH_HOST` and `KAFKA_BOOTSTRAP_SERVERS` with values `elasticsearch-master-headless.<OBSERVABLES-NAMESPACE>.svc` and `kafka-observables-headless.<OBSERVABLES-NAMESPACE>.svc:9092` respectively.
-   - If your Grey Matter Fabric deployment is running in a namespace that is not `default`, edit `xds_host` in the [kibana proxy value file](./custom-values-files/kibana-proxy-values.yaml) to point to control's service.
-   - If you change the [kibana-observables-proxy name](./custom-values-files/kibana-proxy-values.yaml#L1), you must also change the environment variable `SERVER_BASEPATH` in the kibana values file [here](./custom-values-files/kibana-values.yaml#L12) to match the path defined in your `05.route.edge.1.json` [gm config](#add-kibana-proxy-to-dashboard).
-  
-2. Install. If you are deploying in an **eks environment**, add `EKS=true` to your make commands.
+   Change the value of the `xds_host` environment variable in `sidecar.envvars` [here](./custom-values-files/kibana-proxy-values.yaml#L10) to `control.<FABRIC-NAMESPACE>.svc`, replacing `<FABRIC-NAMESPACE>` with the namespace that your fabric installation is running.
 
-   From the base directory of the helm-charts, run:
+2. Are you installing into an EKS environment?
 
-   ```bash
-   make observables OBSERVABLES_NAMESPACE= EKS=
-   ```
+   If yes:
 
-   The namespace specified will be created and the necessary secrets will be applied if they are not already there. EKS defaults to false and  `OBSERVABLES_NAMESPACE` defaults to `observables`. You can remove from the base directory with `make remove-observables  OBSERVABLES_NAMESPACE=`.
-
-3. Make the necessary [mesh updates to control/prometheus](#mesh-updates-control-prometheus).  To do this, add the observables namespace to `global.control.additional_namespaces` value in the [global.yaml](../global.yaml) file and upgrade fabric and sense:
+   From the root directory of the helm-charts, fill in your desired namespace to install observables (by default it is `observables`) and run:
 
    ```bash
-   helm upgrade fabric fabric -f global.yaml
-   helm upgrade sense sense -f global.yaml --set=global.waiter.service_account.create=false
+   make observables EKS=true OBSERVABLES_NAMESPACE=<OBSERVABLES-NAMESPACE>
    ```
 
-   Then restart prometheus to pick up the changes.
+   If no:
 
-4. [Configure the kibana-proxy.](#configure-the-kibana-proxy)
+   ```bash
+   make observables EKS=false OBSERVABLES_NAMESPACE=<OBSERVABLES-NAMESPACE>
+   ```
 
-Once these 4 steps are done, and all of the pods are up in your observables namespace, you should be able to see the Kibana Proxy in the dashboard, and access it.  To start using the observables stack in your mesh, [configure services to use the observables filter](#configuring-the-grey-matter-observables-filter)
+   If at any time you need to take down the ELK stack, run `make remove-observables OBSERVABLES_NAMESPACE=<OBSERVABLES-NAMESPACE>` from the root directory of the helm-charts. It may take the pods a few minutes to stabilize.
 
-## Mesh Updates (control/ prometheus)
+3. Upgrade fabric and sense for your new namespace. Update the `global.yaml` file you used for your Grey Matter installation and add your observables namespace from step 1 to `global.control.additional_namespaces` [here](../global.yaml#L22).
 
-- Update control to see your observables namespace by appending your namespace to the `GM_CONTROL_KUBERNETES_NAMESPACES` environment variable.
-- In the `prometheus` cofigmap `prometheus.yaml` update this section to include those same namespaces:
+   Now upgrade your fabric and sense deployments.
 
-```yaml
-scrape_configs:
-  - job_name: 'prometheus'
-    static_configs:
-      - targets: ['localhost:9090']
-  - job_name: kubernetes
-    metrics_path: /prometheus
-    kubernetes_sd_configs:
-      - role: pod
-        namespaces:
-          names:
-            - 'greymatter3'
-            - 'observables' # add additional namespaces here
-```
+   If you are running in eks:
 
-- Restart prometheus to pick up changes
+   ```bash
+   helm upgrade fabric fabric -f global.yaml --set=global.environment=eks
+   helm upgrade sense sense -f global.yaml --set=global.environment=eks --set=global.waiter.service_account.create=false
+   ```
 
-## Configure the Kibana Proxy
+   If you are not running in eks, change `--set=global.environment=eks` to your environment in the above and run.
 
-cd into the `observables/gm-config` directory and run `./json-builder.py` to create Grey Matter Mesh objects. It will prompt you for the follwing:
+   This will allow Grey Matter Control to discover from your observables namespace, and will allow Prometheus to get metrics.
 
-- `Is SPIRE enabled? True or False:` indicate whether or not your Grey Matter deployment is using SPIRE.
-- `Input the name of the kibana-proxy:` this should match the tag on the kibana-observables-proxy deployment `greymatter.io/control` (which isalso [this value](./custom-values-files/kibana-proxy-values.yaml#L1)).
-- `Input the observables namespace:` the namespace you are deploying observables.
-- `Input the display name:` the display name for the Kibana proxy in the dashboard.
+4. Configure the Kibana proxy.
 
-Apply the configuration files to the mesh. Make sure the CLI is configured, cd into the `/export/<name>` directory with `<name>` of the kibana proxy you just created, and run:
+   > Note: These pathogen templates are for a SPIRE enabled deployment only.
+
+   To generate mesh configurations for the kibana proxy, [get the pathogen binary](https://github.com/greymatter-io/pathogen-greymatter#get-pathogen) if you have not already, and run:
+
+   ```bash
+   pathogen generate 'git@github.com:greymatter-io/pathogen-greymatter//all?ref=release-2.2'  kibana-observables-proxy/
+   ```
+
+   There will be a series of prompts - answer them accordingly:
+
+   1. serviceName = `kibana-observables-proxy`
+   2. serviceHost = `kibana-kibana.observables.svc.cluster.local`
+      - If you installed into a namespace other than `observables` replace `.observables.` with `.<your-namespace>.`
+   3. servicePort = `5601`
+   4. sidecarIngressPort = `10808`
+   5. sidecarEgressPort = `10909`
+   6. trustDomain = `quickstart.greymatter.io`
+   7. zone = `zone-default-zone`
+   8. displayName = `Kibana Observables Proxy` (or however you would like it to appear on it's card in the dashboard)
+   9. version = `7.1.0`
+   10. owner = `Kibana`
+   11. capability = `observables`
+   12. documentation = `/services/kibana-observables-proxy/7.1.0`
+   13. minInstances = `1`
+   14. maxInstances = `1`
+
+   Once the templates are generated, they will be saved into the directory  `kibana-observables-proxy`. Make sure your CLI is configured (run `greymatter list zone`  without errors to check) and run the following to apply the configs:
+
+   ```bash
+   cd kibana-observables-proxy
+   ./apply.sh
+   cd ..
+   ```
+
+   Now you have configured the kibana dashboard!
+
+Once you have completed these 4 steps, you should be able to see `Kibana Observables Proxy` (or whatever displayName you chose) in the dashboard, and access it at path `/services/kibana-observables-proxy/7.1.0/`. If you run `kubectl get pods -n observables`, you should see something that looks like the following, with all pods running:
 
 ```bash
-./create.sh
+NAME                                        READY   STATUS    RESTARTS   AGE
+elasticsearch-master-0                      1/1     Running   0          4m13s
+kafka-observables-0                         1/1     Running   0          4m15s
+kafka-observables-1                         1/1     Running   0          4m15s
+kafka-observables-2                         1/1     Running   0          4m15s
+kafka-observables-zookeeper-0               1/1     Running   0          4m15s
+kafka-observables-zookeeper-1               1/1     Running   0          4m15s
+kafka-observables-zookeeper-2               1/1     Running   0          4m15s
+kibana-kibana-56b5c6f578-jb8fj              1/1     Running   0          4m11s
+kibana-observables-proxy-7446c44d6b-g8kvq   1/1     Running   0          4m8s
+logstash-logstash-0                         1/1     Running   0          4m9s
 ```
 
-If you need to delete these configurations at any time cd back into this directory and `./delete.sh`.
+Now your ELK stack is ready to recieve observables! See [enabling the observables filter](#enabling-the-grey-matter-observables-filter) for how to configure it.
 
-If the instance doesn't seem to be found (if it remains up red on the dashboard), check that the [mesh updates](#mesh-updates-control-prometheus) were made.
+## Enabling the Grey Matter observables filter
 
-## Configuring the Grey Matter observables filter
-
-To configure a sidecar to emit observables you must define the filter as well as enable it.  In the sidecar's `listener` object that you wish to turn on observables, `greymattter edit listener listener-servicex` and add the following:
+To configure a sidecar to emit observables you must define the filter as well as enable it.  In the sidecar's `listener` object that you wish to turn on observables, `greymatter edit listener <listener-key>` and add `"gm.observables"` to the list of `active_http_filters`, and the following configuration to the `http_filters` map so that it looks like:
 
 ```yaml
-
-  "active_http_filters": ["gm.metrics","gm.observables"], #appending gm.observables will enable it
+  ...
+  "active_http_filters": [..., "gm.observables"],
   "http_filters": {
+    ...
     # configure the filter
     "gm_observables": {
-      "useKafka": true, # must be true to emit to kafka
-      "topic": "fibonacci", #this will be your service's name
-      "eventTopic": "observables", # this will typically be your namespace
-      "kafkaServerConnection": "kafka-observables.<OBSERABLES-NAMESPACE>.svc:9092" #this is the kafka that logstash is pointed towards
-    },
+      "useKafka": true,
+      "topic": "<service-name>",
+      "eventTopic": "greymatter",
+      "kafkaServerConnection": "kafka-observables.observables.svc:9092"
+    }
   }
 ```
+
+Make sure to leave `eventTopic` as `"greymatter"` as logstash is configured for this kafka event topic, but change `topic` to the desired topic for this service.
+
+Once you have done this, if you make a request to the service on which you just enabled observables, it will emit the observables to your ELK stack and you can move on to [finish configuring kibana](#configure-kibana).
+
+## Configure Kibana
+
+Navigate back to your kibana proxy dashboard at `services/kibana-observables-proxy/7.1.0` and go to the management panel (the bottom-most option on the left panel). You should see `ElasticSearch` and `Kibana` listed on the left. Click on Kibana - Index Patterns. On the far right, click `Create index pattern`. If you [enabled observables](#enabling-the-grey-matter-observables-filter) and made a request to your service, there should be some existing data with the pattern `greymatter-*`. In the index pattern, type `greymatter-`. Click through the next steps to create the index.
+
+Once you have created the kibana index for `greymatter-`, you can use [Grey Matter Dashboarder](https://github.com/greymatter-io/dashboarder#dashboarder) to populate a Kibana dashboard. From the root directory of your helm-charts repo, run the following:
+
+The password is `password`.
+
+```bash
+mkdir observables/certs
+openssl pkcs12 -in certs/quickstart.p12 -cacerts -nokeys -out observables/certs/ca.crt
+openssl pkcs12 -in certs/quickstart.p12 -clcerts -nokeys -out observables/certs/user.crt
+openssl pkcs12 -in certs/quickstart.p12 -nocerts -nodes -out observables/certs/user.key
+```
+
+Then, to run the dashboarder service:
+
+```bash
+docker run --rm -v $(pwd)/observables/certs:/usr/local/dashboarder -e GREYMATTER_URL=https://$GREYMATTER_API_HOST/services/kibana-observables-proxy/7.1.0/api/saved_objects/ docker.greymatter.io/internal/dashboarder generate greymatter
+```
+
+You should see the response:
+
+```bash
+Found the greymatter index
+Templating the Visualization
+Applying the service visualization
+Applying the response_code visualization
+Applying the request_per_hour visualization
+Applying the total_requests visualization
+Applying the user_dn visualization
+Applying the x_real_ip visualization
+Applying the service_user_dn visualization
+Applying the popular_paths visualization
+Applying the successful_requests visualization
+Applying the path visualization
+Applying the user_agent visualization
+Templating the Dashboard
+Applying the Dashboard
+Completed
+```
+
+Now, you can navigate to the `Dashboard` pane in your Kibana observables proxy dashboard, and you will see `Greymatter Dashboard` as an option. Here you will be able to visualize your observables!
 
 ## Alternative Installation
 
@@ -135,7 +197,7 @@ Once this is done, make the necessary [mesh updates](#mesh-updates-control-prome
 
 ## Removing Observables
 
-The make file has the ability to remove the observables deployment as a whole or individual pieces.  
+The makefile has the ability to remove the observables deployment as a whole or individual pieces.
 
 From the root directory of the helm-charts, run `make remove-observables OBSERVABLES_NAMESPACE=`.
 

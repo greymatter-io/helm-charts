@@ -22,6 +22,7 @@ global:
     # whether to install an external data
     external:
       enabled: false
+      uses3: false
     # whether to install an internal data
     internal:
       enabled: true
@@ -38,6 +39,9 @@ global:
   # Global sidecar config (supports version and envvars)
   sidecar:
     version: 1.4.5
+  # Global rbac configuration options
+  rbac:
+    edge: true
 
   # Configure services to use the same certs
   global_certs:
