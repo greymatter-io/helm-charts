@@ -36,11 +36,12 @@ spec:
         - name: redis
           {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
           image: {{ tpl .Values.redis.openshift.image $ | quote }}
+          command: ["redis-server", "--protected-mode no"]
           {{- else if and .Values.global.environment (or (eq .Values.global.environment "kubernetes") (eq .Values.global.environment "eks")) }}
           image: {{ tpl .Values.redis.k8s.image $ | quote }}
+          command: ["redis-server", "--appendonly", "yes"]
           {{- end }}
           imagePullPolicy: {{ .Values.redis.image_pull_policy }}
-          command: ["redis-server", "--appendonly", "yes"]
         {{- if .Values.redis.resources }}
           resources:
 {{ toYaml .Values.redis.resources | indent 12 }}

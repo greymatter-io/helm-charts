@@ -12,7 +12,7 @@ redis:
   name: mesh-redis
   # Redis image to use when global.environment=openshift
   openshift:
-    image: 'centos/redis-32-centos7'
+    image: 'bitnami/redis:5.0'
   # Redis image to use when global.environment=kubernetes
   k8s:
     image: 'redis:3.2'
