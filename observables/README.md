@@ -107,7 +107,7 @@ Now your ELK stack is ready to recieve observables! See [enabling the observable
 
 ## Enabling the Grey Matter observables filter
 
-To configure a sidecar to emit observables you must define the filter as well as enable it.  In the sidecar's `listener` object that you wish to turn on observables, `greymatter edit listener listener-servicex` and add `"gm.observables"` to the list of `active_http_filters`, and the following configuration to the `http_filters` map so that it looks like:
+To configure a sidecar to emit observables you must define the filter as well as enable it.  In the sidecar's `listener` object that you wish to turn on observables, `greymatter edit listener <listener-key>` and add `"gm.observables"` to the list of `active_http_filters`, and the following configuration to the `http_filters` map so that it looks like:
 
 ```yaml
   ...
@@ -117,14 +117,14 @@ To configure a sidecar to emit observables you must define the filter as well as
     # configure the filter
     "gm_observables": {
       "useKafka": true,
-      "topic": "fibonacci",
+      "topic": "<service-name>",
       "eventTopic": "greymatter",
       "kafkaServerConnection": "kafka-observables.observables.svc:9092"
     }
   }
 ```
 
-Make sure to leave `eventTopic` as `"greymatter"` as logstash is configured for this kafka event topic.
+Make sure to leave `eventTopic` as `"greymatter"` as logstash is configured for this kafka event topic, but change `topic` to the desired topic for this service.
 
 Once you have done this, if you make a request to the service on which you just enabled observables, it will emit the observables to your ELK stack and you can move on to [finish configuring kibana](#configure-kibana).
 
