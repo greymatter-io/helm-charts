@@ -8,9 +8,14 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   ports:
-  - port: {{ .Values.global.control.port }}
+  - name: grpc
+    port: {{ .Values.global.control.port }}
     protocol: TCP
     targetPort: grpc
+  - name: admin
+    port: {{ .Values.global.control.admin_port }}
+    protocol: TCP
+    targetPort: admin
   selector:
     run: {{ .Values.control.name }}
   type: ClusterIP

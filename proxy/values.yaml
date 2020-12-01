@@ -21,6 +21,9 @@ sidecar:
     proxy_dynamic:
       type: 'value'
       value: 'true'
+    delta_xds:
+      type: 'value'
+      value: 'true'
     xds_cluster:
       type: 'value'
       value: '{{ .Values.name }}'
