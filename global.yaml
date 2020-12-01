@@ -49,7 +49,7 @@ global:
   spire:
     enabled: true
     trust_domain: quickstart.greymatter.io
-    path: '/run/spire/socket/agent.sock'
+    path: '/run/spire/sockets/agent.sock'
   # Configures the init container used to wait on various deployments to be ready
   waiter:
     image: docker.greymatter.io/internal/k8s-waiter:latest
