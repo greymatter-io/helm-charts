@@ -23,6 +23,9 @@ dashboard: wsa-sense
 slo: wsa-sense
 	helm install $(NAME-SENSE) slo $(WAITERSACHECK-SENSE) -f ../global.yaml
 
+rolebinding:
+	kubectl delete rolebinding prometheus-sa-rolebinding
+
 clean-sense:
 	rm -f ./charts/*
 
@@ -38,7 +41,7 @@ sense: package-sense wsa-sense
 	helm install $(NAME-SENSE) . $(WAITERSACHECK-SENSE) -f ../global.yaml --timeout 10m --wait
 
 .PHONY: upgrade-sense
-upgrade-sense: wsa-sense package-sense helm-validator
+upgrade-sense: wsa-sense package-sense helm-validator rolebinding
 	helm upgrade $(NAME-SENSE) . $(WAITERSACHECK-SENSE) -f ../global.yaml --no-hooks --install $(HELM_VALIDATION)
 
 .PHONY: remove-sense
