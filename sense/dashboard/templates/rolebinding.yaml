@@ -5,10 +5,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ .Values.prometheus.service_account.name }}-rolebinding
   namespace: {{ .Release.Namespace }}
-  labels:
-    version: "1.3"
-    greymatter: sense
-    chart: data
 subjects:
 - kind: ServiceAccount
   name: {{ .Values.prometheus.service_account.name }}
@@ -29,10 +25,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ $sa_name }}-rolebinding-{{ $e }}
   namespace: {{ $e }}
-  labels:
-    version: "1.3"
-    greymatter: sense
-    chart: data
 subjects:
 - kind: ServiceAccount
   name: {{ $sa_name }}
