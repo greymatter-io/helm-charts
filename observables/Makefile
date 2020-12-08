@@ -108,6 +108,7 @@ elasticsearch: helm-dep-up
 			--namespace $(NAMESPACE) \
 			-f custom-values-files/elasticsearch-values.yaml \
 			--namespace $(NAMESPACE) \
+			--version 7.5.1 \
 			$(DRYRUN) --debug; \
 	fi
 
