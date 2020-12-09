@@ -38,7 +38,7 @@ spec:
         env:
         {{- include "envvars" (dict "envvar" .Values.postgres.envvars "top" $) | indent 10 }}
         volumeMounts:
-          - name: data
+          - name: postgres-data
             mountPath: {{ .Values.postgres.data_mount_point }}
         {{- if .Values.postgres.secret.enabled }}
           - name: certificates
@@ -65,6 +65,9 @@ spec:
       - name: postgres-slo-overrides
         configMap:
           name: postgres-slo-overrides
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgres-data
       {{- if .Values.postgres.secret.enabled }}
       - name: certificates
         secret:
@@ -76,12 +79,12 @@ spec:
           # If you do not spedify, default is 644. Postgres crashes and burns if it's readable by the world.
           defaultMode: 0640
       {{- end }}
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 8Gi
+#  volumeClaimTemplates:
+#  - metadata:
+#      name: data
+#    spec:
+#      accessModes: [ "ReadWriteOnce" ]
+#      resources:
+#        requests:
+#          storage: 8Gi
 {{- end }}

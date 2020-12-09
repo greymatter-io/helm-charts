@@ -145,12 +145,15 @@ spec:
       {{- else if .Values.sidecar.secret.enabled }}
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
-  volumeClaimTemplates:
-  - metadata:
-      name: control-api-backup 
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: {{ .Values.controlApi.pvc.size | default "1Gi" }}
+      - name: control-api-backup
+        persistentVolumeClaim:
+          claimName: control-api-backup
+#  volumeClaimTemplates:
+#  - metadata:
+#      name: control-api-backup 
+#    spec:
+#      accessModes:
+#        - ReadWriteOnce
+#      resources:
+#        requests:
+#          storage: {{ .Values.controlApi.pvc.size | default "1Gi" }}

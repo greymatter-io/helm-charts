@@ -45,7 +45,7 @@ spec:
           protocol: TCP
         volumeMounts:
         - mountPath: {{ .Values.mongo.storage.mount_path }}
-          name: data
+          name: mongo-data
         - mountPath: /docker-entrypoint-initdb.d/
           name: mongo-init
         {{- if .Values.mongo.secret }}
@@ -61,23 +61,26 @@ spec:
           secret:
             secretName: {{ .Values.mongo.secret.secret_name }}
         {{- end }}
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: mongo-data
       {{- if .Values.mongo.private_image }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       {{- end }}
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: {{ .Values.mongo.storage.size }}Gi
-    {{- if .Values.mongo.storage.storage_class }}
-    {{- if (eq "-" .Values.mongo.storage.storage_class) }}
-      storageClassName: ""
-    {{- else }}
-      storageClassName: "{{ .Values.mongo.storage.storage_class }}"
-    {{- end }}
-    {{- end }}
+  #volumeClaimTemplates:
+  #- metadata:
+  #    name: data
+  #  spec:
+  #    accessModes:
+  #      - ReadWriteOnce
+  #    resources:
+  #      requests:
+  #        storage: {{ .Values.mongo.storage.size }}Gi
+  #  {{- if .Values.mongo.storage.storage_class }}
+  #  {{- if (eq "-" .Values.mongo.storage.storage_class) }}
+  #    storageClassName: ""
+  #  {{- else }}
+  #    storageClassName: "{{ .Values.mongo.storage.storage_class }}"
+  #  {{- end }}
+  #  {{- end }}

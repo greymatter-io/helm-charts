@@ -99,11 +99,14 @@ spec:
       - name: prometheus-configuration
         configMap:
           name: prometheus
-  volumeClaimTemplates:
-  - metadata:
-      name: prometheus-pvc
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: {{ .Values.prometheus.pvc_size | default "40" }}Gi
+      - name: prometheus-pvc
+        persistentVolumeClaim:
+          claimName: prometheus-pvc
+#  volumeClaimTemplates:
+#  - metadata:
+#      name: prometheus-pvc
+#    spec:
+#      accessModes: [ "ReadWriteOnce" ]
+#      resources:
+#        requests:
+#          storage: {{ .Values.prometheus.pvc_size | default "40" }}Gi

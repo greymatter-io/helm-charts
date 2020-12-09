@@ -123,13 +123,16 @@ spec:
       - name: jwt-security
         secret:
           secretName: jwt-security
+      - name: data-pvc
+        persistentVolumeClaim:
+          claimName: data-pvc
       {{- if  (eq .Values.data.envvars.uses3.value  "false") }}
-  volumeClaimTemplates:
-  - metadata:
-      name: data-pvc
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: {{ .Values.data.pvc.size | default "40" }}Gi
-      {{- end }}
+#  volumeClaimTemplates:
+#  - metadata:
+#      name: data-pvc
+#    spec:
+#      accessModes: [ "ReadWriteOnce" ]
+#      resources:
+#        requests:
+#          storage: {{ .Values.data.pvc.size | default "40" }}Gi
+#      {{- end }}
