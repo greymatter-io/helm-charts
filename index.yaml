@@ -149,6 +149,39 @@ entries:
   fabric:
   - apiVersion: v2
     appVersion: 1.3.0
+    created: "2020-12-09T17:13:44.011177675Z"
+    dependencies:
+    - name: control-api
+      repository: file://./control-api
+      version: 3.0.7
+    - name: control
+      repository: file://./control
+      version: 3.0.1
+    - name: jwt
+      repository: file://./jwt
+      version: 3.0.1
+    - alias: mesh-redis
+      condition: global.external_redis.disabled
+      name: redis
+      repository: file://./redis
+      version: 1.0.2
+    description: A Helm chart to deploy Grey Matter Fabric
+    digest: 8b579bd851f51401bacc8a08bf09cc50234372796f1515ea40a9f50a8c6d77df
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - fabric
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: fabric
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/fabric-3.0.2/fabric-3.0.2.tgz
+    version: 3.0.2
+  - apiVersion: v2
+    appVersion: 1.3.0
     created: "2020-12-07T16:58:58.544808221Z"
     dependencies:
     - name: control-api
@@ -377,6 +410,34 @@ entries:
     - https://github.com/greymatter-io/helm-charts/releases/download/secrets-2.2.0/secrets-2.2.0.tgz
     version: 2.2.0
   sense:
+  - apiVersion: v2
+    appVersion: 1.3.0
+    created: "2020-12-09T17:13:44.126998272Z"
+    dependencies:
+    - name: catalog
+      repository: file://./catalog
+      version: 3.0.6
+    - name: dashboard
+      repository: file://./dashboard
+      version: 3.0.2
+    - name: slo
+      repository: file://./slo
+      version: 3.0.1
+    description: A Helm chart to deploy Grey Matter Sense
+    digest: 253ec0737f8a90e04554ac54e2c27349480cab9f62e6864991beaf11b0c966a6
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - sense
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: sense
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/sense-3.0.2/sense-3.0.2.tgz
+    version: 3.0.2
   - apiVersion: v2
     appVersion: 1.3.0
     created: "2020-12-07T16:58:58.845741902Z"
