@@ -15,3 +15,24 @@ Create the namespace list for Prometheus to monitor
 {{- println $d -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+define role name
+*/}}
+{{- define "prometheus.role.name" -}}
+{{ printf "%s-%s" .Values.prometheus.service_account.name "role" }}
+{{- end -}}
+
+{{/*
+define primary namespace rolebinding name
+*/}}
+{{- define "prometheus.rolebinding.name" -}}
+{{ printf "%s-%s" .Values.prometheus.service_account.name "rolebinding" }}
+{{- end -}}
+
+{{/*
+define additional namespace rolebinding name
+*/}}
+{{- define "prometheus.rolebinding.additional.name" -}}
+{{ printf "%s-%s-%s" .Values.prometheus.service_account.name "rolebinding" "$e" }}
+{{- end -}}

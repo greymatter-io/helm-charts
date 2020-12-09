@@ -301,6 +301,8 @@ dashboard:
     service_account:
       create: true
       name: prometheus-sa
+      # kind specifies either ClusterRole or Role
+      kind: ClusterRole
     resources:
       requests:
         memory: "8Gi"

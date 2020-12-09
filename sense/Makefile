@@ -37,8 +37,22 @@ template-sense: package-sense $(BUILD_NUMBER_FILE)
 sense: package-sense wsa-sense
 	helm install $(NAME-SENSE) . $(WAITERSACHECK-SENSE) -f ../global.yaml --timeout 10m --wait
 
+	
+check-prom-rb:
+	$(eval CURRENT_KIND=$(shell kubectl get RoleBinding prometheus-sa-rolebinding -o json | jq -r '.roleRef.kind'))
+	$(eval DESIRED_KIND=$(shell cat dashboard/values.yaml | yq -r '.prometheus.service_account.kind'))
+	if [ -z "$(CURRENT_KIND)" ] || [ "$(DESIRED_KIND)" == "$(CURRENT_KIND)" ]; then \
+		echo "They Match or current kind does not exist"; \
+	else \
+		# echo "The current prometheus rolebinding does not match the kind that you are trying to upgrade too.  "; \
+		# echo "This requires manually deleting the role and rolebinding with: "; \
+		# echo "kubectl delete RoleBinding prometheus-sa-rolebinding"; \
+		# exit 3; \
+		kubectl delete RoleBinding prometheus-sa-rolebinding; \
+	fi
+
 .PHONY: upgrade-sense
-upgrade-sense: wsa-sense package-sense helm-validator
+upgrade-sense: wsa-sense package-sense helm-validator check-prom-rb
 	helm upgrade $(NAME-SENSE) . $(WAITERSACHECK-SENSE) -f ../global.yaml --no-hooks --install $(HELM_VALIDATION)
 
 .PHONY: remove-sense

@@ -1,38 +1,53 @@
 {{- if .Values.prometheus.service_account.create }}
+{{- $roleName := (include "prometheus.role.name" .) }}
+{{- $roleBindingName := (include "prometheus.rolebinding.name" .) }}
+{{- $rb := (lookup "v1" "RoleBinding" .Release.Namespace $roleBindingName) -}}
+{{- if not $rb }}
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .Values.prometheus.service_account.name }}-rolebinding
+  name: {{ $roleBindingName }}
   namespace: {{ .Release.Namespace }}
+  annotations:
+    rollme: {{ randAlphaNum 5 | quote }}
 subjects:
 - kind: ServiceAccount
   name: {{ .Values.prometheus.service_account.name }}
   namespace: {{ .Release.Namespace }}
 roleRef:
-  kind: ClusterRole
-  name: {{ .Values.prometheus.service_account.name }}-role
+  kind: {{ .Values.prometheus.service_account.kind }}
+  name: {{ $roleName }}
   apiGroup: rbac.authorization.k8s.io
+
+{{- end }}
 
 {{- if .Values.global.control.additional_namespaces }}
 {{- $sa_name := .Values.prometheus.service_account.name -}}
 {{- $release_ns := .Release.Namespace -}}
+{{- $root := . -}}
 {{- range $ns, $e := splitList "," $.Values.global.control.additional_namespaces }}
 
+{{- $roleBindingName := (include "prometheus.rolebinding.additional.name" $root) }}
+{{- $rb := (lookup "v1" "RoleBinding" .Release.Namespace $roleBindingName) -}}
+{{- if not $rb }}
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ $sa_name }}-rolebinding-{{ $e }}
+  name: {{ $roleBindingName }}
   namespace: {{ $e }}
+  annotations:
+    rollme: {{ randAlphaNum 5 | quote }}
 subjects:
 - kind: ServiceAccount
   name: {{ $sa_name }}
   namespace: {{ $release_ns }}
 roleRef:
-  kind: ClusterRole
-  name: {{ $sa_name }}-role
+  kind: {{ .Values.prometheus.service_account.kind }}
+  name: {{ $roleName }}
   apiGroup: rbac.authorization.k8s.io
+{{- end -}}
 {{- end -}}
 {{- end }}
 

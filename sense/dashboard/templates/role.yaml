@@ -1,11 +1,17 @@
 {{- if .Values.prometheus.service_account.create }}
-kind: ClusterRole
+{{- $roleName := (include "prometheus.role.name" .) }}
+{{- $rb := (lookup "v1" .Values.prometheus.service_account.kind .Release.Namespace $roleName) -}}
+{{- if not $rb }}
+kind: {{.Values.prometheus.service_account.kind }}
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .Values.prometheus.service_account.name }}-role
+  name: {{ $roleName }}
   namespace: {{ .Release.Namespace }}
+  annotations:
+    rollme: {{ randAlphaNum 5 | quote }}
 rules:
 - apiGroups: [""]
   resources: ["pods"]
   verbs: ["get", "list", "watch"]
+{{- end }}
 {{- end }}
