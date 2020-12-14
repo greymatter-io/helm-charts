@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: 1.2.0
 description: A Helm chart to deploy Spire
 name: spire
-version: 2.2.2
+version: 2.2.3
 home: https://greymatter.io
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
 maintainers:
@@ -20,4 +20,4 @@ dependencies:
 
   - name: server
     repository: file://./server
-    version: '2.2.3'
+    version: '2.2.4'
