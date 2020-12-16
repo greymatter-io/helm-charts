@@ -95,12 +95,14 @@ elasticsearch: helm-dep-up
 			--set extraEnvs[1].name=cluster.initial_master_nodes,extraEnvs[1].value= \
 			--set sysctlInitContainer.enabled=true \
 			--namespace $(NAMESPACE) \
+			--version 7.5.1 \
 			$(DRYRUN) --debug; \
 	else \
 		helm install $(ELASTICSEARCH-NAME) elastic/elasticsearch \
 			--namespace $(NAMESPACE) \
 			-f custom-values-files/elasticsearch-values.yaml \
 			--namespace $(NAMESPACE) \
+			--version 7.5.1 \
 			$(DRYRUN) --debug; \
 	fi
 
@@ -124,7 +126,7 @@ logstash: helm-dep-up
 	helm template $(LOGSTASH-NAME) \
 		--namespace $(LOGSTASH-NAMESPACE) \
 		-f custom-values-files/logstash-values.yaml \
-		--set extraEnvs[2].value=$(LOGSTASH-NAMESPACE) \
+		--set extraEnvs[2].value=greymatter \
 		--set extraEnvs[0].value=elasticsearch-master-headless.$(LOGSTASH-NAMESPACE).svc \
 		--set extraEnvs[3].value=kafka-observables-headless.$(LOGSTASH-NAMESPACE).svc:9092 \
 		logstash-7.5.2.tgz > manifest.yaml
