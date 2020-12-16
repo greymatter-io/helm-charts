@@ -756,7 +756,7 @@ spec:
       - env:
         - name: ENVOY_ADMIN_LOG_PATH
           value: /dev/stdout
-        - name: PROXY_DYNAMIC
+        - name: http_DYNAMIC
           value: "true"
         - name: XDS_CLUSTER
           value: prometheus
@@ -768,12 +768,12 @@ spec:
           value: "50000"
         - name: XDS_ZONE
           value: zone-default-zone
-        image: docker.greymatter.io/release/gm-proxy:1.5.1
+        image: docker.greymatter.io/development/gm-proxy:1.5.1
         imagePullPolicy: IfNotPresent
         name: sidecar
         ports:
         - containerPort: 10808
-          name: proxy
+          name: http
           protocol: TCP
         - containerPort: 8081
           name: metrics

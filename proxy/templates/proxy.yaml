@@ -28,7 +28,7 @@ spec:
           ports:
           - containerPort: {{ .Values.sidecar.port }}
             protocol: TCP
-            name: proxy
+            name: http
           - containerPort: {{ .Values.sidecar.metrics_port }}
             protocol: TCP
             name: metrics

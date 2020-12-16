@@ -7,7 +7,7 @@ metadata:
     {{ .Values.global.control.cluster_label }}: edge
 spec:
   ports:
-    - name: proxy
+    - name: http
       port: 10808
     - name: metrics
       port: 8081

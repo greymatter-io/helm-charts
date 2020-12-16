@@ -31,7 +31,7 @@ spec:
           value: {{ .Values.global.spire.path }}
         {{- end }}
         ports:
-        - name: proxy
+        - name: http
           containerPort: {{ .Values.edge.port }}
         - name: metrics
           containerPort: {{ .Values.edge.metrics_port }}

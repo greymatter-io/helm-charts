@@ -77,7 +77,7 @@ spec:
 {{ toYaml .Values.sidecar.resources | indent 12 }}
           {{- end }}
           ports:
-            - name: proxy
+            - name: http
               containerPort: {{ .Values.sidecar.port }}
             - name: metrics
               containerPort: {{ .Values.sidecar.metrics_port }}

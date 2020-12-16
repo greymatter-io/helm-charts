@@ -74,7 +74,7 @@ control:
     replicas: 1
     # Version of control
     version: 1.5.1
-    image: 'docker.greymatter.io/release/gm-control:{{ $.Values.control.version }}'
+    image: 'docker.greymatter.io/development/gm-control:tcp'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Secret used to talk to control-api
@@ -129,7 +129,7 @@ control:
         value: "{{ .Values.global.control.cluster_label }}"
       gm_control_kubernetes_port_name:
         type: 'value'
-        value: 'proxy'
+        value: 'http'
       gm_control_kubernetes_namespaces:
         type: 'value'
         value: '{{ include "control.namespaces" . }}'
@@ -165,7 +165,7 @@ control-api:
     replicas: 1
     # Gm Control API version
     version: 1.5.2
-    image: 'docker.greymatter.io/release/gm-control-api:{{ $.Values.controlApi.version }}'
+    image: 'docker.greymatter.io/development/gm-control-api:1.6.0-dev'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Port exposed by the control-api container

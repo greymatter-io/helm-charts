@@ -70,7 +70,7 @@ spec:
           readOnly: true
         {{- end }}
         ports:
-        - name: proxy
+        - name: http
           containerPort: {{ .Values.sidecar_prometheus.port }}
         - name: metrics
           containerPort: {{ .Values.sidecar_prometheus.metrics_port }}

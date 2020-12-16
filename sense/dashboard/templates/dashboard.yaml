@@ -68,7 +68,7 @@ spec:
 {{ toYaml .Values.sidecar_dashboard.resources | indent 10 }}
         {{- end }}
         ports:
-        - name: proxy
+        - name: http
           containerPort: {{ .Values.sidecar_dashboard.port }}
         - name: metrics
           containerPort: {{ .Values.sidecar_dashboard.metrics_port }}

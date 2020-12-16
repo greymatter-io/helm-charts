@@ -1,7 +1,7 @@
 apiVersion: v1
 appVersion: 1.5.1
 description: A Helm chart to deploy a Grey Matter Proxy
-name: proxy
+name: http
 version: 3.0.1
 maintainers:
   - name: Decipher Technology Studios Engineering
