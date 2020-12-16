@@ -39,8 +39,8 @@ sense: package-sense wsa-sense
 
 	
 check-prom-rb:
-	$(eval CURRENT_KIND=$(shell kubectl get RoleBinding prometheus-sa-rolebinding -o json | jq -r '.roleRef.kind'))
-	$(eval DESIRED_KIND=$(shell cat dashboard/values.yaml | yq -r '.prometheus.service_account.kind'))
+	$(eval CURRENT_KIND=$(shell kubectl get RoleBinding prometheus-sa-rolebinding -o json | docker run -i --entrypoint jq docker.greymatter.io/internal/yq:2.4.1 -r '.roleRef.kind'))
+	$(eval DESIRED_KIND=$(shell cat values.yaml | docker run -i docker.greymatter.io/internal/yq:2.4.1 -r '.dashboard.prometheus.service_account.kind'))
 	if [ -z "$(CURRENT_KIND)" ] || [ "$(DESIRED_KIND)" == "$(CURRENT_KIND)" ]; then \
 		echo "They Match or current kind does not exist"; \
 	else \
