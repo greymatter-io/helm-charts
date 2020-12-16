@@ -1,3 +1,19 @@
+{{- if ( eq .service.serviceName "control") }}
+{
+  "route_key": "route-{{.service.serviceName}}",
+  "domain_key": "domain-{{.service.serviceName}}",
+  "zone_key": "{{ .Values.global.zone}}",
+  "path": "/",
+  "prefix_rewrite": null,
+  "redirects": null,
+  "shared_rules_key": "shared-rules-{{ .service.serviceName }}",
+  "rules": null,
+  "timeout": "0s",
+  "response_data": {},
+  "cohort_seed": null,
+  "retry_policy": null
+}
+{{- else}}
 {
   "route_key": "route-{{.service.serviceName}}",
   "domain_key": "domain-{{.service.serviceName}}",
@@ -11,3 +27,4 @@
   "cohort_seed": null,
   "retry_policy": null
 }
+{{- end}}

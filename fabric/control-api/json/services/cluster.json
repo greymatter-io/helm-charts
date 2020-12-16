@@ -3,7 +3,9 @@
   "zone_key": "{{ .Values.global.zone}}",
   "name": "{{.service.serviceName}}-service",
   {{- if ( eq .service.serviceName "control") }}
-  "http2_protocol_options": {},
+  "http2_protocol_options": {
+    "allow_connect": true
+  },
   {{- end }}
   "instances": [
     {
