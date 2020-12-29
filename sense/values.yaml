@@ -202,7 +202,7 @@ dashboard:
     # Name used for the deployment and service resources
     name: dashboard
     # Dashboard app version
-    version: "4.0.0"
+    version: 4.0.1
     image: 'docker.greymatter.io/release/gm-dashboard:{{ $.Values.dashboard.version }}'
     # Port for the dashboard app
     port: 1337
@@ -433,7 +433,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.1
+    version: 1.2.2
     minInstances: 1
     maxInstances: 1
     ownerURL: "https://greymatter.io"
@@ -468,7 +468,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 4.0.0
+    version: 4.0.1
     ownerURL: "https://greymatter.io"
     apiEndpoint: ''
     apiSpecEndpoint: ''
@@ -509,7 +509,7 @@ services:
     jwt_prefix: '/jwt'
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
-    version: 1.1.3
+    version: 1.1.4
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'services/data/latest/'
     apiSpecEndpoint: '/latest/static/'
@@ -567,7 +567,7 @@ services:
     capability: 'Mesh'
     documentation: '/services/control-api/latest/'
     owner: 'Decipher'
-    version: '1.5.0'
+    version: '1.5.4'
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'services/control-api/latest/'
     apiSpecEndpoint: '/services/control-api/latest/'
