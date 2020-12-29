@@ -1,5 +1,5 @@
 {{- if .Values.prometheus.service_account.create }}
-kind: Role
+kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ .Values.prometheus.service_account.name }}-role

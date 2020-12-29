@@ -1,11 +1,9 @@
 name: kibana-observables-proxy
 
 imagePullSecrets:
-  - name: {{ .Values.global.image_pull_secret }}
+  - name: '{{ .Values.global.image_pull_secret }}'
 
 sidecar:
-  version: 1.4.0
-  image: 'docker.greymatter.io/development/gm-proxy:1.4.0'
   envvars:
     xds_host:
       type: 'value'

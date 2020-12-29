@@ -9,6 +9,8 @@ cacfg() {
     echo Enter the following to configure the authority, or press enter to use the default
     echo Common Name \(default Acert\):
     read N; if [[ -z "$N" ]]; then N=Acert; fi
+    echo DNS Names \(comma delimited list\) \(default \"Acert\"\):
+    read D; if [[ -z "$D" ]]; then D="Acert"; fi
     echo Organization \(default Decipher Technology Studios\):
     read O; if [[ -z "$O" ]]; then O='Decipher Technology Studios'; fi
     echo Country \(default US\):
@@ -44,7 +46,7 @@ case $yn in
     * ) echo -e "\nPlease answer yes or no. Defaulting to Quickstart CA"; exit;;
 esac
 
-AUTH_FINGERPRINT=$(acert authorities create -n "$N" -o "$O" -c "$C" -s "$S" -l "$L" -u "$U" -e "$E" -a "$A" -p "$P")
+AUTH_FINGERPRINT=$(acert authorities create -n "$N" -d "$D" -o "$O" -c "$C" -s "$S" -l "$L" -u "$U" -e "$E" -a "$A" -p "$P")
 
 kubectl create secret generic server-ca \
   -n $NS \
@@ -55,7 +57,7 @@ kubectl create secret generic server-ca \
   --from-literal=intermediate.key="$(acert authorities export $AUTH_FINGERPRINT -t key -f pem)" > \
   ../../spire/server/templates/server-ca-secret.yaml
 
-REGISTRAR_FINGERPRINT=$(acert authorities issue $AUTH_FINGERPRINT -n 'registrar.'$NS'.svc')
+REGISTRAR_FINGERPRINT=$(acert authorities issue $AUTH_FINGERPRINT -n 'registrar.'$NS'.svc', -d 'registrar.'$NS'.svc')
 
 kubectl create secret generic server-tls \
   -n $NS \
