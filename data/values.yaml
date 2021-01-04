@@ -76,7 +76,7 @@ data:
   data:
     # Name used for the deployment and service resources
     name: data
-    version: 1.1.4
+    version: 1.1.5
     replicas: 1
     image: 'docker.greymatter.io/release/gm-data:{{ .Values.data.version }}'
     # image_pull_secret: '{{ .Values.global.image_pull_secret }}'
