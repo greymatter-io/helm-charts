@@ -4,6 +4,7 @@ global:
   spire:
     trust_domain: quickstart.greymatter.io
     namespace: spire
+  environment: kubernetes
 
 agent:
   name: agent

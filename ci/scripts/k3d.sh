@@ -13,19 +13,10 @@ output=$(k3d --version)
 len=${#output}
 version=${output:13:1}
 default="3"
-broken="314"
 
 if ((version < default)); 
     then
         echo '***Please update k3d to v3.0.0 or greater***'
-        exit
-fi
-
-bversion=${output:13:5}
-bversion="${bversion//.}"
-if ((bversion >= broken));
-    then
-        echo '***Current known bug in k3d version v3.1.4+, please install an earlier version***'
         exit
 fi
 

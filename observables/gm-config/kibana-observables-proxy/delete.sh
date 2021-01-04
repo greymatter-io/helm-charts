@@ -10,3 +10,4 @@ greymatter delete shared_rules edge-kibana-name-shared-rules
 greymatter delete route route-kibana-name
 greymatter delete route edge-kibana-name-route
 greymatter delete route edge-kibana-name-route-2
+greymatter delete catalog_cluster kibana-name
