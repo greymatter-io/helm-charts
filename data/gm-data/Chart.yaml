@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 1.0.0
+appVersion: 1.1.4
 description: A Helm chart to deploy Grey Matter Data
 home: https://greymatter.io
 icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
@@ -10,4 +10,4 @@ maintainers:
 - email: engineering@greyatter.io
   name: greymatter-io
 name: gm-data
-version: 3.0.4
+version: 3.0.5
