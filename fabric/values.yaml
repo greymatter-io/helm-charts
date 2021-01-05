@@ -363,7 +363,7 @@ services:
     jwt_prefix: '/jwt'
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
-    version: 1.1.4
+    version: 1.1.5
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'services/data/latest/'
     apiSpecEndpoint: '/latest/static/'
