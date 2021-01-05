@@ -3,9 +3,11 @@ global:
     cluster_label: greymatter.io/control
   spire:
     trust_domain: quickstart.greymatter.io
+    registration_api_path: /run/spire/socket/registration.sock
     namespace: spire
+    cluster_name: quickstart
   environment: kubernetes
 
 agent:
   name: agent
-  image: gcr.io/spiffe-io/spire-agent:0.9.3
+  image: gcr.io/spiffe-io/spire-agent:0.12.0

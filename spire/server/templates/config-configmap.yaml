@@ -12,7 +12,7 @@ data:
     log_level = "info"
     log_path = "/dev/stdout"
     addr = "0.0.0.0:8444"
-    cluster = "quickstart"
+    cluster = "{{ .Values.global.spire.cluster_name }}"
     server_socket_path = "/run/spire/socket/registration.sock"
     trust_domain = "{{ .Values.global.spire.trust_domain }}"
     cert_path = "/run/spire/tls/registrar.{{ .Values.global.spire.namespace }}.svc.crt"
@@ -28,7 +28,6 @@ data:
       trust_domain = "{{ .Values.global.spire.trust_domain }}"
       data_dir = "/run/spire/data"
       log_level = "info"
-      upstream_bundle = true
       default_svid_ttl = "1h"
       ca_subject = {
         country = ["US"],
@@ -48,7 +47,7 @@ data:
       NodeAttestor "k8s_psat" {
         plugin_data {
           clusters = {
-            "quickstart" = {
+            "{{ .Values.global.spire.cluster_name }}" = {
               service_account_whitelist = ["{{ .Values.global.spire.namespace }}:agent"]
               audience = ["server"]
             }
@@ -73,7 +72,7 @@ data:
         }
       }
 
-      UpstreamCA "disk" {
+      UpstreamAuthority "disk" {
         plugin_data {
           cert_file_path = "/run/spire/ca/intermediate.crt"
           key_file_path = "/run/spire/ca/intermediate.key"

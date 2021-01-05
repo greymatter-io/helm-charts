@@ -15,7 +15,13 @@ global:
     namespace: spire
 
 server:
-  server:
-    image: gcr.io/spiffe-io/spire-server:0.9.3
-    config_file_path: /run/spire/config/server.conf
-    config_file_dir: /run/spire/config
+  image: gcr.io/spiffe-io/spire-server:0.12.0
+  config_file_path: /run/spire/config/server.conf
+  config_file_dir: /run/spire/config
+
+registrar:
+  image: gcr.io/spiffe-io/k8s-workload-registrar:0.12.0
+
+agent:
+  name: agent
+  image: gcr.io/spiffe-io/spire-agent:0.12.0
