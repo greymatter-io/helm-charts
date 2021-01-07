@@ -1,7 +1,7 @@
 {
   "zone_key": "{{ .Values.global.zone}}",
   "listener_key": "edge-listener-egress",
-  "domain_keys": ["edge", "edge-egress"],
+  "domain_keys": ["edge-egress"],
   "name": "edge",
   "ip": "127.0.0.1",
   "port": 10909,
