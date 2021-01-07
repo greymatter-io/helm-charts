@@ -1,0 +1,36 @@
+{
+    "zone_key": "zone-default-zone",
+    "listener_key": "listener-kibana-observables-proxy-ingress",
+    "domain_keys": [
+        "domain-kibana-observables-proxy-ingress"
+    ],
+    "name": "ingress",
+    "ip": "0.0.0.0",
+    "port": 10808,
+    "protocol": "http_auto",
+    "secret": {
+        "secret_key": "kibana-observables-proxy.identity",
+        "secret_name": "spiffe://quickstart.greymatter.io/kibana-observables-proxy",
+        "secret_validation_name": "spiffe://quickstart.greymatter.io",
+        "subject_names": [
+            "spiffe://quickstart.greymatter.io/edge"
+        ],
+        "ecdh_curves": [
+            "X25519:P-256:P-521:P-384"
+        ]
+    },
+    "tracing_config": null,
+    "active_http_filters": ["gm.metrics"],
+    "http_filters": {
+        "gm_metrics": {
+            "metrics_port": 8081,
+            "metrics_host": "0.0.0.0",
+            "metrics_dashboard_uri_path": "/metrics",
+            "metrics_prometheus_uri_path": "/prometheus",
+            "metrics_ring_buffer_size": 4096,
+            "prometheus_system_metrics_interval_seconds": 15,
+            "metrics_key_function": "depth",
+            "metrics_key_depth": "3"
+          }
+    }
+}

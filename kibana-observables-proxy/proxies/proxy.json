@@ -1,0 +1,14 @@
+{
+    "zone_key": "zone-default-zone",
+    "proxy_key": "kibana-observables-proxy-proxy",
+    "domain_keys": [
+        "domain-kibana-observables-proxy-ingress",
+        "domain-kibana-observables-proxy-egress"
+    ],
+    "listener_keys": [
+        "listener-kibana-observables-proxy-ingress",
+        "listener-kibana-observables-proxy-egress"
+    ],
+    "name": "kibana-observables-proxy",
+    "listeners": null
+}
