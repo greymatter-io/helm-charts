@@ -56,7 +56,7 @@ To install the observables stack:
    To generate mesh configurations for the kibana proxy, [get the pathogen binary](https://github.com/greymatter-io/pathogen-greymatter#get-pathogen) if you have not already, and run:
 
    ```bash
-   pathogen generate 'git@github.com:greymatter-io/pathogen-greymatter//all?ref=release-2.2'  kibana-observables-proxy/
+   pathogen generate 'git@github.com:greymatter-io/pathogen-greymatter//all?ref=release-2.3'  kibana-observables-proxy/
    ```
 
    There will be a series of prompts - answer them accordingly:
