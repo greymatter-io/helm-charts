@@ -44,7 +44,7 @@ jobs:
         with:
           charts_dir: .
 
-      - name: Release Grey Matter Charts
+      - name: Release Spire server and agent charts
         uses: helm/chart-releaser-action@v1.0.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
