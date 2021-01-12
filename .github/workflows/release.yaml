@@ -37,19 +37,16 @@ jobs:
           echo "$(awk 'NR==1,/name: jwt/{sub(/name: jwt/, "name: jwt-gov")} 1' fabric-gov/Chart.yaml)" > fabric-gov/Chart.yaml
           sed -i -e "s|name: fabric|name: fabric-gov|" -e "s|Grey Matter Fabric|Grey Matter Fabric Gov|" -e "s|/jwt|/jwt-gov|" fabric-gov/Chart.yaml
 
-      - name: Release Grey Matter Charts
-        uses: helm/chart-releaser-action@v1.0.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-        with:
-          charts_dir: .
-
-      - name: Release Spire server and agent charts
+      - name: Release Spire Server and Agent Charts
         uses: helm/chart-releaser-action@v1.0.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           charts_dir: spire
 
-
-
+      - name: Release Grey Matter Charts
+        uses: helm/chart-releaser-action@v1.0.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          charts_dir: .
