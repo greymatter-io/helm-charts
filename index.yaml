@@ -1,5 +1,25 @@
 apiVersion: v1
 entries:
+  agent:
+  - apiVersion: v2
+    appVersion: 1.2.0
+    created: "2021-01-12T17:55:24.761266765Z"
+    description: A Helm chart to deploy the Spire Agent
+    digest: d598945f2ca57905524cbffa766435e9b82d1a725399a0c48fd76b2a329a8c11
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - spire
+    - agent
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: agent
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/agent-2.2.5/agent-2.2.5.tgz
+    version: 2.2.5
   data:
   - apiVersion: v2
     appVersion: 1.1.5
@@ -709,6 +729,26 @@ entries:
     urls:
     - https://github.com/greymatter-io/helm-charts/releases/download/sense-2.2.2/sense-2.2.2.tgz
     version: 2.2.2
+  server:
+  - apiVersion: v2
+    appVersion: 1.2.0
+    created: "2021-01-12T17:55:24.884401261Z"
+    description: A Helm chart to deploy the Spire Server
+    digest: bf9656374eda5da79786a799c12f8d8da5d6362825fa8e59396b9c4db25ecce5
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - spire
+    - server
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: server
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/server-2.2.5/server-2.2.5.tgz
+    version: 2.2.5
   spire:
   - apiVersion: v2
     appVersion: 1.2.0
