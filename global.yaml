@@ -2,11 +2,11 @@ global:
   # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kubernetes", or "openshift"
-  environment: openshift 
+  environment: kubernetes
   # Used to configure control and control-api environment variables
   zone: zone-default-zone
   # domain used to template catalog's apiEndpoint cluster config and configure edge
-  domain: greymatter.apps.rp.greymatter.services
+  domain: localhost:30000
   # Whether to use consul for service discovery
   consul:
     enabled: false
