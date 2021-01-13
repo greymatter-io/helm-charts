@@ -266,7 +266,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 4.0.1
+    version: 4.0.2
     ownerURL: "https://greymatter.io"
     apiEndpoint: ''
     apiSpecEndpoint: ''
