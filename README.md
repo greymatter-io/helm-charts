@@ -70,16 +70,9 @@ Integration tests are run automatically upon pull requests; however, you can emu
     go test -v greymatter_integration_test.go
     ```
 
-## Development
-
-Current Release Branch: `release-2.3`
-Future Release Branch: `release-2.4`
-
->*If changes are made to the current release branch make sure to ensure corresponding changes are made to the future release branch*
-
 ### Versioning
 
-GreyMatter Helm Charts follow semver principals and allow us to manage active development for current and future releases.  Pre-release charts will have a suffix of `-x` which indicates to helm that this is a prerelease chart.  These are not used for installation or dependency fulfillment unless specifically called out.
+Grey Matter Helm Charts follow semver principals and allow us to manage active development for current and future releases.  Pre-release charts will have a suffix of `-x` which indicates to helm that this is a prerelease chart.  These are not used for installation or dependency fulfillment unless specifically called out.
 
 Any change to the Helm Chart templates or values files will require the chart version to be incremented in order to pass ci/cd linting.
 
@@ -90,10 +83,10 @@ If a helm release can not be upgraded using a `helm upgrade <release_name>`
 Adding or major charts
 
 *Increment Minor:*
-Addition, removal, substitution of values files and/or  templates have changes that make them incompatible with older values files
+Addition, removal, substitution of values files and/or templates have changes that make them incompatible with older values files
 
 *Increment Patch:*
-Template logic changes which do not result in modifications to values files (are backwards comparable)
+Template logic changes which do not result in modifications to values files (are backwards compatible)
 
 ### Release Tagging
 
