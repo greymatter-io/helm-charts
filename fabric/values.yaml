@@ -155,7 +155,11 @@ control:
         cpu: 250m
         memory: 256Mi
 
+
 control-api:
+  redis:
+    name: mesh-redis
+  
   controlApi:
     # Name used for the deployment and service resources
     name: control-api
@@ -172,8 +176,6 @@ control-api:
     container_port: 5555
     # Location to persist control-api's configuration store
     pvc_mount_point: '/app/control-api/data/backend.json'
-    redis:
-      name: mesh-redis
     secret:
       enabled: true
       secret_name: controlapi-certs
