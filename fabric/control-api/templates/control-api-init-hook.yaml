@@ -23,7 +23,15 @@ spec:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
             - name: SERVICE
-              value: {{ .Values.controlApi.name }}
+              value: mesh-redis              
+        - name: ensure-mesh-redis
+          image: {{ .Values.global.waiter.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: SERVICE
+              value: mesh-redis
       containers:
         - image: {{ tpl .Values.bootstrap.image . }}
           name: {{ .Values.controlApi.name }}-init

@@ -172,6 +172,8 @@ control-api:
     container_port: 5555
     # Location to persist control-api's configuration store
     pvc_mount_point: '/app/control-api/data/backend.json'
+    redis:
+      name: mesh-redis
     secret:
       enabled: true
       secret_name: controlapi-certs
