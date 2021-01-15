@@ -67,6 +67,9 @@ jobs:
             echo "::set-output name=changed::true"
           fi
 
+      - name: Helm dep up parent Charts
+        run: helm dep up fabric sense data spire
+
       - name: Run chart-testing (lint fabric sense data)
         run: ct lint --config .chart-testing/fabric-sense-data.yaml
 
