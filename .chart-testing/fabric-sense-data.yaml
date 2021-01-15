@@ -1,4 +1,4 @@
-charts:
+chart-dirs:
   - fabric
   - sense
   - data
