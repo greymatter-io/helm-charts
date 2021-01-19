@@ -1,7 +1,7 @@
 name: Lint Charts
 
 on:
-  push:
+  pull_request:
     # We don't need to lint on a push to the release branch as this
     # only happen after a merge
     branches:
