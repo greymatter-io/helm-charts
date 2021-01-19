@@ -60,7 +60,7 @@ jobs:
         uses: helm/chart-testing-action@v2.0.1
 
       - name: Run chart-testing (list-changed)
-        id: list-changed
+        id: list-changed2
         run: |
           changed=$(ct list-changed)
           if [[ -n "$changed" ]]; then
