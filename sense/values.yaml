@@ -37,7 +37,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.5.1
+    version: 1.6.0-dev
     envvars:
       proxy_dynamic:
         type: 'value'
@@ -61,7 +61,7 @@ slo:
   slo:
     # SLO version
     version: 1.2.0
-    image: 'docker.greymatter.io/release/gm-slo:{{ $.Values.slo.version }}'
+    image: 'docker.greymatter.io/development/gm-slo:{{ $.Values.slo.version }}'
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the SLO service
@@ -203,7 +203,7 @@ dashboard:
     name: dashboard
     # Dashboard app version
     version: 4.0.1
-    image: 'docker.greymatter.io/release/gm-dashboard:{{ $.Values.dashboard.version }}'
+    image: 'docker.greymatter.io/development/gm-dashboard:{{ $.Values.dashboard.version }}'
     # Port for the dashboard app
     port: 1337
     # When to pull container images, used in the deployment
@@ -322,7 +322,7 @@ catalog:
     name: catalog
     # GM Catalog version
     version: 1.2.2
-    image: docker.greymatter.io/release/gm-catalog:{{ $.Values.catalog.version }}
+    image: docker.greymatter.io/development/gm-catalog:{{ $.Values.catalog.version }}
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the catalog service
@@ -567,7 +567,7 @@ services:
     capability: 'Mesh'
     documentation: '/services/control-api/latest/'
     owner: 'Decipher'
-    version: '1.5.4'
+    version: '1.6.0-dev'
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'services/control-api/latest/'
     apiSpecEndpoint: '/services/control-api/latest/'
@@ -600,7 +600,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.5.1'
+    version: '1.6.0-dev'
     ownerURL: "https://greymatter.io"
     apiEndpoint: ''
     apiSpecEndpoint: ''

@@ -24,7 +24,7 @@ global:
     bind_address: '127.0.0.1'
   # Default configuration for all sidecars in all subcharts
   sidecar:
-    version: '1.5.1'
+    version: '1.6.0-dev'
     envvars:
       xds_cluster:
         type: value
@@ -78,7 +78,7 @@ data:
     name: data
     version: 1.1.5
     replicas: 1
-    image: 'docker.greymatter.io/release/gm-data:{{ .Values.data.version }}'
+    image: 'docker.greymatter.io/development/gm-data:{{ .Values.data.version }}'
     # image_pull_secret: '{{ .Values.global.image_pull_secret }}'
     image_pull_policy: IfNotPresent
 

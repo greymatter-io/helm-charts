@@ -34,7 +34,7 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.5.1
+    version: 1.6.0-dev
   # To use an external redis or not
   external_redis:
     disabled: true
@@ -44,7 +44,7 @@ catalog:
   name: catalog
   # GM Catalog version
   version: 1.2.2
-  image: docker.greymatter.io/release/gm-catalog:{{ $.Values.catalog.version }}
+  image: docker.greymatter.io/development/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the catalog service
@@ -128,7 +128,7 @@ catalog:
       value: '/etc/pki/{{ .Values.catalog.secret.secret_keys.key }}'
 
   init:
-    image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+    image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
     imagePullPolicy: IfNotPresent
     envvars:
       debug:
@@ -156,7 +156,7 @@ catalog:
 # Sidecar configuration for Catalog
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -333,7 +333,7 @@ services:
     capability: 'Mesh'
     documentation: '/services/control-api/latest/'
     owner: 'Decipher'
-    version: '1.5.4'
+    version: '1.6.0-dev'
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'services/control-api/latest/'
     apiSpecEndpoint: '/services/control-api/latest/'
@@ -366,7 +366,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.5.1'
+    version: '1.6.0-dev'
     ownerURL: "https://greymatter.io"
     apiEndpoint: ''
     apiSpecEndpoint: ''

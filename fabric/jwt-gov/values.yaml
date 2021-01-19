@@ -26,7 +26,7 @@ global:
     port: 8500
     edge_port: 10808
   sidecar:
-    version: 1.5.1
+    version: 1.6.0-dev
 
 jwt:
   version: '1.2.0'
@@ -219,7 +219,7 @@ sidecar:
       ca: ca.crt
       key: server.key
       cert: server.crt
-  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   image_pull_policy: IfNotPresent
   resources:
     limits:

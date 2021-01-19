@@ -27,7 +27,7 @@ global:
     path: '/run/spire/socket/agent.sock'
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.5.1
+    version: 1.6.0-dev
   # To use the global certs or not
   global_certs:
     enabled: true
@@ -37,7 +37,7 @@ dashboard:
   name: dashboard
   # Dashboard app version
   version: 4.0.1
-  image: 'docker.greymatter.io/release/gm-dashboard:{{ $.Values.dashboard.version }}'
+  image: 'docker.greymatter.io/development/gm-dashboard:{{ $.Values.dashboard.version }}'
   # Port for the dashboard app
   port: 1337
   # When to pull container images, used in the deployment
@@ -106,7 +106,7 @@ dashboard:
 sidecar_dashboard:
   # Uses global.sidecar.version if set
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar_dashboard.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar_dashboard.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -174,7 +174,7 @@ prometheus:
 sidecar_prometheus:
   # Uses global.sidecar.version if set
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
