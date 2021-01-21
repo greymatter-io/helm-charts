@@ -55,6 +55,9 @@ global:
     external:
       enabled: false
 
+redis:
+  name: mesh-redis
+
 controlApi:
   # Name used for the deployment and service resources
   name: control-api
