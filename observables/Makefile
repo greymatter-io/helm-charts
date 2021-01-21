@@ -95,7 +95,7 @@ elasticsearch: helm-dep-up
 			--set extraEnvs[1].name=cluster.initial_master_nodes,extraEnvs[1].value= \
 			--set sysctlInitContainer.enabled=true \
 			--namespace $(NAMESPACE) \
-		--version 7.9.3 \
+	        --version 7.9.3 \
 			$(DRYRUN) --debug; \
 	else \
 		helm install $(ELASTICSEARCH-NAME) elastic/elasticsearch \

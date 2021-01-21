@@ -51,6 +51,8 @@ To install the observables stack:
 
 4. Configure the Kibana proxy.
 
+   > Note: The Grey Matter CLI must be [installed](https://docs.greymatter.io/installation/commands-cli) and [configured](https://docs.greymatter.io/installation/commands-cli#configuration-via-environment-variable) for you deployment to complete this step.
+
    > Note: These pathogen templates are for a SPIRE enabled deployment only.
 
    To generate mesh configurations for the kibana proxy, [get the pathogen binary](https://github.com/greymatter-io/pathogen-greymatter#get-pathogen) if you have not already, and run:
