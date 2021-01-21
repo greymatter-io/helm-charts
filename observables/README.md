@@ -34,7 +34,7 @@ To install the observables stack:
 
    If at any time you need to take down the ELK stack, run `make remove-observables OBSERVABLES_NAMESPACE=<OBSERVABLES-NAMESPACE>` from the root directory of the helm-charts. It may take the pods a few minutes to stabilize.
 
-3. Upgrade fabric and sense for your new namespace. Update the `global.yaml` file you used for your Grey Matter installation and add your observables namespace from step 1 to `global.control.additional_namespaces` [here](../global.yaml#L22).
+3. Add your observables namespace to `global.control.additional_namespaces` in `global.yaml`. Then upgrade the sense and fabric charts:
 
    Now upgrade your fabric and sense deployments.
 
