@@ -217,6 +217,39 @@ entries:
   fabric:
   - apiVersion: v2
     appVersion: 1.3.0
+    created: "2021-01-21T22:10:23.952859644Z"
+    dependencies:
+    - name: control-api
+      repository: file://./control-api
+      version: 3.0.12
+    - name: control
+      repository: file://./control
+      version: 3.0.2
+    - name: jwt
+      repository: file://./jwt
+      version: 3.0.1
+    - alias: mesh-redis
+      condition: global.external_redis.disabled
+      name: redis
+      repository: file://./redis
+      version: 1.0.3
+    description: A Helm chart to deploy Grey Matter Fabric
+    digest: 5d0d1c0f1d65c815499fa167347a765f17cdac0ba7c03fffb5aee1a6ca5ed2a4
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - fabric
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: fabric
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/fabric-3.0.6/fabric-3.0.6.tgz
+    version: 3.0.6
+  - apiVersion: v2
+    appVersion: 1.3.0
     created: "2021-01-15T16:12:17.075964953Z"
     dependencies:
     - name: control-api
