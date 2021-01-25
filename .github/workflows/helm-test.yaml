@@ -43,6 +43,22 @@ jobs:
       - name: Fetch history
         run: git fetch --prune --unshallow
 
+      - name: Download helm
+        env:
+          helm_version: 3.3.4
+        run: |
+          # get helm
+          wget "https://get.helm.sh/helm-v${helm_version}-linux-amd64.tar.gz"
+          tar -xvf helm-v${helm_version}-linux-amd64.tar.gz
+          chmod +s linux-amd64/helm
+          sudo mv linux-amd64/helm /usr/local/
+      - name: Run helm dep up
+        run: |
+          helm dep up fabric
+          helm dep up spire
+          helm dep up sense
+          helm dep up data
+
       - name: Run chart-testing (lint fabric sense data)
         id: lint-fabric-sense-data
         uses: helm/chart-testing-action@v1.0.0
