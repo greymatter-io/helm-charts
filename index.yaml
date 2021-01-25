@@ -629,6 +629,34 @@ entries:
   sense:
   - apiVersion: v2
     appVersion: 1.3.0
+    created: "2021-01-25T19:04:30.433034428Z"
+    dependencies:
+    - name: catalog
+      repository: file://./catalog
+      version: 3.0.9
+    - name: dashboard
+      repository: file://./dashboard
+      version: 3.0.5
+    - name: slo
+      repository: file://./slo
+      version: 3.0.1
+    description: A Helm chart to deploy Grey Matter Sense
+    digest: 9630f8a4ca869ab0714caffbf9f138415ed1018d10311d5cff80b5c7bdb50b6a
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - sense
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: sense
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/sense-3.0.6/sense-3.0.6.tgz
+    version: 3.0.6
+  - apiVersion: v2
+    appVersion: 1.3.0
     created: "2021-01-15T16:12:17.414693434Z"
     dependencies:
     - name: catalog
