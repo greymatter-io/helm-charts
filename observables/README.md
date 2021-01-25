@@ -16,23 +16,30 @@ To install the observables stack:
 
    Change the value of the `xds_host` environment variable in `sidecar.envvars` [here](./custom-values-files/kibana-proxy-values.yaml#L10) to `control.<FABRIC-NAMESPACE>.svc`, replacing `<FABRIC-NAMESPACE>` with the namespace that your fabric installation is running.
 
-2. Are you installing into an EKS environment?
+2. From the root directory of the helm-charts, choose the following values and export them:
+
+   ```bash
+   export OBSERVABLES_NS=<desired-observables-namespace>
+   export EVENT_TOPIC=<customer-or-project-name>
+   ```
+
+   The `EVENT_TOPIC` will determine the index for Kafka and the Kibana dashboard.
+
+   Are you installing into an EKS environment?
 
    If yes:
 
-   From the root directory of the helm-charts, fill in your desired namespace to install observables (by default it is `observables`) and run:
-
    ```bash
-   make observables EKS=true OBSERVABLES_NAMESPACE=<OBSERVABLES-NAMESPACE>
+   make observables EKS=true EVENT_TOPIC=$EVENT_TOPIC OBSERVABLES_NAMESPACE=$OBSERVABLES_NS
    ```
 
    If no:
 
    ```bash
-   make observables EKS=false OBSERVABLES_NAMESPACE=<OBSERVABLES-NAMESPACE>
+   make observables EKS=false EVENT_TOPIC=$EVENT_TOPIC OBSERVABLES_NAMESPACE=$OBSERVABLES_NS
    ```
 
-   If at any time you need to take down the ELK stack, run `make remove-observables OBSERVABLES_NAMESPACE=<OBSERVABLES-NAMESPACE>` from the root directory of the helm-charts. It may take the pods a few minutes to stabilize.
+   If at any time you need to take down the ELK stack, run `make remove-observables OBSERVABLES_NAMESPACE=$OBSERVABLES_NS` from the root directory of the helm-charts. It may take the pods a few minutes to stabilize.
 
 3. Add your observables namespace to `global.control.additional_namespaces` in `global.yaml`. Then upgrade the sense and fabric charts:
 
@@ -109,7 +116,7 @@ Now your ELK stack is ready to recieve observables! See [enabling the observable
 
 ## Enabling the Grey Matter observables filter
 
-To configure a sidecar to emit observables you must define the filter as well as enable it.  In the sidecar's `listener` object that you wish to turn on observables, `greymatter edit listener <listener-key>` and add `"gm.observables"` to the list of `active_http_filters`, and the following configuration to the `http_filters` map so that it looks like:
+To configure a sidecar to emit observables you must define the filter as well as enable it.  In the sidecar's `listener` object that you wish to turn on observables, `greymatter edit listener <listener-key>` and add `"gm.observables"` to the list of `active_http_filters`. Then **update the following configuration with your values for `topic` and `eventTopic`** (`eventTopic` should match the value provided in [step 1 of the install](#install-elk-stack)). Add the configuration to the `http_filters` map so that it looks like:
 
 ```yaml
   ...
@@ -119,22 +126,24 @@ To configure a sidecar to emit observables you must define the filter as well as
     # configure the filter
     "gm_observables": {
       "useKafka": true,
-      "topic": "<service-name>",
-      "eventTopic": "greymatter",
+      "topic": "SERVICE_NAME",
+      "eventTopic": "EVENT_TOPIC",
       "kafkaServerConnection": "kafka-observables.observables.svc:9092"
     }
   }
 ```
 
-Make sure to leave `eventTopic` as `"greymatter"` as logstash is configured for this kafka event topic, but change `topic` to the desired topic for this service.
+Make sure `eventTopic` matches your previously configured `EVENT_TOPIC` as logstash is configured for this kafka event topic, but change `topic` to the desired topic for this service.
 
 Once you have done this, if you make a request to the service on which you just enabled observables, it will emit the observables to your ELK stack and you can move on to [finish configuring kibana](#configure-kibana).
 
 ## Configure Kibana
 
-Navigate back to your kibana proxy dashboard at `services/kibana-observables-proxy/latest` and go to the management panel (the bottom-most option on the left panel). You should see `ElasticSearch` and `Kibana` listed on the left. Click on Kibana - Index Patterns. On the far right, click `Create index pattern`. If you [enabled observables](#enabling-the-grey-matter-observables-filter) and made a request to your service, there should be some existing data with the pattern `greymatter-*`. In the index pattern, type `greymatter-`. Click through the next steps to create the index.
+Navigate back to your kibana proxy dashboard at `services/kibana-observables-proxy/latest` and go to the `Visualize` tab under `Kibana`. You should see `Index patterns`. On the far right, click `Create index pattern`.
 
-Once you have created the kibana index for `greymatter-`, you can use [Grey Matter Dashboarder](https://github.com/greymatter-io/dashboarder#dashboarder) to populate a Kibana dashboard. From the root directory of your helm-charts repo, run the following:
+If you [enabled observables](#enabling-the-grey-matter-observables-filter) and made a request to your service, there should be some existing data that matches the pattern `<EVENT_TOPIC>-*`, with `<EVENT_TOPIC>` matching your earlier provided value. In the index pattern, change `<EVENT_TOPIC>` to your value and type `<EVENT_TOPIC>-`. Click through the next steps to create the index.
+
+Once you have created the kibana index for `<EVENT_TOPIC>-`, you can use [Grey Matter Dashboarder](https://github.com/greymatter-io/dashboarder#dashboarder) to populate a Kibana dashboard. From the root directory of your helm-charts repo, run the following:
 
 The password is `password`.
 
@@ -148,7 +157,7 @@ openssl pkcs12 -in certs/quickstart.p12 -nocerts -nodes -out observables/certs/u
 Then, to run the dashboarder service:
 
 ```bash
-docker run --rm -v $(pwd)/observables/certs:/usr/local/dashboarder -e GREYMATTER_URL=https://$GREYMATTER_API_HOST/services/kibana-observables-proxy/latest/api/saved_objects/ docker.greymatter.io/internal/dashboarder generate greymatter
+docker run --rm -v $(pwd)/observables/certs:/usr/local/dashboarder -e GREYMATTER_URL=https://$GREYMATTER_API_HOST/services/kibana-observables-proxy/latest/api/saved_objects/ docker.greymatter.io/internal/dashboarder generate $EVENT_TOPIC
 ```
 
 You should see the response:
@@ -172,7 +181,7 @@ Applying the Dashboard
 Completed
 ```
 
-Now, you can navigate to the `Dashboard` pane in your Kibana observables proxy dashboard, and you will see `Greymatter Dashboard` as an option. Here you will be able to visualize your observables!
+Now, you can navigate to the `Dashboard` pane in your Kibana observables proxy dashboard, and you will see `<EVENT_TOPIC> Dashboard` as an option. Here you will be able to visualize your observables!
 
 ## Alternative Installation
 

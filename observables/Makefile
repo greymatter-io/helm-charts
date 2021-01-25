@@ -9,6 +9,7 @@ KIBANA-NAME?=kibana
 LOGSTASH-NAME?=logstash
 KAFKA-NAME?=kafka-observables
 EKS?=false
+EVENT_TOPIC?=greymatter
 
 # DEBUG=
 ifeq ($(TEST),TRUE)
@@ -126,7 +127,7 @@ logstash: helm-dep-up
 	helm template $(LOGSTASH-NAME) \
 		--namespace $(LOGSTASH-NAMESPACE) \
 		-f custom-values-files/logstash-values.yaml \
-		--set extraEnvs[2].value=greymatter \
+		--set extraEnvs[2].value=$(EVENT_TOPIC) \
 		--set extraEnvs[0].value=elasticsearch-master-headless.$(LOGSTASH-NAMESPACE).svc \
 		--set extraEnvs[3].value=kafka-observables-headless.$(LOGSTASH-NAMESPACE).svc:9092 \
 		logstash-7.9.3.tgz > manifest.yaml
