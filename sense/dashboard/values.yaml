@@ -45,11 +45,11 @@ dashboard:
   # CPU and memory limits for the dashboard app
   resources:
     requests:
-      memory: '2Gi'
-      cpu: '1'
+      memory: '256Mi'
+      cpu: '200m'
     limits:
-      memory: '6Gi'
-      cpu: '2'
+      memory: '1Gi'
+      cpu: '1'
   secret:
     enabled: true
     secret_name: dashboard-certs
