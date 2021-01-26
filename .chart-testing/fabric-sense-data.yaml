@@ -1,3 +1,5 @@
 charts:
   - .
 target-branch: release-2.4
+chart-dirs:
+  - .
