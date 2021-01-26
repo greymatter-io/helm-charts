@@ -19,11 +19,11 @@ dependencies:
 
   - name: control
     repository: file://./control
-    version: '3.0.2'
+    version: '3.0.3'
 
   - name: jwt
     repository: file://./jwt
-    version: '3.0.1'
+    version: '3.0.2'
 
   - name: redis
     repository: file://./redis

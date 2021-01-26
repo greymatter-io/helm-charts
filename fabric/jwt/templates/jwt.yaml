@@ -4,7 +4,7 @@ metadata:
     name: {{ .Values.jwt.name | default "jwt-security"  }}
     namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.global.exhibitor.replicas | default 1 }}
+  replicas: {{ include "replicas" (dict "service_values" .Values.jwt.replicas "top" $) }}
   revisionHistoryLimit: 10
   selector:
     matchLabels:

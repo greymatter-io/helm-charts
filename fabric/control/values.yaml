@@ -29,6 +29,11 @@ global:
   # To use global certs or not
   global_certs:
     enabled: true
+  release:
+    # release.production: true will increase all (except control-api) replicas to the default_replicas.  Otherwise the default for each chart will be used
+    production: false
+    default_replicas: 3
+
 
 control:
   # Name used for the deployment and service resources
