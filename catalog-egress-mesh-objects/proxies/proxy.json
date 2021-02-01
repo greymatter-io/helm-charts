@@ -1,0 +1,14 @@
+{
+    "zone_key": "zone-default-zone",
+    "proxy_key": "catalog-proxy",
+    "domain_keys": [
+        "domain-catalog-ingress",
+        "domain-catalog-egress"
+    ],
+    "listener_keys": [
+        "listener-catalog-ingress",
+        "listener-catalog-egress"
+    ],
+    "name": "catalog",
+    "listeners": null
+}

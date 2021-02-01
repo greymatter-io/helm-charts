@@ -1,0 +1,13 @@
+{
+    "zone_key": "zone-default-zone",
+    "domain_key": "domain-catalog-ingress",
+    "route_key": "route-catalog-local",
+    "path": "/",
+    "prefix_rewrite": "",
+    "redirects": null,
+    "shared_rules_key": "rules-catalog-local",
+    "rules": null,
+    "response_data": {},
+    "cohort_seed": null,
+    "retry_policy": null
+}

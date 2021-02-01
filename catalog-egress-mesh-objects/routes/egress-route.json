@@ -1,0 +1,9 @@
+{
+    "zone_key": "zone-default-zone",
+    "domain_key": "domain-catalog-egress",
+    "route_key": "route-catalog-control-egress",
+    "path": "/control/",
+    "timeout": "0s",
+    "prefix_rewrite": "/",
+    "shared_rules_key": "catalog-control-rules"
+  }

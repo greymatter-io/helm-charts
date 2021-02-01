@@ -1,0 +1,20 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "catalog-control-cluster",
+    "name": "control",
+    "instances": [],
+    "require_tls": true,
+    "http2_protocol_options": {
+      "allow_connect": true
+    },
+    "ssl_config": {
+      "require_client_certs": true,
+      "trust_file": "/etc/proxy/tls/sidecar/ca.crt",
+      "cert_key_pairs": [
+        {
+          "certificate_path": "/etc/proxy/tls/sidecar/server.crt",
+          "key_path": "/etc/proxy/tls/sidecar/server.key"
+        }
+      ]
+    }
+  }

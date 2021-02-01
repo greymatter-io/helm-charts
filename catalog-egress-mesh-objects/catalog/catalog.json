@@ -1,0 +1,21 @@
+{
+  "clusterName": "catalog",
+  "zoneName": "zone-default-zone",
+  "name": "Catalog",
+  "version": "latest",
+  "owner": "",
+  "capability": "Mesh",
+  "runtime": "GO",
+  "documentation": "",
+  "prometheusJob": "catalog",
+  "minInstances": 1,
+  "maxInstances": 1,
+  "authorized": true,
+  "clusterID": "",
+  "meshID": "",
+  "enableInstanceMetrics": true,
+  "enableHistoricalMetrics": true,
+  "instances": [],
+  "metricsTemplate": "",
+  "metricsPort": 8081
+}

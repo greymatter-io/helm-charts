@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "listener_key": "listener-catalog-egress",
+    "domain_keys": [
+        "domain-catalog-egress"
+    ],
+    "name": "egress",
+    "ip": "0.0.0.0",
+    "port": 10909,
+    "protocol": "http_auto",
+    "tracing_config": null
+}
