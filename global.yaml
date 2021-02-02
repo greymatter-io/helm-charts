@@ -25,7 +25,7 @@ global:
   data:
     # whether to install an external data
     external:
-      enabled: false
+      enabled: true
 
   # Use an external Redis service as the persister for mesh configurations
   # This requires the Redis provider to allow inbound connections from Kubernetes cluster
