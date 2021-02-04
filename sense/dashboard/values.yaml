@@ -31,6 +31,11 @@ global:
   # To use the global certs or not
   global_certs:
     enabled: true
+  release:
+    # release.production: true will increase all (except control-api) replicas to the default_replicas.  Otherwise the default for each chart will be used
+    production: false
+    default_replicas: 3
+
 
 dashboard:
   # Name used for the deployment and service resources
@@ -43,6 +48,7 @@ dashboard:
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   # CPU and memory limits for the dashboard app
+  replicas: 1
   resources:
     requests:
       memory: '256Mi'
