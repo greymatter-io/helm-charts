@@ -1,7 +1,10 @@
 SHELL := /bin/bash
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-NAME-EDGE := edge
+CUST := development
+# CUST := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.customer}')
+RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}')
+NAME-EDGE := edge-$(CUST)-$(RAND)
 
 pwd_name := $(notdir $(PWD))
 
@@ -27,8 +30,11 @@ clean-edge:
 
 .PHONY: remove-edge
 remove-edge:
-	helm uninstall edge
+	helm uninstall $(NAME-EDGE)
 	
 template-edge: $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
 	helm template edge . --set=global.environment=kubernetes  -f ../global.yaml > $(OUTPUT_PATH)/helm-edge$(BN).yaml
+
+print:
+	echo $(RAND)

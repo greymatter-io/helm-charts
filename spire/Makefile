@@ -1,5 +1,7 @@
 SHELL := /bin/bash
-NAME-SPIRE:=spire
+CUST := development
+RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}')
+NAME-SPIRE := spire-$(CUST)-$(RAND)
 CHART-SPIRE := .
 
 include ../output.mk

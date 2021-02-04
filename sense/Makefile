@@ -1,5 +1,7 @@
 SHELL := /bin/bash
-NAME-SENSE:=sense
+CUST := development
+RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}')
+NAME-SENSE := sense-$(CUST)-$(RAND)
 CHART-SENSE := .
 
 include ../output.mk

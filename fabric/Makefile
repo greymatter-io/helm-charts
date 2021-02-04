@@ -1,6 +1,8 @@
 SHELL := /bin/bash
-NAME-FABRIC:=fabric
 CHART-FABRIC := .
+CUST := development
+RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}')
+NAME-FABRIC := fabric-$(CUST)-$(RAND)
 
 include ../output.mk
 

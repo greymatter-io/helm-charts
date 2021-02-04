@@ -21,7 +21,6 @@ reveal-endpoint:
 
 .IGNORE= destroy
 destroy:
-	-(make delete)
 	-minikube delete
 	-k3d cluster delete greymatter
 	-(eval unset KUBECONFIG)
@@ -42,7 +41,7 @@ dev-dep: clean
 
 .PHONY: check-secrets
 check-secrets:
-	$(eval SECRET_CHECK=$(shell helm ls | grep secrets | awk '{if ($$1 == "secrets") print "present"; else print "not-present"}'))
+	$(eval SECRET_CHECK=$(shell helm ls | grep secrets | awk '{if ($$1 ~ /secrets*/) print "present"; else print "not-present"}'))
 	if [[ "$(SECRET_CHECK)" != "present" ]]; then \
 		(make secrets); \
 	fi
@@ -126,3 +125,21 @@ remove-observables:
 .PHONY: spire-custom-ca
 spire-custom-ca:
 	cd spire && make custom-ca
+
+.PHONY: lint-subcharts
+lint-subcharts:
+	@echo "Lint Fabric, Sense, and Spire subcharts"
+	ct lint --config .chart-testing/services.yaml
+
+.PHONY: lint-edge-secrets
+lint-edge-secrets:
+	@echo "Lint Edge and Secrets"
+	ct lint --config .chart-testing/edge-secrets.yaml 
+
+.PHONY: lint-umberela-charts
+lint-umberela-charts:
+	@echo "Lint top level charts"
+	ct lint --target-branch release-2.3 --chart-dirs .
+
+.PHONY: lint
+lint: lint-subcharts lint-edge-secrets lint-umberela-charts
