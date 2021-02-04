@@ -1,4 +1,5 @@
 SHELL := /bin/bash
+NAME-SECRET:=secrets-dev
 
 include ../output.mk
 
@@ -15,21 +16,21 @@ copy-credentials:
 
 template-secrets: $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template secrets . --set=global.environment=kubernetes   -f ../credentials.yaml -f ../global.yaml > $(OUTPUT_PATH)/helm-secrets$(BN).yaml
+	helm template $(NAME-SECRET) . --set=global.environment=kubernetes   -f ../credentials.yaml -f ../global.yaml > $(OUTPUT_PATH)/helm-secrets$(BN).yaml
 
 .PHONY: secrets
 secrets: copy-credentials values-validation
-	helm install secrets . -f credentials.yaml -f ../global.yaml
+	helm install $(NAME-SECRET) . -f credentials.yaml -f ../global.yaml
 	rm credentials.yaml
 
 .PHONY: upgrade-secrets
 upgrade-secrets: copy-credentials values-validation
-	helm upgrade secrets . -f credentials.yaml -f ../global.yaml --install 
+	helm upgrade $(NAME-SECRET) . -f credentials.yaml -f ../global.yaml --install 
 	rm credentials.yaml
 
 .PHONY: remove-secrets
 remove-secrets:
-	helm uninstall secrets
+	helm uninstall $(NAME-SECRET)
 
 
 values-validation:

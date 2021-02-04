@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-NAME-EDGE := edge
+NAME-EDGE := edge-dev
 
 pwd_name := $(notdir $(PWD))
 
@@ -27,7 +27,7 @@ clean-edge:
 
 .PHONY: remove-edge
 remove-edge:
-	helm uninstall edge
+	helm uninstall $(NAME-EDGE)
 	
 template-edge: $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)

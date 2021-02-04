@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-NAME-FABRIC:=fabric
+NAME-FABRIC:=fabric-dev
 CHART-FABRIC := .
 
 include ../output.mk

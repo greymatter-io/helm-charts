@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-NAME-SENSE:=sense
+NAME-SENSE:=sense-dev
 CHART-SENSE := .
 
 include ../output.mk

@@ -42,7 +42,7 @@ dev-dep: clean
 
 .PHONY: check-secrets
 check-secrets:
-	$(eval SECRET_CHECK=$(shell helm ls | grep secrets | awk '{if ($$1 == "secrets") print "present"; else print "not-present"}'))
+	$(eval SECRET_CHECK=$(shell helm ls | grep secrets | awk '{if ($$1 ~ /secrets*/) print "present"; else print "not-present"}'))
 	if [[ "$(SECRET_CHECK)" != "present" ]]; then \
 		(make secrets); \
 	fi
