@@ -202,7 +202,7 @@ dashboard:
     # Name used for the deployment and service resources
     name: dashboard
     # Dashboard app version
-    version: 4.0.1
+    version: 4.0.2
     image: 'docker.greymatter.io/release/gm-dashboard:{{ $.Values.dashboard.version }}'
     # Port for the dashboard app
     port: 1337
@@ -211,11 +211,11 @@ dashboard:
     # CPU and memory limits for the dashboard app
     resources:
       requests:
-        memory: '2Gi'
-        cpu: '1'
+        memory: '256Mi'
+        cpu: '200m'
       limits:
-        memory: '6Gi'
-        cpu: '2'
+        memory: '1Gi'
+        cpu: '1'
     secret:
       enabled: true
       secret_name: dashboard-certs
@@ -468,7 +468,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 4.0.1
+    version: 4.0.2
     ownerURL: "https://greymatter.io"
     apiEndpoint: ''
     apiSpecEndpoint: ''

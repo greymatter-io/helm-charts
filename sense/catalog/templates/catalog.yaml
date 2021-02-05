@@ -8,7 +8,7 @@ spec:
     matchLabels:
       {{ .Values.global.control.cluster_label }}: catalog
       deployment: catalog
-  replicas: 1
+  replicas: {{ include "replicas" (dict "service_values" .Values.catalog.replicas "top" $) }}
   template:
     metadata:
       labels:
