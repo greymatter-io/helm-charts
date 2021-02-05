@@ -1,15 +1,4 @@
 {{/*
-Define the namespaces Control will monitor
-*/}}
-{{- define "control.namespaces" -}}
-{{- if $.Values.global.control.additional_namespaces }}
-{{- printf "%s,%s"  $.Release.Namespace $.Values.global.control.additional_namespaces -}}
-{{- else }}
-{{- printf "%s" $.Release.Namespace }}
-{{- end }}
-{{- end -}}
-
-{{/*
 Handles replicas for releases.
 Takes in global.release.X and .Values.<service>.replicas
 Presidence is globals > service level > default to 1

@@ -41,6 +41,8 @@ helm install edge greymatter/edge --set=edge.ingress.type=LoadBalancer -f global
 helm install sense greymatter/sense -f global.yaml --set=global.waiter.service_account.create=false
 ```
 
+> If you would like to scale to a production ready mesh set global.release.production to true in `global.yaml`
+
 ### Viewing the Grey Matter Application
 
 At this point, you can verify that Grey Matter was installed successfully by opening your browser and pointing it to `https://localhost:30000` and verify that all six services are running.
@@ -69,6 +71,28 @@ Integration tests are run automatically upon pull requests; however, you can emu
     go mod vendor
     go test -v greymatter_integration_test.go
     ```
+
+### Versioning
+
+Grey Matter Helm Charts follow semver principals and allow us to manage active development for current and future releases.  Pre-release charts will have a suffix of `-x` which indicates to helm that this is a prerelease chart.  These are not used for installation or dependency fulfillment unless specifically called out.
+
+Any change to the Helm Chart templates or values files will require the chart version to be incremented in order to pass ci/cd linting.
+
+**General guidance for release/ tag versioning:**
+
+*Increment Major:*
+If a helm release can not be upgraded using a `helm upgrade <release_name>`
+Adding or major charts
+
+*Increment Minor:*
+Addition, removal, substitution of values files and/or templates have changes that make them incompatible with older values files
+
+*Increment Patch:*
+Template logic changes which do not result in modifications to values files (are backwards compatible)
+
+### Release Tagging
+
+Releases will be tagged periodically and will be based off the release branch.  For `release-2.4` branch we will tag `2.4.x`.
 
 ## More Documentation
 

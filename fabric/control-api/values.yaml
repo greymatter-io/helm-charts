@@ -37,7 +37,7 @@ global:
   # Global sidecar configuration
   sidecar:
     version: 1.5.1
-    dn: C=US,ST=Virginia,L=Alexandria,O=Decipher Technology Studios,OU=Engineering,CN=greymatter
+    dn: CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US
   # Global rbac configuration for service admin principal.
   rbac:
     admin:
@@ -150,10 +150,10 @@ controlApi:
       type: value
       value: '/services/control-api/latest/v1.0/'
   resources:
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, and adjust them as necessary.
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, and adjust them as necessary.
     limits:
       cpu: 500m
       memory: 1Gi
