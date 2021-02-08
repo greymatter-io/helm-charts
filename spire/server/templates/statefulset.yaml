@@ -29,7 +29,7 @@ spec:
       shareProcessNamespace: true
       containers:
         - name: registrar
-          image: gcr.io/spiffe-io/k8s-workload-registrar:0.9.3
+          image: {{ .Values.registrar.image }}
           args:
             - -config
             - /run/spire/config/registrar.conf
