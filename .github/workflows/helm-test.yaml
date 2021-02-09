@@ -123,6 +123,14 @@ jobs:
           cp ./ci/scripts/credentials.template ./credentials.yaml
           printf '%s\n' $NEXUS_USER $NEXUS_PASSWORD n | ./ci/scripts/build-credentials.sh
 
+      - name: Login to Greymatter docker
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: |-
+          # Log into docker.greymatter.io
+          docker login -u $NEXUS_USER -p $NEXUS_PASSWORD
+
       - name: Make secrets
         run: make secrets
 
