@@ -1,5 +1,6 @@
 SHELL := /bin/bash
-NAME-SECRET:=secrets-dev
+CUST := $(shell cat ../global.yaml | docker run -i docker.greymatter.io/internal/yq:2.4.1 -r '.global.release.customer' )
+NAME-SECRET:=secrets-$(CUST)
 
 include ../output.mk
 

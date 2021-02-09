@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 CHART-FABRIC := .
-CUST := development
+CUST := $(shell cat ../global.yaml | docker run -i docker.greymatter.io/internal/yq:2.4.1 -r '.global.release.customer' )
 RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}')
 NAME-FABRIC := fabric-$(CUST)-$(RAND)
 
