@@ -33,10 +33,16 @@ global:
     enabled: true
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
+  release:
+    # release.production: true will increase all (except control-api) replicas to the default_replicas.  Otherwise the default for each chart will be used
+    production: false
+    default_replicas: 3
+
 edge:
   version: '1.5.1'
   image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.edge.version $ }}'
   image_pull_policy: IfNotPresent
+  replicas: 1
   # Port where the edge proxy will listen
   port: 10808
   # Port where the proxy will expose metrics

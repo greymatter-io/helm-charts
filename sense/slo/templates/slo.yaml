@@ -8,7 +8,7 @@ spec:
     matchLabels:
       {{ .Values.global.control.cluster_label }}: slo
       deployment: slo
-  replicas: 1
+  replicas: {{ include "replicas" (dict "service_values" .Values.slo.replicas "top" $) }}
   template:
     metadata:
       labels:

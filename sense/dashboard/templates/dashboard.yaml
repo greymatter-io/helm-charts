@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       {{ .Values.global.control.cluster_label }}: dashboard
-  replicas: 1
+  replicas: {{ include "replicas" (dict "service_values" .Values.dashboard.replicas "top" $) }}
   template:
     metadata:
       labels:

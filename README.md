@@ -41,6 +41,8 @@ helm install edge greymatter/edge --set=edge.ingress.type=LoadBalancer -f global
 helm install sense greymatter/sense -f global.yaml --set=global.waiter.service_account.create=false
 ```
 
+> If you would like to scale to a production ready mesh set global.release.production to true in `global.yaml`
+
 ### Viewing the Grey Matter Application
 
 At this point, you can verify that Grey Matter was installed successfully by opening your browser and pointing it to `https://localhost:30000` and verify that all six services are running.

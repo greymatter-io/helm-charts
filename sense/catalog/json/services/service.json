@@ -9,7 +9,7 @@
   "documentation": "{{.service.documentation}}",
   "prometheusJob": "{{.service.clusterName}}",
   "minInstances": {{.service.minInstances | default 1}},
-  "maxInstances": {{.service.maxInstances | default 1}},
+  "maxInstances": {{ include "maxInstances" (dict "service_values" .service "top" $) }},
   "authorized": true,
   "clusterID": "",
   "meshID": "",
