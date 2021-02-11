@@ -75,6 +75,7 @@ data:
         plugin_data {
           cert_file_path = "/run/spire/ca/intermediate.crt"
           key_file_path = "/run/spire/ca/intermediate.key"
+          bundle_file_path = "/run/spire/ca/root.crt"
         }
       }
     }
