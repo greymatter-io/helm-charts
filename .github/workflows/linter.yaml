@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "!release-*"
+      - "gitbook-sync"
 
 jobs:
   lint-charts:
