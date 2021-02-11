@@ -2,8 +2,6 @@ name: Lint and Test Charts
 
 on:
   push:
-    # We don't need to lint on a push to the release branch as this
-    # only happen after a merge
     branches:
       - "!release-*"
 
