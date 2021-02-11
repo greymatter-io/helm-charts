@@ -174,7 +174,7 @@ jobs:
             # This works.  let it be.
             echo "${DEPLOY_TOKEN}" > token.txt
             gh auth login --with-token < token.txt
-            gh pr create --fill -B ${BRANCH_TO_UPDATE}
+            gh pr create --title "Bot- Auto Increment Chart Versions" --body "New Helm charts have been released.  This pr increments book.json variables to match current releases" -B ${BRANCH_TO_UPDATE}
           else
             echo "There have not been any changes to the versions so we will not update the mesh"
           fi
