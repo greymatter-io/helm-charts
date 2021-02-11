@@ -17,7 +17,6 @@ data:
     trust_domain = "{{ .Values.global.spire.trust_domain }}"
     cert_path = "/run/spire/tls/registrar.{{ .Values.global.spire.namespace }}.svc.crt"
     key_path = "/run/spire/tls/registrar.{{ .Values.global.spire.namespace }}.svc.key"
-    cacert_path = "/run/spire/tls/ca.crt"
     insecure_skip_client_verification	= true
     pod_label = "{{ .Values.global.control.cluster_label }}"
   server.conf: |-
@@ -76,7 +75,6 @@ data:
         plugin_data {
           cert_file_path = "/run/spire/ca/intermediate.crt"
           key_file_path = "/run/spire/ca/intermediate.key"
-          bundle_file_path = "/run/spire/ca/root.crt"
         }
       }
     }
