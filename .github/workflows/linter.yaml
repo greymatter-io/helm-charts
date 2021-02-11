@@ -124,9 +124,14 @@ jobs:
           NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}-${LONG_DATE}"
           commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
 
-          git clone -o upstream https://${GITHUB_ACTOR}:${DEPLOY_TOKEN}@${TARGET_REPO}
+          git clone -o upstream https://${GITHUB_ACTOR}:${DEPLOY_TOKEN}@${TARGET_REPO} automation
           
-          cd test-config-change-automation
+          ls
+
+          cd automation
+
+          ls
+
           git remote add origin https://${GITHUB_ACTOR}:${DEPLOY_TOKEN}@${TARGET_REPO}
           git checkout ${BRANCH_TO_UPDATE}
 
