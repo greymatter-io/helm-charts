@@ -27,6 +27,10 @@ global:
     edge_port: 10808
   sidecar:
     version: 1.6.0-dev
+  release:
+    # release.production: true will increase all (except control-api) replicas to the default_replicas.  Otherwise the default for each chart will be used
+    production: false
+    default_replicas: 3
 
 jwt:
   # Name used for the deployment and service resources
@@ -47,6 +51,7 @@ jwt:
   # Location to mount the information specified in users_cg_name in the container
   users_mount_point: /gm-jwt-security/etc
   image_pull_policy: IfNotPresent
+  replicas: 1
   resources:
     limits:
       cpu: 200m

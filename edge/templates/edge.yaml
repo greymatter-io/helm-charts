@@ -4,7 +4,7 @@ metadata:
   name: edge
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: 1
+  replicas: {{ include "replicas" (dict "service_values" .Values.edge.replicas "top" $) }}
   selector:
     matchLabels:
       {{ .Values.global.control.cluster_label }}: edge

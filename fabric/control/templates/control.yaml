@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.control.name }}
   namespace: {{ .Release.Namespace }}
 spec:
-  replicas: {{ .Values.control.replicas }}
+  replicas: {{ include "replicas" (dict "service_values" .Values.control.replicas "top" $) }}
   selector:
     matchLabels:
       {{ .Values.global.control.cluster_label }}: {{ .Values.control.name }}

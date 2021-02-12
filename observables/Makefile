@@ -9,6 +9,7 @@ KIBANA-NAME?=kibana
 LOGSTASH-NAME?=logstash
 KAFKA-NAME?=kafka-observables
 EKS?=false
+EVENT_TOPIC?=greymatter
 
 # DEBUG=
 ifeq ($(TEST),TRUE)
@@ -95,14 +96,14 @@ elasticsearch: helm-dep-up
 			--set extraEnvs[1].name=cluster.initial_master_nodes,extraEnvs[1].value= \
 			--set sysctlInitContainer.enabled=true \
 			--namespace $(NAMESPACE) \
-			--version 7.5.1 \
+	        --version 7.9.3 \
 			$(DRYRUN) --debug; \
 	else \
 		helm install $(ELASTICSEARCH-NAME) elastic/elasticsearch \
 			--namespace $(NAMESPACE) \
 			-f custom-values-files/elasticsearch-values.yaml \
 			--namespace $(NAMESPACE) \
-			--version 7.5.1 \
+			--version 7.9.3 \
 			$(DRYRUN) --debug; \
 	fi
 
@@ -122,14 +123,14 @@ kibana-proxy: helm-dep-up
 		$(DRYRUN) --debug
 
 logstash: helm-dep-up
-	helm fetch elastic/logstash --version 7.5.2
+	helm fetch elastic/logstash --version 7.9.3
 	helm template $(LOGSTASH-NAME) \
 		--namespace $(LOGSTASH-NAMESPACE) \
 		-f custom-values-files/logstash-values.yaml \
-		--set extraEnvs[2].value=greymatter \
+		--set extraEnvs[2].value=$(EVENT_TOPIC) \
 		--set extraEnvs[0].value=elasticsearch-master-headless.$(LOGSTASH-NAMESPACE).svc \
 		--set extraEnvs[3].value=kafka-observables-headless.$(LOGSTASH-NAMESPACE).svc:9092 \
-		logstash-7.5.2.tgz > manifest.yaml
+		logstash-7.9.3.tgz > manifest.yaml
 	kubectl apply -f manifest.yaml --namespace $(LOGSTASH-NAMESPACE) --validate=false $(DRYRUN)
 
 # Delete installations

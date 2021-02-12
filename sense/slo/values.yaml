@@ -34,6 +34,10 @@ global:
   # To use the global certs or not
   global_certs:
     enabled: true
+  release:
+    # release.production: true will increase all (except control-api) replicas to the default_replicas.  Otherwise the default for each chart will be used
+    production: false
+    default_replicas: 3
 slo:
   name: "slo"
   # SLO version
@@ -41,6 +45,7 @@ slo:
   image: "docker.greymatter.io/development/gm-slo:{{ .Values.slo.version }}"
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
+  replicas: 1
   # CPU and memory limits for the SLO service
   resources:
     limits:
