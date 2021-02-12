@@ -15,6 +15,8 @@ redis:
   image_pull_policy: IfNotPresent
   # Uses global.image_pull_secret if true
   private_image: false
+  secret:
+    secret_name: greymatter-mesh-redis-password
   storage:
     # Where your redis image will place its data
     mount_path: /data
@@ -28,3 +30,8 @@ redis:
     requests:
       cpu: 100m
       memory: 128Mi
+  envvars:
+    redis_password:
+      type: secret
+      secret: '{{ .Values.redis.secret.secret_name | default "greymatter-mesh-redis-password" }}'
+      key: password
