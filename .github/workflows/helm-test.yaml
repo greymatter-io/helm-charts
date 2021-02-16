@@ -52,6 +52,7 @@ jobs:
           tar -xvf helm-v${helm_version}-linux-amd64.tar.gz
           chmod +s linux-amd64/helm
           sudo mv linux-amd64/helm /usr/local/
+
       - name: Run helm dep up
         run: |
           helm dep up fabric

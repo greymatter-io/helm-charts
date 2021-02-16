@@ -37,13 +37,146 @@ jobs:
           echo "$(awk 'NR==1,/name: jwt/{sub(/name: jwt/, "name: jwt-gov")} 1' fabric-gov/Chart.yaml)" > fabric-gov/Chart.yaml
           sed -i -e "s|name: fabric|name: fabric-gov|" -e "s|Grey Matter Fabric|Grey Matter Fabric Gov|" -e "s|/jwt|/jwt-gov|" fabric-gov/Chart.yaml
 
-      - name: Run Grey Matter Charts
+      - name: Release Spire Server and Agent Charts
+        uses: helm/chart-releaser-action@v1.0.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          charts_dir: spire
+
+      - name: Release Grey Matter Charts
         uses: helm/chart-releaser-action@v1.0.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           charts_dir: .
 
+  get-current-chart-release-versions:
+    name: Get current helm chart release versions
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
+      - name: Fetch history
+        run: git fetch --prune --unshallow
 
+      # Install Helm for dependencies
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        id: install-helm
 
+      - name: Get current latest helm releases and build chart-versions.json
+        env:
+          REPO_NAME: greymatter
+          REPO_URL: https://greymatter-io.github.io/helm-charts
+        run: |
+          helm repo add $REPO_NAME $REPO_URL
+          helm repo update
+
+          # Note: this pulls in all charts hosted at the "greymatter" repo we just added
+          helm search repo $REPO_NAME/ -o json | jq '.[] | {(.name): (.version)}' | jq -n '[inputs] | add' >> chart-versions.json
+          sed -i -e "s/$REPO_NAME\///g" chart-versions.json
+          sed -i -e 's/agent/spire_agent/g' chart-versions.json
+          sed -i -e 's/server/spire_server/g' chart-versions.json
+          cat chart-versions.json
+
+      - name: Export chart versions
+        uses: actions/upload-artifact@v2
+        with:
+          name: chart-versions
+          path: chart-versions.json
+  
+  create_pr:
+    name: Create PR to update book.json with new values
+    needs: get-current-chart-release-versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull in chart-versions.json from prior step
+        uses: actions/download-artifact@v2
+        with:
+          name: chart-versions
+
+      - name: Update book.json and push to gitbook
+        env:
+          DEPLOY_TOKEN: ${{ secrets.GITBOOK_TOKEN }}
+          TARGET_REPO: "github.com/greymatter-io/gm-gitbook-sync.git"
+          BRANCH_TO_UPDATE: "1.4-beta"
+          CHARTS: "fabric sense edge secrets spire_agent spire_server"
+        run: | 
+          # #### If in the future we have different chart names just add them to the CHARTS environment variable (space separated)
+          # #### The CHARTS environment variable is split into the cts array which is used to export the envars which are used for the sed command
+          # #### These keys must match an already existing key in book.json.  Keys that do not exist
+          # #### will be processed but they will be reflected in any prs to gitbook.
+
+          # ------------Source Desired Envvars from chart-versions artifact ---------------------
+          IFS=', ' read -r -a cts <<< "${CHARTS}"
+          for i in ${cts[@]};do
+              export "${i}=$(cat chart-versions.json | jq -r --arg input ${i} '.[$input]')"
+          done
+
+          # ------------Set up Git and Git Variables ---------------------
+          git config --global user.email "62956126+helm-charts@users.noreply.github.com"
+          git config --global user.name $GITHUB_ACTOR
+          
+          SHORT_DATE="$(date +"%Y-%m-%d")"
+          LONG_DATE="$(date '+%d%m%Y%H%M%S')"
+          BRANCH_NAME=$(echo ${GITHUB_REF}| awk -F/ '{print $3}')
+          NEW_FEATURE_BRANCH_NAME="chart-increment/${BRANCH_NAME}-${LONG_DATE}"
+          commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
+
+          git clone -o upstream https://${GITHUB_ACTOR}:${DEPLOY_TOKEN}@${TARGET_REPO} automation
+          
+          ls
+
+          cd automation
+
+          ls
+
+          git remote add origin https://${GITHUB_ACTOR}:${DEPLOY_TOKEN}@${TARGET_REPO}
+          git checkout ${BRANCH_TO_UPDATE}
+
+          # ------------Business logic---------------------
+          
+          cp book.json old-book.json
+
+          # update book.json with the latest versions from envars 
+          count=1
+          for i in ${cts[@]};do
+              echo "[${count}/${#cts[@]}] --- envar of ${i} is ${!i}"
+              if [[ $count -lt ${#cts[@]} ]]; then
+                  sed -i -e "s|\"${i}\":.*|\"${i}\": \"${!i}\",|" book.json
+              else
+                  sed -i -e "s|\"${i}\":.*|\"${i}\": \"${!i}\"|" book.json
+              fi
+              count=$((count +1))
+          done
+
+          echo "The old book.json: "
+          cat old-book.json
+
+          echo "The new book.json: "
+          cat book.json
+          
+          # This is ratchet but github actions currently exit on any exit code non 0.  diff responds with 1 if there is a difference
+          # This allows us to capture the event where there are no changes since the diff only returns a string if there is a ... diff
+          r=$(diff old-book.json book.json) || true
+          if [[ ! -z $r ]]; then
+            echo "The chart versions have changed. so we will be creating a pr"
+            # ------------Git logic---------------------
+
+            git checkout -b ${NEW_FEATURE_BRANCH_NAME}
+            git remote set-url origin  https://${GITHUB_ACTOR}:${DEPLOY_TOKEN}@${TARGET_REPO}
+            git add book.json
+            git commit -m "${commit_message}"
+            
+            git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
+
+            # This works.  let it be.
+            echo "${DEPLOY_TOKEN}" > token.txt
+            gh auth login --with-token < token.txt
+            gh pr create --title "Bot- Auto Increment Chart Versions" --body "New Helm charts have been released.  This pr increments book.json variables to match current releases" -B ${BRANCH_TO_UPDATE}
+          else
+            echo "There have not been any changes to the versions so we will not update the mesh"
+          fi
