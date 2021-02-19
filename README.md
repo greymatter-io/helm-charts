@@ -17,6 +17,8 @@ helm repo add greymatter https://greymatter-io.github.io/helm-charts
 
 You can then run `helm search repo greymatter` to see the charts.
 
+> [Contributing](/docs/CONTRIBUTING.md)
+
 ## Quickstart with Grey Matter
 
 The steps below provide a quickstart example to deploy Grey Matter.
