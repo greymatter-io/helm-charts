@@ -1,0 +1,110 @@
+{
+  "access_loggers": {
+    "http_connection_loggers": {
+      "disabled": false,
+      "file_loggers": null,
+      "http_grpc_access_loggers": null
+    },
+    "http_upstream_loggers": {
+      "disabled": false,
+      "file_loggers": null,
+      "http_grpc_access_loggers": null
+    }
+  },
+  "active_http_filters": [
+    "gm.oidc-authentication",
+    "gm.ensure-variables"
+  ],
+  "active_network_filters": null,
+  "delayed_close_timeout": "",
+  "domain_keys": [
+    "edge"
+  ],
+  "drain_timeout": "",
+  "http2_protocol_options": null,
+  "http_filters": {
+    "gm_metrics": {
+      "metrics_dashboard_uri_path": "/metrics",
+      "metrics_host": "0.0.0.0",
+      "metrics_key_depth": "3",
+      "metrics_key_function": "depth",
+      "metrics_port": 8081,
+      "metrics_prometheus_uri_path": "/prometheus",
+      "metrics_ring_buffer_size": 4096,
+      "prometheus_system_metrics_interval_seconds": 15
+    },
+    "gm_oidc-validation": {
+      "accessToken": {
+        "location": "cookie",
+        "key": "access_token"
+      },
+      "provider": "http://keycloak:8080/auth/realms/greymatter",
+      "enforce": false
+    },
+    "gm_oidc-authentication": {
+      "accessToken": {
+        "location": "cookie",
+        "key": "access_token",
+        "cookieOptions": {
+          "httpOnly": true,
+          "maxAge": "3h",
+          "domain": "localhost",
+          "path": "/"
+        }
+      },
+      "serviceUrl": "https://localhost:10808",
+      "callbackPath": "/oauth",
+      "provider": "http://keycloak:8080/auth/realms/greymatter",
+      "clientId": "edge",
+      "clientSecret": "45000fd7-5a1c-4d11-a552-07f07f464e5f",
+      "additionalScopes": [
+        "profile",
+        "email",
+        "values"
+      ]
+    },
+    "gm_ensure-variables": {
+      "rules": [
+        {
+          "location": "cookie",
+          "key": "access_token",
+          "copyTo": [
+            {
+              "location": "cookie",
+              "key": "userpolicy",
+              "cookieOptions": {
+                "httpOnly": true,
+                "maxAge": "3h",
+                "domain": "localhost",
+                "path": "/"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "http_protocol_options": null,
+  "ip": "0.0.0.0",
+  "listener_key": "edge-listener",
+  "name": "edge",
+  "network_filters": null,
+  "port": 10808,
+  "protocol": "http_auto",
+  "request_timeout": "",
+  "secret": {
+    "secret_key": "",
+    "secret_name": "",
+    "secret_validation_name": "",
+    "subject_names": null,
+    "ecdh_curves": null,
+    "set_current_client_cert_details": {
+      "uri": false
+    },
+    "checksum": ""
+  },
+  "stream_idle_timeout": "",
+  "tracing_config": null,
+  "use_remote_address": false,
+  "zone_key": "zone-default-zone"
+}
