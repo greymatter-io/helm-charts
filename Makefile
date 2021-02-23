@@ -135,10 +135,10 @@ lint-edge-secrets:
 	@echo "Lint Edge and Secrets"
 	ct lint --config .chart-testing/edge-secrets.yaml 
 
-.PHONY: lint-umberela-charts
-lint-umberela-charts:
+.PHONY: lint-umbrella-charts
+lint-umbrella-charts:
 	@echo "Lint top level charts"
 	ct lint --target-branch release-2.3 --chart-dirs .
 
 .PHONY: lint
-lint: lint-subcharts lint-edge-secrets lint-umberela-charts
+lint: lint-subcharts lint-edge-secrets lint-umbrella-charts

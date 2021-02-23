@@ -2,8 +2,8 @@ include ../helpers.mk
 
 NAME-SECRET:=secrets-$(CUST)
 
+.PHONY: credentials secrets upgrade-secrets remove-secrets
 
-.PHONY: credentials
 credentials:
 	./../ci/scripts/build-credentials.sh
 
@@ -14,17 +14,14 @@ template-secrets: $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
 	helm template $(NAME-SECRET) . --set=global.environment=kubernetes   -f ../credentials.yaml -f ../global.yaml > $(OUTPUT_PATH)/helm-secrets$(BN).yaml
 
-.PHONY: secrets
 secrets: copy-credentials values-validation
 	helm install $(NAME-SECRET) . -f credentials.yaml -f ../global.yaml
 	rm credentials.yaml
 
-.PHONY: upgrade-secrets
 upgrade-secrets: copy-credentials values-validation
 	helm upgrade $(NAME-SECRET) . -f credentials.yaml -f ../global.yaml --install 
 	rm credentials.yaml
 
-.PHONY: remove-secrets
 remove-secrets:
 	helm uninstall $(NAME-SECRET)
 

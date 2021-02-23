@@ -2,27 +2,17 @@ include ../helpers.mk
 
 NAME-EDGE := edge-$(CUST)-$(RAND)
 
-pwd_name := $(notdir $(PWD))
+.PHONY: edge upgrade-edge clean-edge remove-edge
 
-.PHONY: edge
 edge:
-	if [ "$(pwd_name)" == "edge" ]; then \
-		echo "run in makefile directory"; \
-		helm install $(NAME-EDGE) . -f ../global.yaml; \
-	else \
-		echo "run in helm-charts top directory"; \
-		helm install $(NAME-EDGE) edge -f ../global.yaml; \
-	fi
+	helm install $(NAME-EDGE) . -f ../global.yaml; \
 
-.PHONY: upgrade-edge
 upgrade-edge: package-edge
 	helm upgrade $(NAME-EDGE) . -f ../global.yaml
 
-.PHONY: clean-edge
 clean-edge:
 	rm -f ./charts/*
 
-.PHONY: remove-edge
 remove-edge:
 	helm uninstall $(NAME-EDGE)
 	
