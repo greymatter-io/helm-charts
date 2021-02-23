@@ -28,7 +28,7 @@ remove-secrets:
 
 values-validation:
 	# Ensure that the rds.enabled is true in secrets and in fabric values files
-	if [ "$(shell cat values.yaml | $(YQCMD) -r '.postgres.rds.enabled')" == "$(shell cat ../sense/values.yaml | g$(YQCMD) -r '.postgres.rds.enabled')" ]; then \
+	if [ "$(shell cat values.yaml | $(YQCMD) -r '.postgres.rds.enabled')" == "$(shell cat ../sense/values.yaml | $(YQCMD) -r '.postgres.rds.enabled')" ]; then \
 		echo "rds.enabled in secrets/values.yaml and sense/values.yaml match"; \
 	else \
 		echo "rds.enabled in secrets/values.yaml and sense/values.yaml DO NOT MATCH.  Secrets will not be created"; \
