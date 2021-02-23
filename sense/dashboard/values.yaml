@@ -112,7 +112,7 @@ dashboard:
 sidecar_dashboard:
   # Uses global.sidecar.version if set
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar_dashboard.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar_dashboard.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
@@ -180,7 +180,7 @@ prometheus:
 sidecar_prometheus:
   # Uses global.sidecar.version if set
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar_prometheus.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics

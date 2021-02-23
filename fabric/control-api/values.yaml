@@ -66,7 +66,7 @@ controlApi:
   # Number of replicas for the deployment
   replicas: 1
   version: 1.5.4
-  image: 'docker.greymatter.io/release/gm-control-api:{{ .Values.controlApi.version }}'
+  image: 'docker.greymatter.io/development/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
   # Port exposed by the control-api container
@@ -166,7 +166,7 @@ controlApi:
 # Sidecar configuration for Control Api
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
-  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
   # Port where the proxy will listen
   port: 10808
   # Port where the proxy will expose metrics
