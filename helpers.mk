@@ -4,7 +4,7 @@ SHELL := /bin/bash
 # These are used for the helm release name (to uninstall and install and put inplace the mesh identity configmap)
 YQCMD := docker run -i docker.greymatter.io/internal/yq:2.4.1
 CUST := $(shell cat ../global.yaml | $(YQCMD) -r '.global.release.customer' )
-RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}')
+RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}' 2> /dev/null)
 
 # Service account creation is set to true by default and this automates the disableing of these in makefiles
 WSA_CHECK := $(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}')
