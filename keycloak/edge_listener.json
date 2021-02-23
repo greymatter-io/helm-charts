@@ -38,7 +38,7 @@
         "location": "cookie",
         "key": "access_token"
       },
-      "provider": "http://keycloak:8080/auth/realms/greymatter",
+      "provider": "http://a85482a33bd744aef8f46295cbc1d589-753440034.us-east-1.elb.amazonaws.com:80/auth/realms/greymatter",
       "enforce": false
     },
     "gm_oidc-authentication": {
@@ -48,19 +48,19 @@
         "cookieOptions": {
           "httpOnly": true,
           "maxAge": "3h",
-          "domain": "localhost",
+          "domain": "aed3ca76f5d1c4a13a8e5fd3cf616103-1465883508.us-east-1.elb.amazonaws.com",
           "path": "/"
         }
       },
-      "serviceUrl": "https://localhost:10808",
+      "serviceUrl": "https://aed3ca76f5d1c4a13a8e5fd3cf616103-1465883508.us-east-1.elb.amazonaws.com:10808",
       "callbackPath": "/oauth",
-      "provider": "http://keycloak:8080/auth/realms/greymatter",
+      "provider": "http://a85482a33bd744aef8f46295cbc1d589-753440034.us-east-1.elb.amazonaws.com:80/auth/realms/greymatter",
       "clientId": "edge",
-      "clientSecret": "45000fd7-5a1c-4d11-a552-07f07f464e5f",
+      "clientSecret": "6580ee87-9c6c-4ff0-b7eb-a6dd2819d836",
       "additionalScopes": [
         "profile",
         "email",
-        "values"
+        "openid"
       ]
     },
     "gm_ensure-variables": {
@@ -75,7 +75,7 @@
               "cookieOptions": {
                 "httpOnly": true,
                 "maxAge": "3h",
-                "domain": "localhost",
+                "domain": "aed3ca76f5d1c4a13a8e5fd3cf616103-1465883508.us-east-1.elb.amazonaws.com",
                 "path": "/"
               }
             }
