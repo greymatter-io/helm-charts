@@ -4,13 +4,13 @@ SHELL := /bin/bash
 # `make credentials` to build out credentials with user input
 # `make secrets` deploys the credentials
 
+.PHONY: minikube k3d check-secrets install-spire install uninstall secrets remove-secrets credentials observables remove-observables spire-custom-ca lint-subcharts lint-edge-secrets lint-umbrella-charts lint
+
 K3D?=false
 
-.PHONY: minikube
 minikube:
 	./ci/scripts/minikube.sh
 
-.PHONY: k3d
 k3d:
 	./ci/scripts/k3d.sh
   K3D=true
@@ -38,21 +38,18 @@ dev-dep: clean
 	(cd fabric && make package-fabric)
 	(cd sense && make package-sense)
 
-.PHONY: check-secrets
 check-secrets:
 	$(eval SECRET_CHECK=$(shell helm ls | grep secrets | awk '{if ($$1 ~ /secrets*/) print "present"; else print "not-present"}'))
 	if [[ "$(SECRET_CHECK)" != "present" ]]; then \
 		(make secrets); \
 	fi
 
-.PHONY: install-spire
 install-spire:
 	$(eval IS=$(shell cat global.yaml | grep -A3 'spire:'| grep enabled: | awk '{print $$2}'))
 	if [ "$(IS)" = "true" ]; then \
 		(cd spire && make spire); \
 	fi
 
-.PHONY: install
 install: dev-dep check-secrets install-spire
 	(cd fabric && make fabric)
 	sleep 20
@@ -66,7 +63,6 @@ install: dev-dep check-secrets install-spire
 	(make reveal-endpoint)
 
 .IGNORE: uninstall
-.PHONY: uninstall
 uninstall:
 	-(cd spire && make remove-spire)
 	-(cd fabric && make remove-fabric)
@@ -94,51 +90,41 @@ template: dev-dep $(BUILD_NUMBER_FILE)
 	(cd sense && make template-sense && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)	
 
 
-.PHONY: secrets
 secrets:
 	cd secrets && make secrets
 
-.PHONY: remove-secrets
 remove-secrets:
 	helm uninstall secrets
 
-.PHONY: credentials
 credentials:
 	cd secrets && make credentials
 
 EKS?=false
 OBSERVABLES_NAMESPACE?=observables
 
-.PHONY: observables
 observables:
 	cd observables && \
 	make check-namespace NAMESPACE=$(OBSERVABLES_NAMESPACE) && \
 	make check-secrets NAMESPACE=$(OBSERVABLES_NAMESPACE) && \
 	make install-observables NAMESPACE=$(OBSERVABLES_NAMESPACE) EKS=$(EKS)
 
-.PHONY: remove-observables
 remove-observables:
 	cd observables && \
 	make destroy-observables NAMESPACE=$(OBSERVABLES_NAMESPACE)
 
-.PHONY: spire-custom-ca
 spire-custom-ca:
 	cd spire && make custom-ca
 
-.PHONY: lint-subcharts
 lint-subcharts:
 	@echo "Lint Fabric, Sense, and Spire subcharts"
 	ct lint --config .chart-testing/services.yaml
 
-.PHONY: lint-edge-secrets
 lint-edge-secrets:
 	@echo "Lint Edge and Secrets"
 	ct lint --config .chart-testing/edge-secrets.yaml 
 
-.PHONY: lint-umbrella-charts
 lint-umbrella-charts:
 	@echo "Lint top level charts"
 	ct lint --target-branch release-2.3 --chart-dirs .
 
-.PHONY: lint
 lint: lint-subcharts lint-edge-secrets lint-umbrella-charts

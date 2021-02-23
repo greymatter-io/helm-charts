@@ -13,9 +13,10 @@ WSA_CHECK := $(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{
 HELM_VALIDATION := $(shell helm version --short | cut -d'+' -f1 | awk -Fv '{if ($$2 > 3.2) print "--disable-openapi-validation"}')
 
 # gets the cluster environment
-ENVIRONMENT := $(shell grep -hri "environment:"  ../global.yaml  | cut -d ':' -f 2 | xargs)
+ENVIRONMENT := $(shell cat ../global.yaml | $(YQCMD) -r '.global.environment')
 
-# This section is used to ensure that when a `make template x` a new file is created instead of ovewritting the same file
+#####  This section is used to ensure that when a `make template x` 
+#####  a new file is created instead of ovewritting the same file
 BUILD_NUMBER_FILE=build-number.txt
 # We need to increment the version even if the build number file exists
 .PHONY: $(BUILD_NUMBER_FILE)
