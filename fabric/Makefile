@@ -1,11 +1,7 @@
-SHELL := /bin/bash
-CHART-FABRIC := .
-YQCMD := docker run -i docker.greymatter.io/internal/yq:2.4.1
-CUST := $(shell cat ../global.yaml | $(YQCMD) -r '.global.release.customer' )
-RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}')
+include ../helpers.mk
+
 NAME-FABRIC := fabric-$(CUST)-$(RAND)
 
-include ../output.mk
 
 wsa-fabric:
 	$(eval WAITERSACHECK-FABRIC=$(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))

@@ -1,11 +1,8 @@
-SHELL := /bin/bash
-YQCMD := docker run -i docker.greymatter.io/internal/yq:2.4.1
-CUST := $(shell cat ../global.yaml | $(YQCMD) -r '.global.release.customer' )
-RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}')
-NAME-SPIRE := spire-$(CUST)-$(RAND)
-CHART-SPIRE := .
+include ../helpers.mk
 
-include ../output.mk
+NAME-SPIRE-AGENT := spire-agent-$(CUST)-$(RAND)
+NAME-SPIRE-SERVER := spire-server-$(CUST)-$(RAND)
+
 
 wsa-spire:
 	$(eval WAITERSACHECK-SPIRE=$(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
@@ -15,16 +12,16 @@ envirionemt-check:
 
 .PHONY: server
 server: wsa-spire
-	helm install $(NAME-SPIRE)-server server $(WAITERSACHECK-SPIRE) -f ../global.yaml
+	helm install $(NAME-SPIRE-SERVER) server $(WAITERSACHECK-SPIRE) -f ../global.yaml
 
 .PHONY: agent
 agent: wsa-spire envirionemt-check
 	@if [ "$(ENVIRONMENT)" == "openshift" ]; then \
-		helm install $(NAME-SPIRE)-agent agent $(WAITERSACHECK-SPIRE) -f ../global.yaml; \
+		helm install $(NAME-SPIRE-AGENT) agent $(WAITERSACHECK-SPIRE) -f ../global.yaml; \
         oc adm policy add-scc-to-user hostaccess system:serviceaccount:spire:agent;\
 		oc adm policy add-scc-to-user privileged system:serviceaccount:spire:agent;\
 	else \
-		helm install $(NAME-SPIRE)-agent agent $(WAITERSACHECK-SPIRE) -f ../global.yaml; \
+		helm install $(NAME-SPIRE-AGENT) agent $(WAITERSACHECK-SPIRE) -f ../global.yaml; \
     fi
 
 clean-spire:
@@ -36,7 +33,8 @@ package-spire: clean-spire
 
 template-spire: package-spire $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template $(NAME-SPIRE) . $(WAITERSACHECK-SPIRE)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SPIRE)$(BN).yaml
+	helm template $(NAME-SPIRE-AGENT) agent $(WAITERSACHECK-SPIRE)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SPIRE-AGENT)$(BN).yaml
+	helm template $(NAME-SPIRE-SERVER) agent $(WAITERSACHECK-SPIRE)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SPIRE-SERVER)$(BN).yaml
 
 .PHONY: spire
 spire: package-spire wsa-spire
@@ -44,8 +42,8 @@ spire: package-spire wsa-spire
 
 .PHONY: remove-spire
 remove-spire:
-	helm uninstall $(shell helm ls | grep agent | awk '{print $$1}')
-	helm uninstall $(shell helm ls | grep server | awk '{print $$1}')
+	helm uninstall $(NAME-SPIRE-AGENT)
+	helm uninstall $(NAME-SPIRE-SERVER)
 
 .PHONY: custom-ca
 custom-ca:

@@ -1,7 +1,6 @@
 SHELL := /bin/bash
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
-include output.mk
 # `make credentials` to build out credentials with user input
 # `make secrets` deploys the credentials
 

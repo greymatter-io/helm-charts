@@ -9,3 +9,11 @@ $(BUILD_NUMBER_FILE):
 OUTPUT_PATH=./logs
 
 BN=$$(cat $(BUILD_NUMBER_FILE))
+
+SHELL := /bin/bash
+
+# These are used for the helm release name
+YQCMD := docker run -i docker.greymatter.io/internal/yq:2.4.1
+CUST := $(shell cat ../global.yaml | $(YQCMD) -r '.global.release.customer' )
+RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}')
+

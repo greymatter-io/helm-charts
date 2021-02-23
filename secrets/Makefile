@@ -1,13 +1,7 @@
-SHELL := /bin/bash
-YQCMD := docker run -i docker.greymatter.io/internal/yq:2.4.1
-CUST := $(shell cat ../global.yaml | $(YQCMD) -r '.global.release.customer' )
+include ../helpers.mk
+
 NAME-SECRET:=secrets-$(CUST)
 
-include ../output.mk
-
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-pwd_name := $(notdir $(PWD))
 
 .PHONY: credentials
 credentials:
