@@ -1,36 +1,50 @@
 # Deploying Keycloak
 
-## Deploy Buttermilk Sky cluster
+## Setup Grey Matter
 
-See [runbook](https://github.com/greymatter-io/buttermilk-sky/blob/master/docs/content/runbooks/kops_cluster.md)
+### Install Cluster Using Buttermilk Sky
 
-## Add Ingress
+```bash
+bs create-kops-cluster --name $NAME --vpc dev2 --publicSubnets
+```
+
+See [runbook](https://github.com/greymatter-io/buttermilk-sky/blob/master/docs/content/runbooks/kops_cluster.md) for more information
+
+
+### Install helm charts @release-2.3
+
+```bash
+git fetch && git checkout origin/release-2.3
+make secrets
+make install
+```
+
+## Setup Keycloak
+
+### Install Bitnami Chart
+
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install my-release bitnami/keycloak
+```
+
+### Add Users
 
 TODO
 
-## Configure Keycloak
+### Add Edge Client
 
-### Add Realm
-
-	TODO
-
-### Create Users
-
-	TODO
-
-## Setup Grey Matter to Use Keycloak
-
-### Update Edge
-	
-	TODO
+TODO
 
 
-# Enabling in Production
+## Configure Edge
 
-Before you go and run Keycloak in production there are a few more things that you will want to do, including:
+### TLS
 
-- Switch to a production ready database such as PostgreSQL
+TODO
 
-- Configure SSL with your own certificates
+### Listener
 
-- Switch the admin password to a more secure password
+- add in `clientId` and `clientSecret`
+- `provider` and `serviceUrl`
+- port-forwar and update
