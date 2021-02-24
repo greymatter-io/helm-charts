@@ -1,4 +1,4 @@
-SHELL := /bin/bash
+include helpers.mk
 #  This simple makefile provides an easy shortcut for commonly used helm commands
 
 # `make credentials` to build out credentials with user input
@@ -13,7 +13,7 @@ minikube:
 
 k3d:
 	./ci/scripts/k3d.sh
-  K3D=true
+  	K3D=true
 
 reveal-endpoint:
 	./ci/scripts/show-voyager.sh
@@ -45,7 +45,7 @@ check-secrets:
 	fi
 
 install-spire:
-	$(eval IS=$(shell cat global.yaml | grep -A3 'spire:'| grep enabled: | awk '{print $$2}'))
+	$(eval IS=$(shell cat $(HOME)/global.yaml | grep -A3 'spire:'| grep enabled: | awk '{print $$2}'))
 	if [ "$(IS)" = "true" ]; then \
 		(cd spire && make spire); \
 	fi
@@ -60,10 +60,12 @@ install: dev-dep check-secrets install-spire
 	fi
 	sleep 20
 	(cd sense && make sense)
+	(make remove-identity)
 	(make reveal-endpoint)
 
+
 .IGNORE: uninstall
-uninstall:
+uninstall: verify-identity-exists
 	-(cd spire && make remove-spire)
 	-(cd fabric && make remove-fabric)
 	-(cd edge && make remove-edge)

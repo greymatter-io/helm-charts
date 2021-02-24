@@ -7,15 +7,15 @@ NAME-SPIRE-SERVER := spire-server-$(CUST)-$(RAND)
 
 
 server: 
-	helm install $(NAME-SPIRE-SERVER) server $(WSA_CHECK) -f ../global.yaml
+	helm install $(NAME-SPIRE-SERVER) server $(WSA_CHECK) -f $(HOME)/global.yaml
 
 agent:
 	@if [ "$(ENVIRONMENT)" == "openshift" ]; then \
-		helm install $(NAME-SPIRE-AGENT) agent $(WSA_CHECK) -f ../global.yaml; \
+		helm install $(NAME-SPIRE-AGENT) agent $(WSA_CHECK) -f $(HOME)/global.yaml; \
         oc adm policy add-scc-to-user hostaccess system:serviceaccount:spire:agent;\
 		oc adm policy add-scc-to-user privileged system:serviceaccount:spire:agent;\
 	else \
-		helm install $(NAME-SPIRE-AGENT) agent $(WSA_CHECK) -f ../global.yaml; \
+		helm install $(NAME-SPIRE-AGENT) agent $(WSA_CHECK) -f $(HOME)/global.yaml; \
     fi
 
 clean-spire:
@@ -27,8 +27,8 @@ package-spire: clean-spire
 
 template-spire: package-spire $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template $(NAME-SPIRE-AGENT) agent $(WSA_CHECK)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SPIRE-AGENT)$(BN).yaml
-	helm template $(NAME-SPIRE-SERVER) agent $(WSA_CHECK)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SPIRE-SERVER)$(BN).yaml
+	helm template $(NAME-SPIRE-AGENT) agent $(WSA_CHECK)  -f $(HOME)/global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SPIRE-AGENT)$(BN).yaml
+	helm template $(NAME-SPIRE-SERVER) agent $(WSA_CHECK)  -f $(HOME)/global.yaml > $(OUTPUT_PATH)/helm-$(NAME-SPIRE-SERVER)$(BN).yaml
 
 spire: package-spire 
 	(make server && sleep 20 && make agent)
@@ -39,3 +39,6 @@ remove-spire:
 
 custom-ca:
 	./../ci/scripts/spire-ca.sh
+
+env:
+	echo $(ENVIRONMENT)
