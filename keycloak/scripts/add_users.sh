@@ -2,15 +2,13 @@
 
 set -ex pipefail
 
-endpoint="https://a85482a33bd744aef8f46295cbc1d589-753440034.us-east-1.elb.amazonaws.com"
-token=$(curl -k --location --request POST \
---header 'Content-Type: application/x-www-form-urlencoded' \
---data-urlencode 'grant_type=client_credentials' \
---data-urlencode 'client_id=admin-cli' \
---data-urlencode "client_secret=$CLIENT_SECRET" \
- "$endpoint/auth/realms/greymatter/protocol/openid-connect/token" \
-| jq -r ".access_token")
-
+endpoint="https://$(kubectl get svc keycloak-backend -o jsonpath="{.status.loadBalancer.ingress[*].hostname}")"
+username="user"
+password=$(kubectl get secret --namespace default keycloak-backend -o jsonpath="{.data.admin-password}" | base64 --decode)
+access_token=$(curl -k\
+	--data "username=$username&password=$password&grant_type=password&client_id=admin-cli" \
+	$endpoint/auth/realms/master/protocol/openid-connect/token \
+	| jq -r ".access_token")
 
 
 # docs: https://www.keycloak.org/docs-api/9.0/rest-api/index.html#_users_resource
@@ -21,7 +19,7 @@ for f in "$path/*.json"; do
 		echo $data
 		curl -k --location --request POST \
 		--header 'Content-Type: application/json' \
-		--header "Authorization: Bearer $token" \
+		--header "Authorization: Bearer $access_token" \
 		--data-raw "$data" \
 		 "$endpoint/auth/admin/realms/greymatter/users"
 	done

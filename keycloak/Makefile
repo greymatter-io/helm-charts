@@ -13,4 +13,5 @@ keycloak:
 .PHONY: remove-keycloak
 remove-keycloak:
 	helm uninstall keycloak-backend
+	kubectl delete pvc data-keycloak-backend-postgresql-0
 	
