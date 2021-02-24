@@ -34,7 +34,7 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.5.1
+    version: 1.6.0-dev
   # To use an external redis or not
   external_redis:
     disabled: true
@@ -339,7 +339,7 @@ services:
     capability: 'Mesh'
     documentation: '/services/control-api/latest/'
     owner: 'Decipher'
-    version: '1.5.4'
+    version: '1.6.0-dev'
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'services/control-api/latest/'
     apiSpecEndpoint: '/services/control-api/latest/'
@@ -372,7 +372,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.5.1'
+    version: '1.6.0-dev'
     ownerURL: "https://greymatter.io"
     apiEndpoint: ''
     apiSpecEndpoint: ''

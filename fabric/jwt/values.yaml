@@ -26,7 +26,7 @@ global:
     port: 8500
     edge_port: 10808
   sidecar:
-    version: 1.5.1
+    version: 1.6.0-dev
   release:
     # release.production: true will increase all (except control-api) replicas to the default_replicas.  Otherwise the default for each chart will be used
     production: false

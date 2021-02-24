@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 1.5.4
+appVersion: 1.6.0-dev
 description: Deploys the Grey Matter 2.0 control-api mesh-wide configuration API
 name: control-api
 version: 3.0.13
