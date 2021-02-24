@@ -126,3 +126,11 @@ remove-observables:
 .PHONY: spire-custom-ca
 spire-custom-ca:
 	cd spire && make custom-ca
+
+.PHONY: keycloak
+keycloak:
+	cd keycloak && make keycloak
+
+.PHONY: remove-keycloak
+remove-keycloak:
+	cd keycloak && make remove-keycloak
