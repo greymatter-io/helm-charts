@@ -14,14 +14,16 @@ token=$(curl -k --location --request POST \
 
 
 # docs: https://www.keycloak.org/docs-api/9.0/rest-api/index.html#_users_resource
-path="$(pwd)/temp"
+path="$(pwd)/users"
 for f in "$path/*.json"; do
-	data=$(cat $f)
-	echo $data
-	curl -k --location --request POST \
-	--header 'Content-Type: application/json' \
-	--header "Authorization: Bearer $token" \
-	--data-raw "$data" \
-	 "$endpoint/auth/admin/realms/greymatter/users"
+	for file in $f; do
+		data=$(cat $file)
+		echo $data
+		curl -k --location --request POST \
+		--header 'Content-Type: application/json' \
+		--header "Authorization: Bearer $token" \
+		--data-raw "$data" \
+		 "$endpoint/auth/admin/realms/greymatter/users"
+	done
 done
 
