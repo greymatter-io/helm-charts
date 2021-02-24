@@ -24,8 +24,13 @@ make install
 ### Install Bitnami Chart
 
 ```bash
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install my-release bitnami/keycloak
+helm install keycloak bitnami/keycloak
+```
+
+Once installed, get the username and password for the keycloak admin:
+```bash
+echo Username: user
+echo Password: $(kubectl get secret --namespace default keycloak -o jsonpath="{.data.admin-password}" | base64 --decode)
 ```
 
 ### Add Users
