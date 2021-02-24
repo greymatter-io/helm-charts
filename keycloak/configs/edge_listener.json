@@ -38,7 +38,7 @@
         "location": "cookie",
         "key": "access_token"
       },
-      "provider": "http://a85482a33bd744aef8f46295cbc1d589-753440034.us-east-1.elb.amazonaws.com:80/auth/realms/greymatter",
+      "provider": "{{ PROVIDER }}",
       "enforce": false
     },
     "gm_oidc-authentication": {
@@ -48,15 +48,15 @@
         "cookieOptions": {
           "httpOnly": true,
           "maxAge": "3h",
-          "domain": "aed3ca76f5d1c4a13a8e5fd3cf616103-1465883508.us-east-1.elb.amazonaws.com",
+          "domain": "{{ DOMAIN }}",
           "path": "/"
         }
       },
-      "serviceUrl": "https://aed3ca76f5d1c4a13a8e5fd3cf616103-1465883508.us-east-1.elb.amazonaws.com:10808",
+      "serviceUrl": "{{ SERVICE_URL }}",
       "callbackPath": "/oauth",
-      "provider": "http://a85482a33bd744aef8f46295cbc1d589-753440034.us-east-1.elb.amazonaws.com:80/auth/realms/greymatter",
+      "provider": "{{ PROVIDER }}",
       "clientId": "edge",
-      "clientSecret": "6580ee87-9c6c-4ff0-b7eb-a6dd2819d836",
+      "clientSecret": "{{ CLIENT_SECRET }}",
       "additionalScopes": [
         "profile",
         "email",
@@ -75,7 +75,7 @@
               "cookieOptions": {
                 "httpOnly": true,
                 "maxAge": "3h",
-                "domain": "aed3ca76f5d1c4a13a8e5fd3cf616103-1465883508.us-east-1.elb.amazonaws.com",
+                "domain": "{{ DOMAIN }}",
                 "path": "/"
               }
             }
