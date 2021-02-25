@@ -6,7 +6,10 @@ YQCMD := docker run -i docker.greymatter.io/internal/yq:2.4.1
 CUST := $(shell cat $(HOME)/global.yaml | $(YQCMD) -r '.global.release.customer' )
 RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}' 2> /dev/null )
 
-
+# Colors
+ccred := $(tput setaf 255)
+ccyellow := $(tput setaf 225)
+ccend := $(tput setaf 000)
 
 # Service account creation is set to true by default and this automates the disableing of these in makefiles
 WSA_CHECK := $(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}')
@@ -40,7 +43,10 @@ env:
 	@echo "Environment: $(ENVIRONMENT)"
 
 verify-identity-exists:
-	@kubectl get configmap greymatter-mesh-identity-$(CUST) || (echo "The mesh identity [greymatter-mesh-identity-$(CUST)] does not exist.  You will need to run \"make restore-identity\" to resore it before uninstalling the mesh." && exit 20)
+	@kubectl get configmap greymatter-mesh-identity-$(CUST) || (echo -e "The mesh identity [greymatter-mesh-identity-$(CUST)] does not exist.\nRun $$(ccyellow)\"make restore-identity\"$$(ccend) to resore it before uninstalling the mesh." && exit 20)
+
+test:
+	(echo -e "The mesh identity [greymatter-mesh-identity-$(CUST)] does not exist.\nRun $$(ccyellow)\"make restore-identity\"$$(ccend) to resore it before uninstalling the mesh." && exit 20)
 
 remove-identity:
 	kubectl delete configmap greymatter-mesh-identity-$(CUST)
