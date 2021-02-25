@@ -137,7 +137,9 @@ jobs:
           echo "$KUBECONFIG"
 
       - name: Make secrets
-        run: make secrets
+        run: |
+          export KUBECONFIG=$(k3d kubeconfig write greymatter)
+          make secrets
 
       - name: Run tests
         run: |
