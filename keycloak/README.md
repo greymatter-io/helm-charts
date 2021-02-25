@@ -66,3 +66,34 @@ Run the script
 (cd keycloak && ./scripts/add_users.sh)
 ```
 Now in the "Users" tab on the left side of the page you should see a table of users. Each user is initialized with the password "password123"
+
+## Setup Grey Matter
+
+
+Port forward control-api to your machine. We do this because we don't want to be going through the edge as we are making changes to it:
+
+```bash
+kubectl port-forward control-api-0 5555 &
+```
+Set the following greymatter config
+```bash
+GREYMATTER_API_HOST=localhost:5555
+GREYMATTER_API_INSECURE=true
+GREYMATTER_API_KEY=<redacted>
+GREYMATTER_API_PREFIX=
+```
+
+No go to clients -> edge -> credentials in the keycloak UI and click `regenerate secret`
+
+[img](images/regernate_secret.png)
+
+Run the configure-edge script with that secret:
+
+```bash
+export CLIENT_SECRET=xxxxxxx
+(cd keycloak && ./scripts/configure_edge.sh)
+```
+
+TODO:
+	- add valid redirect URL
+	- enable http: Realm settings => login -> require ssl: `none`
