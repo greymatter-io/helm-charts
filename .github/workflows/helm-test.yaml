@@ -134,6 +134,7 @@ jobs:
       - name: Check k8s connections
         run: |
           kubectl get nodes
+          echo "$KUBECONFIG"
 
       - name: Make secrets
         run: make secrets
