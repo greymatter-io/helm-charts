@@ -1,1 +1,5 @@
+Makefile
+configure.md
+logs
+build-number.txt
 *.bak

@@ -1,5 +1,4 @@
-chart-dirs:
-  - data
+charts:
   - fabric
   - sense
   - spire

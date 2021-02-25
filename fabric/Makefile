@@ -1,27 +1,21 @@
-SHELL := /bin/bash
-NAME-FABRIC:=fabric
-CHART-FABRIC := .
+include ../helpers.mk
 
-include ../output.mk
+NAME-FABRIC := fabric-$(CUST)-$(RAND)
 
-wsa-fabric:
-	$(eval WAITERSACHECK-FABRIC=$(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
 
-.PHONY: control
-control: wsa-fabric
-	helm install $(NAME-FABRIC) control $(WAITERSACHECK-FABRIC) -f ../global.yaml
+.PHONY: control control-api jwt jwt-gov fabric upgrade-fabric remove-fabric
 
-.PHONY: control-api
-control-api: wsa-fabric
-	helm install control-api-$(NAME-FABRIC) control-api $(WAITERSACHECK-FABRIC) -f ../global.yaml
+control:
+	helm install $(NAME-FABRIC) control $(WSA_CHECK) -f $(HOME)/global.yaml
 
-.PHONY: jwt
+control-api:
+	helm install control-api-$(NAME-FABRIC) control-api $(WSA_CHECK) -f $(HOME)/global.yaml
+
 jwt: wsa-data
-	helm install jwt-$(NAME-FABRIC) jwt $(WAITERSACHECK-FABRIC) -f ../global.yaml
+	helm install jwt-$(NAME-FABRIC) jwt $(WSA_CHECK) -f $(HOME)/global.yaml
 
-.PHONY: jwt-gov
 jwt-gov: wsa-data
-	helm install $(NAME-FABRIC) jwt-gov $(WAITERSACHECK-FABRIC) -f ../global.yaml
+	helm install $(NAME-FABRIC) jwt-gov $(WSA_CHECK) -f $(HOME)/global.yaml
 
 clean-fabric:
 	rm -f ./charts/*
@@ -32,17 +26,14 @@ package-fabric: clean-fabric
 
 template-fabric: package-fabric $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-FABRIC)$(BN).yaml
+	helm template $(NAME-FABRIC) . $(WSA_CHECK)  -f $(HOME)/global.yaml > $(OUTPUT_PATH)/helm-$(NAME-FABRIC)$(BN).yaml
 
-.PHONY: fabric
-fabric: package-fabric wsa-fabric
-	helm install $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC) -f ../global.yaml
+fabric: package-fabric
+	helm install $(NAME-FABRIC) . $(WSA_CHECK) -f $(HOME)/global.yaml
 
-.PHONY: upgrade-fabric
-upgrade-fabric: package-fabric wsa-fabric
-	helm upgrade $(NAME-FABRIC) . $(WAITERSACHECK-FABRIC) -f ../global.yaml --no-hooks
+upgrade-fabric: package-fabric
+	helm upgrade $(NAME-FABRIC) . $(WSA_CHECK) -f $(HOME)/global.yaml --no-hooks
 
 
-.PHONY: remove-fabric
 remove-fabric:
 	helm uninstall $(NAME-FABRIC)

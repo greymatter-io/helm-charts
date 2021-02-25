@@ -1,33 +1,20 @@
-SHELL := /bin/bash
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-NAME-EDGE := edge
+include ../helpers.mk
 
-pwd_name := $(notdir $(PWD))
+NAME-EDGE := edge-$(CUST)-$(RAND)
 
-include ../output.mk
+.PHONY: edge upgrade-edge clean-edge remove-edge
 
-.PHONY: edge
 edge:
-	if [ "$(pwd_name)" == "edge" ]; then \
-		echo "run in makefile directory"; \
-		helm install $(NAME-EDGE) . -f ../global.yaml; \
-	else \
-		echo "run in helm-charts top directory"; \
-		helm install $(NAME-EDGE) edge -f ../global.yaml; \
-	fi
+	helm install $(NAME-EDGE) . -f ../global.yaml; \
 
-.PHONY: upgrade-edge
 upgrade-edge: package-edge
 	helm upgrade $(NAME-EDGE) . -f ../global.yaml
 
-.PHONY: clean-edge
 clean-edge:
 	rm -f ./charts/*
 
-.PHONY: remove-edge
 remove-edge:
-	helm uninstall edge
+	helm uninstall $(NAME-EDGE)
 	
 template-edge: $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
