@@ -131,11 +131,6 @@ jobs:
           # Log into docker.greymatter.io
           docker login -u $NEXUS_USER -p $NEXUS_PASSWORD docker.greymatter.io
 
-      - name: Check k8s connections
-        run: |
-          kubectl get nodes
-          echo "$KUBECONFIG"
-
       - name: Make secrets
         run: |
           export KUBECONFIG=$(k3d kubeconfig write greymatter)
