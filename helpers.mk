@@ -45,9 +45,11 @@ verify-identity-exists:
 remove-identity:
 	kubectl delete configmap greymatter-mesh-identity-$(CUST)
 
-restore-identity:
+get-secret-release:
 	rm -f temp-secret.yaml
 	helm ls -o yaml | $(YQCMD) '.[] | select (.name | test("secret") )' > temp-secret.yaml
+
+restore-identity: get-secret-release
 	$(unset SECRET_RELEASE_NAME)
 	$(unset SECRET_REVISION)
 	$(eval SECRET_RELEASE_NAME=$(shell cat temp-secret.yaml | $(YQCMD) -r .name ))
