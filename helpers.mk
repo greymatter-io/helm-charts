@@ -7,9 +7,9 @@ CUST := $(shell cat $(HOME)/global.yaml | $(YQCMD) -r '.global.release.customer'
 RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}' 2> /dev/null )
 
 # Colors
-ccred := $(shell tput setaf 255)
-ccyellow := $(shell tput setaf 225)
-ccend := $(shell tput setaf 000)
+ccred := $(shell echo '\033[0;31m')
+ccyellow := $(shell echo '\033[0;33m')
+ccend := $(shell echo '\033[0m')
 
 # Service account creation is set to true by default and this automates the disableing of these in makefiles
 WSA_CHECK := $(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}')
@@ -45,6 +45,7 @@ env:
 verify-identity-exists:
 	@kubectl get configmap greymatter-mesh-identity-$(CUST) || (echo -e "The mesh identity [greymatter-mesh-identity-$(CUST)] does not exist.\nRun $$(ccyellow)\"make restore-identity\"$$(ccend) to resore it before uninstalling the mesh." && exit 20)
 
+.PHONY: test
 test:
 	(echo -e "The mesh identity [greymatter-mesh-identity-$(CUST)] does not exist.\nRun $$(ccyellow)\"make restore-identity\"$$(ccend) to resore it before uninstalling the mesh." && exit 20)
 
