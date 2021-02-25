@@ -3,7 +3,7 @@ SHELL := /bin/bash
 HOME := $(shell git rev-parse --show-toplevel)
 # These are used for the helm release name (to uninstall and install and put inplace the mesh identity configmap)
 YQCMD := docker run -i docker.greymatter.io/internal/yq:2.4.1
-CUST := $(shell cat $(HOME)/global.yaml | $(YQCMD) -r '.global.release.customer' )
+CUST := $(shell cat $(HOME)/global.yaml | $(YQCMD) -r '.global.release.customer' | sed -E "s/[^[:alpha:].-]/-/g" )
 RAND := $(shell kubectl get configmap greymatter-mesh-identity-$(CUST) -o jsonpath='{.data.rand_identifier}' 2> /dev/null )
 
 # Colors

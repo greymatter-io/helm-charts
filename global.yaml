@@ -23,7 +23,7 @@ global:
   
   release:
     # release.production: true will increase all (except control-api) replicas to the default_replicas.  Otherwise the default for each chart will be used
-    customer: greymatter-dev
+    customer: "greymatter-dev"
     production: false
     default_replicas: 3
 
