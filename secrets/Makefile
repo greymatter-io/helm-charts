@@ -1,40 +1,34 @@
-SHELL := /bin/bash
+include ../helpers.mk
 
-include ../output.mk
+NAME-SECRET:=secrets-$(CUST)
 
-mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
-pwd_name := $(notdir $(PWD))
+.PHONY: credentials secrets upgrade-secrets remove-secrets
 
-.PHONY: credentials
 credentials:
-	./../ci/scripts/build-credentials.sh
+	./$(HOME)/ci/scripts/build-credentials.sh
 
 copy-credentials:
-	cp ../credentials.yaml .
+	cp $(HOME)/credentials.yaml .
 
 template-secrets: $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template secrets . --set=global.environment=kubernetes   -f ../credentials.yaml -f ../global.yaml > $(OUTPUT_PATH)/helm-secrets$(BN).yaml
+	helm template $(NAME-SECRET) . --set=global.environment=kubernetes   -f $(HOME)/credentials.yaml -f $(HOME)/global.yaml > $(OUTPUT_PATH)/helm-secrets$(BN).yaml
 
-.PHONY: secrets
 secrets: copy-credentials values-validation
-	helm install secrets . -f credentials.yaml -f ../global.yaml
+	helm install $(NAME-SECRET) . -f credentials.yaml -f $(HOME)/global.yaml
 	rm credentials.yaml
 
-.PHONY: upgrade-secrets
 upgrade-secrets: copy-credentials values-validation
-	helm upgrade secrets . -f credentials.yaml -f ../global.yaml --install 
+	helm upgrade $(NAME-SECRET) . -f credentials.yaml -f $(HOME)/global.yaml --install 
 	rm credentials.yaml
 
-.PHONY: remove-secrets
 remove-secrets:
-	helm uninstall secrets
+	helm uninstall $(NAME-SECRET)
 
 
 values-validation:
 	# Ensure that the rds.enabled is true in secrets and in fabric values files
-	@if [ "$(shell cat values.yaml | grep -A1 rds | grep enabled: | awk '{print $$2}')" == "$(shell cat ../sense/values.yaml | grep -A1 rds | grep enabled: | awk '{print $$2}')" ]; then \
+	if [ "$(shell cat values.yaml | $(YQCMD) -r '.postgres.rds.enabled')" == "$(shell cat $(HOME)/sense/values.yaml | $(YQCMD) -r '.slo.postgres.rds.enabled')" ]; then \
 		echo "rds.enabled in secrets/values.yaml and sense/values.yaml match"; \
 	else \
 		echo "rds.enabled in secrets/values.yaml and sense/values.yaml DO NOT MATCH.  Secrets will not be created"; \
