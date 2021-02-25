@@ -168,6 +168,22 @@ entries:
   edge:
   - apiVersion: v1
     appVersion: 1.5.1
+    created: "2021-02-25T21:44:14.740673017Z"
+    description: A Helm chart to deploy Grey Matter Edge
+    digest: 9cc4393a45c621f8df741c731b005cf5c4c8a28876cc1957c360a891b9faac16
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: edge
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/edge-3.0.4/edge-3.0.4.tgz
+    version: 3.0.4
+  - apiVersion: v1
+    appVersion: 1.5.1
     created: "2021-02-04T21:30:32.335640696Z"
     description: A Helm chart to deploy Grey Matter Edge
     digest: 390caeb80aef9b437e6505fb21eb021e1982edfe0ab82c12cd035e44529b542a
@@ -231,6 +247,39 @@ entries:
     - https://github.com/greymatter-io/helm-charts/releases/download/edge-3.0.0/edge-3.0.0.tgz
     version: 3.0.0
   fabric:
+  - apiVersion: v2
+    appVersion: 1.3.0
+    created: "2021-02-25T21:44:15.298532402Z"
+    dependencies:
+    - name: control-api
+      repository: file://./control-api
+      version: 3.0.14
+    - name: control
+      repository: file://./control
+      version: 3.0.3
+    - name: jwt
+      repository: file://./jwt
+      version: 3.0.2
+    - alias: mesh-redis
+      condition: global.external_redis.disabled
+      name: redis
+      repository: file://./redis
+      version: 1.0.3
+    description: A Helm chart to deploy Grey Matter Fabric
+    digest: c63f0bff277e0e11789e7d2b88e4c4494455bcd9d86053c90f306400f37d6ecb
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - fabric
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: fabric
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/fabric-3.0.10/fabric-3.0.10.tgz
+    version: 3.0.10
   - apiVersion: v2
     appVersion: 1.3.0
     created: "2021-02-04T21:30:32.452537845Z"
@@ -675,6 +724,23 @@ entries:
     version: 1.4.0
   secrets:
   - apiVersion: v1
+    created: "2021-02-25T21:44:15.414051Z"
+    description: A Helm chart to deploy secrets
+    digest: b4b762394ed9a50208bd3923da90ddc3df47a6e81e12ec8f5eca728025f8ec22
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - sense
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: secrets
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/secrets-2.3.1/secrets-2.3.1.tgz
+    version: 2.3.1
+  - apiVersion: v1
     created: "2020-12-21T19:05:24.674522082Z"
     description: A Helm chart to deploy secrets
     digest: 1c591659490accaaa8636999662d4c8e549d36f74d338ced25856421816454d4
@@ -709,6 +775,34 @@ entries:
     - https://github.com/greymatter-io/helm-charts/releases/download/secrets-2.2.0/secrets-2.2.0.tgz
     version: 2.2.0
   sense:
+  - apiVersion: v2
+    appVersion: 1.3.0
+    created: "2021-02-25T21:44:15.538155828Z"
+    dependencies:
+    - name: catalog
+      repository: file://./catalog
+      version: 3.0.10
+    - name: dashboard
+      repository: file://./dashboard
+      version: 3.0.6
+    - name: slo
+      repository: file://./slo
+      version: 3.0.2
+    description: A Helm chart to deploy Grey Matter Sense
+    digest: 8b497f2d231a344aa7c5332d5f446249af33fe302edcfeee36ff8b21c1ec1ff2
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - sense
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: sense
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/sense-3.0.8/sense-3.0.8.tgz
+    version: 3.0.8
   - apiVersion: v2
     appVersion: 1.3.0
     created: "2021-02-04T21:30:32.555488424Z"
@@ -982,6 +1076,32 @@ entries:
     - https://github.com/greymatter-io/helm-charts/releases/download/server-2.2.5/server-2.2.5.tgz
     version: 2.2.5
   spire:
+  - apiVersion: v2
+    appVersion: 1.2.0
+    created: "2021-02-25T21:44:15.659721948Z"
+    dependencies:
+    - name: agent
+      repository: file://./agent
+      version: 2.2.5
+    - name: server
+      repository: file://./server
+      version: 2.2.5
+    description: A Helm chart to deploy Spire
+    digest: 1737840dc2582f2c52ce227eb90efa290ed744d21d2d2fb331f5a51bac6e0652
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - spire
+    - spiffe
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: spire
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/spire-2.2.5/spire-2.2.5.tgz
+    version: 2.2.5
   - apiVersion: v2
     appVersion: 1.2.0
     created: "2020-12-14T19:45:05.633802916Z"
