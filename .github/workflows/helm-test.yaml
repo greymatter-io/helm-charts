@@ -131,6 +131,10 @@ jobs:
           # Log into docker.greymatter.io
           docker login -u $NEXUS_USER -p $NEXUS_PASSWORD docker.greymatter.io
 
+      - name: Check k8s connections
+        run: |
+          kubectl get nodes
+
       - name: Make secrets
         run: make secrets
 
