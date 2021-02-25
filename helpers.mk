@@ -47,7 +47,7 @@ verify-identity-exists:
 
 .PHONY: test
 test:
-	(echo -e "The mesh identity [greymatter-mesh-identity-$(CUST)] does not exist.\nRun $$(ccyellow)\"make restore-identity\"$$(ccend) to resore it before uninstalling the mesh." && exit 20)
+	(echo -e "The mesh identity [greymatter-mesh-identity-$(CUST)] does not exist.\nRun $(ccyellow)\"make restore-identity\"$(ccend) to resore it before uninstalling the mesh." && exit 20)
 
 remove-identity:
 	kubectl delete configmap greymatter-mesh-identity-$(CUST)
