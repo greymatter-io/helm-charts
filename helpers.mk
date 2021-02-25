@@ -43,7 +43,7 @@ env:
 	@echo "Environment: $(ENVIRONMENT)"
 
 verify-identity-exists:
-	@kubectl get configmap greymatter-mesh-identity-$(CUST) || (echo -e "The mesh identity [greymatter-mesh-identity-$(CUST)] does not exist.\nRun $$(ccyellow)\"make restore-identity\"$$(ccend) to resore it before uninstalling the mesh." && exit 20)
+	@kubectl get configmap greymatter-mesh-identity-$(CUST) || (echo -e "\nThe mesh identity [greymatter-mesh-identity-$(CUST)] does not exist.\nRun $$(ccyellow)\"make restore-identity\"$$(ccend) to resore it before uninstalling the mesh.\n" && exit 20)
 
 .PHONY: test
 test:
