@@ -19,13 +19,17 @@ k3d:
 reveal-endpoint:
 	./ci/scripts/show-voyager.sh
 
-.IGNORE= destroy
-destroy:
+.IGNORE=destroy-k3d
+destroy-k3d:
 	-(make delete)
-	-minikube delete
 	-k3d cluster delete greymatter
 	-(eval unset KUBECONFIG)
 
+.IGNORE=destroy-minikube
+destroy-minikube:
+	-(make delete)
+	-minikube delete
+	-(eval unset KUBECONFIG)
 
 # Grey Matter Specific targets
 # To target individual sub charts you can go the directory and use the make targets there.
