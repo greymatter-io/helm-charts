@@ -16,11 +16,13 @@ spec:
         deployment: slo
         greymatter: sense
     spec:
-      # Security context for openshift, kubernetes and eks is the same. 
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+      # Security context for openshift, kubernetes and eks is the same.
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
         fsGroup: 2000
+      {{- end }}
       serviceAccountName: {{ .Values.global.waiter.service_account.name }}
       {{- if not .Values.postgres.rds.enabled }}
       initContainers:
@@ -51,7 +53,7 @@ spec:
         - name: service-certs
           mountPath: {{ .Values.slo.secret.mount_point }}
           {{- end }}
-        env:        
+        env:
         {{- include "envvars" (dict "envvar" .Values.slo.envvars "top" $) | indent 10 }}
         # Because of the order of envvars is not guaranteed when templating, we are hardcoding database_uri as the last envvar
         # https://github.com/kubernetes/kubernetes/issues/40373
