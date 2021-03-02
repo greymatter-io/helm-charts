@@ -18,11 +18,13 @@ spec:
         greymatter: sense
     spec:
       serviceAccountName: {{ .Values.prometheus.service_account.name }}
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       # Security context for openshift, kubernetes and eks is the same.
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
         fsGroup: 2000
+      {{- end }}
       containers:
       - name: prometheus
         image: {{ .Values.prometheus.image | quote }}

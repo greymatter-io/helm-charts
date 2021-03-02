@@ -19,11 +19,13 @@ spec:
         deployment: {{ .Values.controlApi.name }}
         greymatter: fabric
     spec:
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       # Security context for openshift, kubernetes and eks is the same.
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
         fsGroup: 2000
+      {{- end }}
       containers:
         - name: {{ .Values.controlApi.name }}
           image: {{ tpl .Values.controlApi.image $ }}
@@ -145,13 +147,13 @@ spec:
       {{- include "sidecar_certs_volumes" . | indent 6 }}
       {{- end }}
 {{ if (lookup "v1" "PersistentVolumeClaim" $.Release.Namespace "control-api-backup-control-api-0") }}
-  volumeClaimTemplates: 
-  - metadata: 
-      name: control-api-backup  
-    spec: 
-      accessModes: 
-        - ReadWriteOnce 
-      resources: 
-        requests: 
+  volumeClaimTemplates:
+  - metadata:
+      name: control-api-backup
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
           storage: {{ .Values.controlApi.pvc.size | default "1Gi" }}
 {{- end }}
