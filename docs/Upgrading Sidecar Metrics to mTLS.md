@@ -762,8 +762,6 @@ spec:
           value: prometheus
         - name: XDS_HOST
           value: control.default.svc
-        - name: XDS_NODE_ID
-          value: default
         - name: XDS_PORT
           value: "50000"
         - name: XDS_ZONE
