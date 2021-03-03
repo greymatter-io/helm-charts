@@ -20,3 +20,7 @@ logs/
 # Ignore test vendor files
 test/vendor
 test/vendor/*
+
+# Local kubernetes
+.kube
+.k3d

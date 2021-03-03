@@ -19,14 +19,14 @@ dependencies:
 
   - name: control
     repository: file://./control
-    version: '3.0.3'
+    version: '3.0.4'
 
   - name: jwt
     repository: file://./jwt
-    version: '3.0.2'
+    version: '3.0.4'
 
   - name: redis
     repository: file://./redis
-    version: '1.0.3'
+    version: '1.0.4'
     condition: global.external_redis.disabled
     alias: mesh-redis
