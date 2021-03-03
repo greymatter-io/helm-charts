@@ -5,10 +5,10 @@ NAME-SECRET:=secrets-$(CUST)
 .PHONY: credentials secrets upgrade-secrets remove-secrets
 
 credentials:
-	./$(HOME)/ci/scripts/build-credentials.sh
+	@$(HOME)/ci/scripts/build-credentials.sh
 
 copy-credentials:
-	cp $(HOME)/credentials.yaml .
+	@cp $(HOME)/credentials.yaml .
 
 template-secrets: $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
@@ -19,7 +19,7 @@ secrets: copy-credentials values-validation
 	rm credentials.yaml
 
 upgrade-secrets: copy-credentials values-validation
-	helm upgrade $(NAME-SECRET) . -f credentials.yaml -f $(HOME)/global.yaml --install 
+	helm upgrade $(NAME-SECRET) . -f credentials.yaml -f $(HOME)/global.yaml --install
 	rm credentials.yaml
 
 remove-secrets:
