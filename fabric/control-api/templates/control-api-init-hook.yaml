@@ -32,7 +32,7 @@ spec:
             - name: NAMESPACE
               value: {{ .Release.Namespace }}
             - name: SERVICE
-              value: {{ .Values.redis.name }}
+              value: {{ .Values.mesh_redis.name }}
         {{- end }}
       containers:
         - image: {{ tpl .Values.bootstrap.image . }}

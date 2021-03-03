@@ -56,7 +56,7 @@ secrets: copy-credentials
 		kubectl delete secret control-certs -n $(NAMESPACE); \
 		kubectl delete secret postgres-credentials -n $(NAMESPACE); \
 		kubectl delete secret mongo-certs -n $(NAMESPACE); \
-		kubectl delete secret redis-password -n $(NAMESPACE); \
+		kubectl delete secret jwt-redis-password -n $(NAMESPACE); \
 		kubectl delete secret controlapi-certs -n $(NAMESPACE); \
 		kubectl delete secret postgres-ssl-certs -n $(NAMESPACE); \
 		kubectl delete secret mongo-password -n $(NAMESPACE); \
