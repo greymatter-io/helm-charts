@@ -1,0 +1,18 @@
+{
+    "zone_key": "zone-default-zone",
+    "proxy_key": "coughka-proxy",
+    "domain_keys": [
+        "coughka-domain",
+        "egress-domain-b0",
+        "egress-domain-b1",
+        "egress-domain-b2"
+    ],
+    "listener_keys": [
+        "coughka-listener",
+        "egress-listener-b0",
+        "egress-listener-b1",
+        "egress-listener-b2"
+    ],
+    "name": "coughka",
+    "listeners": null
+}

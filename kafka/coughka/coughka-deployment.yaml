@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: coughka
+    greymatter.io/control: coughka
+  name: coughka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coughka
+      greymatter.io/control: coughka
+  template:
+    metadata:
+      labels:
+        app: coughka
+        greymatter.io/control: coughka
+    spec:
+      containers:
+        - name: coughka
+          image: roostergator/coughka:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          args:
+            - -b127.0.0.1:9092
+            - -b127.0.0.1:9093
+            - -b127.0.0.1:9094
+            - -tcoughka-test-topic
+        - name: sidecar
+          image: "docker.greymatter.io/internal/gm-proxy:tcp-obs"
+          imagePullPolicy: Always
+          ports:
+            - name: metrics
+              containerPort: 8081
+            - name: proxy
+              containerPort: 10808
+          env:
+            - name: ENVOY_ADMIN_LOG_PATH
+              value: "/dev/stdout"
+            - name: PROXY_DYNAMIC
+              value: "true"
+            - name: SPIRE_PATH
+              value: "/run/spire/socket/agent.sock"
+            - name: XDS_CLUSTER
+              value: "coughka"
+            - name: XDS_HOST
+              value: "control.default.svc"
+            - name: XDS_NODE_ID
+              value: "default"
+            - name: XDS_PORT
+              value: "50000"
+            - name: XDS_ZONE
+              value: "zone-default-zone"
+          volumeMounts:
+            - name: spire-socket
+              mountPath: /run/spire/socket
+              readOnly: false
+      imagePullSecrets:
+        - name: docker.secret
+      volumes:
+        - name: spire-socket
+          hostPath:
+            path: /run/spire/socket
+            type: DirectoryOrCreate

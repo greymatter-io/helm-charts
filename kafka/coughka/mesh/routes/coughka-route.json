@@ -1,0 +1,8 @@
+{
+    "zone_key": "zone-default-zone",
+    "domain_key": "coughka-domain",
+    "route_key": "coughka-route",
+    "path": "/",
+    "prefix_rewrite": "",
+    "shared_rules_key": "coughka-rules"
+}

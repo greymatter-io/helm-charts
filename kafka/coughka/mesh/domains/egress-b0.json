@@ -1,0 +1,7 @@
+{
+    "zone_key": "zone-default-zone",
+    "domain_key": "egress-domain-b0",
+    "name": "*",
+    "port": 9092,
+    "force_https": false
+}

@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "coughka-cluster",
+    "name": "service",
+    "instances": [
+        {
+            "host": "localhost",
+            "port": 8080
+        }
+    ],
+    "require_tls": false
+}
