@@ -38,114 +38,37 @@ spec:
       app.kubernetes.io/instance: kafka-observables
       app.kubernetes.io/component: kafka
 ---
-# Source: kafka/templates/scripts-configmap.yaml
-#apiVersion: v1
-#kind: ConfigMap
-#metadata:
-#  name: kafka-observables-scripts
-#  labels:
-#    app.kubernetes.io/name: kafka
-#    helm.sh/chart: kafka-10.3.3
-#    app.kubernetes.io/instance: kafka-observables
-#    app.kubernetes.io/managed-by: Helm
-#data:
-#  setup.sh: |-
-#    #!/bin/bash
-#
-#    ID="${MY_POD_NAME#"kafka-observables-"}"
-#    export KAFKA_CFG_BROKER_ID="$ID"
-#
-#    exec /entrypoint.sh /run.sh
-#---
-# Source: kafka/charts/zookeeper/templates/svc-headless.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kafka-observables-zookeeper-headless
-  namespace: kafka
-  labels:
-    app.kubernetes.io/name: zookeeper
-    helm.sh/chart: zookeeper-5.14.3
-    app.kubernetes.io/instance: kafka-observables
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/component: zookeeper
-spec:
-  type: ClusterIP
-  clusterIP: None
-  publishNotReadyAddresses: true
-  ports:
-
-    - name: tcp-client
-      port: 2181
-      targetPort: client
-
-
-    - name: follower
-      port: 2888
-      targetPort: follower
-    - name: tcp-election
-      port: 3888
-      targetPort: election
-  selector:
-    app.kubernetes.io/name: zookeeper
-    app.kubernetes.io/instance: kafka-observables
-    app.kubernetes.io/component: zookeeper
----
 # Source: kafka/charts/zookeeper/templates/svc.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: kafka-observables-zookeeper
-  namespace: kafka
-  labels:
-    app.kubernetes.io/name: zookeeper
-    helm.sh/chart: zookeeper-5.14.3
-    app.kubernetes.io/instance: kafka-observables
-    app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/component: zookeeper
-spec:
-  type: ClusterIP
-  ports:
-
-    - name: tcp-client
-      port: 2181
-      targetPort: client
-
-
-    - name: follower
-      port: 2888
-      targetPort: follower
-    - name: tcp-election
-      port: 3888
-      targetPort: election
-  selector:
-    app.kubernetes.io/name: zookeeper
-    app.kubernetes.io/instance: kafka-observables
-    app.kubernetes.io/component: zookeeper
----
-# Source: kafka/templates/svc-headless.yaml
 #apiVersion: v1
 #kind: Service
 #metadata:
-#  name: kafka-observables-headless
+#  name: kafka-observables-zookeeper
+#  namespace: kafka
 #  labels:
-#    app.kubernetes.io/name: kafka
-#    helm.sh/chart: kafka-10.3.3
+#    app.kubernetes.io/name: zookeeper
+#    helm.sh/chart: zookeeper-5.14.3
 #    app.kubernetes.io/instance: kafka-observables
 #    app.kubernetes.io/managed-by: Helm
-#    app.kubernetes.io/component: kafka
+#    app.kubernetes.io/component: zookeeper
 #spec:
 #  type: ClusterIP
-#  clusterIP: None
 #  ports:
-#    - name: tcp-kafka
-#      port: 9092
-#      protocol: TCP
-#      targetPort: kafka
+#
+#    - name: tcp-client
+#      port: 2181
+#      targetPort: client
+#
+#
+#    - name: follower
+#      port: 2888
+#      targetPort: follower
+#    - name: tcp-election
+#      port: 3888
+#      targetPort: election
 #  selector:
-#    app.kubernetes.io/name: kafka
+#    app.kubernetes.io/name: zookeeper
 #    app.kubernetes.io/instance: kafka-observables
-#    app.kubernetes.io/component: kafka
+#    app.kubernetes.io/component: zookeeper
 #---
 # Source: kafka/templates/svc.yaml
 apiVersion: v1
@@ -171,39 +94,41 @@ spec:
     app.kubernetes.io/instance: kafka-observables
     app.kubernetes.io/component: kafka
 ---
+# zk sts 0
 # Source: kafka/charts/zookeeper/templates/statefulset.yaml
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: kafka-observables-zookeeper
+  name: kafka-observables-zookeeper-0
   namespace: kafka
   labels:
-    app.kubernetes.io/name: zookeeper
+    app.kubernetes.io/name: zookeeper-0
     helm.sh/chart: zookeeper-5.14.3
     app.kubernetes.io/instance: kafka-observables
     app.kubernetes.io/managed-by: Helm
-    app.kubernetes.io/component: zookeeper
+    app.kubernetes.io/component: zookeeper-0
     role: zookeeper
+    greymatter.io/control: zookeeper-0
 spec:
-  serviceName: kafka-observables-zookeeper-headless
-  replicas: 3
+  serviceName: kafka-observables-zookeeper-0
+  replicas: 1
   podManagementPolicy: Parallel
   updateStrategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app.kubernetes.io/name: zookeeper
+      app.kubernetes.io/name: zookeeper-0
       app.kubernetes.io/instance: kafka-observables
-      app.kubernetes.io/component: zookeeper
+      app.kubernetes.io/component: zookeeper-0
   template:
     metadata:
       name: kafka-observables-zookeeper
       labels:
-        app.kubernetes.io/name: zookeeper
+        app.kubernetes.io/name: zookeeper-0
         helm.sh/chart: zookeeper-5.14.3
         app.kubernetes.io/instance: kafka-observables
         app.kubernetes.io/managed-by: Helm
-        app.kubernetes.io/component: zookeeper
+        app.kubernetes.io/component: zookeeper-0
     spec:
       securityContext:
         fsGroup: 1001
@@ -219,6 +144,50 @@ spec:
               mountPath: /bitnami/zookeeper
 
       containers:
+        - name: sidecar
+          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
+          imagePullPolicy: "Always"
+          args:
+            - -c
+            - /etc/greymatter/config.yaml
+          command:
+            - /app/gm-proxy
+          env:
+            - name: PROXY_DYNAMIC
+              value: "true"
+            - name: SPIRE_PATH
+              value: "/run/spire/socket/agent.sock"
+            - name: XDS_CLUSTER
+              value: "zookeeper-0"
+            - name: XDS_HOST
+              value: "control.default.svc"
+            - name: XDS_PORT
+              value: "50000"
+            - name: XDS_ZONE
+              value: "zone-default-zone"
+          ports:
+          - containerPort: 2180
+            protocol: TCP
+            name: proxy
+          - containerPort: 2889
+            protocol: TCP
+            name: follower
+          - containerPort: 3889
+            protocol: TCP
+            name: election
+          - containerPort: 8081
+            protocol: TCP
+            name: metrics
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: spire-socket
+              mountPath: /run/spire/socket
+              readOnly: false
+            - name: sidecar-config
+              mountPath: /etc/greymatter
+              readOnly: true
         - name: zookeeper
           image: docker.io/bitnami/zookeeper:3.6.1-debian-10-r7
           imagePullPolicy: "IfNotPresent"
@@ -253,21 +222,219 @@ spec:
               value: "60"
             - name: ZOO_4LW_COMMANDS_WHITELIST
               value: "srvr, mntr"
-            - name: ZOO_LISTEN_ALLIPS_ENABLED
-              value: "no"
             - name: ZOO_AUTOPURGE_INTERVAL
               value: "0"
             - name: ZOO_AUTOPURGE_RETAIN_COUNT
               value: "3"
             - name: ZOO_SERVERS
-              value: kafka-observables-zookeeper-0.kafka-observables-zookeeper-headless.kafka.svc.cluster.local:2888:3888 kafka-observables-zookeeper-1.kafka-observables-zookeeper-headless.kafka.svc.cluster.local:2888:3888 kafka-observables-zookeeper-2.kafka-observables-zookeeper-headless.kafka.svc.cluster.local:2888:3888
+              value: 0.0.0.0:2888:3888 127.0.0.1:2891:3891 127.0.0.1:2892:3892
             - name: ZOO_ENABLE_AUTH
               value: "no"
             - name: ZOO_HEAP_SIZE
               value: "1024"
             - name: ZOO_LOG_LEVEL
-              value: "ERROR"
+              value: "DEBUG"
             - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"
+            - name: ZOO_LISTEN_ALLIPS_ENABLED
+              value: "yes"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+          ports:
+
+            - name: client
+              containerPort: 2181
+
+          livenessProbe:
+            tcpSocket:
+
+              port: client
+
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            tcpSocket:
+
+              port: client
+
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/zookeeper
+      imagePullSecrets:
+        - name: docker.secret
+      volumes:
+        - name: sidecar-config
+          configMap:
+            name: zk0-sidecar
+        - name: spire-socket
+          hostPath:
+            path: /run/spire/socket
+            type: DirectoryOrCreate
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        annotations:
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
+---
+# zk sts 1
+# Source: kafka/charts/zookeeper/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka-observables-zookeeper-1
+  namespace: kafka
+  labels:
+    app.kubernetes.io/name: zookeeper-1
+    helm.sh/chart: zookeeper-5.14.3
+    app.kubernetes.io/instance: kafka-observables
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: zookeeper-1
+    role: zookeeper
+    greymatter.io/control: zookeeper-1
+spec:
+  serviceName: kafka-observables-zookeeper-1
+  replicas: 1
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: zookeeper-1
+      app.kubernetes.io/instance: kafka-observables
+      app.kubernetes.io/component: zookeeper-1
+  template:
+    metadata:
+      name: kafka-observables-zookeeper
+      labels:
+        app.kubernetes.io/name: zookeeper-1
+        helm.sh/chart: zookeeper-5.14.3
+        app.kubernetes.io/instance: kafka-observables
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: zookeeper-1
+    spec:
+      securityContext:
+        fsGroup: 1001
+      initContainers:
+        - name: volume-permissions
+          image: docker.io/bitnami/minideb:buster
+          imagePullPolicy: "Always"
+          command: ["chown", "-R", "1001:1001", "/bitnami/zookeeper"]
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/zookeeper
+
+      containers:
+        - name: sidecar
+          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
+          imagePullPolicy: "Always"
+          args:
+            - -c
+            - /etc/greymatter/config.yaml
+          command:
+            - /app/gm-proxy
+          env:
+            - name: PROXY_DYNAMIC
+              value: "true"
+            - name: SPIRE_PATH
+              value: "/run/spire/socket/agent.sock"
+            - name: XDS_CLUSTER
+              value: "zookeeper-1"
+            - name: XDS_HOST
+              value: "control.default.svc"
+            - name: XDS_PORT
+              value: "50000"
+            - name: XDS_ZONE
+              value: "zone-default-zone"
+          ports:
+          - containerPort: 2180
+            protocol: TCP
+            name: proxy
+          - containerPort: 2889
+            protocol: TCP
+            name: follower
+          - containerPort: 3889
+            protocol: TCP
+            name: election
+          - containerPort: 8081
+            protocol: TCP
+            name: metrics
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: spire-socket
+              mountPath: /run/spire/socket
+              readOnly: false
+            - name: sidecar-config
+              mountPath: /etc/greymatter
+              readOnly: true
+        - name: zookeeper
+          image: docker.io/bitnami/zookeeper:3.6.1-debian-10-r7
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - bash
+            - -ec
+            - |
+                # Execute entrypoint as usual after obtaining ZOO_SERVER_ID based on POD hostname
+                HOSTNAME=`hostname -s`
+                if [[ $HOSTNAME =~ (.*)-([0-9]+)$ ]]; then
+                  ORD=${BASH_REMATCH[2]}
+                  export ZOO_SERVER_ID=$((ORD+1))
+                else
+                  echo "Failed to get index from hostname $HOST"
+                  exit 1
+                fi
+                exec /entrypoint.sh /run.sh
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          env:
+            - name: ZOO_PORT_NUMBER
+              value: "2181"
+            - name: ZOO_TICK_TIME
+              value: "2000"
+            - name: ZOO_INIT_LIMIT
+              value: "10"
+            - name: ZOO_SYNC_LIMIT
+              value: "5"
+            - name: ZOO_MAX_CLIENT_CNXNS
+              value: "60"
+            - name: ZOO_4LW_COMMANDS_WHITELIST
+              value: "srvr, mntr"
+            - name: ZOO_AUTOPURGE_INTERVAL
+              value: "0"
+            - name: ZOO_AUTOPURGE_RETAIN_COUNT
+              value: "3"
+            - name: ZOO_SERVERS
+              value: 0.0.0.0:2888:3888 127.0.0.1:2891:3891 127.0.0.1:2892:3892
+            - name: ZOO_ENABLE_AUTH
+              value: "no"
+            - name: ZOO_HEAP_SIZE
+              value: "1024"
+            - name: ZOO_LOG_LEVEL
+              value: "INFO"
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"
+            - name: ZOO_LISTEN_ALLIPS_ENABLED
               value: "yes"
             - name: POD_NAME
               valueFrom:
@@ -307,7 +474,225 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /bitnami/zookeeper
+      imagePullSecrets:
+        - name: docker.secret
       volumes:
+        - name: sidecar-config
+          configMap:
+            name: zk1-sidecar
+        - name: spire-socket
+          hostPath:
+            path: /run/spire/socket
+            type: DirectoryOrCreate
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        annotations:
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
+---
+# zk sts 2
+# Source: kafka/charts/zookeeper/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka-observables-zookeeper-2
+  namespace: kafka
+  labels:
+    app.kubernetes.io/name: zookeeper-2
+    helm.sh/chart: zookeeper-5.14.3
+    app.kubernetes.io/instance: kafka-observables
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: zookeeper-2
+    role: zookeeper
+    greymatter.io/control: zookeeper-2
+spec:
+  serviceName: kafka-observables-zookeeper-2
+  replicas: 1
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: zookeeper-2
+      app.kubernetes.io/instance: kafka-observables
+      app.kubernetes.io/component: zookeeper-2
+  template:
+    metadata:
+      name: kafka-observables-zookeeper
+      labels:
+        app.kubernetes.io/name: zookeeper-2
+        helm.sh/chart: zookeeper-5.14.3
+        app.kubernetes.io/instance: kafka-observables
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: zookeeper-2
+    spec:
+      securityContext:
+        fsGroup: 1001
+      initContainers:
+        - name: volume-permissions
+          image: docker.io/bitnami/minideb:buster
+          imagePullPolicy: "Always"
+          command: ["chown", "-R", "1001:1001", "/bitnami/zookeeper"]
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/zookeeper
+
+      containers:
+        - name: sidecar
+          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
+          imagePullPolicy: "Always"
+          args:
+            - -c
+            - /etc/greymatter/config.yaml
+          command:
+            - /app/gm-proxy
+          env:
+            - name: PROXY_DYNAMIC
+              value: "true"
+            - name: SPIRE_PATH
+              value: "/run/spire/socket/agent.sock"
+            - name: XDS_CLUSTER
+              value: "zookeeper-2"
+            - name: XDS_HOST
+              value: "control.default.svc"
+            - name: XDS_PORT
+              value: "50000"
+            - name: XDS_ZONE
+              value: "zone-default-zone"
+          ports:
+          - containerPort: 2180
+            protocol: TCP
+            name: proxy
+          - containerPort: 2889
+            protocol: TCP
+            name: follower
+          - containerPort: 3889
+            protocol: TCP
+            name: election
+          - containerPort: 8081
+            protocol: TCP
+            name: metrics
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: spire-socket
+              mountPath: /run/spire/socket
+              readOnly: false
+            - name: sidecar-config
+              mountPath: /etc/greymatter
+              readOnly: true
+        - name: zookeeper
+          image: docker.io/bitnami/zookeeper:3.6.1-debian-10-r7
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - bash
+            - -ec
+            - |
+                # Execute entrypoint as usual after obtaining ZOO_SERVER_ID based on POD hostname
+                HOSTNAME=`hostname -s`
+                if [[ $HOSTNAME =~ (.*)-([0-9]+)$ ]]; then
+                  ORD=${BASH_REMATCH[2]}
+                  export ZOO_SERVER_ID=$((ORD+1))
+                else
+                  echo "Failed to get index from hostname $HOST"
+                  exit 1
+                fi
+                exec /entrypoint.sh /run.sh
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          env:
+            - name: ZOO_PORT_NUMBER
+              value: "2181"
+            - name: ZOO_TICK_TIME
+              value: "2000"
+            - name: ZOO_INIT_LIMIT
+              value: "10"
+            - name: ZOO_SYNC_LIMIT
+              value: "5"
+            - name: ZOO_MAX_CLIENT_CNXNS
+              value: "60"
+            - name: ZOO_4LW_COMMANDS_WHITELIST
+              value: "srvr, mntr"
+            - name: ZOO_AUTOPURGE_INTERVAL
+              value: "0"
+            - name: ZOO_AUTOPURGE_RETAIN_COUNT
+              value: "3"
+            - name: ZOO_SERVERS
+              value: 0.0.0.0:2888:3888 127.0.0.1:2891:3891 127.0.0.1:2892:3892
+            - name: ZOO_ENABLE_AUTH
+              value: "no"
+            - name: ZOO_HEAP_SIZE
+              value: "1024"
+            - name: ZOO_LOG_LEVEL
+              value: "INFO"
+            - name: ALLOW_ANONYMOUS_LOGIN
+              value: "yes"
+            - name: ZOO_LISTEN_ALLIPS_ENABLED
+              value: "yes"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+          ports:
+
+            - name: client
+              containerPort: 2181
+
+
+            - name: follower
+              containerPort: 2888
+            - name: election
+              containerPort: 3888
+          livenessProbe:
+            tcpSocket:
+
+              port: client
+
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            tcpSocket:
+
+              port: client
+
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 6
+          volumeMounts:
+            - name: data
+              mountPath: /bitnami/zookeeper
+            - name: zk-config
+              mountPath: /opt/bitnami/zookeeper/conf/zoo.conf
+              subPath: zoo.conf
+      imagePullSecrets:
+        - name: docker.secret
+      volumes:
+        - name: sidecar-config
+          configMap:
+            name: zk2-sidecar
+        - name: zk-config
+          configMap:
+            name: zk-config
+        - name: spire-socket
+          hostPath:
+            path: /run/spire/socket
+            type: DirectoryOrCreate
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -377,7 +762,7 @@ spec:
               mountPath: /bitnami/kafka
       containers:
         - name: sidecar
-          image: "docker.greymatter.io/internal/gm-proxy:tcp-obs"
+          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
           imagePullPolicy: "Always"
           args:
             - -c
@@ -429,7 +814,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: KAFKA_CFG_ZOOKEEPER_CONNECT
-              value: "kafka-observables-zookeeper"
+              value: "kafka-observables-zookeeper-0:2180,kafka-observables-zookeeper-1:2180,kafka-observables-zookeeper-2:2180"
             - name: KAFKA_PORT_NUMBER
               value: "8092"
             - name: KAFKA_CFG_LISTENERS
@@ -487,7 +872,7 @@ spec:
             - name: KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES
               value: "102400"
             - name: KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS
-              value: "6000"
+              value: "36000"
           ports:
             - name: kafka
               containerPort: 8092
@@ -591,7 +976,7 @@ spec:
               mountPath: /bitnami/kafka
       containers:
         - name: sidecar
-          image: "docker.greymatter.io/internal/gm-proxy:tcp-obs"
+          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
           imagePullPolicy: "Always"
           args:
             - -c
@@ -643,7 +1028,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: KAFKA_CFG_ZOOKEEPER_CONNECT
-              value: "kafka-observables-zookeeper"
+              value: "kafka-observables-zookeeper-0:2180,kafka-observables-zookeeper-1:2180,kafka-observables-zookeeper-2:2180"
             - name: KAFKA_PORT_NUMBER
               value: "8092"
             - name: KAFKA_CFG_LISTENERS
@@ -701,7 +1086,7 @@ spec:
             - name: KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES
               value: "102400"
             - name: KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS
-              value: "6000"
+              value: "36000"
           ports:
             - name: kafka
               containerPort: 8092
@@ -805,7 +1190,7 @@ spec:
               mountPath: /bitnami/kafka
       containers:
         - name: sidecar
-          image: "docker.greymatter.io/internal/gm-proxy:tcp-obs"
+          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
           imagePullPolicy: "Always"
           args:
             - -c
@@ -857,7 +1242,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: KAFKA_CFG_ZOOKEEPER_CONNECT
-              value: "kafka-observables-zookeeper"
+              value: "kafka-observables-zookeeper-0:2180,kafka-observables-zookeeper-1:2180,kafka-observables-zookeeper-2:2180"
             - name: KAFKA_PORT_NUMBER
               value: "8092"
             - name: KAFKA_CFG_LISTENERS
@@ -915,7 +1300,7 @@ spec:
             - name: KAFKA_CFG_SOCKET_SEND_BUFFER_BYTES
               value: "102400"
             - name: KAFKA_CFG_ZOOKEEPER_CONNECTION_TIMEOUT_MS
-              value: "6000"
+              value: "36000"
           ports:
             - name: kafka
               containerPort: 8092

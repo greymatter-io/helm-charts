@@ -32,6 +32,12 @@ This directory contains the files needed to install kafka with 3 brokers with a 
     kubectl apply -f kafka/svc-b0.yaml
     kubectl apply -f kafka/svc-b1.yaml
     kubectl apply -f kafka/svc-b2.yaml
+    kubectl apply -f kafka/zk/zk0-configmap.yaml
+    kubectl apply -f kafka/zk/zk1-configmap.yaml
+    kubectl apply -f kafka/zk/zk2-configmap.yaml
+    kubectl apply -f kafka/zk/zk0-svc.yaml
+    kubectl apply -f kafka/zk/zk1-svc.yaml
+    kubectl apply -f kafka/zk/zk2-svc.yaml
     kubectl apply -f kafka/kafka_template.yaml -n kafka
     ```
 

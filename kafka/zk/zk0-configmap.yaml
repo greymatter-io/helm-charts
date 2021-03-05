@@ -1,0 +1,296 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zk0-sidecar
+  namespace: kafka
+data:
+  config.yaml: |-
+    node:
+      id: "default"
+      cluster: "zookeeper-0"
+      locality:
+        zone: zone-default-zone
+        region: default-region
+    static_resources:
+      listeners:
+        - address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: 2180
+          filter_chains:
+          - filters:
+            - name: envoy.filters.network.zookeeper_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
+                stat_prefix: ingress-2180
+            - name: gm.tcp_logger
+              typed_config:
+                "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
+                warnWindow: 24h
+                failureCheckDelay: 30s
+            - name: envoy.tcp_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
+                stat_prefix: client_ingress_tcp
+                cluster: client
+                access_log:
+                - name: envoy.file_access_log
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.config.accesslog.v2.FileAccessLog
+                    path: "/dev/stdout"
+        - address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: 2889
+          filter_chains:
+          - filters:
+            - name: envoy.filters.network.zookeeper_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
+                stat_prefix: ingress-2889
+            - name: gm.tcp_logger
+              typed_config:
+                "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
+                warnWindow: 24h
+                failureCheckDelay: 30s
+            - name: envoy.tcp_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
+                stat_prefix: follower
+                cluster: follower
+                access_log:
+                - name: envoy.file_access_log
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.config.accesslog.v2.FileAccessLog
+                    path: "/dev/stdout"
+        - address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: 3889
+          filter_chains:
+          - filters:
+            - name: envoy.filters.network.zookeeper_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
+                stat_prefix: ingress-3889
+            - name: gm.tcp_logger
+              typed_config:
+                "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
+                warnWindow: 24h
+                failureCheckDelay: 30s
+            - name: envoy.tcp_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
+                stat_prefix: election
+                cluster: election
+                access_log:
+                - name: envoy.file_access_log
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.config.accesslog.v2.FileAccessLog
+                    path: "/dev/stdout"
+        - address:
+            socket_address:
+              address: 127.0.0.1
+              port_value: 2891
+          filter_chains:
+          - filters:
+            - name: envoy.filters.network.zookeeper_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
+                stat_prefix: egress-follower-1
+            - name: gm.tcp_logger
+              typed_config:
+                "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
+                warnWindow: 24h
+                failureCheckDelay: 30s
+            - name: envoy.tcp_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
+                stat_prefix: follower-1
+                cluster: follower-1
+                access_log:
+                - name: envoy.file_access_log
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.config.accesslog.v2.FileAccessLog
+                    path: "/dev/stdout"
+        - address:
+            socket_address:
+              address: 127.0.0.1
+              port_value: 2892
+          filter_chains:
+          - filters:
+            - name: envoy.filters.network.zookeeper_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
+                stat_prefix: egress-follower-2
+            - name: gm.tcp_logger
+              typed_config:
+                "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
+                warnWindow: 24h
+                failureCheckDelay: 30s
+            - name: envoy.tcp_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
+                stat_prefix: follower-2
+                cluster: follower-2
+                access_log:
+                - name: envoy.file_access_log
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.config.accesslog.v2.FileAccessLog
+                    path: "/dev/stdout"
+        - address:
+            socket_address:
+              address: 127.0.0.1
+              port_value: 3891
+          filter_chains:
+          - filters:
+            - name: envoy.filters.network.zookeeper_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
+                stat_prefix: egress-election-1
+            - name: gm.tcp_logger
+              typed_config:
+                "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
+                warnWindow: 24h
+                failureCheckDelay: 30s
+            - name: envoy.tcp_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
+                stat_prefix: election-1
+                cluster: election-1
+                access_log:
+                - name: envoy.file_access_log
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.config.accesslog.v2.FileAccessLog
+                    path: "/dev/stdout"
+        - address:
+            socket_address:
+              address: 127.0.0.1
+              port_value: 3892
+          filter_chains:
+          - filters:
+            - name: envoy.filters.network.zookeeper_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
+                stat_prefix: egress-election-2
+            - name: gm.tcp_logger
+              typed_config:
+                "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
+                warnWindow: 24h
+                failureCheckDelay: 30s
+            - name: envoy.tcp_proxy
+              typed_config:
+                "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
+                stat_prefix: election-2
+                cluster: election-2
+                access_log:
+                - name: envoy.file_access_log
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.config.accesslog.v2.FileAccessLog
+                    path: "/dev/stdout"
+      clusters:
+        - name: client
+          connect_timeout: 0.25s
+          http2_protocol_options: {}
+          type: STRICT_DNS
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: client
+            endpoints:
+              - lb_endpoints:
+                - endpoint:
+                    address:
+                      socket_address:
+                        address: 127.0.0.1
+                        port_value: 2181
+        - name: follower
+          connect_timeout: 0.25s
+          http2_protocol_options: {}
+          type: STRICT_DNS
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: follower
+            endpoints:
+              - lb_endpoints:
+                - endpoint:
+                    address:
+                      socket_address:
+                        address: 127.0.0.1
+                        port_value: 2888
+        - name: election
+          connect_timeout: 0.25s
+          http2_protocol_options: {}
+          type: STRICT_DNS
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: election
+            endpoints:
+              - lb_endpoints:
+                - endpoint:
+                    address:
+                      socket_address:
+                        address: 127.0.0.1
+                        port_value: 3888
+        - name: follower-1
+          connect_timeout: 0.25s
+          http2_protocol_options: {}
+          type: STRICT_DNS
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: follower-1
+            endpoints:
+              - lb_endpoints:
+                - endpoint:
+                    address:
+                      socket_address:
+                        address: kafka-observables-zookeeper-1.kafka.svc.cluster.local
+                        port_value: 2889
+        - name: follower-2
+          connect_timeout: 0.25s
+          http2_protocol_options: {}
+          type: STRICT_DNS
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: follower-2
+            endpoints:
+              - lb_endpoints:
+                - endpoint:
+                    address:
+                      socket_address:
+                        address: kafka-observables-zookeeper-2.kafka.svc.cluster.local
+                        port_value: 2889
+        - name: election-1
+          connect_timeout: 0.25s
+          http2_protocol_options: {}
+          type: STRICT_DNS
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: election-1
+            endpoints:
+              - lb_endpoints:
+                - endpoint:
+                    address:
+                      socket_address:
+                        address: kafka-observables-zookeeper-1.kafka.svc.cluster.local
+                        port_value: 3889
+        - name: election-2
+          connect_timeout: 0.25s
+          http2_protocol_options: {}
+          type: STRICT_DNS
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: election-2
+            endpoints:
+              - lb_endpoints:
+                - endpoint:
+                    address:
+                      socket_address:
+                        address: kafka-observables-zookeeper-2.kafka.svc.cluster.local
+                        port_value: 3889
+    admin:
+      access_log_path: /dev/null
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 8001
