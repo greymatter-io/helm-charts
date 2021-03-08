@@ -1,0 +1,19 @@
+{
+    "zone_key": "zone-default-zone",
+    "shared_rules_key": "coughka-rules",
+    "name": "service",
+    "default": {
+        "light": [
+            {
+                "constraint_key": "",
+                "cluster_key": "coughka-cluster",
+                "metadata": null,
+                "properties": null,
+                "response_data": {},
+                "weight": 1
+            }
+        ],
+        "dark": null,
+        "tap": null
+    }
+}

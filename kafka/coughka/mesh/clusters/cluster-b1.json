@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "coughka-b1-cluster",
+    "name": "broker1",
+    "instances": [
+        {
+            "host": "kafka-broker-1.kafka.svc.cluster.local",
+            "port": 9093
+        }
+    ],
+    "require_tls": false
+}

@@ -1,0 +1,7 @@
+{
+     "zone_key": "zone-default-zone",
+     "domain_key": "coughka-domain",
+     "name": "*",
+     "port": 10808,
+     "force_https": true
+ }

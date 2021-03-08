@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: kafka-broker-0
+  namespace: kafka
+  labels:
+    greymatter.io/control: kafka-broker-0
+spec:
+  ports:
+    - name: proxy
+      port: 9092
+    - name: metrics
+      port: 8081
+  selector:
+    greymatter.io/control: kafka-broker-0
+  sessionAffinity: None
+  type: ClusterIP

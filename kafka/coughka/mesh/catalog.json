@@ -1,0 +1,17 @@
+{
+    "clusterName": "coughka",
+    "zoneName": "zone-default-zone",
+    "name": "Coughka Service",
+    "version": "1.0",
+    "owner": "Decipher",
+    "capability": "Tutorial",
+    "runtime": "GO",
+    "documentation": "/services/coughka/",
+    "prometheusJob": "coughka",
+    "minInstances": 1,
+    "maxInstances": 2,
+    "authorized": true,
+    "enableInstanceMetrics": true,
+    "enableHistoricalMetrics": true,
+    "metricsPort": 8081
+}
