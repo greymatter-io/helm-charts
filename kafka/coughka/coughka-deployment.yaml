@@ -30,7 +30,7 @@ spec:
             - -b127.0.0.1:9094
             - -tcoughka-test-topic
         - name: sidecar
-          image: "docker.greymatter.io/internal/gm-proxy:tcp-obs"
+          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
           imagePullPolicy: Always
           ports:
             - name: metrics

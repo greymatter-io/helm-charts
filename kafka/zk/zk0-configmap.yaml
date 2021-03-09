@@ -20,10 +20,6 @@ data:
               port_value: 2180
           filter_chains:
           - filters:
-            - name: envoy.filters.network.zookeeper_proxy
-              typed_config:
-                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
-                stat_prefix: ingress-2180
             - name: gm.tcp_logger
               typed_config:
                 "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
@@ -45,10 +41,6 @@ data:
               port_value: 2889
           filter_chains:
           - filters:
-            - name: envoy.filters.network.zookeeper_proxy
-              typed_config:
-                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
-                stat_prefix: ingress-2889
             - name: gm.tcp_logger
               typed_config:
                 "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
@@ -70,10 +62,6 @@ data:
               port_value: 3889
           filter_chains:
           - filters:
-            - name: envoy.filters.network.zookeeper_proxy
-              typed_config:
-                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
-                stat_prefix: ingress-3889
             - name: gm.tcp_logger
               typed_config:
                 "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
@@ -95,10 +83,6 @@ data:
               port_value: 2891
           filter_chains:
           - filters:
-            - name: envoy.filters.network.zookeeper_proxy
-              typed_config:
-                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
-                stat_prefix: egress-follower-1
             - name: gm.tcp_logger
               typed_config:
                 "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
@@ -120,10 +104,6 @@ data:
               port_value: 2892
           filter_chains:
           - filters:
-            - name: envoy.filters.network.zookeeper_proxy
-              typed_config:
-                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
-                stat_prefix: egress-follower-2
             - name: gm.tcp_logger
               typed_config:
                 "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
@@ -145,10 +125,6 @@ data:
               port_value: 3891
           filter_chains:
           - filters:
-            - name: envoy.filters.network.zookeeper_proxy
-              typed_config:
-                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
-                stat_prefix: egress-election-1
             - name: gm.tcp_logger
               typed_config:
                 "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
@@ -170,10 +146,6 @@ data:
               port_value: 3892
           filter_chains:
           - filters:
-            - name: envoy.filters.network.zookeeper_proxy
-              typed_config:
-                "@type": type.googleapis.com/envoy.extensions.filters.network.zookeeper_proxy.v3.ZooKeeperProxy
-                stat_prefix: egress-election-2
             - name: gm.tcp_logger
               typed_config:
                 "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
