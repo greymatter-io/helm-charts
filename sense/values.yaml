@@ -449,7 +449,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.2.2
+    version: latest
     minInstances: 1
     maxInstances: 1
     ownerURL: "https://greymatter.io"

@@ -1,30 +1,25 @@
 {
-  "clusterName": "{{.service.serviceName}}",
-  "zoneName": "{{ .Values.global.zone }}",
+  "service_id": "{{.service.serviceName}}",
+  "mesh_id": "{{ .Values.global.zone }}",
   "name": "{{.service.name}}",
   "version": "{{.service.version}}",
+  "description": "{{.service.description}}",
   "owner": "{{.service.owner}}",
+  "owner_url": "{{.service.ownerURL}}",
+  "api_endpoint": "{{tpl .service.apiEndpoint $ }}",
+  "api_spec_endpoint": "{{.service.apiSpecEndpoint}}",
   "capability": "{{.service.capability}}",
   "runtime": "GO",
   "documentation": "{{.service.documentation}}",
-  "prometheusJob": "{{.service.clusterName}}",
-  "minInstances": {{.service.minInstances | default 1}},
-  "maxInstances": {{ include "maxInstances" (dict "service_values" .service "top" $) }},
-  "authorized": true,
-  "clusterID": "",
-  "meshID": "",
-  "enableInstanceMetrics": {{.service.enableInstanceMetrics | default true}},
-  "enableHistoricalMetrics": {{.service.enableHistoricalMetrics | default true}},
-  "metricsTemplate": "",
-  "metricsPort": 8081,
-  "ownerURL": "{{.service.ownerURL}}",
-  "apiSpecEndpoint": "{{.service.apiSpecEndpoint}}",
-  "apiEndpoint": "{{tpl .service.apiEndpoint $ }}",
-  "description": "{{.service.description}}"{{- if .service.externalLinks }},{{ $length := len .service.externalLinks }}
-  "externalLinks": [{{ range $i, $link := .service.externalLinks }}
+  "prometheus_job": "{{.service.clusterName}}",
+  "min_instances": {{.service.minInstances | default 1}},
+  "max_instances": {{ include "maxInstances" (dict "service_values" .service "top" $) }},
+  "enable_instance_metrics": {{.service.enableInstanceMetrics | default true}},
+  "enable_historical_metrics": {{.service.enableHistoricalMetrics | default true}}{{- if .service.externalLinks }},{{ $length := len .service.externalLinks }}
+  "external_links": [{{ range $i, $link := .service.externalLinks }}
     {
-      "name": "{{ $link.name }}",
-      "link": "{{ $link.link }}"
+      "title": "{{ $link.name }}",
+      "url": "{{ $link.link }}"
     }{{ if lt $i ( sub $length 1 ) }},{{ end }}
   {{- end }}
   ]
