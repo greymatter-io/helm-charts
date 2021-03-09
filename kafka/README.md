@@ -41,6 +41,23 @@ This directory contains the files needed to install kafka with 3 brokers with a 
     kubectl apply -f kafka/kafka_template.yaml -n kafka
     ```
 
+
+```bash
+    kubectl delete -f kafka/configmap-b0.yaml
+    kubectl delete -f kafka/configmap-b1.yaml
+    kubectl delete -f kafka/configmap-b2.yaml
+    kubectl delete -f kafka/svc-b0.yaml
+    kubectl delete -f kafka/svc-b1.yaml
+    kubectl delete -f kafka/svc-b2.yaml
+    kubectl delete -f kafka/zk/zk0-configmap.yaml
+    kubectl delete -f kafka/zk/zk1-configmap.yaml
+    kubectl delete -f kafka/zk/zk2-configmap.yaml
+    kubectl delete -f kafka/zk/zk0-svc.yaml
+    kubectl delete -f kafka/zk/zk1-svc.yaml
+    kubectl delete -f kafka/zk/zk2-svc.yaml
+    kubectl delete -f kafka/kafka_template.yaml -n kafka
+```
+
 4. Wait for pods to reach running states
 
     ```bash
