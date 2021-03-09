@@ -43,7 +43,7 @@ spec:
             - name: bootstrap-script-volume
               mountPath: /tmp/bootstrap
             - name: bootstrap-zone-volume
-              mountPath: /etc/config/mesh/zones/
+              mountPath: /etc/config/mesh/meshes/
             {{- if and $.Values.catalog.secret.enabled }}
             - name: certs
               mountPath: {{ .Values.catalog.secret.mount_point }}
