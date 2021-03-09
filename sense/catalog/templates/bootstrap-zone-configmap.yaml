@@ -6,7 +6,13 @@ metadata:
 data:
   {{ .Values.global.zone }}.json: |-
     {
-      "serverAddress": "control.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}",
-      "zoneName": "{{ .Values.global.zone }}",
-      "requestCluster": "edge"
+      "mesh_id": "{{ .Values.global.zone }}",
+      "mesh_type": "greymatter",
+      "sessions": {
+        "default": {
+          "url": "control.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}",
+          "zone": "{{ .Values.global.zone }}",
+          "cluster": "edge"
+        }
+      }
     }

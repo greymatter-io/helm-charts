@@ -54,7 +54,7 @@ mesh_redis:
   ca_cert_path: ''
   server_cert_path: ''
   server_key_path: ''
-  catalog_db: 1
+  catalog_db: 2
   max_retries: 50
   retry_delay: '5s'
 
@@ -62,8 +62,8 @@ catalog:
   # Name used for the deployment and service resources
   name: catalog
   # GM Catalog version
-  version: 1.2.2
-  image: docker.greymatter.io/release/gm-catalog:{{ $.Values.catalog.version }}
+  version: istio
+  image: docker.greymatter.io/internal/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   replicas: 1
@@ -120,21 +120,9 @@ catalog:
     redis_retry_delay:
       type: value
       value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.retry_delay }}{{- else}}{{ .Values.global.external_redis.retry_delay }}{{- end }}'
-    instance_polling_interval:
-      type: value
-      value: '5s'
     port:
       type: value
       value: '{{ $.Values.catalog.port }}'
-    control_server_0_address:
-      type: value
-      value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
-    control_server_0_zone_name:
-      type: value
-      value: '{{ .Values.global.zone }}'
-    control_server_0_request_cluster_name:
-      type: value
-      value: 'edge'
     use_tls:
       type: value
       value: 'true'
@@ -220,7 +208,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.2.2
+    version: latest
     minInstances: 1
     maxInstances: 1
     ownerURL: "https://greymatter.io"

@@ -78,8 +78,8 @@ send_or_update() {
             exit 1
         fi
     
-    elif [ $http_response == "200" ] && [ $1 == "zones" ]; then
-        echo "$1 $3 found, zone already exists. Continuing..."
+    elif [ $http_response == "200" ] && [ $1 == "meshes" ]; then
+        echo "$1 $3 found, mesh already exists. Continuing..."
 
     else
         echo "There was a problem getting the file $file"
@@ -89,10 +89,10 @@ send_or_update() {
 
 }
 
-cd $MESH_CONFIG_DIR/zones
-echo "Loading the zones to catalog ..."
+cd $MESH_CONFIG_DIR/meshes
+echo "Loading the meshes to catalog ..."
 for file in $(ls); do
-    send_or_update zones $file ${file%.json}
+    send_or_update meshes $file ${file%.json}
 done
 
 cd $MESH_CONFIG_DIR/services
@@ -103,7 +103,7 @@ for d in */; do
 
     for file in $(ls); do
         echo "Creating catalog item $file"
-        send_or_update clusters $file ${d%/}
+        send_or_update services $file ${d%/}
     done
 
     cd $MESH_CONFIG_DIR/services
