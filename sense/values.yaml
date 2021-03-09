@@ -327,7 +327,7 @@ mesh_redis:
   ca_cert_path: ''
   server_cert_path: ''
   server_key_path: ''
-  catalog_db: 1
+  catalog_db: 2
   max_retries: 50
   retry_delay: '5s'
 
@@ -336,8 +336,8 @@ catalog:
     # Name used for the deployment and service resources
     name: catalog
     # GM Catalog version
-    version: 1.2.2
-    image: docker.greymatter.io/release/gm-catalog:{{ $.Values.catalog.version }}
+    version: istio
+    image: docker.greymatter.io/internal/gm-catalog:{{ $.Values.catalog.version }}
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the catalog service

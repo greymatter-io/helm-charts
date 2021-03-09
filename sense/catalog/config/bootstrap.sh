@@ -2,112 +2,106 @@
 
 set -eo pipefail
 
-MESH_CONFIG_DIR="/etc/config/mesh"
+CONFIG_DIR="/etc/config/mesh"
 CURL_COMMAND='curl -s -o /dev/null -w "%{http_code}"'
 HTTP="http"
 
-echo "Configuring mesh from config directory: $MESH_CONFIG_DIR"
+create_or_update() {
+  kind=$1
+  filename=$2
+  mesh_id=$3
+  service_id=$4
 
-echo "Debug set to: $DEBUG"
+  if [ "$DEBUG" == "true" ]; then
+    echo "DEBUG: Contents of $kind in $filename..."
+    echo
+    cat $filename
+    echo
+    echo
+  fi
+
+  if [ $kind == "mesh" ]; then
+    echo "Checking for existing mesh $mesh_id..."
+    http_response=$(${CURL_COMMAND} -X GET $HTTP://$CATALOG_API_HOST/meshes/$mesh_id)
+    http_response="${http_response%\"}"
+    http_response="${http_response#\"}"
+
+    if [ $http_response == "404" ]; then
+      echo "Not found; creating $mesh_id from $filename..."
+      http_response=$(${CURL_COMMAND} -X POST -d @$filename $HTTP://$CATALOG_API_HOST/meshes)
+      http_response="${http_response%\"}"
+      http_response="${http_response#\"}"
+
+      if [ "$http_response" != "200" ]; then
+        echo "Failed to create mesh $mesh_id. Exiting."
+        exit 1
+      else
+        echo "Created mesh $mesh_id!"
+      fi
+    else
+      echo "Already exists."
+    fi
+
+  elif [ $kind == "service" ]; then
+    echo "Checking for existing service $service_id in mesh $mesh_id..."
+    http_response=$(${CURL_COMMAND} -X GET $HTTP://$CATALOG_API_HOST/meshes/$mesh_id/services/$service_id)
+    http_response="${http_response%\"}"
+    http_response="${http_response#\"}"
+
+    if [ $http_response == "404" ]; then
+      echo "Not found; creating service $service_id in mesh $mesh_id from $filename..."
+      http_response=$(${CURL_COMMAND} -X POST -d @$filename $HTTP://$CATALOG_API_HOST/services)
+      http_response="${http_response%\"}"
+      http_response="${http_response#\"}"
+
+      if [ "$http_response" != "200" ]; then
+        echo "Failed to create service $service_id in mesh $mesh_id. Exiting."
+        exit 1
+      else
+        echo "Created service $service_id in mesh $mesh_id!"
+      fi
+    else
+      echo "Already exists."
+    fi
+  fi
+}
+
+echo "Configuring from directory $CONFIG_DIR"
+
 if [ "$DEBUG" == "true" ]; then
-    set -x
+  set -x
     echo "DEBUG: Catalog API Host: $CATALOG_API_HOST"
-    echo "DEBUG: Catalog API USE_TLS: $USE_TLS "
+    echo "DEBUG: Catalog API USE_TLS: $USE_TLS"
 fi
-
-cd $MESH_CONFIG_DIR
 
 if [ "$USE_TLS" == "true" ]; then
+  HTTP="https"
 	CURL_COMMAND='curl -s -o /dev/null -w "%{http_code}" -k --cacert '"$CERTS_MOUNT"'/'"$CA_CERT"' --cert '$CERTS_MOUNT'/'$CERT' --key '$CERTS_MOUNT'/'$KEY
-        HTTP="https"
 fi
 
-echo "Config dir contains:"
-ls
-
-# This script expects the gm catalog api to be up and available to serve requests
-# Currently, this is handled in a fairly good idiomatic way using Readiness Probes and `k8s-waiter`
-
-echo "Starting catalog configuration ..."
+# This script expects the Catalog API to be up and available to serve requests
+# Currently, this is handled in a fairly good idiomatic way using readiness probes and `k8s-waiter`
 
 delay=0.01
 
-send_or_update() {
-    if [ "$DEBUG" == "true" ]; then
-        echo "Contents of $2..."
-        echo
-        cat $2
-        echo
-    fi
+cd $CONFIG_DIR/meshes
+meshes=$(ls)
 
-    echo "Checking for $1 $file..."
-    http_response=$(${CURL_COMMAND} -X GET -d @$2 $HTTP://$CATALOG_API_HOST/$1/$3)
-    echo $http_response
+echo "Loading meshes into Catalog..."
 
-    http_response="${http_response%\"}"
-    http_response="${http_response#\"}"
-    echo $http_response
-
-    if [ $http_response == "404" ]; then
-        echo "Uploading $1 $3 $file..."
-        http_response=$(${CURL_COMMAND} -X POST -d @$2 $HTTP://$CATALOG_API_HOST/$1)
-        if [ "$DEBUG" == "true" ]; then
-            echo $http_response
-        fi 
-
-        http_response="${http_response%\"}"
-        http_response="${http_response#\"}"
-
-        if [ $http_response != "200" ]; then
-            echo "There was an error uploading file $file to catalog.  Exiting"
-            exit 1
-        fi
-
-    elif [ $http_response == "200" ] && [ $1 == "clusters" ]; then
-        echo "$1 $3 found, updating"
-        http_response=$(${CURL_COMMAND} -X PUT -d @$2 $HTTP://$CATALOG_API_HOST/$1/$3)
-        if [ "$DEBUG" == "true" ]; then
-            echo $http_response
-        fi 
-
-        http_response="${http_response%\"}"
-        http_response="${http_response#\"}"
-
-        if [ $http_response != "200" ]; then
-            echo "There was an error uploading file $file to catalog.  Exiting"
-            exit 1
-        fi
-    
-    elif [ $http_response == "200" ] && [ $1 == "meshes" ]; then
-        echo "$1 $3 found, mesh already exists. Continuing..."
-
-    else
-        echo "There was a problem getting the file $file"
-        exit 1
-
-    fi
-
-}
-
-cd $MESH_CONFIG_DIR/meshes
-echo "Loading the meshes to catalog ..."
-for file in $(ls); do
-    send_or_update meshes $file ${file%.json}
+for filename in $meshes; do
+  create_or_update mesh $filename ${filename%.json}
 done
 
-cd $MESH_CONFIG_DIR/services
+cd $CONFIG_DIR/services
+
+echo "Loading services into Catalog..."
+
 for d in */; do
-    echo
-    echo "Found service: ${d%/}"
-    cd $d
-
-    for file in $(ls); do
-        echo "Creating catalog item $file"
-        send_or_update services $file ${d%/}
+  cd $CONFIG_DIR/services/$d
+  for filename in $(ls); do
+    for mesh in $meshes; do
+      create_or_update service $filename ${mesh%.json} ${d%/}
     done
-
-    cd $MESH_CONFIG_DIR/services
+  done
 done
-
-echo "Catalog configuration complete"
-
