@@ -356,6 +356,9 @@ catalog:
         cert: server.crt
         key: server.key
     envvars:
+      debug:
+        type: value
+        value: 'true'
       config_source:
         type: value
         value: 'redis'
