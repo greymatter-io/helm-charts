@@ -65,7 +65,8 @@ catalog:
   version: istio
   image: docker.greymatter.io/internal/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
+  # image_pull_policy: IfNotPresent
   replicas: 1
   # CPU and memory limits for the catalog service
   resources:
