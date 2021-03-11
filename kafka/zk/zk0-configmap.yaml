@@ -20,10 +20,6 @@ data:
               port_value: 2180
           filter_chains:
           - filters:
-            - name: gm.metrics_tcp
-              typed_config:
-                "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpMetricsConfig
-                
             - name: gm.tcp_logger
               typed_config:
                 "@type": type.googleapis.com/deciphernow.gm_proxy.network_filters.tcpLoggerConfig
