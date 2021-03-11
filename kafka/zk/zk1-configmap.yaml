@@ -30,6 +30,7 @@ data:
                 "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
                 stat_prefix: client_ingress_tcp
                 cluster: client
+                max_connect_attempts: 5
                 access_log:
                 - name: envoy.file_access_log
                   typed_config:
@@ -51,6 +52,7 @@ data:
                 "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
                 stat_prefix: follower
                 cluster: follower
+                max_connect_attempts: 5
                 access_log:
                 - name: envoy.file_access_log
                   typed_config:
@@ -72,6 +74,7 @@ data:
                 "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
                 stat_prefix: election
                 cluster: election
+                max_connect_attempts: 5
                 access_log:
                 - name: envoy.file_access_log
                   typed_config:
@@ -93,6 +96,7 @@ data:
                 "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
                 stat_prefix: follower-1
                 cluster: follower-1
+                max_connect_attempts: 5
                 access_log:
                 - name: envoy.file_access_log
                   typed_config:
@@ -114,6 +118,7 @@ data:
                 "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
                 stat_prefix: follower-2
                 cluster: follower-2
+                max_connect_attempts: 5
                 access_log:
                 - name: envoy.file_access_log
                   typed_config:
@@ -135,6 +140,7 @@ data:
                 "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
                 stat_prefix: election-1
                 cluster: election-1
+                max_connect_attempts: 5
                 access_log:
                 - name: envoy.file_access_log
                   typed_config:
@@ -156,6 +162,7 @@ data:
                 "@type": type.googleapis.com/envoy.config.filter.network.tcp_proxy.v2.TcpProxy
                 stat_prefix: election-2
                 cluster: election-2
+                max_connect_attempts: 5
                 access_log:
                 - name: envoy.file_access_log
                   typed_config:
