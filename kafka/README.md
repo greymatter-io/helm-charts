@@ -84,7 +84,8 @@ Kafka-protocol-topic may fail if its already been created by the observables fil
 Verify with:
 
 ```bash
-kafka-topics.sh --list --zookeeper kafka-observables-zookeeper-headless.kafka.svc.cluster.local:2181
+kafka-topics.sh --list --zookeeper kafka-observables-zookeeper-1.kafka.svc.cluster.local:2180
+kafka-topics.sh --list --zookeeper kafka-observables-zookeeper-2.kafka.svc.cluster.local:2180
 ```
 
 Exit the kafka client and configure the mesh for the incoming coughka/sidecar combo:
