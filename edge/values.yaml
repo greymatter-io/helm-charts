@@ -63,9 +63,6 @@ edge:
     xds_port:
       type: 'value'
       value: '{{ .Values.global.control.port }}'
-    xds_node_id:
-      type: 'value'
-      value: 'default'
     envoy_admin_log_path:
       type: 'value'
       value: '/dev/stdout'

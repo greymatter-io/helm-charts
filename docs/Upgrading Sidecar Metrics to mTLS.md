@@ -592,10 +592,6 @@ metadata:
                     .: {}
                     f:name: {}
                     f:value: {}
-                  k:{"name":"XDS_NODE_ID"}:
-                    .: {}
-                    f:name: {}
-                    f:value: {}
                   k:{"name":"XDS_PORT"}:
                     .: {}
                     f:name: {}
@@ -762,8 +758,6 @@ spec:
           value: prometheus
         - name: XDS_HOST
           value: control.default.svc
-        - name: XDS_NODE_ID
-          value: default
         - name: XDS_PORT
           value: "50000"
         - name: XDS_ZONE
