@@ -38,13 +38,14 @@ global:
   # If an external Redis service is not needed, an internal Redis service is launched by setting `disabled` below to true
   external_redis:
     disabled: true
+    secret_name: greymatter-mesh-redis-password
     host: ''
     port: '6379'
     use_tls: false
     ca_cert_path: ''
     server_cert_path: ''
     server_key_path: ''
-    pass: ''
+    password: ''
     control_api_db: 0
     catalog_db: 1
     max_retries: 50

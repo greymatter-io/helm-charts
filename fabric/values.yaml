@@ -154,8 +154,18 @@ control:
 
 
 control-api:
-  redis:
+  mesh_redis:
     name: mesh-redis
+    secret_name: greymatter-mesh-redis-password
+    host: "mesh-redis.{{ .Release.Namespace }}.svc"
+    port: '6379'
+    use_tls: false
+    ca_cert_path: ''
+    server_cert_path: ''
+    server_key_path: ''
+    control_api_db: 0
+    max_retries: 50
+    retry_delay: '5s'
 
   controlApi:
     # Name used for the deployment and service resources
@@ -214,34 +224,35 @@ control-api:
         value: 'redis'
       gm_control_api_redis_host:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}mesh-redis.{{ .Release.Namespace }}.svc{{- else}}{{ .Values.global.external_redis.host }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{ tpl .Values.mesh_redis.host . }}{{- else}}{{ .Values.global.external_redis.host }}{{- end }}'
       gm_control_api_redis_port:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}6379{{- else}}{{ .Values.global.external_redis.port }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.port }}{{- else}}{{ .Values.global.external_redis.port }}{{- end }}'
       gm_control_api_redis_use_tls:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}false{{- else}}{{ .Values.global.external_redis.use_tls }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.use_tls }}{{- else}}{{ .Values.global.external_redis.use_tls }}{{- end }}'
       gm_control_api_redis_ca_cert_path:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{- else}}{{ .Values.global.external_redis.ca_cert_path }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.ca_cert_path }}{{- else}}{{ .Values.global.external_redis.ca_cert_path }}{{- end }}'
       gm_control_api_redis_server_cert_path:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{- else}}{{ .Values.global.external_redis.server_cert_path }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.server_cert_path }}{{- else}}{{ .Values.global.external_redis.server_cert_path }}{{- end }}'
       gm_control_api_redis_server_key_path:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{- else}}{{ .Values.global.external_redis.server_key_path }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.server_key_path }}{{- else}}{{ .Values.global.external_redis.server_key_path }}{{- end }}'
       gm_control_api_redis_pass:
-        type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{- else}}{{ .Values.global.external_redis.pass }}{{- end }}'
+        type: secret
+        secret: '{{ .Values.mesh_redis.secret_name }}'
+        key: password
       gm_control_api_redis_db:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}0{{- else}}{{ .Values.global.external_redis.control_api_db }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.control_api_db }}{{- else}}{{ .Values.global.external_redis.control_api_db }}{{- end }}'
       gm_control_api_redis_max_retries:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}50{{- else}}{{ .Values.global.external_redis.max_retries }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.max_retries }}{{- else}}{{ .Values.global.external_redis.max_retries }}{{- end }}'
       gm_control_api_redis_retry_delay:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}5s{{- else}}{{ .Values.global.external_redis.retry_delay }}{{- end }}'
+        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.retry_delay }}{{- else}}{{ .Values.global.external_redis.retry_delay }}{{- end }}'
       # The following envvars enable the experimental control-api explorer UI
       gm_control_api_experiments:
         type: value
