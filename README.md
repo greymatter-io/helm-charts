@@ -45,6 +45,36 @@ helm install sense greymatter/sense -f global.yaml --set=global.waiter.service_a
 
 > If you would like to scale to a production ready mesh set global.release.production to true in `global.yaml`
 
+#### Mesh Identity
+
+A `greymatter-mesh-identity-<customer_name>` configmap is created and holds a randomly generated 6 digit alpha numeric code and customer name.  These are used by the makefiles to create the named releases.  Per the Makefiles these helm releases will be of the form `<chart>-<customer_name>-<random_string>`.  This provides developers an extra layer of security for the mesh since the makefile rules load information from the existing mesh. After installation of the service mesh is complete the configmap is deleted.
+
+**To recreate the configmap using helm:**
+
+```console
+make restore-identity
+```
+
+**Reinstate the configmap manually:**
+
+Create the configmap yaml:
+
+Run `helm ls` and you will see releases of the form `<chart>-<customer_name>-<random_string>`.  Create a yaml from the template below and populate the `<customer_name>` and `<random_string>` accordingly.  Then run `kubectl apply -f <your file>`.
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: greymatter-mesh-identity-<customer_name>
+  namespace: <namespace>
+spec:
+  customer: <customer_name>
+  rand_identifier: <random_string>
+```
+
+> Once the mesh instance configmap is reinstated you will again be able to run make commands against the releases.
+> **Note, this does not protect against a user running helm uninstall manually**
+
 ### Viewing the Grey Matter Application
 
 At this point, you can verify that Grey Matter was installed successfully by opening your browser and pointing it to `https://localhost:30000` and verify that all six services are running.
