@@ -87,7 +87,7 @@ jwt:
       value: '{{ .Values.redis.name }}.{{ .Release.Namespace }}.svc'
     redis_pass:
       type: secret
-      secret: '{{ .Values.redis.secret.secret_name | default "redis-password" }}'
+      secret: '{{ .Values.redis.secret.secret_name | default "jwt-redis-password" }}'
       key: password
 
 
@@ -189,7 +189,7 @@ redis:
   name: jwt-redis
   # The secret containing the password to configure the environment variable REDIS_PASSWORD
   secret:
-    secret_name: redis-password
+    secret_name: jwt-redis-password
   # Redis image to use when global.environment=openshift
   openshift:
     image: 'centos/redis-32-centos7'
@@ -210,7 +210,7 @@ redis:
   envvars:
     redis_password:
       type: secret
-      secret: '{{ .Values.redis.secret.secret_name | default "redis-password" }}'
+      secret: '{{ .Values.redis.secret.secret_name | default "jwt-redis-password" }}'
       key: password
 
 # Sets default sidecar configurations for all sidecars
