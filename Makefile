@@ -122,6 +122,9 @@ remove-observables:
 spire-custom-ca:
 	cd spire && make custom-ca
 
+generate-certs:
+    ./certs/gen-certs.sh
+
 lint-subcharts:
 	@echo "Lint Fabric, Sense, and Spire subcharts"
 	ct lint --config .chart-testing/services.yaml
