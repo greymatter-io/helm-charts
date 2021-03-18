@@ -97,20 +97,6 @@ jwt:
   users: |-
     {
       "users": [
-          {
-        "label": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
-        "values": {
-          "email": [
-            "quickstart@greymatter.io"
-          ],
-          "org": [
-            "www.greymatter.io"
-          ],
-          "privilege": [
-            "root"
-          ]
-        }
-      },
       {
         "label": "CN=localuser,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
         "values": {
@@ -168,6 +154,20 @@ jwt:
         }
       },
       {
+        "label": "CN=greymatter.user",
+        "values": {
+          "email": [
+              "engineering@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
         "label": "O=SPIRE,C=US",
         "values": {
           "email": [
@@ -191,11 +191,12 @@ redis:
   secret:
     secret_name: jwt-redis-password
   # Redis image to use when global.environment=openshift
-  openshift:
-    image: 'centos/redis-32-centos7'
-  # Redis image to use when global.environment=kubernetes
-  k8s:
-    image: 'redis:3.2'
+  image: bitnami/redis:5.0.12
+  command:
+    - 'redis-server'
+  args:
+    - '--requirepass'
+    - "$(REDIS_PASSWORD)"
   replica_count: 1
   image_pull_policy: IfNotPresent
   # Uses global.image_pull_secret if true

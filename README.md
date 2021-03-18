@@ -43,14 +43,14 @@ To get the user cert, run these commands:
 
 ```console
 kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.crt']}" | base64 -d > tls.crt
-kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.key']}" base64 -d > tls.key
-kubectl get secret greymatter-user-cert -o jsonpath="{.data['ca\.crt']}" base64 -d > ca.crt
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.key']}" | base64 -d > tls.key
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['ca\.crt']}" | base64 -d > ca.crt
 ```
 
 Then create a new P12 to load into your browser
 
 ```console
-openssl pkcs12 -export -in tls.crt -name greymatter -inkey tls.key -passin pass:key password -certfile ca.crt -caname alias greymatter-ca -out greymatter.p12 -passout pass:pkcs12 password
+openssl pkcs12 -export -out greymatter.p12 -inkey tls.key -in tls.crt -certfile ca.crt -passout pass:password
 ```
 
 ### Installing
