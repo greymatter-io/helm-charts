@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "zk0-elect1-cluster",
+    "name": "zk0-elect1",
+    "instances": [
+        {
+            "host": "kafka-observables-zookeeper-1.kafka.svc.cluster.local",
+            "port": 3889
+        }
+    ],
+    "require_tls": false
+}

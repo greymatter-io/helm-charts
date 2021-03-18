@@ -1,0 +1,28 @@
+{
+    "zone_key": "zone-default-zone",
+    "listener_key": "zk1-client-ingress",
+    "domain_keys": [
+        "zk1-client-ingress"
+    ],
+    "name": "client-ingress",
+    "ip": "0.0.0.0",
+    "port": 2180,
+    "active_network_filters": ["gm.observables", "envoy.zookeeper_proxy", "envoy.tcp_proxy"],
+    "network_filters": {
+        "gm_observables": {
+            "useKafka": false,
+            "topic": "test-topic",
+            "eventTopic": "test-topic",
+            "decodeToProtocol": "zookeeper",
+            "emitFullResponse": true,
+            "logLevel": "debug"
+        },
+        "envoy_zookeeper_proxy": {
+            "stat_prefix": "zk_client"
+        },
+        "envoy_tcp_proxy": {
+            "stat_prefix": "client_ingress_tcp",
+            "cluster": "client"
+        }
+    }
+}

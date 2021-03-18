@@ -1,0 +1,17 @@
+{
+    "zone_key": "zone-default-zone",
+    "listener_key": "zk0-follower2-egress",
+    "domain_keys": [
+        "zk0-follower2-egress"
+    ],
+    "name": "follower2-egress",
+    "ip": "127.0.0.1",
+    "port": 2892,
+    "active_network_filters": ["envoy.tcp_proxy"],
+    "network_filters": {
+        "envoy_tcp_proxy": {
+            "stat_prefix": "follower2_egress_tcp",
+            "cluster": "zk0-follower2"
+        }
+    }
+}

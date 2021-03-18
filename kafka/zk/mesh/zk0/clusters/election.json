@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "zk0-elect-cluster",
+    "name": "election",
+    "instances": [
+        {
+            "host": "127.0.0.1",
+            "port": 3888
+        }
+    ],
+    "require_tls": false
+}

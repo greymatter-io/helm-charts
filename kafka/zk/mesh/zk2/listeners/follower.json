@@ -1,0 +1,17 @@
+{
+    "zone_key": "zone-default-zone",
+    "listener_key": "zk2-follower-ingress",
+    "domain_keys": [
+        "zk2-follower-ingress"
+    ],
+    "name": "follower-ingress",
+    "ip": "0.0.0.0",
+    "port": 2889,
+    "active_network_filters": ["envoy.tcp_proxy"],
+    "network_filters": {
+        "envoy_tcp_proxy": {
+            "stat_prefix": "follower_ingress_tcp",
+            "cluster": "follower"
+        }
+    }
+}

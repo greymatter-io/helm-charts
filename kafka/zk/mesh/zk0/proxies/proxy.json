@@ -1,0 +1,24 @@
+{
+    "zone_key": "zone-default-zone",
+    "proxy_key": "zk0-proxy",
+    "domain_keys": [
+        "zk0-client-ingress",
+        "zk0-follower-ingress",
+        "zk0-election-ingress",
+        "zk0-follower1-egress",
+        "zk0-follower2-egress",
+        "zk0-election1-egress",
+        "zk0-election2-egress"
+    ],
+    "listener_keys": [
+        "zk0-client-ingress",
+        "zk0-follower-ingress",
+        "zk0-election-ingress",
+        "zk0-follower1-egress",
+        "zk0-follower2-egress",
+        "zk0-election1-egress",
+        "zk0-election2-egress"
+    ],
+    "name": "zookeeper-0",
+    "listeners": null
+}

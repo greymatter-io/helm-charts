@@ -1,0 +1,24 @@
+{
+    "zone_key": "zone-default-zone",
+    "proxy_key": "zk2-proxy",
+    "domain_keys": [
+        "zk2-client-ingress",
+        "zk2-follower-ingress",
+        "zk2-election-ingress",
+        "zk2-follower1-egress",
+        "zk2-follower2-egress",
+        "zk2-election1-egress",
+        "zk2-election2-egress"
+    ],
+    "listener_keys": [
+        "zk2-client-ingress",
+        "zk2-follower-ingress",
+        "zk2-election-ingress",
+        "zk2-follower1-egress",
+        "zk2-follower2-egress",
+        "zk2-election1-egress",
+        "zk2-election2-egress"
+    ],
+    "name": "zookeeper-2",
+    "listeners": null
+}

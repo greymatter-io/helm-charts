@@ -146,12 +146,7 @@ spec:
       containers:
         - name: sidecar
           image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
-          imagePullPolicy: "Always"
-          args:
-            - -c
-            - /etc/greymatter/config.yaml
-          command:
-            - /app/gm-proxy
+          imagePullPolicy: "IfNotPresent"
           env:
             - name: PROXY_DYNAMIC
               value: "true"
@@ -163,6 +158,8 @@ spec:
               value: "control.default.svc"
             - name: XDS_PORT
               value: "50000"
+            - name: ENVOY_LOG_LEVEL
+              value: info
             - name: XDS_ZONE
               value: "zone-default-zone"
           ports:
@@ -185,9 +182,6 @@ spec:
             - name: spire-socket
               mountPath: /run/spire/socket
               readOnly: false
-            - name: sidecar-config
-              mountPath: /etc/greymatter
-              readOnly: true
         - name: zookeeper
           image: docker.io/bitnami/zookeeper:3.6.1-debian-10-r7
           imagePullPolicy: "IfNotPresent"
@@ -278,9 +272,6 @@ spec:
       imagePullSecrets:
         - name: docker.secret
       volumes:
-        - name: sidecar-config
-          configMap:
-            name: zk0-sidecar
         - name: spire-socket
           hostPath:
             path: /run/spire/socket
@@ -294,7 +285,7 @@ spec:
           - "ReadWriteOnce"
         resources:
           requests:
-            storage: "8Gi"
+            storage: "1Gi"
 ---
 # zk sts 1
 # Source: kafka/charts/zookeeper/templates/statefulset.yaml
@@ -348,12 +339,7 @@ spec:
       containers:
         - name: sidecar
           image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
-          imagePullPolicy: "Always"
-          args:
-            - -c
-            - /etc/greymatter/config.yaml
-          command:
-            - /app/gm-proxy
+          imagePullPolicy: "IfNotPresent"
           env:
             - name: PROXY_DYNAMIC
               value: "true"
@@ -365,6 +351,8 @@ spec:
               value: "control.default.svc"
             - name: XDS_PORT
               value: "50000"
+            - name: ENVOY_LOG_LEVEL
+              value: info
             - name: XDS_ZONE
               value: "zone-default-zone"
           ports:
@@ -387,9 +375,6 @@ spec:
             - name: spire-socket
               mountPath: /run/spire/socket
               readOnly: false
-            - name: sidecar-config
-              mountPath: /etc/greymatter
-              readOnly: true
         - name: zookeeper
           image: docker.io/bitnami/zookeeper:3.6.1-debian-10-r7
           imagePullPolicy: "IfNotPresent"
@@ -485,9 +470,6 @@ spec:
       imagePullSecrets:
         - name: docker.secret
       volumes:
-        - name: sidecar-config
-          configMap:
-            name: zk1-sidecar
         - name: spire-socket
           hostPath:
             path: /run/spire/socket
@@ -501,7 +483,7 @@ spec:
           - "ReadWriteOnce"
         resources:
           requests:
-            storage: "8Gi"
+            storage: "1Gi"
 ---
 # zk sts 2
 # Source: kafka/charts/zookeeper/templates/statefulset.yaml
@@ -555,12 +537,7 @@ spec:
       containers:
         - name: sidecar
           image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
-          imagePullPolicy: "Always"
-          args:
-            - -c
-            - /etc/greymatter/config.yaml
-          command:
-            - /app/gm-proxy
+          imagePullPolicy: "IfNotPresent"
           env:
             - name: PROXY_DYNAMIC
               value: "true"
@@ -572,6 +549,8 @@ spec:
               value: "control.default.svc"
             - name: XDS_PORT
               value: "50000"
+            - name: ENVOY_LOG_LEVEL
+              value: info
             - name: XDS_ZONE
               value: "zone-default-zone"
           ports:
@@ -594,9 +573,6 @@ spec:
             - name: spire-socket
               mountPath: /run/spire/socket
               readOnly: false
-            - name: sidecar-config
-              mountPath: /etc/greymatter
-              readOnly: true
         - name: zookeeper
           image: docker.io/bitnami/zookeeper:3.6.1-debian-10-r7
           imagePullPolicy: "IfNotPresent"
@@ -692,9 +668,6 @@ spec:
       imagePullSecrets:
         - name: docker.secret
       volumes:
-        - name: sidecar-config
-          configMap:
-            name: zk2-sidecar
         - name: spire-socket
           hostPath:
             path: /run/spire/socket
@@ -708,7 +681,7 @@ spec:
           - "ReadWriteOnce"
         resources:
           requests:
-            storage: "8Gi"
+            storage: "1Gi"
 ---
 # Source: kafka/templates/statefulset.yaml
 apiVersion: apps/v1
@@ -922,7 +895,7 @@ spec:
           - "ReadWriteOnce"
         resources:
           requests:
-            storage: "8Gi"
+            storage: "1Gi"
 ---
 # Source: kafka/templates/statefulset.yaml
 apiVersion: apps/v1
@@ -1136,7 +1109,7 @@ spec:
           - "ReadWriteOnce"
         resources:
           requests:
-            storage: "8Gi"
+            storage: "1Gi"
 ---
 # Source: kafka/templates/statefulset.yaml
 apiVersion: apps/v1
@@ -1350,4 +1323,4 @@ spec:
           - "ReadWriteOnce"
         resources:
           requests:
-            storage: "8Gi"
+            storage: "1Gi"
