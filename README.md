@@ -47,7 +47,7 @@ kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.key']}" | base
 kubectl get secret greymatter-user-cert -o jsonpath="{.data['ca\.crt']}" | base64 -d > ca.crt
 ```
 
-Then create a new P12 to load into your browser
+Then create a new p12 certificate to load into your browser:
 
 ```console
 openssl pkcs12 -export -out greymatter.p12 -inkey tls.key -in tls.crt -certfile ca.crt -passout pass:password
