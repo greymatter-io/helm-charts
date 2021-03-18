@@ -42,9 +42,9 @@ If you want to use the auto generated certs, you can set `.Values.global.auto_ge
 To get the user cert, run these commands:
 
 ```console
-kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.crt']}" > tls.crt
-kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.key']}" > tls.key
-kubectl get secret greymatter-user-cert -o jsonpath="{.data['ca\.crt']}" > ca.crt
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.crt']}" | base64 -d > tls.crt
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.key']}" base64 -d > tls.key
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['ca\.crt']}" base64 -d > ca.crt
 ```
 
 Then create a new P12 to load into your browser

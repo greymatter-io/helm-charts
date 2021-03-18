@@ -1,5 +1,7 @@
 global:
-  # Generates random certs for edge ingress. Also generates a random user cert to enable ingress. If you have legitamite certificates you would like to use for ingress, those can be provided in secrets/edge.certificates.ingress
+  # Generates random certs for edge ingress. Also generates a random user cert to enable ingress.
+  # If you have legitamite certificates you would like to use for ingress, those can be provided in
+  # secrets/edge.certificates.ingress
   # FOR DEMO/TEST PURPOSES ONLY
   auto_generate_edge_certs: true
 
