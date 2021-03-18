@@ -39,7 +39,7 @@ If you want to use the auto generated certs, you can set `.Values.global.auto_ge
 
 >If you want to provide your own valid certificates for ingress, set `.Values.global.auto_generate_edge_certs` to `false` and provide the cert information in the secrets chart, at `.Values.edge.certificate.ingress`
 
-To get the user cert, run these commands:
+To get the user certificate, run these commands:
 
 ```console
 kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.crt']}" | base64 -d > tls.crt
