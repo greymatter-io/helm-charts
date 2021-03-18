@@ -35,7 +35,7 @@ make credentials
 
 By default, Grey Matter leverages mutual TLS (mTLS) communications for all traffic, including inbound traffic to the mesh. This means that all `https` requests must include TLS certificates whether that be via a web browser or RESTful client. The Grey Matter helm charts have the ability to generate random Ingress and User certificates to ensure unique certificates every time a cluster is launched. For web based authentication, these certificates can then be imported into a web browser, to access resources in the mesh.
 
-If you want to use the auto generated certs, you can set `.Values.global.auto_generate_edge_certs` to `true` and it will create a self-signed certificate for ingress and one for a user certificate.
+If you want to use the auto generated certs, you can set `.Values.global.auto_generate_edge_certs` to `true` and it will create a self-signed certificate for Ingress and one for a User certificate.
 
 >If you want to provide your own valid certificates for ingress, set `.Values.global.auto_generate_edge_certs` to `false` and provide the cert information in the secrets chart, at `.Values.edge.certificate.ingress`
 
