@@ -31,6 +31,28 @@ A Grey Matter LDAP account is still required to pull the images from our Nexus s
 make credentials
 ```
 
+### Auto Generate Certificates
+
+By default, Grey Matter leverages mTLS communications for all traffic, including inbound traffic to the mesh. This means that a user is required to load a certificate into the browser to access Grey Matter. The Grey Matter helm charts have the ability to generate random Ingress certificates and User certificates to ensure unique certs everytime a cluster is launched.
+
+If you want to use the auto generated certs, you can set `.Values.global.auto_generate_edge_certs` to `true` and it will create a self-signed certificate for ingress and one for a user certificate.
+
+>If you want to provide your own valid certificates for ingress, set `.Values.global.auto_generate_edge_certs` to `false` and provide the cert information in the secrets chart, at `.Values.edge.certificate.ingress`
+
+To get the user cert, run these commands:
+
+```console
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.crt']}" > tls.crt
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.key']}" > tls.key
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['ca\.crt']}" > ca.crt
+```
+
+Then create a new P12 to load into your browser
+
+```console
+openssl pkcs12 -export -in tls.crt -name greymatter -inkey tls.key -passin pass:key password -certfile ca.crt -caname alias greymatter-ca -out greymatter.p12 -passout pass:pkcs12 password
+```
+
 ### Installing
 
 The following set of commands will install Grey Matter using the GitHub hosted Helm Charts.
