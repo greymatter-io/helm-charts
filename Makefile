@@ -93,10 +93,10 @@ template: dev-dep $(BUILD_NUMBER_FILE)
 
 
 secrets:
-	cd secrets && make secrets
+	@cd secrets && make secrets
 
 remove-secrets:
-	helm uninstall secrets
+	@helm uninstall secrets
 
 credentials:
 	@cd secrets && make credentials

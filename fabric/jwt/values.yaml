@@ -32,7 +32,6 @@ global:
     production: false
     default_replicas: 3
 
-
 jwt:
   # Name used for the deployment and service resources
   name: jwt-security
@@ -78,10 +77,10 @@ jwt:
       value: 'info'
     redis_port:
       type: value
-      value: "6379"
+      value: '6379'
     redis_db:
       type: value
-      value: "0"
+      value: '0'
     redis_host:
       type: value
       value: '{{ .Values.redis.name }}.{{ .Release.Namespace }}.svc'
@@ -90,27 +89,12 @@ jwt:
       secret: '{{ .Values.redis.secret.secret_name | default "jwt-redis-password" }}'
       key: password
 
-
   # Provides a list of authorized users for the JWT service - preloaded with the DNs for GM Control, GM Catalog and the Mesh cert
   users_cg_name: jwt-users
   # A JSON list of users that will be permited access to JWT
   users: |-
     {
       "users": [
-          {
-        "label": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
-        "values": {
-          "email": [
-            "quickstart@greymatter.io"
-          ],
-          "org": [
-            "www.greymatter.io"
-          ],
-          "privilege": [
-            "root"
-          ]
-        }
-      },
       {
         "label": "CN=localuser,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
         "values": {
@@ -168,6 +152,20 @@ jwt:
         }
       },
       {
+        "label": "CN=greymatter.user",
+        "values": {
+          "email": [
+              "engineering@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
         "label": "O=SPIRE,C=US",
         "values": {
           "email": [
@@ -182,7 +180,6 @@ jwt:
         }
       }]
     }
-
 
 redis:
   # Name used for the redis deployment and service resources
