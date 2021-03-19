@@ -31,6 +31,28 @@ A Grey Matter LDAP account is still required to pull the images from our Nexus s
 make credentials
 ```
 
+### Auto Generate Certificates
+
+By default, Grey Matter leverages mutual TLS (mTLS) communications for all traffic, including inbound traffic to the mesh. This means that all `https` requests must include TLS certificates whether that be via a web browser or RESTful client. The Grey Matter helm charts have the ability to generate random Ingress and User certificates to ensure unique certificates every time a cluster is launched. For web based authentication, these certificates can then be imported into a web browser, to access resources in the mesh.
+
+If you want to use the auto generated certs, you can set `.Values.global.auto_generate_edge_certs` to `true` and it will create a self-signed certificate for Ingress and one for a User certificate.
+
+>If you want to provide your own valid certificates for ingress, set `.Values.global.auto_generate_edge_certs` to `false` and provide the cert information in the secrets chart, at `.Values.edge.certificate.ingress`
+
+To get the user certificate, run these commands:
+
+```console
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.crt']}" | base64 -d > tls.crt
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.key']}" | base64 -d > tls.key
+kubectl get secret greymatter-user-cert -o jsonpath="{.data['ca\.crt']}" | base64 -d > ca.crt
+```
+
+Then create a new p12 certificate to load into your browser:
+
+```console
+openssl pkcs12 -export -out greymatter.p12 -inkey tls.key -in tls.crt -certfile ca.crt -passout pass:password
+```
+
 ### Installing
 
 The following set of commands will install Grey Matter using the GitHub hosted Helm Charts.
@@ -44,6 +66,36 @@ helm install sense greymatter/sense -f global.yaml --set=global.waiter.service_a
 ```
 
 > If you would like to scale to a production ready mesh set global.release.production to true in `global.yaml`
+
+#### Mesh Identity
+
+A `greymatter-mesh-identity-<customer_name>` configmap is created and holds a randomly generated 6 digit alpha numeric code and customer name.  These are used by the makefiles to create the named releases.  Per the Makefiles these helm releases will be of the form `<chart>-<customer_name>-<random_string>`.  This provides developers an extra layer of security for the mesh since the makefile rules load information from the existing mesh. After installation of the service mesh is complete the configmap is deleted.
+
+**To recreate the configmap using helm:**
+
+```console
+make restore-identity
+```
+
+**Reinstate the configmap manually:**
+
+Create the configmap yaml:
+
+Run `helm ls` and you will see releases of the form `<chart>-<customer_name>-<random_string>`.  Create a yaml from the template below and populate the `<customer_name>` and `<random_string>` accordingly.  Then run `kubectl apply -f <your file>`.
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: greymatter-mesh-identity-<customer_name>
+  namespace: <namespace>
+spec:
+  customer: <customer_name>
+  rand_identifier: <random_string>
+```
+
+> Once the mesh instance configmap is reinstated you will again be able to run make commands against the releases.
+> **Note, this does not protect against a user running helm uninstall manually**
 
 ### Viewing the Grey Matter Application
 
