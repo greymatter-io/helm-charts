@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "zk0-client-cluster",
+    "name": "client",
+    "instances": [
+        {
+            "host": "127.0.0.1",
+            "port": 2181
+        }
+    ],
+    "require_tls": false
+}

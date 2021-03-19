@@ -1,0 +1,17 @@
+{
+    "zone_key": "zone-default-zone",
+    "listener_key": "zk2-client-ingress",
+    "domain_keys": [
+        "zk2-client-ingress"
+    ],
+    "name": "client-ingress",
+    "ip": "0.0.0.0",
+    "port": 2180,
+    "active_network_filters": ["envoy.tcp_proxy"],
+    "network_filters": {
+        "envoy_tcp_proxy": {
+            "stat_prefix": "client_ingress_tcp",
+            "cluster": "client"
+        }
+    }
+}

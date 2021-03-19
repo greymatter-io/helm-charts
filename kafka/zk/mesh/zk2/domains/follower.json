@@ -1,0 +1,7 @@
+{
+    "zone_key": "zone-default-zone",
+    "domain_key": "zk2-follower-ingress",
+    "name": "*",
+    "port": 2889,
+    "force_https": false
+}

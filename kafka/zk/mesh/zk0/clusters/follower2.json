@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "zk0-follower2-cluster",
+    "name": "zk0-follower2",
+    "instances": [
+        {
+            "host": "kafka-observables-zookeeper-2.kafka.svc.cluster.local",
+            "port": 2889
+        }
+    ],
+    "require_tls": false
+}

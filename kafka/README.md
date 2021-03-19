@@ -25,6 +25,28 @@ This directory contains the files needed to install kafka with 3 brokers with a 
 
 3. Install kafka/sidecars
 
+    Apply gm config:
+
+    ```bash
+    for cl in kafka/zk/mesh/zk0/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/zk/mesh/zk0/domains/*.json; do greymatter create domain < $cl; done
+    for cl in kafka/zk/mesh/zk0/listeners/*.json; do greymatter create listener < $cl; done
+    for cl in kafka/zk/mesh/zk0/proxies/*.json; do greymatter create proxy < $cl; done
+    for cl in kafka/zk/mesh/zk0/routes/*.json; do greymatter create route < $cl; done
+    for cl in kafka/zk/mesh/zk1/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/zk/mesh/zk1/domains/*.json; do greymatter create domain < $cl; done
+    for cl in kafka/zk/mesh/zk1/listeners/*.json; do greymatter create listener < $cl; done
+    for cl in kafka/zk/mesh/zk1/proxies/*.json; do greymatter create proxy < $cl; done
+    for cl in kafka/zk/mesh/zk1/routes/*.json; do greymatter create route < $cl; done
+    for cl in kafka/zk/mesh/zk2/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/zk/mesh/zk2/domains/*.json; do greymatter create domain < $cl; done
+    for cl in kafka/zk/mesh/zk2/listeners/*.json; do greymatter create listener < $cl; done
+    for cl in kafka/zk/mesh/zk2/proxies/*.json; do greymatter create proxy < $cl; done
+    for cl in kafka/zk/mesh/zk2/routes/*.json; do greymatter create route < $cl; done
+    ```
+
+    And apply:
+
     ```bash
     kubectl apply -f kafka/configmap-b0.yaml
     kubectl apply -f kafka/configmap-b1.yaml
@@ -32,31 +54,26 @@ This directory contains the files needed to install kafka with 3 brokers with a 
     kubectl apply -f kafka/svc-b0.yaml
     kubectl apply -f kafka/svc-b1.yaml
     kubectl apply -f kafka/svc-b2.yaml
-    kubectl apply -f kafka/zk/zk0-configmap.yaml
-    kubectl apply -f kafka/zk/zk1-configmap.yaml
-    kubectl apply -f kafka/zk/zk2-configmap.yaml
     kubectl apply -f kafka/zk/zk0-svc.yaml
     kubectl apply -f kafka/zk/zk1-svc.yaml
     kubectl apply -f kafka/zk/zk2-svc.yaml
     kubectl apply -f kafka/kafka_template.yaml -n kafka
     ```
 
+    To delete:
 
-```bash
+    ```bash
     kubectl delete -f kafka/configmap-b0.yaml
     kubectl delete -f kafka/configmap-b1.yaml
     kubectl delete -f kafka/configmap-b2.yaml
     kubectl delete -f kafka/svc-b0.yaml
     kubectl delete -f kafka/svc-b1.yaml
     kubectl delete -f kafka/svc-b2.yaml
-    kubectl delete -f kafka/zk/zk0-configmap.yaml
-    kubectl delete -f kafka/zk/zk1-configmap.yaml
-    kubectl delete -f kafka/zk/zk2-configmap.yaml
     kubectl delete -f kafka/zk/zk0-svc.yaml
     kubectl delete -f kafka/zk/zk1-svc.yaml
     kubectl delete -f kafka/zk/zk2-svc.yaml
     kubectl delete -f kafka/kafka_template.yaml -n kafka
-```
+    ```
 
 4. Wait for pods to reach running states
 
