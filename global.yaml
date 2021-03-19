@@ -66,11 +66,11 @@ global:
 
   # Configure services to use the same certs
   global_certs:
-    enabled: false
+    enabled: true
     certificates:
       # if from file is true the there must be a ca.crt, server.crt, and server.key files in the secrets/<$path> directory
       from_file:
-        enabled: false
+        enabled: true
         path: files/certs/global
       ca: |-
         -----BEGIN CERTIFICATE-----
