@@ -18,6 +18,7 @@ spec:
       labels:
         {{ .Values.global.control.cluster_label }}: {{ .Values.mongo.name }}
     spec:
+      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       {{- if eq .Values.global.environment "eks" }}
       securityContext:
         runAsUser: 2000
@@ -28,6 +29,7 @@ spec:
         runAsUser: 2000
         runAsGroup: 0
         fsGroup: 2000
+      {{- end }}
       {{- end }}
       containers:
       - env:
