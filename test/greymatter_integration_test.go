@@ -245,7 +245,6 @@ func verifyPods(t *testing.T, kubectlOptions *k8s.KubectlOptions, expectedPodCou
 
 func extractCerts(t *testing.T, kubectlOptions *k8s.KubectlOptions, secret string) {
 	userCertSecret := k8s.GetSecret(t, kubectlOptions, secret)
-
 	err := ioutil.WriteFile("../certs/tls.crt", userCertSecret.Data["tls.crt"], 0644)
 	if err != nil {
 		log.Fatal(err)

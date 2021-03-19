@@ -10,11 +10,20 @@ global:
 
 redis:
   name: mesh-redis
-  image: 'redis:3.2'
+  image: bitnami/redis:5.0.12
   replica_count: 1
   image_pull_policy: IfNotPresent
   # Uses global.image_pull_secret if true
   private_image: false
+  command:
+    - "redis-server"
+  args:
+    - "--appendonly"
+    - "yes"
+    - "--requirepass"
+    - "$(REDIS_PASSWORD)"
+    - "--dir"
+    - "/data"
   secret:
     secret_name: greymatter-mesh-redis-password
   storage:
