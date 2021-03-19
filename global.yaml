@@ -20,9 +20,10 @@ global:
     cluster_label: greymatter.io/control
     # Comma delimited string of namespaces for control to monitor. Also used by prometheus.
     additional_namespaces: kafka
-  
+
   release:
     # release.production: true will increase all (except control-api) replicas to the default_replicas.  Otherwise the default for each chart will be used
+    customer: "greymatter-dev"
     production: false
     default_replicas: 3
 
@@ -38,13 +39,14 @@ global:
   # If an external Redis service is not needed, an internal Redis service is launched by setting `disabled` below to true
   external_redis:
     disabled: true
+    secret_name: greymatter-mesh-redis-password
     host: ''
     port: '6379'
     use_tls: false
     ca_cert_path: ''
     server_cert_path: ''
     server_key_path: ''
-    pass: ''
+    password: ''
     control_api_db: 0
     catalog_db: 1
     max_retries: 50
@@ -66,11 +68,11 @@ global:
 
   # Configure services to use the same certs
   global_certs:
-    enabled: false
+    enabled: true
     certificates:
       # if from file is true the there must be a ca.crt, server.crt, and server.key files in the secrets/<$path> directory
       from_file:
-        enabled: false
+        enabled: true
         path: files/certs/global
       ca: |-
         -----BEGIN CERTIFICATE-----
