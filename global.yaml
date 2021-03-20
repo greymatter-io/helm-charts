@@ -5,8 +5,19 @@ global:
   environment: kubernetes
   # Used to configure control and control-api environment variables
   zone: zone-default-zone
-  # domain used to template catalog's apiEndpoint cluster config and configure edge
+
+  # The domain of the Grey Matter installation. If deploying to a known domain
+  # where Grey Matter needs an ingress url, set this to the domain. E.g:
+  # "mydomain.com", when the full url would be https://greymatter.mydomain.com
+  #
+  # When deploying for local development, using localhost:30000 provides an easy
+  # alternative for local ingress
   domain: localhost:30000
+
+  # If deploying to a known domain where Grey Matter needs an ingress url, set
+  # this to the url prefix. E.g.: "greymatter", when the full url would be
+  # https://greymatter.mydomain.com
+  route_url_name:
   # Whether to use consul for service discovery
   consul:
     enabled: false
