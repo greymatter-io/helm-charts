@@ -37,13 +37,13 @@ global:
   # Global sidecar configuration
   sidecar:
     version: 1.5.1
-    dn: CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US
+    dn: CN=greymatter.user,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US
   # Global rbac configuration for service admin principal.
   rbac:
     admin:
       header_name: user_dn
       match_type: exact_match
-      header_value: CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US
+      header_value: CN=greymatter.user,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US
   # To use global certs or not
   global_certs:
     enabled: true
