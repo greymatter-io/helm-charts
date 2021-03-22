@@ -36,13 +36,12 @@ spec:
         - name: redis
           image: {{ tpl .Values.redis.image $ | quote }}
           imagePullPolicy: {{ .Values.redis.image_pull_policy }}
+        {{- if .Values.redis.command }}
           command:
-            - "redis-server"
+{{ toYaml .Values.redis.command | indent 10 }}
           args:
-            - "--appendonly"
-            - "yes"
-            - "--requirepass"
-            - "$(REDIS_PASSWORD)"
+{{ toYaml .Values.redis.args | indent 10 }}
+        {{- end }}
           env:
           {{- include "envvars" (dict "envvar" .Values.redis.envvars "top" $) | indent 12 }}
         {{- if .Values.redis.resources }}

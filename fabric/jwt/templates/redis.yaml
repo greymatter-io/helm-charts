@@ -27,15 +27,14 @@ spec:
     spec:
       containers:
         - name: redis
-          {{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
-          image: {{ .Values.redis.openshift.image }}
-          {{- else }}
-          image: {{ .Values.redis.k8s.image }}
+          image: {{ .Values.redis.image }}
+          {{- if .Values.redis.command }}
           command:
-            - 'redis-server'
+{{ toYaml .Values.redis.command | indent 12 }}
+          {{- end }}
+          {{- if .Values.redis.args }}
           args:
-            - '--requirepass'
-            - "$(REDIS_PASSWORD)"
+{{ toYaml .Values.redis.args | indent 12 }}
           {{- end }}
           env:
           {{- include "jwt.envvars" (dict "envvar" .Values.redis.envvars "top" $) | indent 12 }}
@@ -53,6 +52,3 @@ spec:
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-#  test: false
-#  triggers:
-#    - type: ConfigChange
