@@ -23,6 +23,30 @@ entries:
   data:
   - apiVersion: v2
     appVersion: 1.1.5
+    created: "2021-03-22T13:27:21.57997921Z"
+    dependencies:
+    - alias: data
+      condition: global.data.external.enabled
+      name: gm-data
+      repository: file://./gm-data
+      version: 3.0.6
+    description: A Helm chart to deploy Grey Matter Data
+    digest: 21ca2b5152224a256d744b3127405047ab67fe55565074e344b255b83645bd53
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - data
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: data
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/data-3.0.5/data-3.0.5.tgz
+    version: 3.0.5
+  - apiVersion: v2
+    appVersion: 1.1.5
     created: "2021-03-15T16:21:18.348868308Z"
     dependencies:
     - alias: data
@@ -287,6 +311,39 @@ entries:
     - https://github.com/greymatter-io/helm-charts/releases/download/edge-3.0.0/edge-3.0.0.tgz
     version: 3.0.0
   fabric:
+  - apiVersion: v2
+    appVersion: 1.3.0
+    created: "2021-03-22T13:27:21.730325581Z"
+    dependencies:
+    - name: control-api
+      repository: file://./control-api
+      version: 3.0.15
+    - name: control
+      repository: file://./control
+      version: 3.0.4
+    - name: jwt
+      repository: file://./jwt
+      version: 3.0.5
+    - alias: mesh-redis
+      condition: global.external_redis.disabled
+      name: redis
+      repository: file://./redis
+      version: 1.0.5
+    description: A Helm chart to deploy Grey Matter Fabric
+    digest: cadbef9c339cb0f50ea44bed266fe6ee8ac911613baf02b23c83798dac4f2bfa
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - fabric
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: fabric
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/fabric-3.0.15/fabric-3.0.15.tgz
+    version: 3.0.15
   - apiVersion: v2
     appVersion: 1.3.0
     created: "2021-03-19T18:32:00.705284576Z"
