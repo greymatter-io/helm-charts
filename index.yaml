@@ -986,6 +986,23 @@ entries:
     version: 1.4.0
   secrets:
   - apiVersion: v1
+    created: "2021-03-23T17:04:07.474181841Z"
+    description: A Helm chart to deploy secrets
+    digest: 3db7d1e176dd3fd3833a007c6143ef56fd14c02359818ec902c7ee3c17ae808f
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - sense
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: secrets
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/secrets-2.4.2/secrets-2.4.2.tgz
+    version: 2.4.2
+  - apiVersion: v1
     created: "2021-03-21T16:46:57.220221067Z"
     description: A Helm chart to deploy secrets
     digest: 1c15503c8ebd38836701e911bfa269bf6ab38d44fea0eee26e91194b97ee6206
