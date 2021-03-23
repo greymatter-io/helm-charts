@@ -38,7 +38,7 @@
 			"principals": [{
 			    "header": {
 				"name": "user_dn",
-				"exact_match": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US"
+				"exact_match": "CN=greymatter.user,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US"
 			    }
 			}]
 		    },
