@@ -120,6 +120,7 @@ spec:
       app.kubernetes.io/name: zookeeper-0
       app.kubernetes.io/instance: kafka-observables
       app.kubernetes.io/component: zookeeper-0
+      greymatter.io/control: zookeeper-0
   template:
     metadata:
       name: kafka-observables-zookeeper
@@ -129,6 +130,7 @@ spec:
         app.kubernetes.io/instance: kafka-observables
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: zookeeper-0
+        greymatter.io/control: zookeeper-0
     spec:
       securityContext:
         fsGroup: 1001
@@ -313,6 +315,7 @@ spec:
       app.kubernetes.io/name: zookeeper-1
       app.kubernetes.io/instance: kafka-observables
       app.kubernetes.io/component: zookeeper-1
+      greymatter.io/control: zookeeper-1
   template:
     metadata:
       name: kafka-observables-zookeeper
@@ -322,6 +325,7 @@ spec:
         app.kubernetes.io/instance: kafka-observables
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: zookeeper-1
+        greymatter.io/control: zookeeper-1
     spec:
       securityContext:
         fsGroup: 1001
@@ -511,6 +515,7 @@ spec:
       app.kubernetes.io/name: zookeeper-2
       app.kubernetes.io/instance: kafka-observables
       app.kubernetes.io/component: zookeeper-2
+      greymatter.io/control: zookeeper-2
   template:
     metadata:
       name: kafka-observables-zookeeper
@@ -520,6 +525,7 @@ spec:
         app.kubernetes.io/instance: kafka-observables
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/component: zookeeper-2
+        greymatter.io/control: zookeeper-2
     spec:
       securityContext:
         fsGroup: 1001
@@ -743,11 +749,6 @@ spec:
         - name: sidecar
           image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
           imagePullPolicy: "Always"
-          args:
-            - -c
-            - /etc/greymatter/config.yaml
-          command:
-            - /app/gm-proxy
           env:
             - name: PROXY_DYNAMIC
               value: "true"
@@ -775,9 +776,6 @@ spec:
             - name: spire-socket
               mountPath: /run/spire/socket
               readOnly: false
-            - name: sidecar-config
-              mountPath: /etc/greymatter
-              readOnly: true
         - name: kafka
           image: docker.io/bitnami/kafka:2.7.0-debian-10-r1
           imagePullPolicy: "IfNotPresent"
@@ -799,7 +797,7 @@ spec:
             - name: KAFKA_CFG_LISTENERS
               value: "PLAINTEXT://:$(KAFKA_PORT_NUMBER)"
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://:9092"
+              value: "PLAINTEXT://127.0.0.1:9092"
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
             - name: KAFKA_CFG_BROKER_ID
@@ -884,9 +882,6 @@ spec:
           hostPath:
             path: /run/spire/socket
             type: DirectoryOrCreate
-        - name: sidecar-config
-          configMap:
-            name: kafka-broker-sidecar-0
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -957,11 +952,6 @@ spec:
         - name: sidecar
           image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
           imagePullPolicy: "Always"
-          args:
-            - -c
-            - /etc/greymatter/config.yaml
-          command:
-            - /app/gm-proxy
           env:
             - name: PROXY_DYNAMIC
               value: "true"
@@ -989,9 +979,6 @@ spec:
             - name: spire-socket
               mountPath: /run/spire/socket
               readOnly: false
-            - name: sidecar-config
-              mountPath: /etc/greymatter
-              readOnly: true
         - name: kafka
           image: docker.io/bitnami/kafka:2.7.0-debian-10-r1
           imagePullPolicy: "IfNotPresent"
@@ -1013,7 +1000,7 @@ spec:
             - name: KAFKA_CFG_LISTENERS
               value: "PLAINTEXT://:$(KAFKA_PORT_NUMBER)"
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://:9093"
+              value: "PLAINTEXT://127.0.0.1:9093"
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
             - name: KAFKA_CFG_BROKER_ID
@@ -1098,9 +1085,6 @@ spec:
           hostPath:
             path: /run/spire/socket
             type: DirectoryOrCreate
-        - name: sidecar-config
-          configMap:
-            name: kafka-broker-sidecar-1
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -1171,11 +1155,6 @@ spec:
         - name: sidecar
           image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
           imagePullPolicy: "Always"
-          args:
-            - -c
-            - /etc/greymatter/config.yaml
-          command:
-            - /app/gm-proxy
           env:
             - name: PROXY_DYNAMIC
               value: "true"
@@ -1203,9 +1182,6 @@ spec:
             - name: spire-socket
               mountPath: /run/spire/socket
               readOnly: false
-            - name: sidecar-config
-              mountPath: /etc/greymatter
-              readOnly: true
         - name: kafka
           image: docker.io/bitnami/kafka:2.7.0-debian-10-r1
           imagePullPolicy: "IfNotPresent"
@@ -1227,7 +1203,7 @@ spec:
             - name: KAFKA_CFG_LISTENERS
               value: "PLAINTEXT://:$(KAFKA_PORT_NUMBER)"
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://:9094"
+              value: "PLAINTEXT://127.0.0.1:9094"
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
             - name: KAFKA_CFG_BROKER_ID
@@ -1312,9 +1288,6 @@ spec:
           hostPath:
             path: /run/spire/socket
             type: DirectoryOrCreate
-        - name: sidecar-config
-          configMap:
-            name: kafka-broker-sidecar-2
   volumeClaimTemplates:
     - metadata:
         name: data

@@ -1,0 +1,17 @@
+{
+    "zone_key": "zone-default-zone",
+    "listener_key": "b2-b0-egress",
+    "domain_keys": [
+        "b2-b0-egress"
+    ],
+    "name": "b2-b0-egress",
+    "ip": "127.0.0.1",
+    "port": 9092,
+    "active_network_filters": ["envoy.tcp_proxy"],
+    "network_filters": {
+        "envoy_tcp_proxy": {
+            "stat_prefix": "b0_egress_tcp",
+            "cluster": "b2-b0-egress"
+        }
+    }
+}

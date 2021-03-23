@@ -1,0 +1,13 @@
+{
+    "zone_key": "zone-default-zone",
+    "domain_key": "edge",
+    "route_key": "edge-zookeeper-2-route-slash",
+    "path": "/services/zookeeper-2/latest",
+    "prefix_rewrite": "/services/zookeeper-2/latest/",
+    "redirects": null,
+    "shared_rules_key": "edge-zookeeper-2-shared-rules",
+    "rules": null,
+    "response_data": {},
+    "cohort_seed": null,
+    "retry_policy": null
+}

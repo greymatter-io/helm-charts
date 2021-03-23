@@ -45,6 +45,27 @@ This directory contains the files needed to install kafka with 3 brokers with a 
     for cl in kafka/zk/mesh/zk2/routes/*.json; do greymatter create route < $cl; done
     ```
 
+    Apply kafka broker mesh configs:
+
+    ```bash
+    for cl in kafka/mesh/b0/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/mesh/b0/domains/*.json; do greymatter create domain < $cl; done
+    for cl in kafka/mesh/b0/listeners/*.json; do greymatter create listener < $cl; done
+    for cl in kafka/mesh/b0/proxies/*.json; do greymatter create proxy < $cl; done
+    for cl in kafka/mesh/b0/routes/*.json; do greymatter create route < $cl; done
+    for cl in kafka/mesh/b1/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/mesh/b1/domains/*.json; do greymatter create domain < $cl; done
+    for cl in kafka/mesh/b1/listeners/*.json; do greymatter create listener < $cl; done
+    for cl in kafka/mesh/b1/proxies/*.json; do greymatter create proxy < $cl; done
+    for cl in kafka/mesh/b1/routes/*.json; do greymatter create route < $cl; done
+    for cl in kafka/mesh/b2/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/mesh/b2/domains/*.json; do greymatter create domain < $cl; done
+    for cl in kafka/mesh/b2/listeners/*.json; do greymatter create listener < $cl; done
+    for cl in kafka/mesh/b2/proxies/*.json; do greymatter create proxy < $cl; done
+    for cl in kafka/mesh/b2/routes/*.json; do greymatter create route < $cl; done
+    ```
+
+
     And apply:
 
     ```bash

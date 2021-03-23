@@ -1,0 +1,17 @@
+{
+    "zone_key": "zone-default-zone",
+    "listener_key": "b1-ingress",
+    "domain_keys": [
+        "b1-ingress"
+    ],
+    "name": "b1-ingress",
+    "ip": "0.0.0.0",
+    "port": 9093,
+    "active_network_filters": ["envoy.tcp_proxy"],
+    "network_filters": {
+        "envoy_tcp_proxy": {
+            "stat_prefix": "ingress_tcp",
+            "cluster": "broker-1"
+        }
+    }
+}

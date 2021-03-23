@@ -1,0 +1,16 @@
+{
+    "zone_key": "zone-default-zone",
+    "proxy_key": "b2-proxy",
+    "domain_keys": [
+        "b2-ingress",
+        "b2-b1-egress",
+        "b2-b0-egress"
+    ],
+    "listener_keys": [
+        "b2-ingress",
+        "b2-b1-egress",
+        "b2-b0-egress"
+    ],
+    "name": "kafka-broker-2",
+    "listeners": null
+}

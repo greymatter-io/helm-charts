@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "broker2-local-cluster",
+    "name": "broker-2",
+    "instances": [
+        {
+            "host": "127.0.0.1",
+            "port": 8092
+        }
+    ],
+    "require_tls": false
+}

@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "b0-b2-egress-cluster",
+    "name": "b0-b2-egress",
+    "instances": [
+        {
+            "host": "kafka-broker-2.kafka.svc.cluster.local",
+            "port": 9094
+        }
+    ],
+    "require_tls": false
+}

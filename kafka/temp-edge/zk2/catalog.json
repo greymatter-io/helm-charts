@@ -1,0 +1,21 @@
+{
+    "clusterName": "zookeeper-2",
+    "zoneName": "zone-default-zone",
+    "name": "Zookeeper 2",
+    "version": "latest",
+    "owner": "",
+    "capability": "Data Mesh Networking",
+    "runtime": "GO",
+    "documentation": "",
+    "prometheusJob": "zookeeper-2",
+    "minInstances": 1,
+    "maxInstances": 1,
+    "authorized": true,
+    "clusterID": "",
+    "meshID": "",
+    "enableInstanceMetrics": true,
+    "enableHistoricalMetrics": false,
+    "instances": [],
+    "metricsTemplate": "",
+    "metricsPort": 8081
+  }

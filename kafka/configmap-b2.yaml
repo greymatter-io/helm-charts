@@ -93,7 +93,7 @@ data:
                 - endpoint:
                     address:
                       socket_address:
-                        address: 127.0.0.1
+                        address: kafka-broker-1.kafka.svc.cluster.local
                         port_value: 9093
         - name: broker0
           connect_timeout: 0.25s
@@ -107,7 +107,7 @@ data:
                 - endpoint:
                     address:
                       socket_address:
-                        address: 127.0.0.1
+                        address: kafka-broker-0.kafka.svc.cluster.local
                         port_value: 9092
     admin:
       access_log_path: /dev/null
