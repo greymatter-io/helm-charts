@@ -1,0 +1,13 @@
+{
+    "zone_key": "zone-default-zone",
+    "domain_key": "edge",
+    "route_key": "edge-kafka-broker-0-route",
+    "path": "/services/kafka-broker-0/latest/",
+    "prefix_rewrite": "/",
+    "redirects": null,
+    "shared_rules_key": "edge-kafka-broker-0-shared-rules",
+    "rules": null,
+    "response_data": {},
+    "cohort_seed": null,
+    "retry_policy": null
+}

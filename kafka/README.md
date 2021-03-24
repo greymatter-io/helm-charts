@@ -65,13 +65,9 @@ This directory contains the files needed to install kafka with 3 brokers with a 
     for cl in kafka/mesh/b2/routes/*.json; do greymatter create route < $cl; done
     ```
 
-
     And apply:
 
     ```bash
-    kubectl apply -f kafka/configmap-b0.yaml
-    kubectl apply -f kafka/configmap-b1.yaml
-    kubectl apply -f kafka/configmap-b2.yaml
     kubectl apply -f kafka/svc-b0.yaml
     kubectl apply -f kafka/svc-b1.yaml
     kubectl apply -f kafka/svc-b2.yaml
@@ -81,19 +77,33 @@ This directory contains the files needed to install kafka with 3 brokers with a 
     kubectl apply -f kafka/kafka_template.yaml -n kafka
     ```
 
-    To delete:
+    Apply catalog clusters (and temp routes from edge):
 
     ```bash
-    kubectl delete -f kafka/configmap-b0.yaml
-    kubectl delete -f kafka/configmap-b1.yaml
-    kubectl delete -f kafka/configmap-b2.yaml
-    kubectl delete -f kafka/svc-b0.yaml
-    kubectl delete -f kafka/svc-b1.yaml
-    kubectl delete -f kafka/svc-b2.yaml
-    kubectl delete -f kafka/zk/zk0-svc.yaml
-    kubectl delete -f kafka/zk/zk1-svc.yaml
-    kubectl delete -f kafka/zk/zk2-svc.yaml
-    kubectl delete -f kafka/kafka_template.yaml -n kafka
+    for cl in kafka/temp-edge/b0/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/temp-edge/b0/rules/*.json; do greymatter create shared_rules < $cl; done
+    for cl in kafka/temp-edge/b0/routes/*.json; do greymatter create route < $cl; done
+    for cl in kafka/temp-edge/b1/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/temp-edge/b1/rules/*.json; do greymatter create shared_rules < $cl; done
+    for cl in kafka/temp-edge/b1/routes/*.json; do greymatter create route < $cl; done
+    for cl in kafka/temp-edge/b2/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/temp-edge/b2/rules/*.json; do greymatter create shared_rules < $cl; done
+    for cl in kafka/temp-edge/b2/routes/*.json; do greymatter create route < $cl; done
+    for cl in kafka/temp-edge/zk0/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/temp-edge/zk0/rules/*.json; do greymatter create shared_rules < $cl; done
+    for cl in kafka/temp-edge/zk0/routes/*.json; do greymatter create route < $cl; done
+    for cl in kafka/temp-edge/zk1/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/temp-edge/zk1/rules/*.json; do greymatter create shared_rules < $cl; done
+    for cl in kafka/temp-edge/zk1/routes/*.json; do greymatter create route < $cl; done
+    for cl in kafka/temp-edge/zk2/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/temp-edge/zk2/rules/*.json; do greymatter create shared_rules < $cl; done
+    for cl in kafka/temp-edge/zk2/routes/*.json; do greymatter create route < $cl; done
+    greymatter create catalog_cluster < kafka/temp-edge/b0/catalog.json
+    greymatter create catalog_cluster < kafka/temp-edge/b1/catalog.json
+    greymatter create catalog_cluster < kafka/temp-edge/b2/catalog.json
+    greymatter create catalog_cluster < kafka/temp-edge/zk0/catalog.json
+    greymatter create catalog_cluster < kafka/temp-edge/zk1/catalog.json
+    greymatter create catalog_cluster < kafka/temp-edge/zk2/catalog.json
     ```
 
 4. Wait for pods to reach running states
@@ -159,4 +169,16 @@ kubectl run kafka-observables-client --rm --tty -i --restart='Never' --image doc
 
 ```bash
 kafka-console-consumer.sh --bootstrap-server kafka-broker-1.kafka.svc.cluster.local:9093 --topic kafka-protocol-topic
+```
+
+To delete:
+
+```bash
+kubectl delete -f kafka/svc-b0.yaml
+kubectl delete -f kafka/svc-b1.yaml
+kubectl delete -f kafka/svc-b2.yaml
+kubectl delete -f kafka/zk/zk0-svc.yaml
+kubectl delete -f kafka/zk/zk1-svc.yaml
+kubectl delete -f kafka/zk/zk2-svc.yaml
+kubectl delete -f kafka/kafka_template.yaml -n kafka
 ```

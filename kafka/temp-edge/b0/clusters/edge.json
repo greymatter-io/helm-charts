@@ -1,0 +1,10 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "edge-to-kafka-broker-0-cluster",
+    "name": "kafka-broker-0",
+    "instances": [],
+    "circuit_breakers": null,
+    "outlier_detection": null,
+    "health_checks": [],
+    "require_tls": false
+}
