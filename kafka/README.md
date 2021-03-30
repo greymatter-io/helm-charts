@@ -112,46 +112,23 @@ This directory contains the files needed to install kafka with 3 brokers with a 
     kubectl get pod -w -n kafka
     ```
 
-5. Install coughka deployment for testing
+5. Install coughka deployment for testing.
 
-Run a kafka client and create any topics - by default in coughka we're using coughka-test-topic, so:
 
-```bash
-kubectl run kafka-observables-client --rm --tty -i --restart='Never' --image docker.io/bitnami/kafka:2.7.0-debian-10-r1 --namespace kafka --command -- bash
-```
+    ```bash
+    for cl in kafka/coughka/mesh/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/coughka/mesh/domains/*.json; do greymatter create domain < $cl; done
+    for cl in kafka/coughka/mesh/listeners/*.json; do greymatter create listener < $cl; done
+    for cl in kafka/coughka/mesh/proxies/*.json; do greymatter create proxy < $cl; done
+    for cl in kafka/coughka/mesh/rules/*.json; do greymatter create shared_rules < $cl; done
+    for cl in kafka/coughka/mesh/routes/*.json; do greymatter create route < $cl; done
+    ```
 
-and then:
+    Install coughka into the default namespace:
 
-```bash
-kafka-topics.sh --create --bootstrap-server kafka-broker-1.kafka.svc.cluster.local:9093 --topic coughka-test-topic
-kafka-topics.sh --create --bootstrap-server kafka-broker-1.kafka.svc.cluster.local:9093 --topic kafka-protocol-topic
-```
-
-Kafka-protocol-topic may fail if its already been created by the observables filter.
-
-Verify with:
-
-```bash
-kafka-topics.sh --list --zookeeper kafka-observables-zookeeper-1.kafka.svc.cluster.local:2180
-kafka-topics.sh --list --zookeeper kafka-observables-zookeeper-2.kafka.svc.cluster.local:2180
-```
-
-Exit the kafka client and configure the mesh for the incoming coughka/sidecar combo:
-
-```bash
-for cl in kafka/coughka/mesh/clusters/*.json; do greymatter create cluster < $cl; done
-for cl in kafka/coughka/mesh/domains/*.json; do greymatter create domain < $cl; done
-for cl in kafka/coughka/mesh/listeners/*.json; do greymatter create listener < $cl; done
-for cl in kafka/coughka/mesh/proxies/*.json; do greymatter create proxy < $cl; done
-for cl in kafka/coughka/mesh/rules/*.json; do greymatter create shared_rules < $cl; done
-for cl in kafka/coughka/mesh/routes/*.json; do greymatter create route < $cl; done
-```
-
-Install coughka into the default namespace:
-
-```bash
-kubectl apply -f kafka/coughka/coughka-deployment.yaml
-```
+    ```bash
+    kubectl apply -f kafka/coughka/coughka-deployment.yaml
+    ```
 
 Once everything is running, there should be no errors in the coughka container logs.
 
@@ -161,15 +138,14 @@ kc logs -f deployment/coughka -c coughka
 
 You can use a consumer to check the messages or go to `services/coughka/published` to see the list of messages being published by the coughka service and `/services/coughka/subscribed` to see the list of messages being consumed by the coughka service.
 
-To view the observables, rerun the kafka client command and run the consumer:
+To view the observables, run the consumer:
 
 ```bash
-kubectl run kafka-observables-client --rm --tty -i --restart='Never' --image docker.io/bitnami/kafka:2.7.0-debian-10-r1 --namespace kafka --command -- bash
+kubectl exec -it kafka-observables-0-0 -n kafka -c kafka -- /opt/bitnami/kafka/bin/kafka-console-consumer.sh --bootstrap-server 127.0.0.1:9093  --topic kafka-protocol-topic --from-beginning
 ```
 
-```bash
-kafka-console-consumer.sh --bootstrap-server kafka-broker-1.kafka.svc.cluster.local:9093 --topic kafka-protocol-topic
-```
+This will show the observables - there will be a number of plain TCP observables mixed in with the decoded kafka protocol.
+
 
 To delete:
 

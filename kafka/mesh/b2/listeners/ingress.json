@@ -7,8 +7,19 @@
     "name": "b2-ingress",
     "ip": "0.0.0.0",
     "port": 9094,
-    "active_network_filters": ["envoy.tcp_proxy"],
+    "active_network_filters": ["gm.metrics", "envoy.tcp_proxy"],
     "network_filters": {
+        "gm_metrics": {
+            "metrics_port": 8081,
+            "metrics_host": "0.0.0.0",
+            "metrics_dashboard_uri_path": "/metrics",
+            "metrics_prometheus_uri_path": "/prometheus",
+            "metrics_ring_buffer_size": 4096,
+            "prometheus_system_metrics_interval_seconds": 15,
+            "metrics_key_function": "depth",
+            "metrics_key_depth": "3",
+            "decodeToProtocol": "kafka"
+          },
         "envoy_tcp_proxy": {
             "stat_prefix": "ingress_tcp",
             "cluster": "broker-2"
