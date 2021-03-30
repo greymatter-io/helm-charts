@@ -39,6 +39,7 @@ global:
     default_replicas: 3
 
 edge:
+  name: edge
   version: '1.5.1'
   image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.edge.version $ }}'
   image_pull_policy: IfNotPresent
@@ -50,7 +51,7 @@ edge:
   envvars:
     xds_cluster:
       type: value
-      value: 'edge'
+      value: '{{ .Values.edge.name }}'
     proxy_dynamic:
       type: 'value'
       value: 'true'
@@ -126,9 +127,9 @@ edge:
       # For instance, these values will work for nginx ingress
       apiVersion: extensions/v1beta1
       annotations:
-        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        nginx.ingress.kubernetes.io/backend-protocol: "https"
+        nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
+        nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+        nginx.ingress.kubernetes.io/backend-protocol: 'https'
 
       rules:
         - host: development.deciphernow.com
