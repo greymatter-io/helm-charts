@@ -147,7 +147,7 @@ spec:
 
       containers:
         - name: sidecar
-          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
+          image: "docker.greymatter.io/internal/gm-proxy:kafkametrics"
           imagePullPolicy: "IfNotPresent"
           env:
             - name: PROXY_DYNAMIC
@@ -342,7 +342,7 @@ spec:
 
       containers:
         - name: sidecar
-          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
+          image: "docker.greymatter.io/internal/gm-proxy:kafkametrics"
           imagePullPolicy: "IfNotPresent"
           env:
             - name: PROXY_DYNAMIC
@@ -542,7 +542,7 @@ spec:
 
       containers:
         - name: sidecar
-          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
+          image: "docker.greymatter.io/internal/gm-proxy:kafkametrics"
           imagePullPolicy: "IfNotPresent"
           env:
             - name: PROXY_DYNAMIC
@@ -747,7 +747,7 @@ spec:
               mountPath: /bitnami/kafka
       containers:
         - name: sidecar
-          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
+          image: "docker.greymatter.io/internal/gm-proxy:kafkametrics"
           imagePullPolicy: "Always"
           env:
             - name: PROXY_DYNAMIC
@@ -950,7 +950,7 @@ spec:
               mountPath: /bitnami/kafka
       containers:
         - name: sidecar
-          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
+          image: "docker.greymatter.io/internal/gm-proxy:kafkametrics"
           imagePullPolicy: "Always"
           env:
             - name: PROXY_DYNAMIC
@@ -1153,7 +1153,7 @@ spec:
               mountPath: /bitnami/kafka
       containers:
         - name: sidecar
-          image: "docker.greymatter.io/development/gm-proxy:1.6.0-dev"
+          image: "docker.greymatter.io/internal/gm-proxy:kafkametrics"
           imagePullPolicy: "Always"
           env:
             - name: PROXY_DYNAMIC
