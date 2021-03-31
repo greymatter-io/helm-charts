@@ -129,7 +129,7 @@ deleteTopicEnable: false
 heapOpts: -Xmx1024m -Xms1024m
 
 ## The number of messages to accept before forcing a flush of data to disk.
-logFlushIntervalMessages: 10000
+logFlushIntervalMessages: _10000
 
 ## The maximum amount of time a message can sit in a log before we force a flush.
 logFlushIntervalMs: 1000
@@ -410,7 +410,7 @@ metrics:
   ## Prometheus JMX Exporter: exposes the majority of Kafkas metrics
   ##
   jmx:
-    enabled: false
+    enabled: true
 
     ## Bitnami JMX exporter image
     ## ref: https://hub.docker.com/r/bitnami/jmx-exporter/tags/

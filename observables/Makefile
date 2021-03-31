@@ -81,7 +81,7 @@ helm-dep-up:
 
 # Install stuff
 kafka: helm-dep-up
-	helm install $(KAFKA-NAME) bitnami/kafka \
+	helm template $(KAFKA-NAME) bitnami/kafka \
 		-f custom-values-files/kafka-values.yaml \
 		--set zookeeper.volumePermissions.enabled=$(EKS) \
 		--namespace $(NAMESPACE) \

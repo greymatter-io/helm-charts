@@ -1,0 +1,27 @@
+# Source: kafka/templates/jmx-metrics-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-observables-jmx-metrics
+  labels:
+    app.kubernetes.io/name: kafka
+    helm.sh/chart: kafka-12.15.0
+    app.kubernetes.io/instance: kafka-observables
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: kafka
+  annotations:
+    prometheus.io/path: /
+    prometheus.io/port: '5556'
+    prometheus.io/scrape: "true"
+spec:
+  type: ClusterIP
+  ports:
+    - name: http-metrics
+      port: 5556
+      protocol: TCP
+      targetPort: metrics
+      nodePort: null
+  selector:
+    app.kubernetes.io/name: kafka
+    app.kubernetes.io/instance: kafka-observables
+    app.kubernetes.io/component: kafka

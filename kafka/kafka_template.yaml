@@ -800,6 +800,8 @@ spec:
               value: "PLAINTEXT://127.0.0.1:9092"
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
+            - name: JMX_PORT
+              value: "5555"
             - name: KAFKA_CFG_BROKER_ID
               value: "0"
             - name: KAFKA_CFG_DELETE_TOPIC_ENABLE
@@ -875,6 +877,32 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /bitnami/kafka
+        - name: jmx-exporter
+          image: docker.io/bitnami/jmx-exporter:0.14.0-debian-10-r102
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - java
+            - -XX:+UnlockExperimentalVMOptions
+            - -XX:+UseCGroupMemoryLimitForHeap
+            - -XX:MaxRAMFraction=1
+            - -XshowSettings:vm
+            - -jar
+            - jmx_prometheus_httpserver.jar
+            - "5556"
+            - /etc/jmx-kafka/jmx-kafka-prometheus.yml
+          ports:
+            - name: metrics
+              containerPort: 5556
+          resources:
+            limits:
+              cpu: 100m
+              memory: 8Gi
+            requests:
+              cpu: 100m
+              memory: 2Gi
+          volumeMounts:
+            - name: jmx-config
+              mountPath: /etc/jmx-kafka
       imagePullSecrets:
         - name: docker.secret
       volumes:
@@ -882,6 +910,9 @@ spec:
           hostPath:
             path: /run/spire/socket
             type: DirectoryOrCreate
+        - name: jmx-config
+          configMap:
+            name: kafka-observables-jmx-configuration
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -1003,6 +1034,8 @@ spec:
               value: "PLAINTEXT://127.0.0.1:9093"
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
+            - name: JMX_PORT
+              value: "5555"
             - name: KAFKA_CFG_BROKER_ID
               value: "1"
             - name: KAFKA_CFG_DELETE_TOPIC_ENABLE
@@ -1078,6 +1111,32 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /bitnami/kafka
+        - name: jmx-exporter
+          image: docker.io/bitnami/jmx-exporter:0.14.0-debian-10-r102
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - java
+            - -XX:+UnlockExperimentalVMOptions
+            - -XX:+UseCGroupMemoryLimitForHeap
+            - -XX:MaxRAMFraction=1
+            - -XshowSettings:vm
+            - -jar
+            - jmx_prometheus_httpserver.jar
+            - "5556"
+            - /etc/jmx-kafka/jmx-kafka-prometheus.yml
+          ports:
+            - name: metrics
+              containerPort: 5556
+          resources:
+            limits:
+              cpu: 100m
+              memory: 8Gi
+            requests:
+              cpu: 100m
+              memory: 2Gi
+          volumeMounts:
+            - name: jmx-config
+              mountPath: /etc/jmx-kafka
       imagePullSecrets:
         - name: docker.secret
       volumes:
@@ -1085,6 +1144,9 @@ spec:
           hostPath:
             path: /run/spire/socket
             type: DirectoryOrCreate
+        - name: jmx-config
+          configMap:
+            name: kafka-observables-jmx-configuration
   volumeClaimTemplates:
     - metadata:
         name: data
@@ -1206,6 +1268,8 @@ spec:
               value: "PLAINTEXT://127.0.0.1:9094"
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
+            - name: JMX_PORT
+              value: "5555"
             - name: KAFKA_CFG_BROKER_ID
               value: "2"
             - name: KAFKA_CFG_DELETE_TOPIC_ENABLE
@@ -1281,6 +1345,32 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /bitnami/kafka
+        - name: jmx-exporter
+          image: docker.io/bitnami/jmx-exporter:0.14.0-debian-10-r102
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - java
+            - -XX:+UnlockExperimentalVMOptions
+            - -XX:+UseCGroupMemoryLimitForHeap
+            - -XX:MaxRAMFraction=1
+            - -XshowSettings:vm
+            - -jar
+            - jmx_prometheus_httpserver.jar
+            - "5556"
+            - /etc/jmx-kafka/jmx-kafka-prometheus.yml
+          ports:
+            - name: metrics
+              containerPort: 5556
+          resources:
+            limits:
+              cpu: 100m
+              memory: 8Gi
+            requests:
+              cpu: 100m
+              memory: 2Gi
+          volumeMounts:
+            - name: jmx-config
+              mountPath: /etc/jmx-kafka
       imagePullSecrets:
         - name: docker.secret
       volumes:
@@ -1288,6 +1378,9 @@ spec:
           hostPath:
             path: /run/spire/socket
             type: DirectoryOrCreate
+        - name: jmx-config
+          configMap:
+            name: kafka-observables-jmx-configuration
   volumeClaimTemplates:
     - metadata:
         name: data
