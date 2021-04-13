@@ -1,0 +1,82 @@
+# Source: kafka/templates/kafka-metrics-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-observables-exporter
+  labels:
+    app.kubernetes.io/name: kafka
+    helm.sh/chart: kafka-12.16.2
+    app.kubernetes.io/instance: kafka-observables
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    greymatter.io/control: kafka-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+      app.kubernetes.io/instance: kafka-observables
+      app.kubernetes.io/component: metrics
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kafka
+        helm.sh/chart: kafka-12.16.2
+        app.kubernetes.io/instance: kafka-observables
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: metrics
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: kafka-exporter
+          image: docker.io/bitnami/kafka-exporter:1.2.0-debian-10-r315
+          imagePullPolicy: "IfNotPresent"
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              kafka_exporter \
+              --kafka.server=localhost:9092 \
+              --kafka.server=localhost:9093 \
+              --kafka.server=localhost:9094 \
+              --web.listen-address=:9308
+          ports:
+            - name: metrics
+              containerPort: 9308
+        - name: sidecar
+          image: "docker.greymatter.io/internal/gm-proxy:kafkametrics"
+          imagePullPolicy: "Always"
+          env:
+            - name: PROXY_DYNAMIC
+              value: "true"
+            - name: SPIRE_PATH
+              value: "/run/spire/socket/agent.sock"
+            - name: XDS_CLUSTER
+              value: "kafka-exporter"
+            - name: XDS_HOST
+              value: "control.default.svc"
+            - name: XDS_PORT
+              value: "50000"
+            - name: XDS_ZONE
+              value: "zone-default-zone"
+          ports:
+          - containerPort: 10808
+            protocol: TCP
+            name: proxy
+          - containerPort: 8081
+            protocol: TCP
+            name: metrics
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - name: spire-socket
+              mountPath: /run/spire/socket
+              readOnly: false
+      imagePullSecrets:
+        - name: docker.secret
+      volumes:
+        - name: spire-socket
+          hostPath:
+            path: /run/spire/socket
+            type: DirectoryOrCreate

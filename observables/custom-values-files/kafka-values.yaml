@@ -343,7 +343,7 @@ readinessProbe:
 metrics:
   ## Prometheus Kafka Exporter: exposes complimentary metrics to JMX Exporter
   kafka:
-    enabled: false
+    enabled: true
 
     ## Bitnami Kafka exporter image
     ## ref: https://hub.docker.com/r/bitnami/kafka-exporter/tags/
@@ -521,10 +521,10 @@ metrics:
 
   # Enable this if you're using https://github.com/coreos/prometheus-operator
   serviceMonitor:
-    enabled: false
+    enabled:  true
     ## Namespace in which Prometheus is running
     ##
-    # namespace: monitoring
+    namespace: default
     ## Interval at which metrics should be scraped.
     ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
     ##

@@ -158,3 +158,15 @@ kubectl delete -f kafka/zk/zk1-svc.yaml
 kubectl delete -f kafka/zk/zk2-svc.yaml
 kubectl delete -f kafka/kafka_template.yaml -n kafka
 ```
+
+
+Install kafka exporter:
+
+    ```bash
+    for cl in kafka/prometheus/exporter-cfgs/clusters/*.json; do greymatter create cluster < $cl; done
+    for cl in kafka/prometheus/exporter-cfgs/domains/*.json; do greymatter create domain < $cl; done
+    for cl in kafka/prometheus/exporter-cfgs/listeners/*.json; do greymatter create listener < $cl; done
+    for cl in kafka/prometheus/exporter-cfgs/proxies/*.json; do greymatter create proxy < $cl; done
+    for cl in kafka/prometheus/exporter-cfgs/rules/*.json; do greymatter create shared_rules < $cl; done
+    for cl in kafka/prometheus/exporter-cfgs/routes/*.json; do greymatter create route < $cl; done
+    ```

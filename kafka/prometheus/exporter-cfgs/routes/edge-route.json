@@ -1,0 +1,8 @@
+{
+    "zone_key": "zone-default-zone",
+    "domain_key": "edge",
+    "route_key": "edge-to-exporter-slash",
+    "path": "/services/exporter/",
+    "prefix_rewrite": "/",
+    "shared_rules_key": "edge-to-exporter-rules"
+}

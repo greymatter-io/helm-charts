@@ -1,0 +1,7 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "edge-to-exporter-cluster",
+    "name": "kafka-exporter",
+    "instances": [],
+    "require_tls": false
+}

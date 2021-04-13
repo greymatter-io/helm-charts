@@ -5,12 +5,21 @@ metadata:
   namespace: kafka
   labels:
     greymatter.io/control: kafka-broker-2
+  annotations:
+    prometheus.io/path: /
+    prometheus.io/port: '5556'
+    prometheus.io/scrape: "true"
 spec:
   ports:
     - name: proxy
       port: 9094
     - name: metrics
       port: 8081
+    - name: kmetrics
+      port: 5556
+      protocol: TCP
+      targetPort: kmetrics
+      nodePort: null
   selector:
     greymatter.io/control: kafka-broker-2
   sessionAffinity: None

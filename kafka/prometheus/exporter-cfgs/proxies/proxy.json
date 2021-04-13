@@ -1,0 +1,18 @@
+{
+    "zone_key": "zone-default-zone",
+    "proxy_key": "exporter-proxy",
+    "domain_keys": [
+        "exporter-domain",
+        "exporter-egress-domain-b0",
+        "exporter-egress-domain-b1",
+        "exporter-egress-domain-b2"
+    ],
+    "listener_keys": [
+        "exporter-listener",
+        "exporter-egress-listener-b0",
+        "exporter-egress-listener-b1",
+        "exporter-egress-listener-b2"
+    ],
+    "name": "kafka-exporter",
+    "listeners": null
+}

@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "exporter-cluster",
+    "name": "service",
+    "instances": [
+        {
+            "host": "127.0.0.1",
+            "port": 9308
+        }
+    ],
+    "require_tls": false
+}
