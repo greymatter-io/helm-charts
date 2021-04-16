@@ -31,7 +31,7 @@ A Grey Matter LDAP account is still required to pull the images from our Nexus s
 make credentials
 ```
 
-### Auto Generate Certificates
+### Auto-Generate User Certificates
 
 By default, Grey Matter leverages mutual TLS (mTLS) communications for all traffic, including inbound traffic to the mesh. This means that all `https` requests must include TLS certificates whether that be via a web browser or RESTful client. The Grey Matter helm charts have the ability to generate random Ingress and User certificates to ensure unique certificates every time a cluster is launched. For web based authentication, these certificates can then be imported into a web browser, to access resources in the mesh.
 
@@ -52,6 +52,34 @@ Then create a new p12 certificate to load into your browser:
 ```console
 openssl pkcs12 -export -out greymatter.p12 -inkey tls.key -in tls.crt -certfile ca.crt -passout pass:password
 ```
+
+### SPIFFE/SPIRE - Auto-Generating Certificates
+
+By default, when deploying SPIFFE/SPIRE, the Grey Matter helm charts will automatically generate a Certificate Authority (CA) and Registrar certificate signed by that CA. This behavior can be controlled using the `.Values.global.spire.auto_generate_ca_certs` configuration option in the global.yaml file (default is `true`).
+
+> The SPIFFE/SPIRE Registrar certificate will be automatically generated regardless of whether the CAs were provided or auto-generated. The validity period of the Registrar certificate can be controlled with the `.Values.global.spire.registrar_cert_valid_days` option (default is `730` days).
+
+If `.Values.global.spire.auto_generate_ca_certs` is set to `true` (default):
+
+* The SPIFFE/SPIRE Certificate Authority (CA) will be generated automatically by the helm charts and will be used to sign the Registrar certificate.
+* There will only be one level of Certificate Authority (Root CA -> Signed Certificate). This is due to a limitation in the Sprig crypto library used by Helm. In the corresponding SPIFFE/SPIRE secrets, the entries for the Intermediate CA and Root CA will both contain the same auto-generated CA.
+* The four fields under `.Values.global.spire.ca_certificates` are not needed when auto-generating the Certificate Authority and will not be used.
+
+If `.Values.global.spire.auto_generate_ca_certs` is set to `false`:
+
+* The SPIFFE/SPIRE Certificate Authority will NOT be generated automatically and must be provided in the configuration.
+* There are four options that must be provided under `.Values.global.spire.ca_certificates` (note that all values are **Base64-encoded**):
+
+Option | Value
+| :---: | :---
+`int_ca_crt_b64enc` | Intermediate CA certificate (Base64-encoded)
+`int_ca_key_b64enc` | Intermediate CA key (Base64-encoded)
+`root_ca_crt_b64enc` | Root CA certificate (Base64-encoded)
+`cert_chain_b64enc` | Certificate Chain file (Base64-encoded)
+
+### SPIFFE/SPIRE - Change Deployment Namespace
+
+The Grey Matter helm charts will, by default, deploy SPIFFE/SPIRE to the `spire` namespace. This can be changed by modifying the `.Values.global.spire.namespace` option prior to installation. No other changes are needed.
 
 ### Installing
 
