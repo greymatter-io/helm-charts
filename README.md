@@ -81,6 +81,7 @@ Option | Value
 
 The Grey Matter helm charts will, by default, deploy SPIFFE/SPIRE to the `spire` namespace. This can be changed by modifying the `.Values.global.spire.namespace` option prior to installation. No other changes are needed.
 
+
 ### Installing
 
 The following set of commands will install Grey Matter using the GitHub hosted Helm Charts.
