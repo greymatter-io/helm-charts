@@ -40,7 +40,7 @@ global:
 
 edge:
   version: '1.5.1'
-  image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.edge.version $ }}'
+  image: 'docker.greymatter.io/internal/gm-proxy:keycloak'
   image_pull_policy: IfNotPresent
   replicas: 1
   # Port where the edge proxy will listen

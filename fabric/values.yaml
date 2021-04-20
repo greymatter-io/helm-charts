@@ -74,7 +74,7 @@ control:
     replicas: 1
     # Version of control
     version: istio
-    image: 'docker.greymatter.io/internal/gm-control:{{ $.Values.control.version }}'
+    image: 'docker.greymatter.io/internal/gm-control:keycloak'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Secret used to talk to control-api
@@ -179,7 +179,7 @@ control-api:
     replicas: 1
     # Gm Control API version
     version: 1.5.4
-    image: 'docker.greymatter.io/release/gm-control-api:{{ $.Values.controlApi.version }}'
+    image: 'docker.greymatter.io/internal/gm-control-api:keycloak'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Port exposed by the control-api container

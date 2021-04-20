@@ -1,6 +1,6 @@
 include ../helpers.mk
 
-NAME-EDGE := edge-$(CUST)-$(RAND)
+NAME-EDGE := edge-$(CUST)
 
 .PHONY: edge upgrade-edge clean-edge remove-edge
 

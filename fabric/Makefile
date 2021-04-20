@@ -1,6 +1,6 @@
 include ../helpers.mk
 
-NAME-FABRIC := fabric-$(CUST)-$(RAND)
+NAME-FABRIC := fabric-$(CUST)
 
 
 .PHONY: control control-api jwt jwt-gov fabric upgrade-fabric remove-fabric
