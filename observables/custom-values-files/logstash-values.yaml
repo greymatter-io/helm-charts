@@ -48,7 +48,7 @@ extraEnvs:
   - name: ELASTICSEARCH_PORT
     value: '9200'
   - name: KAFKA_TOPIC
-    value: greymatter
+    value: observables
   - name: KAFKA_BOOTSTRAP_SERVERS
     value: kafka-observables-headless.observables.svc:9092
 # A list of secrets and their paths to mount inside the pod

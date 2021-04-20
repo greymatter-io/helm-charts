@@ -157,7 +157,7 @@ From the observables directory, to remove everything use `make destroy-observabl
 
 ### Ensure observables are being emitted and transformed
 
-- In a kafka instance `cd /somepath/kafka/bin` in here you can use `./kafka-topics --list $KAFKA_CFG_ZOOKEEPER_CONNECT --list` to see if the eventTopic specified in your proxy configuration is being pushed to kafka.
+- In a kafka instance `cd /somepath/kafka/bin` (e.g. `/opt/bitnami/kafka/bin`) in here you can use `./kafka-topics --zookeeper $KAFKA_CFG_ZOOKEEPER_CONNECT --list` to see if the eventTopic specified in your proxy configuration is being pushed to kafka.
 - In the Logstash logs there will be an event displayed similar to this [example logstash logs](./static/example-logstash.txt). If this does not happen then there is an issue with logstash picking up the kafka event.
 - In elastic search you can run `curl localhost:9200/_cat/indices` this will result in [example elasticsearch curl output](./static/example-elasticsearch.txt). Listing your kafka topics transformed w/ date-time.
 
