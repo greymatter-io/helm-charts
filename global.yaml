@@ -74,7 +74,7 @@ global:
     enabled: true
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
-    namespace: test
+    namespace: spire
     registrar_cert_valid_days: 730
     auto_generate_ca_certs: false
     ca_certificates:
