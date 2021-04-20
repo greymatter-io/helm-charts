@@ -6,6 +6,13 @@ global:
     registration_api_path: /run/spire/socket/registration.sock
     cluster_name: quickstart
     namespace: spire
+    registrar_cert_valid_days: 730
+    auto_generate_ca_certs: true
+    ca_certificates:
+      int_ca_crt_b64enc: ''
+      int_ca_key_b64enc: ''
+      root_ca_crt_b64enc: ''
+      cert_chain_b64enc: ''
 
 server:
   image: gcr.io/spiffe-io/spire-server:0.9.3
