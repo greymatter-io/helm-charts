@@ -19,7 +19,7 @@ spec:
         {{ .Values.global.control.cluster_label }}: postgres-slo
         greymatter: sense
     spec:
-      {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
+      {{- if and .Values.global.environment (or (eq .Values.global.environment "eks") (eq .Values.global.environment "openshift")) }}
       # Security context for openshift, kubernetes and eks is the same.
       securityContext:
         runAsUser: 2000
