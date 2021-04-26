@@ -25,6 +25,16 @@ spec:
         deployment: {{ .Values.redis.name }}
         greymatter: fabric
     spec:
+      {{- if .Values.redis.securityContext  }}
+      securityContext: {{ toYaml .Values.redis.securityContext | nindent 8 }}
+      {{- else }}
+      {{- if and .Values.global.environment (or (eq .Values.global.environment "eks") (eq .Values.global.environment "openshift")) }}
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+      {{- end }}
+      {{- end }}
       containers:
         - name: redis
           image: {{ .Values.redis.image }}
@@ -50,5 +60,4 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
       terminationGracePeriodSeconds: 30

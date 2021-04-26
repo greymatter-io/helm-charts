@@ -4,7 +4,7 @@ global:
   # Used as imagePullSecrets value for each subchart
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kuberenetes", or "openshift"
-  environment: openshift
+  environment: kubernetes
   exhibitor:
     replicas: 1
   control:
@@ -204,6 +204,11 @@ redis:
     requests:
       cpu: 100m
       memory: 128Mi
+  # securityContext specifies the user and groups to use.  This needs needs to be turned on when deploying into openshift
+  securityContext: {}
+    # runAsUser: 2001
+    # runAsGroup: 2001
+    # fsGroup: 2001
   envvars:
     redis_password:
       type: secret

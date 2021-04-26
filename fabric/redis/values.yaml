@@ -3,7 +3,7 @@
 global:
   image_pull_secret: docker.secret
   # Deployment environment, one of "eks", "kubernetes", or "openshift"
-  environment: eks
+  environment: kubernetes
   control:
     # The label Control uses to find pods to include in the mesh
     cluster_label: greymatter.io/control
@@ -39,6 +39,12 @@ redis:
     requests:
       cpu: 100m
       memory: 128Mi
+  # securityContext specifies the user and groups to use.  This needs needs to be turned on when deploying into openshift
+  securityContext: {}
+    # runAsUser: 2001
+    # runAsGroup: 2001
+    # fsGroup: 2001
+
   envvars:
     redis_password:
       type: secret
