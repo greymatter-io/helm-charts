@@ -1,0 +1,28 @@
+annotations:
+  category: Infrastructure
+apiVersion: v2
+# Please make sure that version and appVersion are always the same.
+appVersion: 1.0.0
+description: A Library Helm Chart for grouping common logic between Grey Matter charts. This chart is not deployable by itself.
+# home: https://github.com/bitnami/charts/tree/master/bitnami/common
+# icon: https://bitnami.com/downloads/logos/bitnami-mark.png
+keywords:
+  - common
+  - helper
+  - template
+  - function
+  - bitnami
+maintainers:
+  - email: engineering@greymatter.io
+    name: Grey Matter
+name: greymatter-common
+# sources:
+# - https://github.com/bitnami/charts
+# - http://www.bitnami.com/
+type: library
+version: 1.0.0
+
+dependencies:
+  - name: common
+    repository: file://../common
+    version: 1.x.x

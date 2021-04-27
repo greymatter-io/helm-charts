@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blue
+  labels:
+    greymatter.io/control: blue
+    app: blue
+spec:
+  replicas: 5
+  revisionHistoryLimit: 3
+  selector:
+  {{- if and (.Values.greymatter) (.Values.greymatter.enabled) }}
+    matchLabels:
+      greymatter.io/control: {{ .Values.name }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        greymatter.io/control: blue
+        app: blue
+    spec:
+      containers:
+        - name: blue
+          image: "chrismith/bluegreen:blue"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+{{- if and (.Values.greymatter) (.Values.greymatter.enabled) }}
+{{ include "greymatter.common.sidecar" (dict "sidecar" .Values.greymatter.sidecar "service" .Values "global" .Values.global "context" $) | nindent 6 }}
+{{- end }}
+        - name: sidecar
+          image: "docker.greymatter.io/development/gm-proxy:1.5.1"
+          imagePullPolicy: Always
+          ports:
+            - name: metrics
+              containerPort: 8081
+            - name: proxy
+              containerPort: 10808
+          env:
+            - name: ENVOY_ADMIN_LOG_PATH
+              value: /dev/stdout
+            - name: PROXY_DYNAMIC
+              value: "true"
+            - name: XDS_CLUSTER
+              value: blue
+            - name: XDS_HOST
+              value: control.greymatter.svc
+            - name: XDS_PORT
+              value: "50000"
+            - name: XDS_ZONE
+              value: zone-default-zone
+          volumeMounts:
+            - name: sidecar-certs
+              readOnly: true
+              mountPath: /etc/proxy/tls/sidecar
+      imagePullSecrets:
+        - name: docker.secret
+      volumes:
+        - name: sidecar-certs
+          secret:
+            secretName: global-certs
+            defaultMode: 420%

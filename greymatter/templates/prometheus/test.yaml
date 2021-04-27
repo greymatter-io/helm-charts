@@ -1,0 +1,33 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: {{ .Values.jwt.name | default "test"  }}
+    namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels: {{ include "greymatter.labels" (dict "name" .Values.test.name "context" $) | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "greymatter.labels" (dict "name" .Values.test.name "context" $) | nindent 8 }}
+        greymatter: fabric
+    spec:
+      containers:
+      - name: jwt-security
+        image: {{ .Values.jwt.image }}
+        imagePullPolicy: {{ include "greymatter.imagePullPolicy" ( dict "root" .Values.jwt "global" .Values.global ) }}
+        env: {{- include "common.tplvalues.render" (dict "value" .Values.jwt.envvars "context" $) | nindent 8 }}
+        {{- if .Values.jwt.resources }}
+        resources: {{ toYaml .Values.jwt.resources | nindent 10 }}
+        {{- end }}
+        {{- if .Values.jwt.command }}
+        command: {{ toYaml .Values.jwt.command | nindent 10 }}
+        args: {{ toYaml .Values.jwt.args | nindent 10 }}
+        {{- end }}
+      - name: sidecar
+
+      volumeMounts:
+        - name: jwt-users
+          mountPath: {{ .Values.jwt.usersMountPoint }}
+        {{- include "greymatter.volumeMounts" . }}

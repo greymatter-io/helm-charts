@@ -1,0 +1,53 @@
+{{/*
+Defines the edge ingress.  can be reused by passing in annotations, rules, and apiVersion
+*/}}
+{{- define "edge-ingress" }}
+{{- $ingress := index . "ingress" }}
+{{- $root := index . "root" }}
+apiVersion: {{ $ingress.apiVersion }}
+kind: Ingress
+metadata:
+  name: edge
+  namespace: {{ $root.Release.Namespace }}
+  annotations:
+{{ toYaml $ingress.annotations | indent 4 }}
+spec:
+  rules:
+{{ toYaml $ingress.rules | indent 4 }}
+{{- end }}
+
+
+{{- if and .Values.global.environment (eq .Values.global.environment "openshift") }}
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: edge
+  namespace: {{ .Release.Namespace }}
+spec:
+  host: {{ include "greymatter.domain" . }}
+  port: 
+    targetPort: proxy
+  tls:
+    termination: passthrough
+  to:
+    kind: Service
+    name: edge
+    weight: 100
+  wildcardPolicy: None
+{{ include "openshift.route.fix" $ }}
+
+{{- else }}
+
+# Create nginx or voyager ingress using template
+{{- $root := . }}
+{{- if .Values.edge.ingress.use_voyager }}
+{{- $ingress := .Values.edge.ingress.voyager }}
+{{- include "edge-ingress" (dict "ingress" $ingress "root" $root) }}
+
+{{- else }}
+{{- $ingress := .Values.edge.ingress.nginx}}
+{{- include "edge-ingress" (dict "ingress" $ingress "root" $root) }}
+
+{{- end }} 
+
+{{- end }}

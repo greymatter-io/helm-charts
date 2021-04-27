@@ -1,0 +1,21 @@
+apiVersion: v1
+description: A Helm chart to deploy Fibonacci
+name: fibonacci
+version: 3.0.0
+apiVersion: 1.3
+home: https://greymatter.io
+icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+maintainers:
+  - name: greymatter-io
+    email: engineering@greymatter.io
+keywords:
+  - Grey Matter
+  - service mesh
+  - sense
+dependencies:
+  - name: common
+    repository: file://../common
+    version: 1.x.x
+  - name: greymatter-common
+    repository: file://../greymatter-common
+    version: 1.x.x

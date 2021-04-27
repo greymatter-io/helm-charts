@@ -1,9 +1,0 @@
-apiVersion: v2
-appVersion: 1.5.3
-description: Deploys the Grey Matter 2.0 control server
-name: control
-home: https://greymatter.io
-version: 3.0.4
-maintainers:
-  - name: greymatter-io
-    email: engineering@greymatter.io

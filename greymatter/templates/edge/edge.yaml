@@ -1,0 +1,63 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels: {{ include "greymatter.common.labels" (dict "name" .Values.edge.name "context" $) | nindent 4 }}
+  name: edge
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ include "replicas" (dict "service_values" .Values.edge.replicas "top" $) }}
+  selector:
+    matchLabels: {{ include "greymatter.common.labels" (dict "name" .Values.edge.name "context" $) | nindent 6 }}
+  template:
+    metadata:
+      labels: {{ include "greymatter.common.labels" (dict "name" .Values.edge.name "context" $) | nindent 8 }}
+        greymatter: edge
+    spec:
+      containers:
+      - name: edge
+        image: {{ tpl .Values.edge.image $ | quote }}
+        imagePullPolicy: {{ include "greymatter.common.imagePullPolicy" (dict "service" .Values.jwt "global" .Values.global ) }}
+        {{- if .Values.edge.resources }}
+        resources:
+{{ toYaml .Values.edge.resources | indent 10 }}
+        {{- end }}
+        env:
+        {{- include "greymatter.envvars" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
+        ports:
+        - name: proxy
+          containerPort: {{ .Values.edge.port }}
+        - name: metrics
+          containerPort: {{ .Values.edge.metrics_port }}
+        volumeMounts:
+        {{- if .Values.edge.ingress.secret.enabled }}
+        {{- include "edge_ingress_certs_mount" . | indent 8 }}
+        {{- end }}
+        {{- if .Values.global.spire.enabled }}
+        {{- include "spire_volume_mount" . | indent 8 }}
+        {{- else if .Values.edge.egress.secret.enabled }}
+        {{- include "edge_egress_certs_mount" . | indent 8 }}
+        {{- end }}
+      {{- if .Values.global.consul.enabled }}
+      {{- $data := dict "Values" .Values "ServiceName" "edge" }}
+      {{- include "consul.agent" $data | nindent 6 }}
+      {{- end }}
+      {{ include "greymatter.common.imagePullSecrets" ( dict "service" .Values.edge "global" .Values.global) | indent 6}}
+      volumes:
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      - name: config-consul
+        emptyDir: {}
+      {{- end }}
+      {{- if .Values.edge.ingress.secret.enabled }}
+      {{- include "edge_ingress_volumes" . | indent 6 }}
+      {{- end }}
+      {{- if .Values.global.spire.enabled }}
+      {{- include "spire_volumes" . | indent 6 }}
+      {{- else if .Values.edge.egress.secret.enabled }}
+      {{- include "edge_egress_volumes" . | indent 6 }}
+      {{- end }}

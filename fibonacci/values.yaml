@@ -1,0 +1,44 @@
+name: blue
+imagePullPolicy: IfNotPresent
+sidecar:
+  envvars:
+    - name: XDS_CLUSTER
+      value: blue
+
+greymatter:
+  enabled: true
+  sidecar:
+    version: "1.5.1"
+    # Port where the proxy will listen
+    port: 10808
+    # Port where the proxy will expose metrics
+    metrics_port: 8081
+    # If set, enables tls using the secret specified in secret_name
+    secret:
+      enabled: true
+      secretName: sidecar-certs
+      mount_point: /etc/proxy/tls/sidecar/
+      secret_keys:
+        ca: ca.crt
+        key: server.key
+        cert: server.crt
+    image: docker.greymatter.io/release/gm-proxy:1.5.1
+    imagePullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    envvars:
+      - name: "PROXY_DYNAMIC"
+        value: "true"
+      - name: "XDS_ZONE"
+        value: "zone-default-zone"
+      - name: "XDS_HOST"
+        value: "control.{{ .Release.Namespace }}.svc"
+      - name: "XDS_PORT"
+        value: "50000"
+      - name: "ENVOY_ADMIN_LOG_PATH"
+        value: "/dev/stdout"

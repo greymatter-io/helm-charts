@@ -1,0 +1,560 @@
+---
+# Source: greymatter/templates/control/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: control-sa
+  namespace: greymatter
+---
+# Source: greymatter/templates/jwt/jwt-users.yaml
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: jwt-users
+  namespace: greymatter
+data:
+  users.json: |-
+    {
+      "users": [
+      {
+        "label": "CN=localuser,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+        "values": {
+          "email": [
+            "localuser@greymatter.io"
+          ],
+          "org": [
+            "www.greymatter.io"
+          ],
+          "privilege": [
+            "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+        "values": {
+          "email": [
+              "gm-control@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=gm-catalog,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+        "values": {
+          "email": [
+              "engineering@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=greymatter,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
+        "values": {
+          "email": [
+              "engineering@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=greymatter.user",
+        "values": {
+          "email": [
+              "engineering@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
+        "label": "O=SPIRE,C=US",
+        "values": {
+          "email": [
+              "engineering@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      }]
+    }
+---
+# Source: greymatter/templates/control/role.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: control-sa-role
+  namespace: greymatter
+rules:
+- apiGroups: [""]
+  resources: ["pods", "endpoints"]
+  verbs: ["get", "list", "watch"]
+---
+# Source: greymatter/templates/control/rolebinding.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: control-sa-rolebinding
+  namespace: greymatter
+subjects:
+- kind: ServiceAccount
+  name: control-sa
+  namespace: greymatter
+roleRef:
+  kind: ClusterRole
+  name: control-sa-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: greymatter/templates/control/control-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: control
+    greymatter.io/control: control
+  name: control
+  namespace: greymatter
+spec:
+  ports:
+  - port: 50000
+    protocol: TCP
+    targetPort: grpc
+  selector:
+    run: control
+  type: ClusterIP
+---
+# Source: greymatter/templates/edge/edge-service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: edge
+  namespace: greymatter
+  labels:
+    greymatter.io/control: edge
+spec:
+  ports:
+    - name: proxy
+      port: 10808
+    - name: metrics
+      port: 8081
+  selector:
+    greymatter.io/control: edge
+  sessionAffinity: None
+  type: ClusterIP
+---
+# Source: greymatter/templates/jwt/redis-service.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  name: jwt-redis
+  namespace: greymatter
+spec:
+  ports:
+    - name: server
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+  selector: 
+    greymatter.io/control: jwt-redis
+  sessionAffinity: None
+  type: ClusterIP
+---
+# Source: greymatter/templates/control/control.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: control
+  namespace: greymatter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      greymatter.io/control: control
+      deployment: control
+  template:
+    metadata:
+      labels:
+        greymatter.io/control: control
+        deployment: control
+        run: control
+        greymatter: fabric
+    spec:
+      # This service_account must have read access to both pods and endpoints, because gm-control uses the kubernetes API to do service discovery, and the waiter init container needs access to service endpoints to wait on control-api
+      serviceAccountName: control-sa
+      containers:
+        - name: control
+          image: docker.greymatter.io/release/gm-control:1.5.3
+          imagePullPolicy: 
+          env:          
+          - name: GM_CONTROL_API_HOST
+            value: "control-api:5555"
+          - name: GM_CONTROL_API_INSECURE
+            value: "true"
+          - name: GM_CONTROL_API_KEY
+            value: "xxx"
+          - name: GM_CONTROL_API_SSL
+            value: "true"
+          - name: GM_CONTROL_API_SSLCERT
+            value: "/service-certs/server.crt"
+          - name: GM_CONTROL_API_SSLKEY
+            value: "/service-certs/server.key"
+          - name: GM_CONTROL_API_ZONE_NAME
+            value: "zone-default-zone"
+          - name: GM_CONTROL_CMD
+            value: "kubernetes"
+          - name: GM_CONTROL_CONSOLE_LEVEL
+            value: "info"
+          - name: GM_CONTROL_KUBERNETES_CLUSTER_LABEL
+            value: "greymatter.io/control"
+          - name: GM_CONTROL_KUBERNETES_NAMESPACES
+            value: "greymatter"
+          - name: GM_CONTROL_KUBERNETES_PORT_NAME
+            value: "proxy"
+          - name: GM_CONTROL_XDS_ADS_ENABLED
+            value: "true"
+          - name: GM_CONTROL_XDS_RESOLVE_DNS
+            value: "true"
+          ports:
+            - name: grpc
+              containerPort: 50000
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: grpc
+            initialDelaySeconds: 2
+          resources:
+            {}
+          volumeMounts:
+            - name: controlapi-certs
+              mountPath: /service-certs
+      initContainers:
+        - name: ensure-control-api
+          image: docker.greymatter.io/internal/k8s-waiter:latest
+          env:
+            - name: NAMESPACE
+              value: greymatter
+            - name: SERVICE
+              value: control-api
+            - name: POST_DELAY
+              value: '10'
+      imagePullSecrets:
+      - name: 
+      volumes:
+        - name: controlapi-certs
+          secret:
+            secretName: global-certs
+---
+# Source: greymatter/templates/edge/edge.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: edge
+  namespace: greymatter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      greymatter.io/control: edge
+      deployment: edge
+  template:
+    metadata:
+      labels:
+        greymatter.io/control: edge
+        deployment: edge
+        greymatter: edge
+    spec:
+      containers:
+      - name: edge
+        image: "docker.greymatter.io/release/gm-proxy:1.5.1"
+        imagePullPolicy: 
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        env:        
+        ports:
+        - name: proxy
+          containerPort: 10808
+        - name: metrics
+          containerPort: 8081
+        volumeMounts:        
+        - name: edge-ingress
+          mountPath: /etc/proxy/tls/edge/
+          readOnly: true        
+        - name: edge-egress
+          mountPath: /etc/proxy/tls/sidecar/
+          readOnly: true
+      imagePullSecrets:
+      - name: 
+      volumes:      
+      - name: edge-ingress
+        secret:
+          secretName: greymatter-edge-ingress      
+      - name: edge-egress
+        secret:
+          # Has three certs but even though egress only uses ca
+          secretName: global-certs
+---
+# Source: greymatter/templates/jwt/jwt.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: jwt-security
+    namespace: greymatter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels: 
+        greymatter.io/control: jwt-security
+        deployment: jwt-security
+  template:
+    metadata:
+      labels: 
+        greymatter.io/control: jwt-security
+        deployment: jwt-security
+        greymatter: fabric
+    spec:
+      containers:
+      - name: jwt-security
+        image: "docker.greymatter.io/release/gm-jwt-security:1.2.0"
+        imagePullPolicy: Always
+        resources: 
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 64Mi
+        command: 
+          - /bin/sh
+        args: 
+          - -c
+          - if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./etc ]]; then mkdir
+            -p ./certs; fi && /gm-jwt-security/gm-jwt-security
+        env:
+        - name: HTTPS_PORT
+          value: '3000'
+        volumeMounts:
+        - name: jwt-users
+          mountPath: 
+
+      - name: greymatter-sidecar
+        image: "docker.greymatter.io/release/gm-proxy:1.5.1"
+        imagePullPolicy: Always
+        env:  
+          - name: XDS_CLUSTER
+            value: jwt-security
+          - name: PROXY_DYNAMIC
+            value: "true"
+          - name: XDS_ZONE
+            value: 'zone-default-zone'
+          - name: XDS_HOST
+            value: control.greymatter.svc
+          - name: XDS_PORT
+            value: '50000'
+          - name: ENVOY_ADMIN_LOG_PATH
+            value: /dev/stdout
+        resources: 
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        ports:
+        - containerPort: 10808
+          name: proxy
+          protocol: TCP
+        - containerPort: 8081
+          name: metrics
+          protocol: TCP
+        volumeMounts: 
+        - name: sidecar-certs
+          mountPath: /etc/proxy/tls/sidecar/
+          readOnly: true
+
+      
+      imagePullSecrets:
+      - name: 
+      volumes: 
+      - name: sidecar-certs
+        secret:
+          secretName: sidecar-certs
+        
+      - name: jwt-users
+        configMap:
+          name: jwt-users
+---
+# Source: greymatter/templates/jwt/redis.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels: 
+    greymatter.io/control: jwt-redis
+    deployment: jwt-redis
+  name: jwt-redis
+  namespace: greymatter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels: 
+      greymatter.io/control: jwt-redis
+      deployment: jwt-redis
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels: 
+        greymatter.io/control: jwt-redis
+        deployment: jwt-redis
+        greymatter: fabric
+    spec:
+      containers:
+        - name: redis
+          image: bitnami/redis:5.0.12
+          command:
+            - redis-server
+          args:
+            - --requirepass
+            - $(REDIS_PASSWORD)
+          env:            
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 200m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            
+      imagePullSecrets:
+        - name: greymatter.docker.secret
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+---
+# Source: greymatter/templates/prometheus/test.yaml
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: jwt-security
+    namespace: greymatter
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels: 
+      greymatter.io/control: test
+      deployment: test
+  template:
+    metadata:
+      labels: 
+        greymatter.io/control: test
+        deployment: test
+        greymatter: fabric
+    spec:
+      containers:
+      - name: jwt-security
+        image: docker.greymatter.io/release/gm-jwt-security:1.2.0
+        imagePullPolicy: Always
+        env:
+        - name: PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              key: jwt.key
+              name: 'jwt-security'
+        - name: JWT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: jwt.api_key
+              name: 'jwt-security'
+        - name: ENABLE_TLS
+          value: "false"
+        - name: ZEROLOG_LEVEL
+          value: info
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_DB
+          value: "0"
+        - name: REDIS_HOST
+          value: 'jwt-redis.greymatter.svc'
+        - name: HTTP_PORT
+          value: '3000'
+        - name: HTTPS_PORT
+          value: '3000'
+        resources: 
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 64Mi
+        command: 
+          - /bin/sh
+        args: 
+          - -c
+          - if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./etc ]]; then mkdir
+            -p ./certs; fi && /gm-jwt-security/gm-jwt-security
+      - name: sidecar
+
+      volumeMounts:
+        - name: jwt-users
+          mountPath: /gm-jwt-security/etc        
+        - name: sidecar-certs
+          mountPath: /etc/proxy/tls/sidecar/
+          readOnly: true
+---
+# Source: greymatter/templates/edge/edge-ingress.yaml
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: edge
+  namespace: greymatter
+spec:
+  host: greymatter.development.deciphernow.com
+  port: 
+    targetPort: proxy
+  tls:
+    termination: passthrough
+  to:
+    kind: Service
+    name: edge
+    weight: 100
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: ""

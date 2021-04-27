@@ -1,0 +1,457 @@
+# Grey Matter Edge Chart Values
+
+global:
+  # Used as imagePullSecrets value for each subchart
+  imagePullSecrets:
+    - greymatter.docker.secret
+  # Deployment environment, one of "eks", "kuberenetes", or "openshift"
+  environment: openshift
+
+  # If global.environment is openshift, edge ingress access is typically determine by <route_url_name>.<namespace>.<domain>
+  domain: development.deciphernow.com
+  # If you choose to remove the namespace from the url you must ensure your
+  # route_url_name is unique or openshift will throw errors.
+  route_url_name: greymatter
+  remove_namespace_from_url: "false"
+
+  imagePullPolicy:
+
+  # Configures the init container used to wait on various deployments to be ready
+  waiter:
+    image: docker.greymatter.io/internal/k8s-waiter:latest
+    service_account:
+      create: true
+      name: waiter-sa
+
+  # To use global certs or not
+  global_certs:
+    enabled: true
+
+  # Zone for Grey Matter objects. Used in sidecar envvars
+  zone: zone-default-zone
+  # Whether to register services with Consul and where to find the Consul server
+  consul:
+    image: consul:1.5.0
+    enabled: false
+    host: ""
+    port: 8500
+    edge_port: 10808
+  control:
+    # Port for Grey Matter Control. Used in sidecar envvars
+    port: 50000
+    # The label Control uses to find pods to include in the mesh
+    cluster_label: greymatter.io/control
+  # Whether or not to use spire for cert management and the trust domain
+  spire:
+    enabled: false
+    trust_domain: quickstart.greymatter.io
+    path: "/run/spire/socket/agent.sock"
+    envvars:
+      - name: SPIRE_PATH
+        value: "/run/spire/socket/agent.sock"
+  release:
+    # release.production: true will increase all (except control-api) replicas to the default_replicas.  Otherwise the default for each chart will be used
+    production: false
+    default_replicas: 3
+
+edge:
+  version: "1.5.1"
+  image: "docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.edge.version $ }}"
+  imagePullPolicy: IfNotPresent
+  replicas: 1
+  # Port where the edge proxy will listen
+  port: 10808
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
+  envvars:
+    xds_cluster:
+      type: value
+      value: "edge"
+    proxy_dynamic:
+      type: "value"
+      value: "true"
+    xds_zone:
+      type: "value"
+      value: "{{ .Values.global.zone }}"
+    xds_host:
+      type: "value"
+      value: "control.{{ .Release.Namespace }}.svc"
+    xds_port:
+      type: "value"
+      value: "{{ .Values.global.control.port }}"
+    envoy_admin_log_path:
+      type: "value"
+      value: "/dev/stdout"
+
+  # Optional resource options
+  resources:
+    limits:
+      cpu: 1
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # If set, enables egress TLS from the edge proxy using the secret specified in secret_name
+  egress:
+    secret:
+      enabled: true
+      secret_name: greymatter-edge-egress
+      mount_point: /etc/proxy/tls/sidecar/
+  # If set, enables ingress TLS on the edge proxy using the secret specified in secret_name
+  ingress:
+    # type is used to set how the edge k8s svc resource is created.  For depoyments using NGINX or Voyager or some other
+    # provisioned ingress, leave this as "ClusterIP".   If you want an ingress point automatically created by the cloud provider
+    # set this to "LoadBalancer"
+    type: ClusterIP
+    secret:
+      enabled: true
+      secret_name: greymatter-edge-ingress
+      mount_point: /etc/proxy/tls/edge/
+
+    # The following options configure the edge ingress based on the global.environment
+    # If global.environment is openshift, a passthrough Route is configured with host set from the values specified in global.domain, global.route_url_name, and global.remove_namespace_from_url
+    # If global.environment is not openshift, an ingress object is created with the specified apiVersion, annotations, and rules
+
+    # If use_voyager is true make sure voyager is already installed
+    use_voyager: false
+    voyager:
+      apiVersion: voyager.appscode.com/v1beta1
+      # The annotation set for the ingress
+      annotations:
+        kubernetes.io/ingress.class: "voyager"
+        ingress.appscode.com/ssl-passthrough: "true"
+        # If using EKS, type should be LoadBalancer
+        # If using voyager, type should be NodePort
+        ingress.appscode.com/type: NodePort
+      # The rule set you want your ingress controller to use
+      rules:
+        - tcp:
+            port: "80"
+            nodePort: "30001"
+            backend:
+              serviceName: edge
+              servicePort: 10808
+        - tcp:
+            port: "443"
+            nodePort: "30000"
+            backend:
+              serviceName: edge
+              servicePort: 10808
+    nginx:
+      # For instance, these values will work for nginx ingress
+      apiVersion: extensions/v1beta1
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/backend-protocol: "https"
+
+      rules:
+        - host: development.deciphernow.com
+          http:
+            paths:
+              - path: /
+                backend:
+                  serviceName: edge
+                  servicePort: 10808
+
+control:
+  # Name used for the deployment and service resources
+  name: "control"
+  # Display name used for NOTES.txt
+  display_name: "Control"
+  # Number of replicas for the deployment
+  replicas: 1
+  # Version of control
+  version: 1.5.3
+  image: "docker.greymatter.io/release/gm-control:{{ $.Values.control.version }}"
+  # When to pull images, used in the deployment
+  imagePullPolicy: IfNotPresent
+  # Secret used to talk to control-api
+  secret:
+    enabled: true
+    secret_name: control-certs
+    mount_point: /service-certs
+    insecure: true
+    secret_keys:
+      cert: server.crt
+      key: server.key
+  # The name of the service account with access to pods and endpoints. Can be created if it doesn't exist.
+  service_account:
+    create: true
+    name: control-sa
+  envvars:
+    gm_control_api_insecure:
+      type: "value"
+      value: "{{ .Values.control.secret.insecure }}"
+    gm_control_api_ssl:
+      type: "value"
+      value: "{{ .Values.control.secret.enabled }}"
+    gm_control_api_sslcert:
+      type: "value"
+      value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.cert }}"
+    gm_control_api_sslkey:
+      type: "value"
+      value: "{{ .Values.control.secret.mount_point }}/{{ .Values.control.secret.secret_keys.key }}"
+    gm_control_console_level:
+      type: "value"
+      value: "info"
+    gm_control_api_key:
+      type: "value"
+      value: "xxx"
+    gm_control_api_zone_name:
+      type: "value"
+      value: "{{ .Values.global.zone }}"
+    gm_control_api_host:
+      type: "value"
+      value: "control-api:5555"
+    gm_control_cmd:
+      type: "value"
+      value: "kubernetes"
+    gm_control_xds_resolve_dns:
+      type: "value"
+      value: "true"
+    gm_control_xds_ads_enabled:
+      type: "value"
+      value: "true"
+    gm_control_kubernetes_cluster_label:
+      type: "value"
+      value: "{{ .Values.global.control.cluster_label }}"
+    gm_control_kubernetes_port_name:
+      type: "value"
+      value: "proxy"
+    gm_control_kubernetes_namespaces:
+      type: "value"
+      value: '{{ include "control.namespaces" . }}'
+    # The following values are not applied. Change the 'type' to 'value' to use these variables.
+    gm_control_diff_dry_run:
+      type: "null"
+      value: "true"
+    gm_control_file_format:
+      type: "null"
+      value: "yaml"
+    gm_control_file_filename:
+      type: "null"
+      value: "/app/routes.yaml"
+  resources: {}
+
+jwt:
+  # Name used for the deployment and service resources
+  name: jwt-security
+  version: "1.2.0"
+  image: "docker.greymatter.io/release/gm-jwt-security:1.2.0"
+  port: 3000
+  command: ["/bin/sh"]
+  args:
+    [
+      "-c",
+      "if [[ ! -d ./certs ]]; then mkdir -p ./certs; fi && if [[ ! -d ./etc ]]; then mkdir -p ./certs; fi && /gm-jwt-security/gm-jwt-security",
+    ]
+  # Used to configure the REDIS_DB environment variable
+  # If set, enables tls using the secret specified in secret_name
+  # secret:
+  #   secret_name: jwt-certs
+  #   mount_point: /gm-jwt-security/certs
+  # Location to mount the information specified in users_cg_name in the container
+  usersMountPoint: /gm-jwt-security/etc
+  imagePullPolicy: Always
+  replicas: 1
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 64Mi
+
+  envvars:
+    - name: PRIVATE_KEY
+      valueFrom:
+        secretKeyRef:
+          name: "{{ .Values.jwt.secrets.secrets.name }}"
+          key: jwt.key
+    - name: JWT_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: "{{ .Values.jwt.secrets.secrets.name }}"
+          key: jwt.api_key
+    - name: ENABLE_TLS
+      value: "false"
+    - name: ZEROLOG_LEVEL
+      value: "info"
+    - name: REDIS_PORT
+      value: "6379"
+    - name: REDIS_DB
+      value: "0"
+    - name: REDIS_HOST
+      value: "{{ .Values.redis.name }}.{{ .Release.Namespace }}.svc"
+    - name: HTTP_PORT
+      value: "{{ .Values.jwt.port }}"
+    - name: HTTPS_PORT
+      value: "{{ .Values.jwt.port }}"
+
+  secrets:
+    secrets:
+      name: jwt-security
+  # Provides a list of authorized users for the JWT service - preloaded with the DNs for GM Control, GM Catalog and the Mesh cert
+  users_cg_name: jwt-users
+  # A JSON list of users that will be permited access to JWT
+  users: |-
+    {
+      "users": [
+      {
+        "label": "CN=localuser,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+        "values": {
+          "email": [
+            "localuser@greymatter.io"
+          ],
+          "org": [
+            "www.greymatter.io"
+          ],
+          "privilege": [
+            "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=gm-control,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+        "values": {
+          "email": [
+              "gm-control@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=gm-catalog,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+        "values": {
+          "email": [
+              "engineering@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=greymatter,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US",
+        "values": {
+          "email": [
+              "engineering@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
+        "label": "CN=greymatter.user",
+        "values": {
+          "email": [
+              "engineering@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      },
+      {
+        "label": "O=SPIRE,C=US",
+        "values": {
+          "email": [
+              "engineering@greymatter.io"
+          ],
+          "org": [
+              "www.greymatter.io"
+          ],
+          "privilege": [
+              "root"
+          ]
+        }
+      }]
+    }
+
+  sidecar:
+    envvars:
+      - name: XDS_CLUSTER
+        value: jwt-security
+
+redis:
+  # Name used for the redis deployment and service resources
+  name: jwt-redis
+  # The secret containing the password to configure the environment variable REDIS_PASSWORD
+  secret:
+    secret_name: jwt-redis-password
+  image: bitnami/redis:5.0.12
+  command:
+    - "redis-server"
+  args:
+    - "--requirepass"
+    - "$(REDIS_PASSWORD)"
+  replica_count: 1
+  imagePullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  envvars:
+
+# Sets default sidecar configurations for all sidecars
+sidecar:
+  version: "1.5.1"
+  # Port where the proxy will listen
+  port: 10808
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
+  # If set, enables tls using the secret specified in secret_name
+  secret:
+    enabled: true
+    secretName: sidecar-certs
+    mount_point: /etc/proxy/tls/sidecar/
+    secret_keys:
+      ca: ca.crt
+      key: server.key
+      cert: server.crt
+  image: docker.greymatter.io/release/gm-proxy:1.5.1
+  imagePullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  envvars:
+    - name: "PROXY_DYNAMIC"
+      value: "true"
+    - name: "XDS_ZONE"
+      value: "{{ .Values.global.zone }}"
+    - name: "XDS_HOST"
+      value: "control.{{ .Release.Namespace }}.svc"
+    - name: "XDS_PORT"
+      value: "{{ .Values.global.control.port }}"
+    - name: "ENVOY_ADMIN_LOG_PATH"
+      value: "/dev/stdout"
+
+test:
+  name: test
+  extraEnvVars:
+    - name: testing
+      value: testing

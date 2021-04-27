@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ .Values.redis.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  ports:
+    - name: server
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
+  selector: {{ include "greymatter.common.labels.control" (dict "name" .Values.redis.name "context" $) | nindent 4 }}
+  sessionAffinity: None
+  type: ClusterIP

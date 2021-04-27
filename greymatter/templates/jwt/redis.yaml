@@ -1,0 +1,46 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels: {{ include "greymatter.common.labels" (dict "name" .Values.redis.name "context" $) | nindent 4 }}
+  name: {{ .Values.redis.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.redis.replica_count  }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels: {{ include "greymatter.common.labels" (dict "name" .Values.redis.name "context" $) | nindent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels: {{ include "greymatter.common.labels" (dict "name" .Values.redis.name "context" $) | nindent 8 }}
+        greymatter: fabric
+    spec:
+      containers:
+        - name: redis
+          image: {{ .Values.redis.image }}
+          {{- if .Values.redis.command }}
+          command:
+{{ toYaml .Values.redis.command | indent 12 }}
+          {{- end }}
+          {{- if .Values.redis.args }}
+          args:
+{{ toYaml .Values.redis.args | indent 12 }}
+          {{- end }}
+          env:
+          {{- include "greymatter.envvars" (dict "envvar" .Values.redis.envvars "top" $) | indent 12 }}
+          imagePullPolicy: {{ include "greymatter.common.imagePullPolicy" (dict "service" .Values.redis "global" .Values.global ) }}
+        {{- if .Values.redis.resources }}
+          resources:
+{{ toYaml .Values.redis.resources | indent 12 }}
+        {{- end }}
+      {{ include "greymatter.common.imagePullSecrets" ( dict "service" .Values.redis "global" .Values.global) | indent 6}}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

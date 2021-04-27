@@ -1,0 +1,41 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: {{ .Values.jwt.name | default "jwt-security"  }}
+    namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ include "replicas" (dict "service_values" .Values.jwt.replicas "top" $) }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels: {{ include "greymatter.common.labels" (dict "name" .Values.jwt.name "context" $) | nindent 8 }}
+  template:
+    metadata:
+      labels: {{ include "greymatter.common.labels" (dict "name" .Values.jwt.name "context" $) | nindent 8 }}
+        greymatter: fabric
+    spec:
+      containers:
+      - name: jwt-security
+        image: {{ tpl .Values.jwt.image $ | quote }}
+        imagePullPolicy: {{ include "greymatter.common.imagePullPolicy" (dict "service" .Values.jwt "global" .Values.global ) }}
+        {{- if .Values.jwt.resources }}
+        resources: {{ toYaml .Values.jwt.resources | nindent 10 }}
+        {{- end }}
+        {{- if .Values.jwt.command }}
+        command: {{ toYaml .Values.jwt.command | nindent 10 }}
+        {{- end }}
+        {{- if .Values.jwt.args }}
+        args: {{ toYaml .Values.jwt.args | nindent 10 }}
+        {{- end }}
+        env:
+        - name: {{ ternary "HTTP_PORT" "HTTPS_PORT" (.Values.global.spire.enabled) }}
+          value: '{{ .Values.jwt.port }}'
+        volumeMounts:
+        - name: jwt-users
+          mountPath: {{ .Values.jwt.users_mount_point }}
+{{ include "greymatter.common.sidecar" (dict "sidecar" .Values.sidecar "service" .Values.jwt "global" .Values.global "context" $) | nindent 6 }}
+{{ include "greymatter.common.consul.agent" (dict "consul" .Values.global.consul "service" .Values.jwt) | nindent 6 }}
+      {{ include "greymatter.common.imagePullSecrets" ( dict "service" .Values.jwt "global" .Values.global) | indent 6}}
+      volumes: {{ include "greymatter.common.sidecar.volumes" (dict "sidecar" .Values.sidecar "global" .Values.global) | nindent 6 }}
+      - name: jwt-users
+        configMap:
+          name: {{ .Values.jwt.users_cg_name }}
