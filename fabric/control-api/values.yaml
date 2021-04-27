@@ -93,6 +93,11 @@ controlApi:
       ca: ca.crt
       cert: server.crt
       key: server.key
+  # securityContext specifies the user and groups to use.  This needs needs to be turned on when deploying into openshift
+  securityContext: {}
+    # runAsUser: 2000
+    # runAsGroup: 0
+    # fsGroup: 2000
   envvars:
     gm_control_api_use_tls:
       type: 'value'

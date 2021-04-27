@@ -19,12 +19,16 @@ spec:
         {{ .Values.global.control.cluster_label }}: postgres-slo
         greymatter: sense
     spec:
+      {{- if .Values.postgres.securityContext  }}
+      securityContext: {{ toYaml .Values.postgres.securityContext | nindent 8 }}
+      {{- else }}
       {{- if and .Values.global.environment (or (eq .Values.global.environment "eks") (eq .Values.global.environment "openshift")) }}
       # Security context for openshift, kubernetes and eks is the same.
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
         fsGroup: 2000
+      {{- end }}
       {{- end }}
       containers:
       - name: postgres

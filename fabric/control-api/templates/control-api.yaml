@@ -19,12 +19,16 @@ spec:
         deployment: {{ .Values.controlApi.name }}
         greymatter: fabric
     spec:
+      {{- if .Values.controlApi.securityContext  }}
+      securityContext: {{ toYaml .Values.controlApi.securityContext | nindent 8 }}
+      {{- else }}
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       # Security context for kubernetes and eks is the same.
       securityContext:
         runAsUser: 2000
         runAsGroup: 0
         fsGroup: 2000
+      {{- end }}
       {{- end }}
       containers:
         - name: {{ .Values.controlApi.name }}

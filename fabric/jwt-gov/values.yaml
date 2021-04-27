@@ -208,6 +208,11 @@ redis:
   image_pull_policy: IfNotPresent
   # Uses global.image_pull_secret if true
   private_image: false
+  # securityContext specifies the user and groups to use.  This needs needs to be turned on when deploying into openshift
+  securityContext: {}
+    # runAsUser: 2001
+    # runAsGroup: 2001
+    # fsGroup: 2001
 
 # Sets default sidecar configurations for all sidecars
 sidecar:
