@@ -190,9 +190,9 @@ postgres:
       key: server.key
   # securityContext specifies the user and groups to use.  This needs needs to be turned on when deploying into openshift
   securityContext: {}
-    # runAsUser: 2001
-    # runAsGroup: 2001
-    # fsGroup: 2001
+    # runAsUser: 2000
+    # runAsGroup: 0
+    # fsGroup: 2000
 
   envvars:
     postgresql_user:
