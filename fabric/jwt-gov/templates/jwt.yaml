@@ -16,6 +16,8 @@ spec:
         {{ .Values.global.control.cluster_label }}: {{ .Values.jwt.name | default "jwt-security"  }}
         deployment: {{ .Values.jwt.name | default "jwt-security"  }}
         greymatter: fabric
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/jwt-users.yaml") . | sha256sum }}
     spec:
       containers:
       - name: jwt-security
