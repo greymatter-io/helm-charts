@@ -43,7 +43,7 @@ control:
   # Number of replicas for the deployment
   replicas: 1
   # Version of control
-  version: latest
+  version: feat-instance-meta
   image: 'docker.greymatter.io/internal/gm-control:{{ $.Values.control.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
