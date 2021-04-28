@@ -15,6 +15,10 @@ spec:
         {{ .Values.global.control.cluster_label }}: catalog
         deployment: catalog
         greymatter: sense
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/bootstrap-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/bootstrap-zone-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ .Values.global.waiter.service_account.name }}
       initContainers:

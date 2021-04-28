@@ -22,6 +22,10 @@ spec:
         app: server
         cluster: spire.server
         greymatter: spire
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/server-bundle.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/server-secrets-webhooks.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/config-configmap.yaml") . | sha256sum }}
       name: server
       namespace: {{ .Values.global.spire.namespace }}
     spec:
