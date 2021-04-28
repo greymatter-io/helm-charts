@@ -3,6 +3,25 @@ entries:
   agent:
   - apiVersion: v2
     appVersion: 1.2.0
+    created: "2021-04-28T13:45:40.722331834Z"
+    description: A Helm chart to deploy the Spire Agent
+    digest: d45921ad5e7558968e1545e9921870c787b66fb2fde9e0ea67a3b98fe15164e8
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - spire
+    - agent
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: agent
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/agent-2.3.0/agent-2.3.0.tgz
+    version: 2.3.0
+  - apiVersion: v2
+    appVersion: 1.2.0
     created: "2021-01-12T17:55:24.761266765Z"
     description: A Helm chart to deploy the Spire Agent
     digest: d598945f2ca57905524cbffa766435e9b82d1a725399a0c48fd76b2a329a8c11
@@ -1488,6 +1507,25 @@ entries:
   server:
   - apiVersion: v2
     appVersion: 1.2.0
+    created: "2021-04-28T13:45:41.19249515Z"
+    description: A Helm chart to deploy the Spire Server
+    digest: 7a7f2bed485447474abb8e9ed36439aad29c0dab4ef4394582478945b5a4e04c
+    home: https://greymatter.io
+    icon: https://s3.amazonaws.com/decipher-public/grey-matter/branding/grey-matter-mark-rgb.png
+    keywords:
+    - Grey Matter
+    - service mesh
+    - spire
+    - server
+    maintainers:
+    - email: engineering@greymatter.io
+      name: greymatter-io
+    name: server
+    urls:
+    - https://github.com/greymatter-io/helm-charts/releases/download/server-2.3.0/server-2.3.0.tgz
+    version: 2.3.0
+  - apiVersion: v2
+    appVersion: 1.2.0
     created: "2021-01-12T17:55:24.884401261Z"
     description: A Helm chart to deploy the Spire Server
     digest: bf9656374eda5da79786a799c12f8d8da5d6362825fa8e59396b9c4db25ecce5
@@ -1610,4 +1648,4 @@ entries:
     urls:
     - https://github.com/greymatter-io/helm-charts/releases/download/spire-2.2.1/spire-2.2.1.tgz
     version: 2.2.1
-generated: "2020-10-24T17:09:32.874999254Z"
+generated: "2021-04-28T13:45:41.192717151Z"
