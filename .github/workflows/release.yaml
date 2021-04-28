@@ -38,14 +38,14 @@ jobs:
           sed -i -e "s|name: fabric|name: fabric-gov|" -e "s|Grey Matter Fabric|Grey Matter Fabric Gov|" -e "s|/jwt|/jwt-gov|" fabric-gov/Chart.yaml
 
       - name: Release Spire Server and Agent Charts
-        uses: helm/chart-releaser-action@v1.0.0
+        uses: helm/chart-releaser-action@v1.2.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           charts_dir: spire
 
       - name: Release Grey Matter Charts
-        uses: helm/chart-releaser-action@v1.0.0
+        uses: helm/chart-releaser-action@v1.2.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
@@ -87,7 +87,7 @@ jobs:
         with:
           name: chart-versions
           path: chart-versions.json
-  
+
   create_pr:
     name: Create PR to update book.json with new values
     needs: get-current-chart-release-versions
@@ -104,7 +104,7 @@ jobs:
           TARGET_REPO: "github.com/greymatter-io/gm-gitbook-sync.git"
           BRANCH_TO_UPDATE: "1.3"
           CHARTS: "fabric sense edge secrets spire_agent spire_server"
-        run: | 
+        run: |
           # #### If in the future we have different chart names just add them to the CHARTS environment variable (space separated)
           # #### The CHARTS environment variable is split into the cts array which is used to export the envars which are used for the sed command
           # #### These keys must match an already existing key in book.json.  Keys that do not exist
@@ -119,7 +119,7 @@ jobs:
           # ------------Set up Git and Git Variables ---------------------
           git config --global user.email "62956126+helm-charts@users.noreply.github.com"
           git config --global user.name $GITHUB_ACTOR
-          
+
           SHORT_DATE="$(date +"%Y-%m-%d")"
           LONG_DATE="$(date '+%d%m%Y%H%M%S')"
           BRANCH_NAME=$(echo ${GITHUB_REF}| awk -F/ '{print $3}')
@@ -127,7 +127,7 @@ jobs:
           commit_message="${SHORT_DATE}: Automatic publish from helm-charts repo.  Incrementing Chart versions in book.json"
 
           git clone -o upstream https://${GITHUB_ACTOR}:${DEPLOY_TOKEN}@${TARGET_REPO} automation
-          
+
           ls
 
           cd automation
@@ -138,10 +138,10 @@ jobs:
           git checkout ${BRANCH_TO_UPDATE}
 
           # ------------Business logic---------------------
-          
+
           cp book.json old-book.json
 
-          # update book.json with the latest versions from envars 
+          # update book.json with the latest versions from envars
           count=1
           for i in ${cts[@]};do
               echo "[${count}/${#cts[@]}] --- envar of ${i} is ${!i}"
@@ -158,7 +158,7 @@ jobs:
 
           echo "The new book.json: "
           cat book.json
-          
+
           # This is ratchet but github actions currently exit on any exit code non 0.  diff responds with 1 if there is a difference
           # This allows us to capture the event where there are no changes since the diff only returns a string if there is a ... diff
           r=$(diff old-book.json book.json) || true
@@ -170,7 +170,7 @@ jobs:
             git remote set-url origin  https://${GITHUB_ACTOR}:${DEPLOY_TOKEN}@${TARGET_REPO}
             git add book.json
             git commit -m "${commit_message}"
-            
+
             git push --set-upstream origin ${NEW_FEATURE_BRANCH_NAME}
 
             # This works.  let it be.
