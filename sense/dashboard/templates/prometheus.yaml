@@ -17,7 +17,7 @@ spec:
         deployment: {{ .Values.prometheus.name }}
         greymatter: sense
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/prometheus-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/prometheus-configmap.yaml") . | sha256sum | trunc 63 }}
     spec:
       serviceAccountName: {{ .Values.prometheus.service_account.name }}
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
