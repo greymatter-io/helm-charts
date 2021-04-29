@@ -11,10 +11,10 @@ spec:
   template:
     metadata:
       name: {{ .Values.catalog.name }}-init
-    annotations:
-      checksum/config: {{ include (print $.Template.BasePath "/bootstrap-configmap.yaml") . | sha256sum | trunc 63 }}
-      checksum/config: {{ include (print $.Template.BasePath "/bootstrap-zone-configmap.yaml") . | sha256sum | trunc 63 }}
-      checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum | trunc 63 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/bootstrap-configmap.yaml") . | sha256sum | trunc 63 }}
+        checksum/config: {{ include (print $.Template.BasePath "/bootstrap-zone-configmap.yaml") . | sha256sum | trunc 63 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum | trunc 63 }}
     spec:
       restartPolicy: "OnFailure"
       # We need a SA with read access to the `Endpoints` resource
