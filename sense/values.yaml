@@ -337,7 +337,7 @@ catalog:
     # Name used for the deployment and service resources
     name: catalog
     # GM Catalog version
-    version: feat-instance-meta
+    version: catalog
     image: docker.greymatter.io/internal/gm-catalog:{{ $.Values.catalog.version }}
     # When to pull container images, used in the deployment
     image_pull_policy: Always
