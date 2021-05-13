@@ -1,7 +1,7 @@
 include ../helpers.mk
 
-NAME-SPIRE-AGENT := spire-agent-$(CUST)-gfvad
-NAME-SPIRE-SERVER := spire-server-$(CUST)-gfvad
+NAME-SPIRE-AGENT := spire-agent-$(CUST)-$(RAND)
+NAME-SPIRE-SERVER := spire-server-$(CUST)-$(RAND)
 
 .PHONY: server agent spire remove-spire custom-ca
 

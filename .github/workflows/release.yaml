@@ -7,7 +7,7 @@ name: Release Charts
 on:
   push:
     branches:
-      - release-*
+      - release-2.3
 
 jobs:
   release:
@@ -102,7 +102,7 @@ jobs:
         env:
           DEPLOY_TOKEN: ${{ secrets.GITBOOK_TOKEN }}
           TARGET_REPO: "github.com/greymatter-io/gm-gitbook-sync.git"
-          BRANCH_TO_UPDATE: "1.3"
+          BRANCH_TO_UPDATE: "1.4-beta"
           CHARTS: "fabric sense edge secrets spire_agent spire_server"
         run: | 
           # #### If in the future we have different chart names just add them to the CHARTS environment variable (space separated)
