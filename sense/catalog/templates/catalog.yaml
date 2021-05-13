@@ -17,16 +17,6 @@ spec:
         greymatter: sense
     spec:
       serviceAccountName: {{ .Values.global.waiter.service_account.name }}
-      initContainers:
-        - name: ensure-gm-control
-          image: {{ .Values.global.waiter.image }}
-          env:
-            - name: NAMESPACE
-              value: {{ .Release.Namespace }}
-            - name: SERVICE
-              value: control
-            - name: POST_DELAY
-              value: "10"
       containers:
       - name: catalog
         image: {{ tpl .Values.catalog.image $ }}
@@ -36,9 +26,15 @@ spec:
 {{ toYaml .Values.catalog.resources | indent 10 }}
         {{- end }}
         env:
+        - name: SEED_FILE_PATH
+          value: /app/seed/seed.yaml
+        - name: SEED_FILE_FORMAT
+          value: yaml
         {{- include "envvars" (dict "envvar" .Values.catalog.envvars "top" $) | indent 8 }}
-        {{- if .Values.catalog.secret.enabled }}
         volumeMounts:
+        - name: catalog-seed
+          mountPath: /app/seed
+        {{- if .Values.catalog.secret.enabled }}
         - name: certs
           mountPath: {{ .Values.catalog.secret.mount_point }}
         {{- end }}
@@ -82,6 +78,9 @@ spec:
       {{- include "consul.agent" $data | nindent 6 }}
       {{- end }}
       volumes:
+      - name: catalog-seed
+        configMap:
+          name: {{ .Values.catalog.name }}-seed
       {{- if .Values.global.consul.enabled }}
       - name: data-consul
         emptyDir: {}

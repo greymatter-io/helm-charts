@@ -20,27 +20,6 @@ curl -X PUT localhost:9080/meshes/istio-demo -d '{
   ]
 }'
 
-curl -X PUT localhost:9080/meshes/zone-default-zone -d '{
-  "mesh_id": "zone-default-zone",
-  "mesh_type": "greymatter",
-  "name": "Grey Matter Core",
-  "sessions": {
-    "default": {
-      "url": "control.default.svc:50000",
-      "cluster": "edge",
-      "zone": "zone-default-zone"
-    }
-  },
-  "labels": {},
-  "external_links": [
-    {
-      "title": "Grey Matter Home Page",
-      "url": "https://greymatter.io"
-    }
-  ]
-}
-'
-
 curl -X PUT localhost:9080/meshes/istio-demo/services/details-v1:9080 -d '{
     "service_id": "details-v1:9080",
     "mesh_id": "istio-demo",
