@@ -57,8 +57,8 @@ global:
 slo:
   slo:
     # SLO version
-    version: 1.2.0
-    image: 'docker.greymatter.io/release/gm-slo:{{ $.Values.slo.version }}'
+    version: latest
+    image: 'docker.greymatter.io/development/gm-slo:{{ $.Values.slo.version }}'
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
     # CPU and memory limits for the SLO service
@@ -199,8 +199,8 @@ dashboard:
     # Name used for the deployment and service resources
     name: dashboard
     # Dashboard app version
-    version: istio
-    image: 'docker.greymatter.io/internal/gm-dashboard:{{ $.Values.dashboard.version }}'
+    version: latest
+    image: 'docker.greymatter.io/development/gm-dashboard:{{ $.Values.dashboard.version }}'
     # Port for the dashboard app
     port: 1337
     # When to pull container images, used in the deployment
@@ -334,8 +334,8 @@ catalog:
     # Name used for the deployment and service resources
     name: catalog
     # GM Catalog version
-    version: feat-instance-meta
-    image: docker.greymatter.io/internal/gm-catalog:{{ $.Values.catalog.version }}
+    version: latest
+    image: docker.greymatter.io/development/gm-catalog:{{ $.Values.catalog.version }}
     # When to pull container images, used in the deployment
     image_pull_policy: Always
     # image_pull_policy: IfNotPresent
