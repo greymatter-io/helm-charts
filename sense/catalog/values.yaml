@@ -54,7 +54,7 @@ mesh_redis:
   ca_cert_path: ''
   server_cert_path: ''
   server_key_path: ''
-  catalog_db: 2
+  catalog_db: 1
   max_retries: 50
   retry_delay: '5s'
 
@@ -211,7 +211,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: latest
+    version: 2.0.0
     minInstances: 1
     maxInstances: 1
     ownerURL: "https://greymatter.io"
