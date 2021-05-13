@@ -1,8 +1,50 @@
+{{- $data := .Values.global.data.external.enabled }}
+{{- $top := . }}
+---
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: {{ .Values.catalog.name}}-bootstrap-script
+  name: {{ .Values.catalog.name }}-seed
   namespace: {{ .Release.Namespace }}
 data:
-  bootstrap.sh: |-
-{{ .Files.Get "config/bootstrap.sh" | indent 4 }}
+  seed.yaml: |-
+    {{ .Values.global.zone }}:
+      mesh_type: greymatter
+      name: Grey Matter Core
+      sessions:
+        default:
+          url: control.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}
+          zone: {{ .Values.global.zone }}
+          cluster: edge
+      external_links:
+        - title: Grey Matter Home Page
+          url: https://greymatter.io
+      services:
+        {{- range $name, $service := .Values.services }}
+        {{- if and (eq .serviceName "data") (not $data) }}
+        {{- else if .catalogEnabled }}
+        {{ $service.serviceName }}:
+          name: {{ $service.name }}
+          version: {{ $service.version }}
+          description: {{ $service.description }}
+          owner: {{ $service.owner }}
+          owner_url: {{ $service.ownerURL }}
+          api_endpoint: {{ tpl $service.apiEndpoint $ }}
+          api_spec_endpoint: {{ $service.apiSpecEndpoint }}
+          capability: {{ $service.capability }}
+          runtime: GO
+          documentation: {{ $service.documentation }}
+          prometheus_job: {{ $service.serviceName }}
+          min_instances: {{ $service.minInstances | default 1 }}
+          max_instances: {{ include "maxInstances" (dict "service_values" $service "top" $) }}
+          enable_instance_metrics: {{ $service.enableInstanceMetrics | default true }}
+          enable_historical_metrics: {{ $service.enableHistoricalMetrics | default true }}{{- if $service.externalLinks }}
+          external_links:
+            {{ range $i, $link := $service.externalLinks }}
+            - title: {{ $link.title }}
+              url: {{ $link.url }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+        {{- end }}
+

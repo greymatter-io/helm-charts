@@ -534,7 +534,7 @@ services:
     businessImpact: low
     description: Grey Matter Data is an API that enables secure and flexible access control for your microservices.
     # External links configures the "Service Tools" dropdown in service view
-    externalLinks: [{name: "API Explorer", link: "/services/data/latest/static/ui/index.html"}]
+    externalLinks: [{title: "API Explorer", url: "/services/data/latest/static/ui/index.html"}]
     secret:
       enabled: true
       secret_name: sidecar-certs
