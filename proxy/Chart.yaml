@@ -4,8 +4,8 @@ description: A Helm chart to deploy a Grey Matter Proxy
 name: proxy
 version: 3.0.2
 maintainers:
-  - name: Decipher Technology Studios Engineering
-    email: engineering@deciphernow.com
+  - name: greymatter-io
+    email: engineering@greymatter.io
 keywords:
   - Grey Matter
   - service mesh
