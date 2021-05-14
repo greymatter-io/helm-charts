@@ -70,10 +70,10 @@ control:
     # Number of replicas for the deployment
     replicas: 1
     # Version of control
-    version: latest
-    image: 'docker.greymatter.io/development/gm-control:{{ $.Values.control.version }}'
+    # image: 'docker.greymatter.io/development/gm-control:latest'
+    image: 'docker.greymatter.io/internal/gm-control:catalog'
     # When to pull images, used in the deployment
-    image_pull_policy: IfNotPresent
+    image_pull_policy: Always
     # Secret used to talk to control-api
     secret:
       enabled: true
@@ -90,7 +90,7 @@ control:
     envvars:
       gm_control_console_level:
         type: 'value'
-        value: 'info'
+        value: 'debug'
       gm_control_api_key:
         type: 'value'
         value: 'xxx'
@@ -116,6 +116,9 @@ control:
         type: 'value'
         value: 'kubernetes'
       gm_control_xds_resolve_dns:
+        type: 'value'
+        value: 'true'
+      xds_stats_enabled:
         type: 'value'
         value: 'true'
       gm_control_xds_ads_enabled:
@@ -175,8 +178,8 @@ control-api:
     # Number of replicas for the deployment
     replicas: 1
     # Gm Control API version
-    version: latest
-    image: 'docker.greymatter.io/development/gm-control-api:{{ $.Values.controlApi.version }}'
+    image: 'docker.greymatter.io/internal/gm-control-api:catalog'
+    # image: 'docker.greymatter.io/development/gm-control-api:latest'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
     # Port exposed by the control-api container
