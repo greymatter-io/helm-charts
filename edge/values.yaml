@@ -13,6 +13,9 @@ global:
   route_url_name: greymatter
   remove_namespace_from_url: 'false'
 
+  global_certs:
+    enabled: false
+
   exhibitor:
     replicas: 1
   # Zone for Grey Matter objects. Used in sidecar envvars
