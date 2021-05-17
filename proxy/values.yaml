@@ -3,6 +3,10 @@ name: proxy
 imagePullSecrets:
   - name: docker.secret
 
+global:
+  sidecar:
+    version: latest
+
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
   image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
