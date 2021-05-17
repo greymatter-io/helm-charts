@@ -6,6 +6,10 @@ imagePullSecrets:
 global:
   sidecar:
     version: latest
+  spire:
+    enabled: true
+    trust_domain: quickstart.greymatter.io
+    path: '/run/spire/socket/agent.sock'
 
 sidecar:
   version: '{{- $.Values.global.sidecar.version | default "latest" }}'
