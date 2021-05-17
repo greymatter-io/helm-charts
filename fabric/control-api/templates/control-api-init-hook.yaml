@@ -13,7 +13,6 @@ spec:
       name: {{ .Values.controlApi.name}}-init
       labels:
         deployment: {{ .Values.controlApi.name }}
-        greymatter: fabric
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/bootstrap-configmap.yaml") . | sha256sum | trunc 63 }}
         checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum | trunc 63 }}
