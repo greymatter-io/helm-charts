@@ -401,15 +401,6 @@ catalog:
       port:
         type: value
         value: '{{ $.Values.catalog.port }}'
-      control_server_0_address:
-        type: value
-        value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
-      control_server_0_zone_name:
-        type: value
-        value: '{{ .Values.global.zone }}'
-      control_server_0_request_cluster_name:
-        type: value
-        value: 'edge'
       use_tls:
         type: value
         value: '{{ not .Values.global.spire.enabled }}'
