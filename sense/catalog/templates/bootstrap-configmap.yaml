@@ -15,7 +15,6 @@ data:
         default:
           url: control.{{ .Release.Namespace }}.svc:{{ .Values.global.control.port }}
           zone: {{ .Values.global.zone }}
-          cluster: edge
       external_links:
         - title: Grey Matter Home Page
           url: https://greymatter.io
