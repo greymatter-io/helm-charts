@@ -243,11 +243,11 @@ func verifyPods(t *testing.T, kubectlOptions *k8s.KubectlOptions, expectedPodCou
 func verifyCatalog(t *testing.T, kubectlOptions *k8s.KubectlOptions) {
 
 	// Setup a TLS configuration to submit with the helper, a blank struct is acceptable
-	certPem, err := ioutil.ReadFile("../certs/quickstart.crt")
+	certPem, err := ioutil.ReadFile("../secrets/files/certs/global/server.crt")
 	if err != nil {
 		log.Fatal(err)
 	}
-	keyPem, err := ioutil.ReadFile("../certs/quickstart.key")
+	keyPem, err := ioutil.ReadFile("../secrets/files/certs/global/server.key")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -281,7 +281,7 @@ func verifyCatalog(t *testing.T, kubectlOptions *k8s.KubectlOptions) {
 			json.Unmarshal([]byte(body), &data)
 			metadata, _ := data["metadata"].(map[string]interface{})
 
-			foundCatalogCount := metadata["clusterCount"]
+			foundCatalogCount := metadata["service_count"]
 
 			return foundCatalogCount == float64(expectedCatalogCount)
 		},
