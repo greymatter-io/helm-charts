@@ -42,7 +42,7 @@ global:
     default_replicas: 3
 
 edge:
-  version: latest
+  version: 1.6.0-rc.1
   image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.edge.version $ }}'
   image_pull_policy: IfNotPresent
   replicas: 1

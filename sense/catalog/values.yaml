@@ -34,7 +34,7 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.5.1
+    version: 1.6.0-rc.1
   # To use an external redis or not
   external_redis:
     disabled: true
@@ -62,7 +62,7 @@ catalog:
   # Name used for the deployment and service resources
   name: catalog
   # GM Catalog version
-  version: latest
+  version: 2.0.0-rc # UPDATE VERSION
   image: docker.greymatter.io/development/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
@@ -138,32 +138,6 @@ catalog:
     server_key_path:
       type: value
       value: '/etc/pki/{{ .Values.catalog.secret.secret_keys.key }}'
-
-  init:
-    image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-    imagePullPolicy: IfNotPresent
-    envvars:
-      debug:
-        type: 'value'
-        value: 'true'
-      catalog_api_host:
-        type: 'value'
-        value: '{{ .Values.catalog.name }}:{{ .Values.catalog.port }}'
-      use_tls:
-        type: value
-        value: '{{ $.Values.catalog.secret.enabled | default false }}'
-      certs_mount:
-        type: value
-        value: '{{ .Values.catalog.secret.mount_point | default "/etc/pki" }}'
-      ca_cert:
-        type: value
-        value: '{{ .Values.catalog.secret.secret_keys.ca | default "ca.crt" }}'
-      cert:
-        type: value
-        value: '{{ .Values.catalog.secret.secret_keys.cert | default "server.crt" }}'
-      key:
-        type: value
-        value: '{{ .Values.catalog.secret.secret_keys.key | default "server.key" }}'
 
 # Sidecar configuration for Catalog
 sidecar:

@@ -70,7 +70,7 @@ control:
     # Number of replicas for the deployment
     replicas: 1
     # Version of control
-    version: latest
+    version: 1.6.0-rc.1
     image: 'docker.greymatter.io/development/gm-control:{{ $.Values.control.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
@@ -175,7 +175,7 @@ control-api:
     # Number of replicas for the deployment
     replicas: 1
     # Gm Control API version
-    version: latest
+    version: 1.6.0-rc.1
     image: 'docker.greymatter.io/development/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
     image_pull_policy: IfNotPresent
@@ -541,7 +541,7 @@ jwt:
     #  mount_point: /gm-jwt-security/certs
     # Location to mount the information specified in users_cg_name in the container
     users_mount_point: /gm-jwt-security/etc
-    version: 1.2.0
+    version: 1.3.0-rc.1
     image: 'docker.greymatter.io/release/gm-jwt-security:{{ .Values.jwt.version }}'
     port: 3000
     envvars:

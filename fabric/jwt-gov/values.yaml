@@ -26,7 +26,7 @@ global:
     port: 8500
     edge_port: 10808
   sidecar:
-    version: 1.5.1
+    version: 1.6.0-rc.1
   release:
     # release.production: true will increase all (except control-api) replicas to the default_replicas.  Otherwise the default for each chart will be used
     production: false
@@ -34,7 +34,7 @@ global:
 
 
 jwt:
-  version: '1.2.0'
+  version: 1.3.0-rc.1
   # If true, uses aac for auth control
   use_aac: false
   image: 'docker.greymatter.io/government/gm-jwt-security-gov:{{ tpl $.Values.jwt.version $ }}'

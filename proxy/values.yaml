@@ -5,7 +5,7 @@ imagePullSecrets:
 
 global:
   sidecar:
-    version: latest
+    version: 1.6.0-rc.1
   spire:
     enabled: true
     trust_domain: quickstart.greymatter.io
