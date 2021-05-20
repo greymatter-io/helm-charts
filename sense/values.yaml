@@ -37,7 +37,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.5.1
+    version: 1.6.0-rc.1
     envvars:
       proxy_dynamic:
         type: 'value'

@@ -40,7 +40,7 @@ global:
   # Sidecar configuration (Control-api is the only service in this chart with a proxy)
   sidecar:
     # GM Proxy version, used by control-api
-    version: 1.5.1
+    version: 1.6.0-rc.1
     envvars:
       xds_cluster:
         type: value
@@ -542,7 +542,7 @@ jwt:
     # Location to mount the information specified in users_cg_name in the container
     users_mount_point: /gm-jwt-security/etc
     version: 1.3.0-rc.1
-    image: 'docker.greymatter.io/release/gm-jwt-security:{{ .Values.jwt.version }}'
+    image: 'docker.greymatter.io/development/gm-jwt-security:{{ .Values.jwt.version }}'
     port: 3000
     envvars:
       private_key:
