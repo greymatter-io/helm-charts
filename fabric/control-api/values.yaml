@@ -205,7 +205,7 @@ sidecar:
 
 
 bootstrap:
-  version: 2.0.1 # UPDATE VERSION
+  version: 3.0.0-rc.2
   image: 'docker.greymatter.io/development/greymatter:{{ tpl $.Values.bootstrap.version $ }}'
   image_pull_policy: IfNotPresent
   secret:

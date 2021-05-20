@@ -62,7 +62,7 @@ catalog:
   # Name used for the deployment and service resources
   name: catalog
   # GM Catalog version
-  version: 2.0.0-rc # UPDATE VERSION
+  version: 2.0.0-rc.2
   image: docker.greymatter.io/development/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
