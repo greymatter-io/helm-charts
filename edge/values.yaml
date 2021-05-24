@@ -114,13 +114,13 @@ edge:
             port: '80'
             nodePort: '30001'
             backend:
-              serviceName: edge
+              serviceName: '{{ .Values.edge.name }}'
               servicePort: 10808
         - tcp:
             port: '443'
             nodePort: '30000'
             backend:
-              serviceName: edge
+              serviceName: '{{ .Values.edge.name }}'
               servicePort: 10808
     nginx:
       # For instance, these values will work for nginx ingress
@@ -131,10 +131,10 @@ edge:
         nginx.ingress.kubernetes.io/backend-protocol: "https"
 
       rules:
-        - host: development.deciphernow.com
+        - host: '{{ include "greymatter.domain" $ }}'
           http:
             paths:
               - path: /
                 backend:
-                  serviceName: edge
+                  serviceName: '{{ .Values.edge.name }}'
                   servicePort: 10808
