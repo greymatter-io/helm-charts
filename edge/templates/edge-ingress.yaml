@@ -14,7 +14,7 @@ metadata:
 {{ toYaml $ingress.annotations | indent 4 }}
 spec:
   rules:
-{{ toYaml $ingress.rules | indent 4 }}
+{{ tpl (toYaml $ingress.rules) $root | indent 4 }}
 {{- end }}
 
 
