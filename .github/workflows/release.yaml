@@ -38,7 +38,7 @@ jobs:
           sed -i -e "s|name: fabric|name: fabric-gov|" -e "s|Grey Matter Fabric|Grey Matter Fabric Gov|" -e "s|/jwt|/jwt-gov|" fabric-gov/Chart.yaml
 
       - name: Release Spire Server and Agent Charts
-        uses: helm/chart-releaser-action@v1.2.0
+        uses: helm/chart-releaser-action@v1.0.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
