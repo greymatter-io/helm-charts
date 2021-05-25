@@ -96,6 +96,14 @@ template: dev-dep $(BUILD_NUMBER_FILE)
 	(cd edge && make template-edge && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd sense && make template-sense && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 
+gm-user-cert:
+	kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.crt']}" | base64 -d > tls.crt
+	kubectl get secret greymatter-user-cert -o jsonpath="{.data['tls\.key']}" | base64 -d > tls.key
+	kubectl get secret greymatter-user-cert -o jsonpath="{.data['ca\.crt']}" | base64 -d > ca.crt
+	openssl pkcs12 -export -out greymatter.p12 -inkey tls.key -in tls.crt -certfile ca.crt -passout pass:password
+
+gm-ingress-cert:
+	kubectl get secret greymatter-edge-ingress -o jsonpath="{.data['ca\.crt']}" | base64 -d > ingress-ca.crt
 
 secrets:
 	@cd secrets && make secrets
