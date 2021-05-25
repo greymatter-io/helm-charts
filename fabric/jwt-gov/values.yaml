@@ -112,7 +112,7 @@ jwt:
   users: |-
     [
       {
-          "userDN": "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
+          "userDN": "CN=greymatter.user,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US",
           "diasUserGroups": {
               "projects": [
                   {}
@@ -187,7 +187,7 @@ jwt:
   # A JSON list of users that will be permited admin access to JWT
   admins: |-
     [
-      "CN=quickstart,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US"
+      "CN=greymatter.user,OU=Engineering,O=Decipher Technology Studios,=Alexandria,=Virginia,C=US"
     ]
 
 
@@ -198,12 +198,12 @@ redis:
   secret:
     secret_name: jwt-redis-password
   password: 'redis'
-  # Redis image to use when global.environment=openshift
-  openshift:
-    image: 'centos/redis-32-centos7'
-  # Redis image to use when global.environment=kubernetes
-  k8s:
-    image: 'redis:3.2'
+  image: bitnami/redis:5.0.12
+  command:
+    - 'redis-server'
+  args:
+    - '--requirepass'
+    - "$(REDIS_PASSWORD)"
   replica_count: 1
   image_pull_policy: IfNotPresent
   # Uses global.image_pull_secret if true

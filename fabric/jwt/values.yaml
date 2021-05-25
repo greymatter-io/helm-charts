@@ -187,12 +187,12 @@ redis:
   # The secret containing the password to configure the environment variable REDIS_PASSWORD
   secret:
     secret_name: jwt-redis-password
-  # Redis image to use when global.environment=openshift
-  openshift:
-    image: 'centos/redis-32-centos7'
-  # Redis image to use when global.environment=kubernetes
-  k8s:
-    image: 'redis:3.2'
+  image: bitnami/redis:5.0.12
+  command:
+    - 'redis-server'
+  args:
+    - '--requirepass'
+    - "$(REDIS_PASSWORD)"
   replica_count: 1
   image_pull_policy: IfNotPresent
   # Uses global.image_pull_secret if true

@@ -19,7 +19,11 @@ put a cert ontop of a key.  for use in mongo where it expects this
 {{- end }}
 
 {{- define "secrets.domain" -}}
+  {{- if .Values.global.route_url_name }}
 {{- printf "%s.%s" .Values.global.route_url_name .Values.global.domain -}}
+  {{- else }}
+{{- printf "%s" .Values.global.domain -}}
+  {{- end }}
 {{- end -}}
 
 {{- define "secrets.userDn" -}}

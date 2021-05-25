@@ -1,23 +1,23 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: edge
+  name: {{ .Values.edge.name }}
   namespace: {{ .Release.Namespace }}
 spec:
   replicas: {{ include "replicas" (dict "service_values" .Values.edge.replicas "top" $) }}
   selector:
     matchLabels:
-      {{ .Values.global.control.cluster_label }}: edge
+      {{ .Values.global.control.cluster_label }}: {{ .Values.edge.name }}
       deployment: edge
   template:
     metadata:
       labels:
-        {{ .Values.global.control.cluster_label }}: edge
+        {{ .Values.global.control.cluster_label }}: {{ .Values.edge.name }}
         deployment: edge
         greymatter: edge
     spec:
       containers:
-      - name: edge
+      - name: {{ .Values.edge.name }}
         image: {{ tpl .Values.edge.image $ | quote }}
         imagePullPolicy: {{ .Values.edge.image_pull_policy }}
         {{- if .Values.edge.resources }}
@@ -47,7 +47,7 @@ spec:
       {{- if .Values.global.consul.enabled }}
       {{- $data := dict "Values" .Values "ServiceName" "edge" }}
       {{- include "consul.agent" $data | nindent 6 }}
-      {{- end }}      
+      {{- end }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       volumes:

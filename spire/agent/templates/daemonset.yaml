@@ -23,6 +23,8 @@ spec:
         app: agent
         cluster: spire.agent
         greymatter: spire
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config-configmap.yaml") . | sha256sum | trunc 63 }}
     spec:
       hostPID: true
       hostNetwork: true

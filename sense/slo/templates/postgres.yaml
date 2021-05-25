@@ -18,6 +18,9 @@ spec:
       labels:
         {{ .Values.global.control.cluster_label }}: postgres-slo
         greymatter: sense
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/postgres-slo-config.yaml") . | sha256sum | trunc 63 }}
+        checksum/config: {{ include (print $.Template.BasePath "/postgres-slo-overrides.yaml") . | sha256sum | trunc 63 }}
     spec:
       {{- if and .Values.global.environment (ne .Values.global.environment "openshift") }}
       # Security context for openshift, kubernetes and eks is the same.

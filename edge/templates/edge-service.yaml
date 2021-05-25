@@ -1,10 +1,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: edge
+  name: {{ .Values.edge.name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{ .Values.global.control.cluster_label }}: edge
+    {{ .Values.global.control.cluster_label }}: {{ .Values.edge.name }}
 spec:
   ports:
     - name: proxy
@@ -12,6 +12,6 @@ spec:
     - name: metrics
       port: 8081
   selector:
-    {{ .Values.global.control.cluster_label }}: edge
+    {{ .Values.global.control.cluster_label }}: {{ .Values.edge.name }}
   sessionAffinity: None
   type: {{ .Values.edge.ingress.type }}
