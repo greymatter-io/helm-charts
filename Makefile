@@ -18,9 +18,9 @@ k3d:
 reveal-endpoint:
 	./ci/scripts/show-voyager.sh
 
-.IGNORE=destroy-k3d
-destroy-k3d:
-	-(make delete)
+.IGNORE= destroy
+destroy:
+	-minikube delete
 	-k3d cluster delete greymatter
 	-(eval unset KUBECONFIG)
 
@@ -78,7 +78,7 @@ uninstall: verify-identity-exists
 
 delete: uninstall remove-pvc remove-pods
 	@echo "purged greymatter helm release"
-	
+
 remove-pvc:
 	kubectl delete pvc $$(kubectl get pvc | awk '{print $$1}' | tail -n +2)
 
@@ -94,17 +94,17 @@ template: dev-dep $(BUILD_NUMBER_FILE)
 	(cd spire && make template-spire && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd fabric && make template-fabric && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 	(cd edge && make template-edge && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
-	(cd sense && make template-sense && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)	
+	(cd sense && make template-sense && cp $(OUTPUT_PATH)/* ../$(OUTPUT_PATH)/)
 
 
 secrets:
-	cd secrets && make secrets
+	@cd secrets && make secrets
 
 remove-secrets:
-	helm uninstall secrets
+	@helm uninstall secrets
 
 credentials:
-	cd secrets && make credentials
+	@cd secrets && make credentials
 
 EKS?=false
 OBSERVABLES_NAMESPACE?=observables
@@ -128,7 +128,7 @@ lint-subcharts:
 
 lint-edge-secrets:
 	@echo "Lint Edge and Secrets"
-	ct lint --config .chart-testing/edge-secrets.yaml 
+	ct lint --config .chart-testing/edge-secrets.yaml
 
 lint-umbrella-charts:
 	@echo "Lint top level charts"

@@ -178,6 +178,9 @@ func TestEdgePatch(t *testing.T) {
 // TestCatalog tests that catalog is correctly configured in the mesh
 func TestCatalog(t *testing.T) {
 	kubectlOptions := k8s.NewKubectlOptions("", "", "default")
+	secret := "greymatter-user-cert"
+
+	extractCerts(t, kubectlOptions, secret)
 	verifyCatalog(t, kubectlOptions)
 }
 
@@ -240,14 +243,33 @@ func verifyPods(t *testing.T, kubectlOptions *k8s.KubectlOptions, expectedPodCou
 	}
 }
 
-func verifyCatalog(t *testing.T, kubectlOptions *k8s.KubectlOptions) {
+func extractCerts(t *testing.T, kubectlOptions *k8s.KubectlOptions, secret string) {
+	userCertSecret := k8s.GetSecret(t, kubectlOptions, secret)
 
-	// Setup a TLS configuration to submit with the helper, a blank struct is acceptable
-	certPem, err := ioutil.ReadFile("../certs/quickstart.crt")
+	err := ioutil.WriteFile("../certs/tls.crt", userCertSecret.Data["tls.crt"], 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
-	keyPem, err := ioutil.ReadFile("../certs/quickstart.key")
+
+	err = ioutil.WriteFile("../certs/tls.key", userCertSecret.Data["tls.key"], 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = ioutil.WriteFile("../certs/ca.crt", userCertSecret.Data["ca.crt"], 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func verifyCatalog(t *testing.T, kubectlOptions *k8s.KubectlOptions) {
+
+	// Setup a TLS configuration to submit with the helper, a blank struct is acceptable
+	certPem, err := ioutil.ReadFile("../certs/tls.crt")
+	if err != nil {
+		log.Fatal(err)
+	}
+	keyPem, err := ioutil.ReadFile("../certs/tls.key")
 	if err != nil {
 		log.Fatal(err)
 	}

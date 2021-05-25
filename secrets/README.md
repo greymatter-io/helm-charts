@@ -4,6 +4,7 @@
 
 - Edit `values.yaml` and `global.yaml` files
 - Add credential and secrets to values file and/or into the appropriate directory in `files/`
+- The Secrets chart can create a random Edge Ingress and User Cert for testing purposes. Set `.globals.auto_generate_edge_certs` to `true`
 - Run `make credentials.yaml`
 - Run `make secrets` to add secrets to mesh
 - Run `kubectl get secrets` to verify secrets are in place
