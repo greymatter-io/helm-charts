@@ -1,18 +1,16 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.lad.name }}
-  namespace: {{ .Release.Namespace }}
+  name: lad
 spec:
-  serviceName: {{ .Values.lad.name }}
+  serviceName: lad
   selector:
     matchLabels:
-     {{ .Values.global.control.cluster_label }}: {{ .Values.lad.name }}
-  replicas: {{ include "replicas" (dict "service_values" .Values.lad.replicas "top" $) }}
+      greymatter.io/control: lad
   template:
     metadata:
       labels:
-        {{ .Values.global.control.cluster_label }}: {{ .Values.lad.name }}
+        greymatter.io/control: lad
     spec:
       volumes:
         - name: spire-socket
@@ -21,76 +19,63 @@ spec:
             type: DirectoryOrCreate
       imagePullSecrets:
       - name: docker.secret
-      # Security context for openshift, kubernetes and eks is the same. 
       securityContext:
-        runAsUser: 2000
+        runAsUser: 1001
         runAsGroup: 0
-        fsGroup: 2000
-      serviceAccountName: {{ .Values.global.waiter.service_account.name }}
+        fsGroup: 0
+
+
       containers:
-      - name: {{ .Values.lad.name }}
-        image: {{ tpl .Values.lad.image $ }}
-        imagePullPolicy: {{ .Values.lad.image_pull_policy }}
+      - name: lad
+        image: docker.greymatter.io/internal/sense-lad:latest
+        imagePullPolicy: Always
         ports:
-          - name: {{ .Values.lad.name }}
-            containerPort: {{ .Values.lad.container_port }}
+          - name: lad
+            containerPort: 8080
         env:
-          {{- include "envvars" (dict "envvar" .Values.lad.envvars "top" $) | indent 10 }}
-        {{- if .Values.resources }}
+          - name: LAD_INFERENCE_THREADS
+            value: '3'
+          - name: LAD_TRAINING_THREADS
+            value: '3'
         resources:
-{{ toYaml .Values.resources | indent 12 }}
-        {{- end }}
+          limits:
+            cpu: '4'
+            memory: 5Gi
+          requests:
+            cpu: '2'
+            memory: 2Gi
         volumeMounts:
           - name: lad-storage
             mountPath: "/app/storage"
 
       - name: sidecar
-        image: {{ tpl .Values.sidecar.image $ | quote }}
-        imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
-        env:
-        {{- include "sidecar.envvars" . | indent 8 }}
-        {{- if .Values.global.spire.enabled }}
-        - name: SPIRE_PATH
-          value: {{ .Values.global.spire.path }}
-        {{- end }}
-        {{- if .Values.sidecar.resources }}
-        resources:
-{{ toYaml .Values.sidecar.resources | indent 10 }}
-        {{- end }}
+        image: docker.greymatter.io/release/gm-proxy:1.5.1
+        imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: {{ .Values.sidecar.port }}
-          name: proxy
-          protocol: TCP
-        - containerPort: {{ .Values.sidecar.metrics_port }}
-          name: metrics
-          protocol: TCP
+          - name: proxy
+            containerPort: 10808
+          - name: metrics
+            containerPort: 8081
+        env:
+          - name: ENVOY_ADMIN_LOG_PATH
+            value: /dev/stdout
+          - name: PROXY_DYNAMIC
+            value: "true"
+          - name: XDS_CLUSTER
+            value: lad
+          - name: XDS_HOST
+            value: control.default.svc
+          - name: XDS_PORT
+            value: "50000"
+          - name: XDS_NODE_ID
+            value: default
+          - name: XDS_ZONE
+            value: "zone-default-zone"
+          - name: SPIRE_PATH
+            value: /run/spire/socket/agent.sock
         volumeMounts:
-        {{- if .Values.global.spire.enabled }}
-        {{- include "spire_volume_mount" . | indent 8 }}
-        {{- else if .Values.sidecar.secret.enabled }}
-        {{- include "sidecar_volume_certs_mount" . | indent 8 }}
-        {{- end }}
-      {{- if .Values.global.consul.enabled }}
-      {{- $data := dict "Values" .Values "ServiceName" .Values.jwt.name }}
-      {{- include "consul.agent" $data | nindent 6 }}
-      {{- end }}
-      imagePullSecrets:
-      - name: {{ .Values.global.image_pull_secret }}
-      volumes:
-      {{- if .Values.global.spire.enabled }}
-      {{- include "spire_volumes" . | indent 6 }}
-      {{- else if .Values.sidecar.secret.enabled }}
-      {{- include "sidecar_certs_volumes" . | indent 6 }}
-      {{- end }}
-      {{- if .Values.global.consul.enabled }}
-      - name: data-consul
-        emptyDir: {}
-      - name: config-consul
-        emptyDir: {}
-      {{- end }}
-
-
-
+          - name: spire-socket
+            mountPath: /run/spire/socket
   volumeClaimTemplates:
     - metadata:
         name: lad-storage
