@@ -37,7 +37,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.6.0-rc.1
+    version: 1.6.0-rc.2
     envvars:
       proxy_dynamic:
         type: 'value'
@@ -57,7 +57,7 @@ global:
 slo:
   slo:
     # SLO version
-    version: 2.0.0-rc.1
+    version: 2.0.0-rc.2
     image: 'docker.greymatter.io/development/gm-slo:{{ $.Values.slo.version }}'
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
@@ -199,7 +199,7 @@ dashboard:
     # Name used for the deployment and service resources
     name: dashboard
     # Dashboard app version
-    version: 5.0.0-rc.1
+    version: 5.0.0-rc.2
     image: 'docker.greymatter.io/development/gm-dashboard:{{ $.Values.dashboard.version }}'
     # Port for the dashboard app
     port: 1337

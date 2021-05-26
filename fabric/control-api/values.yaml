@@ -36,7 +36,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
-    version: 1.6.0-rc.1
+    version: 1.6.0-rc.2
     dn: CN=quickstart,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US
   # Global rbac configuration for service admin principal.
   rbac:
@@ -77,7 +77,7 @@ controlApi:
   display_name: control-api
   # Number of replicas for the deployment
   replicas: 1
-  version: 1.6.0-rc.1
+  version: 1.6.0-rc.2
   image: 'docker.greymatter.io/development/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
