@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.lad.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  serviceName: {{ .Values.lad.name }}
+  selector:
+    matchLabels:
+     {{ .Values.global.control.cluster_label }}: {{ .Values.lad.name }}
+  replicas: {{ include "replicas" (dict "service_values" .Values.lad.replicas "top" $) }}
+  template:
+    metadata:
+      labels:
+        {{ .Values.global.control.cluster_label }}: {{ .Values.lad.name }}
+    spec:
+      volumes:
+        - name: spire-socket
+          hostPath:
+            path: /run/spire/socket
+            type: DirectoryOrCreate
+      imagePullSecrets:
+      - name: docker.secret
+      # Security context for openshift, kubernetes and eks is the same. 
+      securityContext:
+        runAsUser: 2000
+        runAsGroup: 0
+        fsGroup: 2000
+      serviceAccountName: {{ .Values.global.waiter.service_account.name }}
+      containers:
+      - name: {{ .Values.lad.name }}
+        image: {{ tpl .Values.lad.image $ }}
+        imagePullPolicy: {{ .Values.lad.image_pull_policy }}
+        ports:
+          - name: {{ .Values.lad.name }}
+            containerPort: {{ .Values.lad.container_port }}
+        env:
+          {{- include "envvars" (dict "envvar" .Values.lad.envvars "top" $) | indent 10 }}
+        {{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+        volumeMounts:
+          - name: lad-storage
+            mountPath: "/app/storage"
+
+      - name: sidecar
+        image: {{ tpl .Values.sidecar.image $ | quote }}
+        imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
+        env:
+        {{- include "sidecar.envvars" . | indent 8 }}
+        {{- if .Values.global.spire.enabled }}
+        - name: SPIRE_PATH
+          value: {{ .Values.global.spire.path }}
+        {{- end }}
+        {{- if .Values.sidecar.resources }}
+        resources:
+{{ toYaml .Values.sidecar.resources | indent 10 }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.sidecar.port }}
+          name: proxy
+          protocol: TCP
+        - containerPort: {{ .Values.sidecar.metrics_port }}
+          name: metrics
+          protocol: TCP
+        volumeMounts:
+        {{- if .Values.global.spire.enabled }}
+        {{- include "spire_volume_mount" . | indent 8 }}
+        {{- else if .Values.sidecar.secret.enabled }}
+        {{- include "sidecar_volume_certs_mount" . | indent 8 }}
+        {{- end }}
+      {{- if .Values.global.consul.enabled }}
+      {{- $data := dict "Values" .Values "ServiceName" .Values.jwt.name }}
+      {{- include "consul.agent" $data | nindent 6 }}
+      {{- end }}
+      imagePullSecrets:
+      - name: {{ .Values.global.image_pull_secret }}
+      volumes:
+      {{- if .Values.global.spire.enabled }}
+      {{- include "spire_volumes" . | indent 6 }}
+      {{- else if .Values.sidecar.secret.enabled }}
+      {{- include "sidecar_certs_volumes" . | indent 6 }}
+      {{- end }}
+      {{- if .Values.global.consul.enabled }}
+      - name: data-consul
+        emptyDir: {}
+      - name: config-consul
+        emptyDir: {}
+      {{- end }}
+
+
+
+  volumeClaimTemplates:
+    - metadata:
+        name: lad-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 25Gi
+        volumeMode: Filesystem
