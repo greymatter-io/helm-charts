@@ -1,0 +1,12 @@
+{
+    "zone_key": "zone-default-zone",
+    "proxy_key": "health-redis-proxy",
+    "domain_keys": [
+        "domain-health-redis-ingress"
+    ],
+    "listener_keys": [
+        "listener-health-redis-ingress"
+    ],
+    "name": "health-redis",
+    "listeners": null
+}

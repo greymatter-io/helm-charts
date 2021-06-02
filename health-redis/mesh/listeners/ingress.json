@@ -1,0 +1,34 @@
+{
+    "zone_key": "zone-default-zone",
+    "listener_key": "listener-health-redis-ingress",
+    "domain_keys": [
+        "domain-health-redis-ingress"
+    ],
+    "name": "ingress",
+    "ip": "0.0.0.0",
+    "port": 10808,
+    "protocol": "http_auto",
+    "secret": {
+        "secret_key": "health-redis.identity",
+        "secret_name": "spiffe://quickstart.greymatter.io/health-redis",
+        "secret_validation_name": "spiffe://quickstart.greymatter.io",
+        "ecdh_curves": [
+            "X25519:P-256:P-521:P-384"
+        ]
+    },
+    "tracing_config": null,
+    "active_network_filters": ["envoy.redis_proxy"],
+    "network_filters": {
+        "envoy_redis_proxy": {
+            "stat_prefix": "ingress",
+            "settings": {
+                "op_timeout": "10000s"
+            },
+            "prefix_routes": {
+                "catch_all_route": {
+                    "cluster": "health-redis-local"
+                }
+            }
+        }
+    }
+}

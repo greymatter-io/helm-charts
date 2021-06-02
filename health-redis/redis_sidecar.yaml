@@ -1,0 +1,101 @@
+# Source: fabric/charts/redis/templates/redis.yaml
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  labels:
+    greymatter.io/control: health-redis
+    deployment: redis
+  name: redis
+  namespace: default
+spec:
+  serviceName: redis
+  podManagementPolicy: Parallel
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      greymatter.io/control: health-redis
+      deployment: redis
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        greymatter.io/control: health-redis
+        deployment: redis
+    spec:
+      containers:
+        - name: redis
+          image: "redis:3.2"
+          imagePullPolicy: IfNotPresent
+          command:
+            - "redis-server"
+          args:
+            - "--appendonly"
+            - "yes"
+          resources:
+            limits:
+              cpu: 200m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          ports:
+          - containerPort: 6379
+            name: redis
+            protocol: TCP
+          volumeMounts:
+          - mountPath: /data
+            name: health-redis-pvc
+        - name: sidecar
+          image: "docker.greymatter.io/development/gm-proxy:1.6.0-rc.2"
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          ports:
+            - name: proxy
+              containerPort: 10808
+            - name: metrics
+              containerPort: 8081
+          env:
+            - name: ENVOY_ADMIN_LOG_PATH
+              value: "/dev/stdout"
+            - name: PROXY_DYNAMIC
+              value: "true"
+            - name: XDS_CLUSTER
+              value: "health-redis"
+            - name: XDS_HOST
+              value: "control.default.svc"
+            - name: XDS_PORT
+              value: "50000"
+            - name: XDS_ZONE
+              value: "zone-default-zone"
+            - name: SPIRE_PATH
+              value: /run/spire/socket/agent.sock
+          volumeMounts:
+            - name: spire-socket
+              mountPath: /run/spire/socket
+              readOnly: false
+      imagePullSecrets:
+      - name: docker.secret
+      volumes:
+      - name: service-certs
+        secret:
+          secretName: global-certs
+      - name: spire-socket
+        hostPath:
+          path: /run/spire/socket
+          type: DirectoryOrCreate
+  volumeClaimTemplates:
+  - metadata:
+      name: health-redis-pvc
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 40Gi

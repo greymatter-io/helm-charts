@@ -1,0 +1,13 @@
+{
+    "zone_key": "zone-default-zone",
+    "domain_key": "domain-health-redis-ingress",
+    "route_key": "route-health-redis-local",
+    "path": "/",
+    "prefix_rewrite": "",
+    "redirects": null,
+    "shared_rules_key": "rules-health-redis-local",
+    "rules": null,
+    "response_data": {},
+    "cohort_seed": null,
+    "retry_policy": null
+}

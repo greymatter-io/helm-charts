@@ -1,0 +1,24 @@
+{
+    "zone_key": "zone-default-zone",
+    "shared_rules_key": "rules-health-redis-local",
+    "name": "health-redis-local",
+    "default": {
+        "light": [
+            {
+                "constraint_key": "",
+                "cluster_key": "cluster-health-redis-local",
+                "metadata": null,
+                "properties": null,
+                "response_data": {},
+                "weight": 1
+            }
+        ],
+        "dark": null,
+        "tap": null
+    },
+    "rules": null,
+    "response_data": {},
+    "cohort_seed": null,
+    "properties": null,
+    "retry_policy": null
+}

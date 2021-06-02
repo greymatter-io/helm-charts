@@ -1,0 +1,14 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "cluster-health-redis-local",
+    "name": "health-redis-local",
+    "instances": [
+        {
+            "host": "127.0.0.1",
+            "port": 6379
+        }
+    ],
+    "circuit_breakers": null,
+    "outlier_detection": null,
+    "health_checks": []
+}

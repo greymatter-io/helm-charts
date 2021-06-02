@@ -1,0 +1,26 @@
+{
+    "zone_key": "zone-default-zone",
+    "listener_key": "listener-slo-health-redis-egress",
+    "domain_keys": [
+        "domain-slo-health-redis-egress"
+    ],
+    "name": "egress",
+    "ip": "0.0.0.0",
+    "port": 6379,
+    "protocol": "http_auto",
+    "tracing_config": null,
+    "active_network_filters": ["envoy.redis_proxy"],
+    "network_filters": {
+        "envoy_redis_proxy": {
+            "stat_prefix": "redis-egress",
+            "settings": {
+                "op_timeout": "10000s"
+            },
+            "prefix_routes": {
+                "catch_all_route": {
+                    "cluster": "slo-health-redis-cluster"
+                }
+            }
+        }
+    }
+}
