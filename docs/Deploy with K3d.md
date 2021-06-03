@@ -12,7 +12,7 @@
 1. Ensure you are logged into docker
   - `docker login docker.greymatter.io`
   - Enter your Grey Matter username and password
-2. `make k3d` - creates a kubernetes (k3s) cluster locally
+2. `make k3d` - creates a kubernetes (k3d) cluster locally
 3. `export KUBECONFIG=$(k3d kubeconfig write greymatter)` - configures `kubectl` to use the local k3d cluster
 4. `make credentials` - creates a git ignored file `credentials.yaml`
 5. `make secrets` - inserts data from `credentials.yaml` and `secrets/values.yaml` into the cluster as secrets
@@ -21,12 +21,15 @@
 8. Open up <https://localhost:30000>
 
 
-### Cluster Commands
+### Stopping / Starting the cluster
+These commands will stop or start the cluster without deleting the cluster or uninstalling greymatter from it.
+- Stop cluster:`k3d cluster stop greymatter`
+- Start cluster:
+  - `k3d cluster start greymatter`
+  - `export KUBECONFIG=$(k3d kubeconfig write greymatter)`
+  - `kubectl config use-context k3d-greymatter`
+- See the [k3d documentation](https://k3d.io/usage/commands/k3d/) for more information on managing k3d clusters
 
-- `make k3d` - Creates a k3s cluster locally
-- `make destroy` - Deletes the local k3s cluster
-- Start cluster `k3d cluster start greymatter` and `kubectl config use-context k3d-greymatter`
-- Stop cluster `k3d cluster stop greymatter`
 
 ### Grey Matter Commands
 
@@ -40,10 +43,10 @@
 
 ### Uninstalling Grey Matter
 There are several uninstall options:
-- `make uninstall` - Uninstalls Grey Matter from the k3s cluster
+- `make uninstall` - Uninstalls Grey Matter from the k3d cluster
 - To remove individual child-charts run `make remove-<chart-name>` ex: `make remove-fabric`
 - `make delete` - preforms an uninstall but also purges pvc and pods typically spared by helm.  Leaves secrets/credentials.
-- `make destroy` - Deletes the k3s cluster, including the Grey Matter mesh. Essentially a wrapper for `k3d cluster delete greymatter`.
+- `make destroy` - Deletes the k3d cluster, including the Grey Matter mesh. Essentially a wrapper for `k3d cluster delete greymatter`.
 
 ### Troubleshooting
 
