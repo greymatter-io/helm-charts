@@ -1,8 +1,8 @@
 {
     "zone_key": "zone-default-zone",
-    "listener_key": "listener-slo-health-redis-egress",
+    "listener_key": "listener-control-api-health-redis-egress",
     "domain_keys": [
-        "domain-slo-health-redis-egress"
+        "domain-control-api-health-redis-egress"
     ],
     "name": "egress",
     "ip": "0.0.0.0",

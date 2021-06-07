@@ -1,0 +1,18 @@
+{
+    "zone_key": "zone-default-zone",
+    "cluster_key": "control-api-health-redis-cluster",
+    "name": "health-redis",
+    "instances": [],
+    "require_tls": true,
+    "secret": {
+      "secret_key": "control-api.identity",
+      "secret_name": "spiffe://quickstart.greymatter.io/control-api",
+      "secret_validation_name": "spiffe://quickstart.greymatter.io",
+      "subject_names": [
+        "spiffe://quickstart.greymatter.io/health-redis"
+      ],
+      "ecdh_curves": [
+        "X25519:P-256:P-521:P-384"
+      ]
+    }
+  }

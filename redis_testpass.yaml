@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: greymatter-mesh-redis-password
+  labels:
+    chart: "secrets-2.3.3"
+    release: "secrets"
+    heritage: "Helm"
+type: Opaque
+stringData:
+  password: password
