@@ -86,8 +86,8 @@ spec:
           - mountPath: /data
             name: health-redis-pvc
         - name: sidecar
-          image: "docker.greymatter.io/development/gm-proxy:1.6.0-rc.2"
-          imagePullPolicy: IfNotPresent
+          image: "docker.greymatter.io/development/gm-proxy:latest"
+          imagePullPolicy: Always
           resources:
             limits:
               cpu: 200m

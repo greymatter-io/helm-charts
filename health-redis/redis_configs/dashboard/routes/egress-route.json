@@ -1,0 +1,8 @@
+{
+    "zone_key": "zone-default-zone",
+    "domain_key": "domain-dashboard-health-redis-egress",
+    "route_key": "route-dashboard-health-redis-egress",
+    "path": "/",
+    "prefix_rewrite": "",
+    "shared_rules_key": "dashboard-health-redis-rules"
+  }

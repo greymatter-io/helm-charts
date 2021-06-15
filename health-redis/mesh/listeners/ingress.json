@@ -17,8 +17,35 @@
         ]
     },
     "tracing_config": null,
-    "active_network_filters": ["envoy.tcp_proxy"],
+    "active_network_filters": ["envoy.rbac", "envoy.tcp_proxy"],
     "network_filters": {
+        "envoy_rbac": {
+            "stat_prefix": "ingress",
+            "rules": {
+              "action": 0,
+              "policies": {
+                "0-proxies": {
+                  "permissions": [
+                    {
+                      "any": true
+                    }
+                  ],
+                  "principals": [
+                    {
+                      "authenticated": {
+                        "principal_name": {
+                            "safe_regex": {
+                                "google_re2": {},
+                                "regex": "spiffe:\/\/quickstart.greymatter.io\/(.+)"
+                            }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
         "envoy_tcp_proxy": {
             "stat_prefix": "ingress_redis",
             "cluster": "health-redis-local"
