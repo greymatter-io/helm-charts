@@ -28,10 +28,8 @@ spec:
         runAsGroup: 2000
         fsGroup: 2000
       {{- end }}
-      {{- if .Values.redis.private_image }}
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
-      {{- end }}
       containers:
         - name: redis
           image: {{ tpl .Values.redis.image $ | quote }}
@@ -56,6 +54,45 @@ spec:
           volumeMounts:
           - mountPath: {{ .Values.redis.storage.mount_path }}
             name: redis-pvc
+        - name: sidecar
+          image: "docker.greymatter.io/development/gm-proxy:latest"
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          ports:
+            - name: proxy
+              containerPort: 10808
+            - name: metrics
+              containerPort: 8081
+          env:
+            - name: ENVOY_ADMIN_LOG_PATH
+              value: "/dev/stdout"
+            - name: PROXY_DYNAMIC
+              value: "true"
+            - name: XDS_CLUSTER
+              value: "{{ .Values.redis.name }}"
+            - name: XDS_HOST
+              value: "control.default.svc"
+            - name: XDS_PORT
+              value: "50000"
+            - name: XDS_ZONE
+              value: "zone-default-zone"
+            - name: SPIRE_PATH
+              value: /run/spire/socket/agent.sock
+          volumeMounts:
+            - name: spire-socket
+              mountPath: /run/spire/socket
+              readOnly: false
+      volumes:
+      - name: spire-socket
+        hostPath:
+          path: /run/spire/socket
+          type: DirectoryOrCreate
   volumeClaimTemplates:
   - metadata:
       name: redis-pvc
