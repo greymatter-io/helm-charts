@@ -8,10 +8,10 @@ metadata:
     deployment: {{ .Values.redis.name }}
 spec:
   ports:
-    - name: server
-      port: 6379
+    - name: proxy
+      port: 10808
       protocol: TCP
-      targetPort: 6379
+      targetPort: 10808
   selector:
     {{ .Values.global.control.cluster_label }}: {{ .Values.redis.name }}
     deployment: {{ .Values.redis.name }}
