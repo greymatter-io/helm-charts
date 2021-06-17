@@ -9,3 +9,4 @@ global:
 agent:
   name: agent
   image: gcr.io/spiffe-io/spire-agent:0.9.3
+  init_image: gcr.io/spiffe-io/wait-for-it

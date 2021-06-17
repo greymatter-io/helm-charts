@@ -16,5 +16,6 @@ global:
 
 server:
   image: gcr.io/spiffe-io/spire-server:0.9.3
+  registrar_image: gcr.io/spiffe-io/k8s-workload-registrar:0.9.3
   config_file_path: /run/spire/config/server.conf
   config_file_dir: /run/spire/config
