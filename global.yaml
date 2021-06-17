@@ -72,7 +72,8 @@ global:
   # Whether or not to use spire for cert management and the trust domain
   spire:
     enabled: true
-    image_pull_secret: docker.secret
+    # image_pull_secrets:
+    #   - name: docker.secret
     trust_domain: quickstart.greymatter.io
     path: '/run/spire/socket/agent.sock'
     namespace: spire

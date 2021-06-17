@@ -94,9 +94,9 @@ spec:
         - name: server-tls
           secret:
             secretName: server-tls
-      {{- if .Values.server.private_image }}
+      {{- if (.Values.global.spire.image_pull_secrets) and (ne .Values.global.spire.image_pull_secrets "") }}
       imagePullSecrets:
-      - name: {{ .Values.global.spire.image_pull_secret }}
+      {{ toYaml .Values.global.spire.image_pull_secrets | nindent 8 }}
       {{- end }}
   volumeClaimTemplates:
     - metadata:
