@@ -32,13 +32,13 @@ spec:
       serviceAccountName: agent
       initContainers:
         - name: init-server
-          image: gcr.io/spiffe-io/wait-for-it
+          image: {{ .Values.agent.init_image }}
           args:
             - "-t"
             - "30"
             - "server:8443"
         - name: init-registrar
-          image: gcr.io/spiffe-io/wait-for-it
+          image: {{ .Values.agent.init_image }}
           args:
             - "-t"
             - "30"
@@ -96,3 +96,7 @@ spec:
                   path: agent
                   expirationSeconds: 7200
                   audience: server
+      {{- if .Values.agent.private_image }}
+      imagePullSecrets:
+      - name: {{ .Values.global.spire.image_pull_secret }}
+      {{- end }}

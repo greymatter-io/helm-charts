@@ -33,7 +33,7 @@ spec:
       shareProcessNamespace: true
       containers:
         - name: registrar
-          image: gcr.io/spiffe-io/k8s-workload-registrar:0.9.3
+          image: {{ .Values.server.registrar_image }}
           args:
             - -config
             - /run/spire/config/registrar.conf
@@ -94,6 +94,10 @@ spec:
         - name: server-tls
           secret:
             secretName: server-tls
+      {{- if .Values.server.private_image }}
+      imagePullSecrets:
+      - name: {{ .Values.global.spire.image_pull_secret }}
+      {{- end }}
   volumeClaimTemplates:
     - metadata:
         name: server-data
