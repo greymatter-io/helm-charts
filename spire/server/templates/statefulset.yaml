@@ -94,7 +94,7 @@ spec:
         - name: server-tls
           secret:
             secretName: server-tls
-      {{- if (.Values.global.spire.image_pull_secrets) and (ne .Values.global.spire.image_pull_secrets "") }}
+      {{- if .Values.global.spire.image_pull_secrets }}
       imagePullSecrets:
       {{- toYaml .Values.global.spire.image_pull_secrets | nindent 8 }}
       {{- end }}
