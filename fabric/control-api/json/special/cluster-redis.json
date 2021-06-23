@@ -1,0 +1,18 @@
+{
+    "zone_key": "{{ .Values.global.zone}}",
+    "cluster_key": "edge-{{ .Values.mesh_redis.name }}-cluster",
+    "name": "{{ .Values.mesh_redis.name }}",
+    "instances": [],
+    "require_tls": true,
+    "secret": {
+      "secret_key": "edge.identity",
+      "secret_name": "spiffe://{{ .Values.global.spire.trust_domain}}/edge",
+      "secret_validation_name": "spiffe://{{ .Values.global.spire.trust_domain}}",
+      "subject_names": [
+        "spiffe://{{ .Values.global.spire.trust_domain}}/{{ .Values.mesh_redis.name }}"
+      ],
+      "ecdh_curves": [
+        "X25519:P-256:P-521:P-384"
+      ]
+    }
+  }

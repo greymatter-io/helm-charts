@@ -46,7 +46,7 @@ data:
 
   image: docker.greymatter.io/release/gm-data:{{ $.Values.data.version }}
   image_pull_secret: '{{ .Values.global.image_pull_secret }}'
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
 
   master_key: ac8923[lkn43589vi23kl4rfgv0ws
   # Location and (optionally) size of pvc to persist data if not using s3
@@ -182,7 +182,7 @@ mongo:
   name: data-mongo
   replicas: 1
   image: 'deciphernow/mongo:4.0.3'
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   # If defined, sets the size and storageClass name for the Mongo data persistent volume storage class
   storage:
     # Where your mongo image will place its data
@@ -280,7 +280,7 @@ sidecar:
       key: server.key
       cert: server.crt
   image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   resources:
     limits:
       cpu: 200m

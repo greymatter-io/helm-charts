@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 MESH_CONFIG_DIR="/etc/config/mesh/"
+REDIS_PASSWORD=$REDIS_PASSWORD
 
 echo "Configuring mesh from config directory: $MESH_CONFIG_DIR"
 
@@ -40,11 +41,17 @@ create_or_update() {
     echo "----------"
 }
 
+
 cd $MESH_CONFIG_DIR/services
 # Each service should be able to be created all by itself. This means it needs to contain a domain
+
+
 for d in */; do
     echo "Found service: $d"
     cd $d
+
+    # setup redis metrics
+    sed -i "s/redis_password_replace/$REDIS_PASSWORD/" listener.json
 
     # The ordering of creating gm-control-api resources is extremely important and precise.
     # All objects referenced by keys must be created before being referenced or will result in an error.
@@ -56,12 +63,21 @@ for d in */; do
         echo "Creating mesh object: $name."
         if [ "$name" == "domain" ]; then
             create_or_update $name domain-egress.json
+            create_or_update $name redis-domain.json
+        elif [ "$name" == "cluster" ]; then
+            create_or_update $name redis-cluster.json
         elif [ "$name" == "listener" ]; then
             create_or_update $name listener-egress.json
+            create_or_update $name redis-listener.json
+        elif [ "$name" == "shared_rules" ]; then
+            create_or_update $name redis-shared_rules.json
+        elif [ "$name" == "route" ]; then
+            create_or_update $name redis-route.json
         fi
         create_or_update $name
         sleep $delay
     done
+
 
     cd $MESH_CONFIG_DIR/services
 done
@@ -72,10 +88,13 @@ cd $MESH_CONFIG_DIR/special
 echo "Creating special configuration objects (domain, edge listener + proxy)"
 create_or_update "domain"
 create_or_update "domain" domain-egress.json
+create_or_update "domain" domain-egress-redis.json
 create_or_update "listener"
 create_or_update "listener" listener-egress.json
+create_or_update "listener" listener-egress-redis.json
 create_or_update "proxy"
 create_or_update "cluster"
+create_or_update "cluster" cluster-redis.json
 create_or_update "shared_rules"
 create_or_update "route"
 
@@ -116,11 +135,19 @@ for sr in $(ls internal-shared-rules-*.json); do
     create_or_update "shared_rules" $sr
 done
 
-
+create_or_update "shared_rules" rules-egress-redis.json
 echo "Adding additional Special Routes"
 for rte in $(ls route-*.json); do
     create_or_update "route" $rte
 done
+
+echo "Adding redis configs"
+create_or_update "cluster" redis-cluster.json
+create_or_update "domain" redis-domain.json
+create_or_update "listener" redis-listener.json
+create_or_update "proxy" redis-proxy.json
+create_or_update "shared_rules" redis-shared_rules.json
+create_or_update "route" redis-route.json
 
 # greymatter create route < route-data-jwt-slash.json
 # greymatter create route < route-data-jwt.json

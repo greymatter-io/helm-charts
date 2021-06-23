@@ -12,7 +12,7 @@ redis:
   name: mesh-redis
   image: 'redis:3.2'
   replica_count: 1
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   # Uses global.image_pull_secret if true
   private_image: false
   secret:
@@ -35,3 +35,30 @@ redis:
       type: secret
       secret: '{{ .Values.redis.secret.secret_name | default "greymatter-mesh-redis-password" }}'
       key: password
+
+# Sidecar configuration for Redis
+sidecar:
+  version: '{{- $.Values.global.sidecar.version | default "latest" }}'
+  image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
+  # Port where the proxy will listen
+  port: 10808
+  # Port where the proxy will expose metrics
+  metrics_port: 8081
+  secret:
+    enabled: true
+    secret_name: sidecar-certs
+    mount_point: /etc/proxy/tls/sidecar
+    secret_keys:
+      ca: ca.crt
+      cert: server.crt
+      key: server.key
+  # When to pull images, used in the deployment
+  image_pull_policy: Always
+  # CPU and memory limits for the sidecar
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

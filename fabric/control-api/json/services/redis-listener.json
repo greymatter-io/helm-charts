@@ -1,0 +1,19 @@
+{
+    "zone_key": "{{ .Values.global.zone}}",
+    "listener_key": "listener-{{.service.serviceName}}-{{ .Values.mesh_redis.name }}-egress",
+    "domain_keys": [
+        "domain-{{.service.serviceName}}-{{ .Values.mesh_redis.name }}-egress"
+    ],
+    "name": "egress-redis",
+    "ip": "0.0.0.0",
+    "port": 10919,
+    "protocol": "http_auto",
+    "tracing_config": null,
+    "active_network_filters": ["envoy.tcp_proxy"],
+    "network_filters": {
+        "envoy_tcp_proxy": {
+            "stat_prefix": "egress_redis",
+            "cluster": "{{ .Values.mesh_redis.name }}"
+          }
+    }
+}

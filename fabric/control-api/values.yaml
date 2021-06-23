@@ -80,7 +80,7 @@ controlApi:
   version: 1.6.0-rc.2
   image: 'docker.greymatter.io/development/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   # Port exposed by the control-api container
   container_port: 5555
   # Location to persist control-api's configuration store
@@ -193,7 +193,7 @@ sidecar:
       cert: server.crt
       key: server.key
   # When to pull images, used in the deployment
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   # CPU and memory limits for the sidecar
   resources:
     limits:
@@ -207,7 +207,7 @@ sidecar:
 bootstrap:
   version: 3.0.0-rc.2
   image: 'docker.greymatter.io/development/greymatter:{{ tpl $.Values.bootstrap.version $ }}'
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   secret:
     enabled: true
     secret_name: sidecar-certs

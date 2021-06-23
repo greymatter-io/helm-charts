@@ -40,7 +40,7 @@ global:
   # Sidecar configuration (Control-api is the only service in this chart with a proxy)
   sidecar:
     # GM Proxy version, used by control-api
-    version: 1.6.0-rc.2
+    version: 1.6.0-dev
     envvars:
       xds_cluster:
         type: value
@@ -70,10 +70,10 @@ control:
     # Number of replicas for the deployment
     replicas: 1
     # Version of control
-    version: 1.6.0-rc.2
+    version: 1.6.0-dev
     image: 'docker.greymatter.io/development/gm-control:{{ $.Values.control.version }}'
     # When to pull images, used in the deployment
-    image_pull_policy: IfNotPresent
+    image_pull_policy: Always
     # Secret used to talk to control-api
     secret:
       enabled: true
@@ -152,6 +152,13 @@ control:
         cpu: 250m
         memory: 256Mi
 
+redis:
+  # Sidecar configuration overrides for jwt sidecar
+  sidecar:
+    envvars:
+      xds_cluster:
+        type: value
+        value: 'mesh-redis'
 
 control-api:
   mesh_redis:
@@ -175,10 +182,10 @@ control-api:
     # Number of replicas for the deployment
     replicas: 1
     # Gm Control API version
-    version: 1.6.0-rc.2
+    version: 1.6.0-dev
     image: 'docker.greymatter.io/development/gm-control-api:{{ $.Values.controlApi.version }}'
     # When to pull images, used in the deployment
-    image_pull_policy: IfNotPresent
+    image_pull_policy: Always
     # Port exposed by the control-api container
     container_port: 5555
     # Location to persist control-api's configuration store
@@ -224,13 +231,13 @@ control-api:
         value: 'redis'
       gm_control_api_redis_host:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{ tpl .Values.mesh_redis.host . }}{{- else}}{{ .Values.global.external_redis.host }}{{- end }}'
+        value: 'localhost'
       gm_control_api_redis_port:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.port }}{{- else}}{{ .Values.global.external_redis.port }}{{- end }}'
+        value: '10929'
       gm_control_api_redis_use_tls:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.use_tls }}{{- else}}{{ .Values.global.external_redis.use_tls }}{{- end }}'
+        value: 'false'
       gm_control_api_redis_ca_cert_path:
         type: value
         value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.ca_cert_path }}{{- else}}{{ .Values.global.external_redis.ca_cert_path }}{{- end }}'
@@ -284,6 +291,10 @@ control-api:
       greymatter_api_ssl:
         type: value
         value: '{{ not .Values.global.spire.enabled }}'
+      redis_password:
+        type: secret
+        secret: '{{ .Values.mesh_redis.secret_name }}'
+        key: password
 
 # Services list used to create Grey Matter configuration objects in control-api/config
 services:

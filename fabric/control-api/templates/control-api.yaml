@@ -70,6 +70,11 @@ spec:
               mountPath: {{ .Values.controlApi.secret.mount_point }}
             {{- end }}
         - name: sidecar
+          args:
+            - -c
+            - /etc/greymatter/config.yaml
+          command:
+            - /app/gm-proxy
           image: {{ tpl .Values.sidecar.image $ | quote }}
           imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
           {{- if .Values.sidecar.resources }}
@@ -112,6 +117,9 @@ spec:
               value: {{ .Values.global.spire.path }}
             {{- end }}
           volumeMounts:
+            - name: sidecar-config
+              mountPath: /etc/greymatter
+              readOnly: false
           {{- if .Values.global.spire.enabled }}
           {{- include "spire_volume_mount" . | indent 12 }}
           {{- else if .Values.sidecar.secret.enabled }}
@@ -124,6 +132,9 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.global.image_pull_secret }}
       volumes:
+      - name: sidecar-config
+        configMap:
+          name: {{ .Values.controlApi.name }}-sidecar
       {{- if .Values.controlApi.secret.enabled }}
       - name: service-certs
         secret:

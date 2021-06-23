@@ -2,24 +2,28 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.redis.name }}
+  name: {{ .Values.redis.name }}-sidecar
   namespace: {{ .Release.Namespace }}
 data:
   config.yaml: |-
     node:
+      id: "default"
       cluster: "{{ .Values.redis.name }}"
       locality:
         zone: {{ .Values.global.zone}}
         region: default-region
     dynamic_resources:
       ads_config:
+        transport_api_version: V3
         api_type: GRPC
         grpc_services:
           envoy_grpc:
             cluster_name: xds_cluster
       cds_config:
+        resource_api_version: V3
         ads: {}
       lds_config:
+        resource_api_version: V3
         ads: {}
     static_resources:
       listeners:
@@ -30,42 +34,29 @@ data:
               port_value: 10808
           filter_chains:
             - filters:
-              - name: envoy.http_connection_manager
-                config:
-                  forward_client_cert_details: sanitize_set
-                  set_current_client_cert_details:
-                      uri: true
-                  codec_type: AUTO
-                  access_log:
-                    - name: envoy.file_access_log
-                      config:
-                        path: "/dev/stdout"
-                  stat_prefix: ingress
-                  route_config:
-                    name: local
-                    virtual_hosts:
-                      - name: local
-                        domains: ["*"]
-                        routes:
-                          - match:
-                              prefix: "/"
-                            route:
-                              cluster: local
-                  http_filters:
-                    - name: envoy.router
-              tls_context:
-                common_tls_context:
-                  tls_certificate_sds_secret_configs:
-                    - name: "spiffe://{{ .Values.global.spire.trust_domain}}/{{ .Values.redis.name }}"
-                      sds_config:
-                        api_config_source:
-                          api_type: GRPC
-                          grpc_services:
-                            envoy_grpc:
-                              cluster_name: spire_agent
-                  tls_params:
-                    ecdh_curves:
-                      - X25519:P-256:P-521:P-384
+              - name: envoy.filters.network.tcp_proxy
+                typed_config:
+                  "@type": type.googleapis.com/envoy.extensions.filters.network.tcp_proxy.v3.TcpProxy
+                  stat_prefix: local
+                  cluster: local
+              transport_socket:
+                name: envoy.transport_sockets.tls
+                typed_config:
+                  "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+                  common_tls_context:
+                    tls_certificate_sds_secret_configs:
+                      - name: "spiffe://{{ .Values.global.spire.trust_domain}}/{{ .Values.redis.name }}"
+                        sds_config:
+                          resource_api_version: V3
+                          api_config_source:
+                            api_type: GRPC
+                            transport_api_version: V3
+                            grpc_services:
+                              envoy_grpc:
+                                cluster_name: spire_agent
+                    tls_params:
+                      ecdh_curves:
+                        - X25519:P-256:P-521:P-384
       clusters:
         - name: local
           connect_timeout: 5s

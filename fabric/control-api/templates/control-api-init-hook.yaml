@@ -77,9 +77,11 @@ spec:
         - name: service-config-volume-{{ $service.serviceName }}
           configMap:
             name: service-{{ $service.serviceName }}-mesh-config
+            defaultMode: 0666
         - name: edge-config-volume-{{ $service.serviceName }}
           configMap:
             name: edge-{{ $service.serviceName }}-mesh-config
+            defaultMode: 0666
         {{- end }}
         {{- end }}
         - name: bootstrap-script-volume
@@ -89,5 +91,6 @@ spec:
         - name: special-config-volume
           configMap:
             name: special-mesh-config
+            defaultMode: 0666
       imagePullSecrets:
         - name: {{ .Values.global.image_pull_secret }}

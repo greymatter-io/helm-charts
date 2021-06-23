@@ -44,7 +44,7 @@ slo:
   version: 2.0.0-rc.2
   image: "docker.greymatter.io/development/gm-slo:{{ .Values.slo.version }}"
   # When to pull container images, used in the deployment
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   replicas: 1
   # CPU and memory limits for the SLO service
   resources:
@@ -139,7 +139,7 @@ sidecar:
       type: value
       value: '{{ .Values.slo.name }}'
   # When to pull images, used in the deployment
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   # CPU and memory limits for the sidecar
   resources:
     limits:
@@ -162,7 +162,7 @@ postgres:
     endpoint:
   data_mount_point: /var/lib/pgsql/data
   # When to pull images, used in the deployment
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   # Number of replicas for the deployment
   replica_count: 1
   # If true, don't use the image pull secret

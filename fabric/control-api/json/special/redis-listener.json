@@ -1,0 +1,54 @@
+{
+    "zone_key": "{{ .Values.global.zone}}",
+    "listener_key": "listener-{{ .Values.mesh_redis.name }}-ingress",
+    "domain_keys": [
+        "domain-{{ .Values.mesh_redis.name }}-ingress"
+    ],
+    "name": "ingress",
+    "ip": "0.0.0.0",
+    "port": 10808,
+    "protocol": "http_auto",
+    "secret": {
+        "secret_key": "{{ .Values.mesh_redis.name }}.identity",
+        "secret_name": "spiffe://{{ .Values.global.spire.trust_domain}}/{{ .Values.mesh_redis.name }}",
+        "secret_validation_name": "spiffe://{{ .Values.global.spire.trust_domain}}",
+        "ecdh_curves": [
+            "X25519:P-256:P-521:P-384"
+        ]
+    },
+    "tracing_config": null,
+    "active_network_filters": ["envoy.rbac", "envoy.tcp_proxy"],
+    "network_filters": {
+        "envoy_rbac": {
+            "stat_prefix": "ingress",
+            "rules": {
+              "action": 0,
+              "policies": {
+                "0-proxies": {
+                  "permissions": [
+                    {
+                      "any": true
+                    }
+                  ],
+                  "principals": [
+                    {
+                      "authenticated": {
+                        "principal_name": {
+                            "safe_regex": {
+                                "google_re2": {},
+                                "regex": "spiffe:\/\/{{ .Values.global.spire.trust_domain}}\/(.+)"
+                            }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+        "envoy_tcp_proxy": {
+            "stat_prefix": "ingress_redis",
+            "cluster": "{{ .Values.mesh_redis.name }}-local"
+          }
+    }
+}

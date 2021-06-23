@@ -15,7 +15,7 @@ metadata:
 data:
 {{- range $path, $bytes := $top.Files.Glob "json/services/**.json" }}
   {{ base $path }}: |-
-{{ tpl ($top.Files.Get $path) $scope | indent 4 }}
+{{ tpl ($top.Files.Get $path) $scope | indent 4 | replace "redis_password_replace" "testpass" }}
 {{- end }}
 ...
 {{- end }}
@@ -51,6 +51,6 @@ data:
   {{- if and (not $data) (hasSuffix "-extdata.json" $path) }}
   {{- else }}
   {{ base $path }}: |-
-{{ tpl ($top.Files.Get $path) $top | indent 4 }}
+{{ tpl ($top.Files.Get $path) $top | indent 4 | replace "redis_password_replace" "testpass" }}
   {{- end }}
 {{- end }}

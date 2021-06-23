@@ -51,7 +51,7 @@ jwt:
   # Location to mount the information specified in users_cg_name in the container
   users_mount_point: /gm-jwt-security-gov/etc
   users_cg_name: jwt-users
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   replicas: 1
   resources:
     limits:
@@ -205,7 +205,7 @@ redis:
   k8s:
     image: 'redis:3.2'
   replica_count: 1
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   # Uses global.image_pull_secret if true
   private_image: false
 
@@ -226,7 +226,7 @@ sidecar:
       key: server.key
       cert: server.crt
   image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   resources:
     limits:
       cpu: 200m

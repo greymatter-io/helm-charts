@@ -44,7 +44,7 @@ global:
 edge:
   version: 1.6.0-rc.2
   image: 'docker.greymatter.io/development/gm-proxy:{{ tpl $.Values.edge.version $ }}'
-  image_pull_policy: IfNotPresent
+  image_pull_policy: Always
   replicas: 1
   # Port where the edge proxy will listen
   port: 10808

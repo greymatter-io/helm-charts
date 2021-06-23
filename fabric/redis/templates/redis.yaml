@@ -55,40 +55,43 @@ spec:
           - mountPath: {{ .Values.redis.storage.mount_path }}
             name: redis-pvc
         - name: sidecar
-          image: "docker.greymatter.io/development/gm-proxy:latest"
-          imagePullPolicy: Always
+          args:
+            - -c
+            - /etc/greymatter/config.yaml
+          command:
+            - /app/gm-proxy
+          image: {{ tpl .Values.sidecar.image $ | quote }}
+          imagePullPolicy: {{ .Values.sidecar.image_pull_policy }}
+
+          {{- if .Values.sidecar.resources }}
           resources:
-            limits:
-              cpu: 200m
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
+{{ toYaml .Values.sidecar.resources | indent 12 }}
+          {{- end }}
           ports:
             - name: proxy
-              containerPort: 10808
+              containerPort: {{ .Values.sidecar.port }}
             - name: metrics
-              containerPort: 8081
+              containerPort: {{ .Values.sidecar.metrics_port }}
+
           env:
-            - name: ENVOY_ADMIN_LOG_PATH
-              value: "/dev/stdout"
-            - name: PROXY_DYNAMIC
-              value: "true"
-            - name: XDS_CLUSTER
-              value: "{{ .Values.redis.name }}"
-            - name: XDS_HOST
-              value: "control.default.svc"
-            - name: XDS_PORT
-              value: "50000"
-            - name: XDS_ZONE
-              value: "zone-default-zone"
+          {{- include "sidecar.envvars" . | indent 12 }}
+            {{- if .Values.global.spire.enabled }}
             - name: SPIRE_PATH
-              value: /run/spire/socket/agent.sock
+              value: {{ .Values.global.spire.path }}
+            {{- end }}
           volumeMounts:
-            - name: spire-socket
-              mountPath: /run/spire/socket
-              readOnly: false
+            - name: sidecar-config
+              mountPath: /etc/greymatter
+              readOnly: true
+          {{- if .Values.global.spire.enabled }}
+          {{- include "spire_volume_mount" . | indent 12 }}
+          {{- else if .Values.sidecar.secret.enabled }}
+          {{- include "sidecar_volume_certs_mount" . | indent 12 }}
+          {{- end }}
       volumes:
+      - name: sidecar-config
+        configMap:
+          name: {{ .Values.redis.name }}-sidecar
       - name: spire-socket
         hostPath:
           path: /run/spire/socket

@@ -1,0 +1,17 @@
+{
+    "zone_key": "{{ .Values.global.zone}}",
+    "domain_key": "domain-edge-{{ .Values.mesh_redis.name }}-egress",
+    "name": "*",
+    "port": 10919,
+    "redirects": null,
+    "gzip_enabled": false,
+    "cors_config": null,
+    "aliases": null,
+    "force_https": false,
+    "custom_headers": [
+        {
+          "key": "x-forwarded-proto",
+          "value": "https"
+        }
+    ]
+}

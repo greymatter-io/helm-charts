@@ -4,11 +4,13 @@
   "name": "{{.service.serviceName}}",
   "domain_keys": [
     "domain-{{.service.serviceName}}",
-    "domain-{{ .service.serviceName}}-egress"
+    "domain-{{ .service.serviceName}}-egress",
+    "domain-{{.service.serviceName}}-{{ .Values.mesh_redis.name }}-egress"
   ],
   "listener_keys": [
     "listener-{{.service.serviceName}}",
-    "listener-{{ .service.serviceName}}-egress"
+    "listener-{{ .service.serviceName}}-egress",
+    "listener-{{.service.serviceName}}-{{ .Values.mesh_redis.name }}-egress"
   ],
   "listeners": null
 }

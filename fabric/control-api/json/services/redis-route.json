@@ -1,0 +1,8 @@
+{
+    "zone_key": "{{ .Values.global.zone}}",
+    "domain_key": "domain-{{.service.serviceName}}-{{ .Values.mesh_redis.name }}-egress",
+    "route_key": "route-{{.service.serviceName}}-{{ .Values.mesh_redis.name }}-egress",
+    "path": "/",
+    "prefix_rewrite": "",
+    "shared_rules_key": "{{.service.serviceName}}-{{ .Values.mesh_redis.name }}-rules"
+  }

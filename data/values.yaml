@@ -77,7 +77,7 @@ data:
     replicas: 1
     image: 'docker.greymatter.io/release/gm-data:{{ .Values.data.version }}'
     # image_pull_secret: '{{ .Values.global.image_pull_secret }}'
-    image_pull_policy: IfNotPresent
+    image_pull_policy: Always
 
     # master_key: ac8923[lkn43589vi23kl4rfgv0ws
     # Location and (optionally) size of pvc to persist data if not using s3
@@ -196,7 +196,7 @@ data:
     name: data-mongo
     replicas: 1
     image: 'deciphernow/mongo:4.0.3'
-    image_pull_policy: IfNotPresent
+    image_pull_policy: Always
 
     # True if mongo uses a private image, sets the image pull secret to global.image_pull_secret
     private_image: true

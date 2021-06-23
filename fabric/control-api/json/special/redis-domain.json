@@ -1,0 +1,11 @@
+{
+    "zone_key": "{{ .Values.global.zone}}",
+    "domain_key": "domain-{{ .Values.mesh_redis.name }}-ingress",
+    "name": "*",
+    "port": 10808,
+    "redirects": null,
+    "gzip_enabled": false,
+    "cors_config": null,
+    "aliases": null,
+    "force_https": true
+}

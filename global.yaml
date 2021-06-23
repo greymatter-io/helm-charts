@@ -46,7 +46,7 @@ global:
     ca_cert_path: ''
     server_cert_path: ''
     server_key_path: ''
-    password: ''
+    password: 'testpass'
     control_api_db: 0
     catalog_db: 1
     max_retries: 50
@@ -64,7 +64,7 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.6.0-rc.2
+    version: 1.6.0-dev
 
   # Configure services to use the same certs
   global_certs:

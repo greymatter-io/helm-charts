@@ -1,0 +1,13 @@
+{
+    "zone_key": "{{ .Values.global.zone}}",
+    "domain_key": "domain-{{ .Values.mesh_redis.name }}-ingress",
+    "route_key": "route-{{ .Values.mesh_redis.name }}-local",
+    "path": "/",
+    "prefix_rewrite": "",
+    "redirects": null,
+    "shared_rules_key": "rules-{{ .Values.mesh_redis.name }}-local",
+    "rules": null,
+    "response_data": {},
+    "cohort_seed": null,
+    "retry_policy": null
+}

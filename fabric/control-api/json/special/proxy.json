@@ -1,8 +1,8 @@
 {
   "zone_key": "{{ .Values.global.zone}}",
   "proxy_key": "edge-proxy",
-  "domain_keys": ["edge", "edge-egress"],
-  "listener_keys": ["edge-listener", "edge-listener-egress"],
+  "domain_keys": ["edge", "edge-egress", "domain-edge-{{ .Values.mesh_redis.name }}-egress"],
+  "listener_keys": ["edge-listener", "edge-listener-egress", "listener-edge-{{ .Values.mesh_redis.name }}-egress"],
   "name": "edge",
   "listeners": null,
   "active_proxy_filters": [],

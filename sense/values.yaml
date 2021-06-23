@@ -60,7 +60,7 @@ slo:
     version: 2.0.0-rc.2
     image: 'docker.greymatter.io/development/gm-slo:{{ $.Values.slo.version }}'
     # When to pull container images, used in the deployment
-    image_pull_policy: IfNotPresent
+    image_pull_policy: Always
     # CPU and memory limits for the SLO service
     resources:
       limits:
@@ -151,7 +151,7 @@ slo:
       endpoint:
     data_mount_point: /var/lib/pgsql/data
     # When to pull images, used in the deployment
-    image_pull_policy: IfNotPresent
+    image_pull_policy: Always
     # Number of replicas for the deployment
     replica_count: 1
     # If true, don't use the image pull secret
@@ -199,13 +199,13 @@ dashboard:
     # Name used for the deployment and service resources
     name: dashboard
     # Dashboard app version
-    version: 5.0.0-rc.2
+    version: latest
     image: 'docker.greymatter.io/development/gm-dashboard:{{ $.Values.dashboard.version }}'
     # Port for the dashboard app
     port: 1337
     # When to pull container images, used in the deployment
-    image_pull_policy: IfNotPresent
-    # image_pull_policy: IfNotPresent
+    image_pull_policy: Always
+    # image_pull_policy: Always
     # CPU and memory limits for the dashboard app
     resources:
       requests:
@@ -282,7 +282,7 @@ dashboard:
     pvc_size: 80
     image: 'prom/prometheus:v2.7.1'
     # When to pull container images, used in the deployment
-    image_pull_policy: IfNotPresent
+    image_pull_policy: Always
     # Prometheus service version
     version: '2.7.1'
     # Number of replicas for the deployment
@@ -337,8 +337,8 @@ catalog:
     version: 2.0.0-rc.2
     image: docker.greymatter.io/development/gm-catalog:{{ $.Values.catalog.version }}
     # When to pull container images, used in the deployment
-    image_pull_policy: IfNotPresent
-    # image_pull_policy: IfNotPresent
+    image_pull_policy: Always
+    # image_pull_policy: Always
     # CPU and memory limits for the catalog service
     resources:
       limits:
@@ -366,13 +366,13 @@ catalog:
         value: 'redis'
       redis_host:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{ tpl .Values.mesh_redis.host . }}{{- else}}{{ .Values.global.external_redis.host }}{{- end }}'
+        value: 'localhost'
       redis_port:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.port }}{{- else}}{{ .Values.global.external_redis.port }}{{- end }}'
+        value: '10919'
       redis_use_tls:
         type: value
-        value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.use_tls }}{{- else}}{{ .Values.global.external_redis.use_tls }}{{- end }}'
+        value: 'false'
       redis_ca_cert_path:
         type: value
         value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.ca_cert_path }}{{- else}}{{ .Values.global.external_redis.ca_cert_path }}{{- end }}'

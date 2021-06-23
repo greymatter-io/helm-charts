@@ -1,0 +1,14 @@
+{
+    "zone_key": "{{ .Values.global.zone}}",
+    "cluster_key": "cluster-{{ .Values.mesh_redis.name }}-local",
+    "name": "{{ .Values.mesh_redis.name }}-local",
+    "instances": [
+        {
+            "host": "127.0.0.1",
+            "port": 6379
+        }
+    ],
+    "circuit_breakers": null,
+    "outlier_detection": null,
+    "health_checks": []
+}

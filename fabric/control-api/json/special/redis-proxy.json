@@ -1,0 +1,12 @@
+{
+    "zone_key": "{{ .Values.global.zone}}",
+    "proxy_key": "{{ .Values.mesh_redis.name }}-proxy",
+    "domain_keys": [
+        "domain-{{ .Values.mesh_redis.name }}-ingress"
+    ],
+    "listener_keys": [
+        "listener-{{ .Values.mesh_redis.name }}-ingress"
+    ],
+    "name": "{{ .Values.mesh_redis.name }}",
+    "listeners": null
+}
