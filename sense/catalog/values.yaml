@@ -88,7 +88,7 @@ catalog:
   envvars:
     debug:
       type: value
-      value: 'true'
+      value: 'false'
     config_source:
       type: value
       value: 'redis'
