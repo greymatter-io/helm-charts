@@ -54,6 +54,16 @@ data:
                             grpc_services:
                               envoy_grpc:
                                 cluster_name: spire_agent
+                    validation_context_sds_secret_config:
+                      name: spiffe://{{ .Values.global.spire.trust_domain}}
+                      sds_config:
+                        resource_api_version: V3
+                        api_config_source:
+                          api_type: GRPC
+                          transport_api_version: V3
+                          grpc_services:
+                            envoy_grpc:
+                              cluster_name: spire_agent
                     tls_params:
                       ecdh_curves:
                         - X25519:P-256:P-521:P-384
