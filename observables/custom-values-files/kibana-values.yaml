@@ -9,7 +9,7 @@ replicas: 1
 # syntax here
 extraEnvs:
   - name: SERVER_BASEPATH
-    value: /services/kibana-observables-proxy/7.1.0
+    value: /services/kibana-observables-proxy/latest
 
 # A list of secrets and their paths to mount inside the pod
 # This is useful for mounting certificates for security and for mounting
@@ -21,7 +21,7 @@ secretMounts: []
 #    subPath: kibana.keystore # optional
 
 image: 'docker.elastic.co/kibana/kibana'
-imageTag: '7.5.1'
+imageTag: '7.9.3'
 imagePullPolicy: 'IfNotPresent'
 
 # additionals labels

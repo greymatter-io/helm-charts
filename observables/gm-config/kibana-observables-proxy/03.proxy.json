@@ -1,8 +1,0 @@
-{
-  "proxy_key": "proxy-kibana-name",
-  "zone_key": "zone-default-zone",
-  "name": "kibana-name",
-  "domain_keys": ["domain-kibana-name"],
-  "listener_keys": ["listener-kibana-name"],
-  "listeners": null
-}

@@ -55,7 +55,7 @@ extraEnvs:
 secretMounts: []
 
 image: 'docker.elastic.co/logstash/logstash'
-imageTag: '7.5.1'
+imageTag: '7.9.3'
 imagePullPolicy: 'IfNotPresent'
 imagePullSecrets: []
 
