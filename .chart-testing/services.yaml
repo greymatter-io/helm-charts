@@ -2,4 +2,4 @@ charts:
   - fabric
   - sense
   - spire
-target-branch: release-2.3
+target-branch: main
