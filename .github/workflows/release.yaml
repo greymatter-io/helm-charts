@@ -7,7 +7,7 @@ name: Release Charts
 on:
   push:
     branches:
-      - release-*
+      - main
 
 jobs:
   release:
