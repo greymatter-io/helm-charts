@@ -46,7 +46,7 @@ There are several uninstall options:
 - `make uninstall` - Uninstalls Grey Matter from the k3d cluster
 - To remove individual child-charts run `make remove-<chart-name>` ex: `make remove-fabric`
 - `make delete` - preforms an uninstall but also purges pvc and pods typically spared by helm.  Leaves secrets/credentials.
-- `make destroy` - Deletes the k3d cluster, including the Grey Matter mesh. Essentially a wrapper for `k3d cluster delete greymatter`.
+- `make destroy-k3d` - Deletes the k3d cluster, including the Grey Matter mesh. Essentially a wrapper for `k3d cluster delete greymatter`.
 
 ### Troubleshooting
 
