@@ -37,7 +37,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.5.1
+    version: 1.6.1
     envvars:
       proxy_dynamic:
         type: 'value'
@@ -57,7 +57,7 @@ global:
 slo:
   slo:
     # SLO version
-    version: 1.2.0
+    version: 2.0.0
     image: 'docker.greymatter.io/release/gm-slo:{{ $.Values.slo.version }}'
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
@@ -199,7 +199,7 @@ dashboard:
     # Name used for the deployment and service resources
     name: dashboard
     # Dashboard app version
-    version: 4.0.2
+    version: 5.0.0
     image: 'docker.greymatter.io/release/gm-dashboard:{{ $.Values.dashboard.version }}'
     # Port for the dashboard app
     port: 1337
@@ -333,7 +333,7 @@ catalog:
     # Name used for the deployment and service resources
     name: catalog
     # GM Catalog version
-    version: 1.2.2
+    version: 2.0.0
     image: docker.greymatter.io/release/gm-catalog:{{ $.Values.catalog.version }}
     # When to pull container images, used in the deployment
     image_pull_policy: IfNotPresent
@@ -356,6 +356,9 @@ catalog:
         cert: server.crt
         key: server.key
     envvars:
+      debug:
+        type: value
+        value: 'false'
       config_source:
         type: value
         value: 'redis'
@@ -396,15 +399,6 @@ catalog:
       port:
         type: value
         value: '{{ $.Values.catalog.port }}'
-      control_server_0_address:
-        type: value
-        value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
-      control_server_0_zone_name:
-        type: value
-        value: '{{ .Values.global.zone }}'
-      control_server_0_request_cluster_name:
-        type: value
-        value: 'edge'
       use_tls:
         type: value
         value: '{{ not .Values.global.spire.enabled }}'
@@ -446,7 +440,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.2.2
+    version: 2.0.0
     minInstances: 1
     maxInstances: 1
     ownerURL: "https://greymatter.io"
@@ -529,7 +523,7 @@ services:
     businessImpact: low
     description: Grey Matter Data is an API that enables secure and flexible access control for your microservices.
     # External links configures the "Service Tools" dropdown in service view
-    externalLinks: [{name: "API Explorer", link: "/services/data/latest/static/ui/index.html"}]
+    externalLinks: [{title: "API Explorer", url: "/services/data/latest/static/ui/index.html"}]
     secret:
       enabled: true
       secret_name: sidecar-certs

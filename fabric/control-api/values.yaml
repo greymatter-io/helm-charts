@@ -36,7 +36,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration
   sidecar:
-    version: 1.5.1
+    version: 1.6.1
     dn: CN=greymatter.user,OU=Engineering,O=Decipher Technology Studios,L=Alexandria,ST=Virginia,C=US
   # Global rbac configuration for service admin principal.
   rbac:
@@ -77,7 +77,7 @@ controlApi:
   display_name: control-api
   # Number of replicas for the deployment
   replicas: 1
-  version: 1.5.4
+  version: 1.6.1
   image: 'docker.greymatter.io/release/gm-control-api:{{ .Values.controlApi.version }}'
   # When to pull images, used in the deployment
   image_pull_policy: IfNotPresent
@@ -205,7 +205,7 @@ sidecar:
 
 
 bootstrap:
-  version: 2.0.0
+  version: 3.0.0
   image: 'docker.greymatter.io/release/greymatter:{{ tpl $.Values.bootstrap.version $ }}'
   image_pull_policy: IfNotPresent
   secret:
@@ -257,7 +257,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.1
+    version: latest
     minInstances: 1
     maxInstances: 1
     ownerURL: "https://greymatter.io"

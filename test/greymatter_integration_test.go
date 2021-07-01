@@ -302,7 +302,7 @@ func verifyCatalog(t *testing.T, kubectlOptions *k8s.KubectlOptions) {
 			json.Unmarshal([]byte(body), &data)
 			metadata, _ := data["metadata"].(map[string]interface{})
 
-			foundCatalogCount := metadata["clusterCount"]
+			foundCatalogCount := metadata["service_count"]
 
 			return foundCatalogCount == float64(expectedCatalogCount)
 		},

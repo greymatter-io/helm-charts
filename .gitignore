@@ -12,6 +12,7 @@ tls.crt
 tls.key
 ca.crt
 greymatter.p12
+cert.p12
 ingress-ca.crt
 Library
 

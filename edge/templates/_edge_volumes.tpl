@@ -12,7 +12,12 @@
 {{- define "edge_ingress_volumes" }}
 - name: edge-ingress
   secret:
+    {{- if .Values.global.global_certs.enabled }}
+    # Has three certs but even though egress only uses ca
+    secretName: global-certs
+    {{- else }}
     secretName: {{ .Values.edge.ingress.secret.secret_name }}
+    {{- end }}
 {{- end }}
 
 {{- define "spire_volumes" }}

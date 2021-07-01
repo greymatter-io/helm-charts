@@ -34,7 +34,7 @@ global:
       name: waiter-sa
   # Global sidecar config (supports version and envvars)
   sidecar:
-    version: 1.5.1
+    version: 1.6.1
   # To use an external redis or not
   external_redis:
     disabled: true
@@ -62,7 +62,7 @@ catalog:
   # Name used for the deployment and service resources
   name: catalog
   # GM Catalog version
-  version: 1.2.2
+  version: 2.0.0
   image: docker.greymatter.io/release/gm-catalog:{{ $.Values.catalog.version }}
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
@@ -86,6 +86,9 @@ catalog:
       cert: server.crt
       key: server.key
   envvars:
+    debug:
+      type: value
+      value: 'false'
     config_source:
       type: value
       value: 'redis'
@@ -120,21 +123,9 @@ catalog:
     redis_retry_delay:
       type: value
       value: '{{- if .Values.global.external_redis.disabled }}{{ .Values.mesh_redis.retry_delay }}{{- else}}{{ .Values.global.external_redis.retry_delay }}{{- end }}'
-    instance_polling_interval:
-      type: value
-      value: '5s'
     port:
       type: value
       value: '{{ $.Values.catalog.port }}'
-    control_server_0_address:
-      type: value
-      value: 'control.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.global.control.port }}'
-    control_server_0_zone_name:
-      type: value
-      value: '{{ .Values.global.zone }}'
-    control_server_0_request_cluster_name:
-      type: value
-      value: 'edge'
     use_tls:
       type: value
       value: 'true'
@@ -147,32 +138,6 @@ catalog:
     server_key_path:
       type: value
       value: '/etc/pki/{{ .Values.catalog.secret.secret_keys.key }}'
-
-  init:
-    image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.sidecar.version $ }}'
-    imagePullPolicy: IfNotPresent
-    envvars:
-      debug:
-        type: 'value'
-        value: 'true'
-      catalog_api_host:
-        type: 'value'
-        value: '{{ .Values.catalog.name }}:{{ .Values.catalog.port }}'
-      use_tls:
-        type: value
-        value: '{{ $.Values.catalog.secret.enabled | default false }}'
-      certs_mount:
-        type: value
-        value: '{{ .Values.catalog.secret.mount_point | default "/etc/pki" }}'
-      ca_cert:
-        type: value
-        value: '{{ .Values.catalog.secret.secret_keys.ca | default "ca.crt" }}'
-      cert:
-        type: value
-        value: '{{ .Values.catalog.secret.secret_keys.cert | default "server.crt" }}'
-      key:
-        type: value
-        value: '{{ .Values.catalog.secret.secret_keys.key | default "server.key" }}'
 
 # Sidecar configuration for Catalog
 sidecar:
@@ -220,7 +185,7 @@ services:
     name: 'Grey Matter Catalog'
     owner: 'Decipher'
     data_prefix: "/data"
-    version: 1.2.2
+    version: 2.0.0
     minInstances: 1
     maxInstances: 1
     ownerURL: "https://greymatter.io"
@@ -303,7 +268,7 @@ services:
     businessImpact: low
     description: Grey Matter Data is an API that enables secure and flexible access control for your microservices.
     # External links configures the "Service Tools" dropdown in service view
-    externalLinks: [{name: "API Explorer", link: "/services/data/latest/static/ui/index.html"}]
+    externalLinks: [{title: "API Explorer", url: "/services/data/latest/static/ui/index.html"}]
     secret:
       enabled: true
       secret_name: sidecar-certs

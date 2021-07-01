@@ -30,7 +30,7 @@ global:
       name: waiter-sa
   # Global sidecar configuration (supports global version and envvars)
   sidecar:
-    version: 1.5.1
+    version: 1.6.1
   # To use the global certs or not
   global_certs:
     enabled: true
@@ -41,7 +41,7 @@ global:
 slo:
   name: "slo"
   # SLO version
-  version: 1.2.0
+  version: 2.0.0
   image: "docker.greymatter.io/release/gm-slo:{{ .Values.slo.version }}"
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent

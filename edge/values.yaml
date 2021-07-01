@@ -13,6 +13,9 @@ global:
   route_url_name: greymatter
   remove_namespace_from_url: 'false'
 
+  global_certs:
+    enabled: false
+
   exhibitor:
     replicas: 1
   # Zone for Grey Matter objects. Used in sidecar envvars
@@ -40,7 +43,7 @@ global:
 
 edge:
   name: edge
-  version: '1.5.1'
+  version: '1.6.1'
   image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.edge.version $ }}'
   image_pull_policy: IfNotPresent
   replicas: 1
