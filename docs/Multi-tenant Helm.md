@@ -10,12 +10,12 @@ Tiller needs a service account to manage services. The `tiller-manager` Role can
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: tiller
+  name: greymatter-tiller
   namespace: greymatter
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: tiller-manager
+  name: greymatter-tiller-manager
   namespace: greymatter
 rules:
   - apiGroups: ['', 'extensions', 'apps', 'route.openshift.io', 'batch']
@@ -24,15 +24,15 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: tiller-binding
+  name: greymatter-tiller-binding
   namespace: greymatter
 subjects:
   - kind: ServiceAccount
-    name: tiller
+    name: greymatter-tiller
     namespace: greymatter
 roleRef:
   kind: Role
-  name: tiller-manager
+  name: greymatter-tiller-manager
   apiGroup: rbac.authorization.k8s.io
 ```
 
@@ -51,12 +51,12 @@ objects:
   - apiVersion: v1
     kind: ServiceAccount
     metadata:
-      name: tiller
+      name: greymatter-tiller
       namespace: ${NAMESPACE}
   - kind: Role
     apiVersion: rbac.authorization.k8s.io/v1beta1
     metadata:
-      name: tiller-manager
+      name: greymatter-tiller-manager
       namespace: ${NAMESPACE}
     rules:
     - apiGroups: ['', 'extensions', 'apps', 'route.openshift.io', 'batch']
@@ -65,15 +65,15 @@ objects:
   - kind: RoleBinding
     apiVersion: rbac.authorization.k8s.io/v1beta1
     metadata:
-      name: tiller-binding
+      name: greymatter-tiller-binding
       namespace: ${NAMESPACE}
     subjects:
       - kind: ServiceAccount
-        name: tiller
+        name: greymatter-tiller
         namespace: ${NAMESPACE}
     roleRef:
       kind: Role
-      name: tiller-manager
+      name: greymatter-tiller-manager
       apiGroup: rbac.authorization.k8s.io
 parameters:
 - description: Name of target namespace

@@ -49,7 +49,7 @@ global:
     image: docker.greymatter.io/internal/k8s-waiter:latest
     service_account:
       create: true
-      name: waiter-sa
+      name: greymatter-waiter-sa
 
 data:
   # Sidecar configuration overrides for data sidecar

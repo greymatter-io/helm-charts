@@ -36,7 +36,7 @@ global:
     image: docker.greymatter.io/internal/k8s-waiter:latest
     service_account:
       create: true
-      name: waiter-sa
+      name: greymatter-waiter-sa
   # Sidecar configuration (Control-api is the only service in this chart with a proxy)
   sidecar:
     # GM Proxy version, used by control-api
@@ -86,7 +86,7 @@ control:
     # The name of the service account with access to pods and endpoints. Can be created if it doesn't exist.
     service_account:
       create: true
-      name: control-sa
+      name: greymatter-control-sa
     envvars:
       gm_control_console_level:
         type: 'value'

@@ -166,7 +166,7 @@ prometheus:
   # Service account for prometheus
   service_account:
     create: true
-    name: prometheus-sa
+    name: greymatter-prometheus-sa
   resources:
     requests:
       memory: "8Gi"

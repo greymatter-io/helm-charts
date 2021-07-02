@@ -794,8 +794,8 @@ spec:
         fsGroup: 2000
         runAsGroup: 0
         runAsUser: 2000
-      serviceAccount: prometheus-sa
-      serviceAccountName: prometheus-sa
+      serviceAccount: greymatter-prometheus-sa
+      serviceAccountName: greymatter-prometheus-sa
       terminationGracePeriodSeconds: 30
       volumes:
       - name: sidecar-certs

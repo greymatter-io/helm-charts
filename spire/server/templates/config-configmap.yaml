@@ -48,7 +48,7 @@ data:
         plugin_data {
           clusters = {
             "{{ .Values.global.spire.cluster_name }}" = {
-              service_account_whitelist = ["{{ .Values.global.spire.namespace }}:agent"]
+              service_account_whitelist = ["{{ .Values.global.spire.namespace }}:greymatter-agent"]
               audience = ["server"]
             }
           }

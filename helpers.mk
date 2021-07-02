@@ -12,7 +12,7 @@ ccyellow := $(shell echo '\033[0;33m')
 ccend := $(shell echo '\033[0m')
 
 # Service account creation is set to true by default and this automates the disableing of these in makefiles
-WSA_CHECK := $(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}')
+WSA_CHECK := $(shell kubectl get sa greymatter-waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="greymatter-waiter-sa") print "--set=global.waiter.service_account.create=false"}')
 
 # Used in sense
 HELM_VALIDATION := $(shell helm version --short | cut -d'+' -f1 | awk -Fv '{if ($$2 > 3.2) print "--disable-openapi-validation"}')

@@ -71,7 +71,7 @@ The standalone deployment relies on the `waiter` pod to ensure mongo is up, this
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: waiter-sa
+  name: greymatter-waiter-sa
   namespace: NAMESPACE
 
 ---
@@ -79,7 +79,7 @@ metadata:
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: waiter-sa-role
+  name: greymatter-waiter-sa-role
   namespace: NAMESPACE
 rules:
   - apiGroups: ['']
@@ -91,15 +91,15 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: waiter-sa-rolebinding
+  name: greymatter-waiter-sa-rolebinding
   namespace: NAMESPACE
 subjects:
   - kind: ServiceAccount
-    name: waiter-sa
+    name: greymatter-waiter-sa
     namespace: NAMESPACE
 roleRef:
   kind: Role
-  name: waiter-sa-role
+  name: greymatter-waiter-sa-role
   apiGroup: rbac.authorization.k8s.io
 ---
 ```

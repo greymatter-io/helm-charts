@@ -5,7 +5,7 @@ CHART_DATA := .
 include ../output.mk
 
 wsa-data:
-	$(eval WAITERSACHECK-DATA=$(shell kubectl get sa waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
+	$(eval WAITERSACHECK-DATA=$(shell kubectl get sa greymatter-waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="greymatter-waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
 
 .PHONY: gm-data
 gm-data: wsa-data

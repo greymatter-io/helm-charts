@@ -33,7 +33,7 @@ global:
     image: docker.greymatter.io/internal/k8s-waiter:latest
     service_account:
       create: true
-      name: waiter-sa
+      name: greymatter-waiter-sa
   # Global sidecar configuration
   sidecar:
     version: 1.6.2

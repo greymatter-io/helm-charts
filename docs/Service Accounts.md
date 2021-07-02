@@ -1,28 +1,28 @@
 # Service Accounts
 
-Various services in the mesh require Kubernetes Service Accounts to function.  There are three service accounts that are necessary to run all four Grey Matter charts together, `control-sa`, `prometheus-sa`, and `waiter-sa`. `control-sa` is required by Grey Matter Control, `prometheus-sa` is required by Grey Matter Dashboard, and `waiter-sa` is required by several subcharts.
+Various services in the mesh require Kubernetes Service Accounts to function.  There are three service accounts that are necessary to run all four Grey Matter charts together, `greymatter-control-sa`, `greymatter-prometheus-sa`, and `greymatter-waiter-sa`. `greymatter-control-sa` is required by Grey Matter Control, `greymatter-prometheus-sa` is required by Grey Matter Dashboard, and `greymatter-waiter-sa` is required by several subcharts.
 
 The Grey Matter subcharts require the following service accounts:
 
 - Fabric
   - control
-    - requires `control-sa`
-    - requires `waiter-sa`
+    - requires `greymatter-control-sa`
+    - requires `greymatter-waiter-sa`
   - control-api
-    - requires `waiter-sa`
+    - requires `greymatter-waiter-sa`
 - Edge
 - Data
   - data
-    - requires `waiter-sa` 
+    - requires `greymatter-waiter-sa` 
   - jwt
   - jwt-gov
 - Sense
   - catalog
-    - requires `waiter-sa`
+    - requires `greymatter-waiter-sa`
   - slo
-    - requires `waiter-sa`
+    - requires `greymatter-waiter-sa`
   - dashboard
-    - requires `prometheus-sa`
+    - requires `greymatter-prometheus-sa`
 
 There are two ways to create the necessary service accounts and their corresponding Roles, ClusterRoles, RoleBinding's and ClusterRoleBindings.
 
@@ -38,12 +38,12 @@ global:
     image: docker.greymatter.io/internal/k8s-waiter:latest
     service_account:
       create: true
-      name: waiter-sa
+      name: greymatter-waiter-sa
 ```
 
-Set `.Values.global.waiter.service_account.create` to true to create the `waiter-sa` in the necessary charts.
+Set `.Values.global.waiter.service_account.create` to true to create the `greymatter-waiter-sa` in the necessary charts.
 
-Keep in mind that because the `waiter-sa` service account is used by multiple charts, `.Values.global.waiter.service_account.create` should only be set to true in one of the charts being deployed. 
+Keep in mind that because the `greymatter-waiter-sa` service account is used by multiple charts, `.Values.global.waiter.service_account.create` should only be set to true in one of the charts being deployed. 
 
 For example, if you install the Fabric chart first, make sure `.Values.global.waiter.service_account.create` is true.  Then, when installing the other charts, add the flag `--set=global.waiter.service_account.create=false` in order to prevent helm from trying to generate the same service account twice.
 
@@ -54,7 +54,7 @@ dashboard:
   prometheus:
     service_account:
       create: true
-      name: prometheus-sa
+      name: greymatter-prometheus-sa
 ```
 
 and the `fabric/values.yaml` has the following configuration option for the control subchart:
@@ -64,7 +64,7 @@ control:
   control:
     service_account:
       create: true
-      name: control-sa
+      name: greymatter-control-sa
 ```
 
 ## Manually Creating the Service Accounts
@@ -85,7 +85,7 @@ Here is an example of a new `Role` and `RoleBinding` for the `waiter-sa` service
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: waiter-sa-role
+  name: greymatter-waiter-sa-role
   namespace: services
 rules:
   - apiGroups: ['']
@@ -97,25 +97,25 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: waiter-sa-rolebinding
+  name: greymatter-waiter-sa-rolebinding
   namespace: services
 subjects:
   - kind: ServiceAccount
-    name: waiter-sa
+    name: greymatter-waiter-sa
     namespace: greymatter
 roleRef:
   kind: Role
-  name: waiter-sa-role
+  name: greymatter-waiter-sa-role
   apiGroup: rbac.authorization.k8s.io
 ```
 
-Notice that only the `metadata.namespace` field needs to be updated for both files.  The `waiter-sa` service account has already been created in the `greymatter` namespace and a new `Role` and `RoleBinding` can leverage the existing service account.  
+Notice that only the `metadata.namespace` field needs to be updated for both files.  The `greymatter-waiter-sa` service account has already been created in the `greymatter` namespace and a new `Role` and `RoleBinding` can leverage the existing service account.  
 
-If you manually created the service accounts using the `greymatter-service-accounts.yaml` file referenced above, you will only need to perform this action for the `waiter-sa` account. If `control-sa` and `prometheus-sa` were created as non-Cluster roles (ie: not `ClusterRole` and `ClusterRoleBinding`), you will need to perform the same steps for those accounts as well.
+If you manually created the service accounts using the `greymatter-service-accounts.yaml` file referenced above, you will only need to perform this action for the `greymatter-waiter-sa` account. If `greymatter-control-sa` and `greymatter-prometheus-sa` were created as non-Cluster roles (ie: not `ClusterRole` and `ClusterRoleBinding`), you will need to perform the same steps for those accounts as well.
 
 Permissions can be verified using the following command
 
 ```sh
-> kubectl auth can-i list endpoints -n services --as system:serviceaccount:greymatter:waiter-sa
+> kubectl auth can-i list endpoints -n services --as system:serviceaccount:greymatter:greymatter-waiter-sa
 yes
 ```
