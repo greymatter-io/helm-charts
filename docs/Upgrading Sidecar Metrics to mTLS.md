@@ -762,7 +762,7 @@ spec:
           value: "50000"
         - name: XDS_ZONE
           value: zone-default-zone
-        image: docker.greymatter.io/release/gm-proxy:1.6.1
+        image: docker.greymatter.io/release/gm-proxy:1.6.2
         imagePullPolicy: IfNotPresent
         name: sidecar
         ports:

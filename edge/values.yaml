@@ -43,7 +43,7 @@ global:
 
 edge:
   name: edge
-  version: '1.6.1'
+  version: '1.6.2'
   image: 'docker.greymatter.io/release/gm-proxy:{{ tpl $.Values.edge.version $ }}'
   image_pull_policy: IfNotPresent
   replicas: 1

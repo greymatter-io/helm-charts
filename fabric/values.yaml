@@ -40,7 +40,7 @@ global:
   # Sidecar configuration (Control-api is the only service in this chart with a proxy)
   sidecar:
     # GM Proxy version, used by control-api
-    version: 1.6.1
+    version: 1.6.2
     envvars:
       xds_cluster:
         type: value
@@ -466,7 +466,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.6.1'
+    version: '1.6.2'
     ownerURL: "https://greymatter.io"
     apiEndpoint: ''
     apiSpecEndpoint: ''
