@@ -292,7 +292,7 @@ services:
     capability: 'Apps'
     documentation: ''
     owner: 'Decipher'
-    version: 4.0.2
+    version: 5.0.0
     ownerURL: "https://greymatter.io"
     apiEndpoint: ''
     apiSpecEndpoint: ''
@@ -333,7 +333,7 @@ services:
     jwt_prefix: '/jwt'
     documentation: '/services/data/latest/static/ui/index.html'
     owner: 'Decipher'
-    version: 1.1.5
+    version: 1.2.1
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'services/data/latest/'
     apiSpecEndpoint: '/latest/static/'
@@ -362,7 +362,7 @@ services:
     capability: 'Security'
     documentation: '/services/jwt-security/latest/'
     owner: 'Decipher'
-    version: '1.2.0'
+    version: '1.3.0'
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'services/jwt-security/latest/'
     apiSpecEndpoint: '/services/jwt-security/latest/'
@@ -391,7 +391,7 @@ services:
     capability: 'Mesh'
     documentation: '/services/control-api/latest/'
     owner: 'Decipher'
-    version: '1.5.1'
+    version: '1.6.1'
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'services/control-api/latest/'
     apiSpecEndpoint: '/services/control-api/latest/'
@@ -424,7 +424,7 @@ services:
     capability: 'Mesh'
     documentation: ''
     owner: 'Decipher'
-    version: '1.5.1'
+    version: '1.6.1'
     ownerURL: "https://greymatter.io"
     apiEndpoint: ''
     apiSpecEndpoint: ''
@@ -462,7 +462,7 @@ services:
     capability: 'Sense'
     documentation: '/services/slo/latest/'
     owner: 'Decipher'
-    version: '1.2.0'
+    version: '2.0.0'
     ownerURL: "https://greymatter.io"
     apiEndpoint: 'services/slo/latest/'
     apiSpecEndpoint: '/services/slo/latest/'

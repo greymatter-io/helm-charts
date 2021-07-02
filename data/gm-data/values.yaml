@@ -37,7 +37,7 @@ global:
 data:
   # Name used for the deployment and service resources
   name: data
-  version: 1.1.5
+  version: 1.2.1
   replicas: 1
   # If set, enables tls using the secret specified in secret_name
   secret:

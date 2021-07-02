@@ -42,7 +42,7 @@ slo:
   name: "slo"
   # SLO version
   version: 2.0.0
-  image: "docker.greymatter.io/release/gm-slo:{{ .Values.slo.version }}"
+  image: "docker.greymatter.io/development/gm-slo:{{ .Values.slo.version }}"
   # When to pull container images, used in the deployment
   image_pull_policy: IfNotPresent
   replicas: 1
