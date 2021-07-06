@@ -450,32 +450,3 @@ services:
           cert: server.crt
           key: server.key
           ca: ca.crt
-
-  slo:
-    catalogEnabled: true
-    controlEnabled: true
-    name: 'Grey Matter Service Level Objectives'
-    serviceName: 'slo'
-    observablesEnabled: false
-    port: 1337
-    enableInstanceMetrics: 'true'
-    capability: 'Sense'
-    documentation: '/services/slo/latest/'
-    owner: 'Decipher'
-    version: '2.0.0'
-    ownerURL: "https://greymatter.io"
-    apiEndpoint: 'services/slo/latest/'
-    apiSpecEndpoint: '/services/slo/latest/'
-    businessImpact: low
-    description: Grey Matter Service Level Objectives (SLOs) allows users to manage objectives towards service-level agreements.
-    # External links configures the "Service Tools" dropdown in service view
-    externalLinks: []
-    secret:
-      enabled: true
-      secret_name: sidecar-certs
-      mount_point: /etc/proxy/tls/sidecar
-      insecure: true
-      secret_keys:
-        cert: server.crt
-        key: server.key
-        ca: ca.crt
