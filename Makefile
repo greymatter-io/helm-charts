@@ -4,7 +4,7 @@ include helpers.mk
 # `make credentials` to build out credentials with user input
 # `make secrets` deploys the credentials
 
-.PHONY: minikube k3d check-secrets install-spire install uninstall secrets remove-secrets credentials observables remove-observables spire-custom-ca lint-subcharts lint-edge-secrets lint-umbrella-charts lint
+.PHONY: minikube k3d check-secrets install-spire install install-with-data setup-core uninstall secrets remove-secrets credentials observables remove-observables spire-custom-ca lint-subcharts lint-edge-secrets lint-umbrella-charts lint
 
 K3D?=false
 
@@ -53,7 +53,32 @@ install-spire:
 		(cd spire && make spire); \
 	fi
 
+# install: dev-dep check-secrets install-spire
+# 	(cd fabric && make fabric)
+# 	sleep 20
+# 	(cd edge && make edge)
+# 	sleep 20
+# 	if [ "$(K3D)" = "true" ]; then \
+# 		(kubectl patch svc edge -p '{"spec": {"type": "LoadBalancer"}}'); \
+# 	fi
+# 	sleep 20
+# 	(cd sense && make sense)
+# 	(make remove-identity)
+# 	(make reveal-endpoint)
+
 install: dev-dep check-secrets install-spire
+	(make setup-core)
+	(make remove-identity)
+	(make reveal-endpoint)
+
+install-with-data: dev-dep check-secrets install-spire
+	(make setup-core)
+	sleep 20
+	(cd data && make data)
+	(make remove-identity)
+	(make reveal-endpoint)
+
+setup-core:
 	(cd fabric && make fabric)
 	sleep 20
 	(cd edge && make edge)
@@ -63,9 +88,6 @@ install: dev-dep check-secrets install-spire
 	fi
 	sleep 20
 	(cd sense && make sense)
-	(make remove-identity)
-	(make reveal-endpoint)
-
 
 .IGNORE: uninstall
 uninstall: verify-identity-exists

@@ -1,15 +1,11 @@
-SHELL := /bin/bash
-NAME-DATA:=data
-CHART_DATA := .
+include ../helpers.mk
 
-include ../output.mk
+NAME-DATA := data-$(CUST)-$(RAND)
 
-wsa-data:
-	$(eval WAITERSACHECK-DATA=$(shell kubectl get sa greymatter-waiter-sa 2> /dev/null | tail -n +2 | awk '{if ($$1=="greymatter-waiter-sa") print "--set=global.waiter.service_account.create=false"}'))
+.PHONY: gm-data clean-data package-data template-data data upgrade-data remove-data
 
-.PHONY: gm-data
-gm-data: wsa-data
-	helm install $(NAME-DATA) gm-data $(WAITERSACHECK-DATA) -f ../global.yaml
+gm-data:
+	helm install $(NAME-DATA) gm-data $(WSA_CHECK) -f ../global.yaml
 
 clean-data:
 	rm -f ./charts/*
@@ -19,15 +15,15 @@ package-data: clean-data
 
 template-data: package-data $(BUILD_NUMBER_FILE)
 	mkdir -p $(OUTPUT_PATH)
-	helm template $(NAME-DATA) . $(WAITERSACHECK-DATA)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-DATA)$(BN).yaml
+	helm template $(NAME-DATA) . $(WSA_CHECK)  -f ../global.yaml > $(OUTPUT_PATH)/helm-$(NAME-DATA)$(BN).yaml
 
 .PHONY: data
-data: package-data wsa-data
-	helm install $(NAME-DATA) . $(WAITERSACHECK-DATA) -f ../global.yaml
+data: package-data
+	helm install $(NAME-DATA) . $(WSA_CHECK) -f ../global.yaml
 
 .PHONY: upgrade-data
-upgrade-data: wsa-data package-data
-	helm upgrade $(NAME-DATA) . $(WAITERSACHECK-DATA) -f ../global.yaml
+upgrade-data: package-data
+	helm upgrade $(NAME-DATA) . $(WSA_CHECK) -f ../global.yaml
 
 .PHONY: remove-data
 remove-data:
